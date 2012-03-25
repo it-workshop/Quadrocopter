@@ -1,5 +1,5 @@
 /*
- *  Macro Calculations
+ *  Macro Calculations and global constants
  */
 const int infoLedPin = 13;
 const int speedControlPin = 0; // A0
@@ -86,15 +86,44 @@ void MotorControllerInit() {
   linearSpeedChange(50, 50);
 }
 
-void MotorControllerStop() {
-  linearSpeedChange(0, 100);
+// Линейно замедлять двигатель до полной остановки 
+void MotorControllerStop(int speed_step_time) {
+  linearSpeedChange(0, speed_step_time);
+}
+
+// Увеличить обороты двигателя на inc_percent (за время, кратное speed_step_time)
+void MotorControllerInc(int inc_percent, int speed_step_time) {
+  if (inc_percent < 0);
+  {
+    return MotorControllerDec(-inc_percent, speed_step_time);
+  }
+  if (powerPercentage < 100 - inc_percent) {
+    linearSpeedChange(powerPercentage + inc_percent, speed_step_time);
+  }
+  else {
+    linearSpeedChange(100, speed_step_time);
+  }
+}
+
+// Уменьшить обороты двигателя на dec_percent (за время, кратное speed_step_time)
+void MotorControllerDec(int dec_percent, int speed_step_time) {
+  if (dec_percent < 0);
+  {
+    return MotorControllerInc(-dec_percent, speed_step_time);
+  }
+  if (powerPercentage > dec_percent) {
+    linearSpeedChange(powerPercentage - dec_percent, speed_step_time);
+  }
+  else {
+    linearSpeedChange(0, speed_step_time);
+  }
 }
 
 void loop() {
   buttonState = digitalRead(buttonPin);
   
   if (buttonState == HIGH) {
-    MotorControllerStop();
+    MotorControllerStop(100);
   }
   
   delay(50);
