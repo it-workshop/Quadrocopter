@@ -2,6 +2,8 @@
  *  Macro Calculations and global constants
  */
 
+const int EN = 2;
+
 const int infoLedPin = 13;
 const int A_buttonPin = 7; // D7
 const int B_buttonPin = 8; // D8
@@ -9,11 +11,47 @@ const int B_buttonPin = 8; // D8
 struct RVector3D {
 	double x, y, z;
 	double module_sq();
+        void norm();
+        void set_module();
+        void x_angle_inc(double w);
+        void y_angle_inc(double w);
+        void x_angle_dec(double w);
+        void y_angle_dec(double w);
 };
 
 double RVector3D::module_sq()
 {
 	return x * x + y * y + z * z;
+}
+
+void RVector3D::norm()
+{
+	double k = 1.0 / sqrt(module_sq());
+        x *= k;
+        y *= k;
+        z *= k;
+}
+
+void RVector3D::x_angle_inc(double w)
+{
+         y = y * cos(w) - z * sin(w);
+         z = y * sin(w) + z * cos(w);
+}
+
+void RVector3D::x_angle_dec(double w)
+{
+         x_angle_inc(-w);
+}
+
+void RVector3D::y_angle_inc(double w)
+{
+         x =  x * cos(w) + z * sin(w);
+         z = -x * sin(w) + z * cos(w);
+}
+
+void RVector3D::y_angle_dec(double w)
+{
+         y_angle_inc(-w);
 }
 
 struct Motor {
@@ -131,6 +169,7 @@ void MotorController::linearSpeedInc(int inc_percent, int speed_step_time)
 */
 
 MotorController* MController;
+RVector3D throttle;
 
 void setup()
 {
@@ -147,25 +186,59 @@ void setup()
 	// init the global object
         int motor_control_pins[4] = {3, 10, 11, 9};
 	MController = new MotorController(motor_control_pins);
+
+        throttle.x = 0;
+        throttle.y = 0;
+        throttle.z = 1;
 }
 
 int command = 0;
 
 void loop()
 {
+        // Enable Receiving Data
+        digitalWrite(EN, LOW);
+
         // if we get a valid byte
         if (Serial.available() > 0) {
-            RVector3D throttle;
-	    throttle.x = 0;
-	    throttle.y = 0;
 
             command = Serial.read();
-	    //Serial.write(command);
+            switch (command) {
+            case 'a':
+              throttle.y_angle_inc(0.024543692); // PI / 128
+              break;
 
-            throttle.z = (double) (command - 48) / 10;
-            //Serial.println(throttle.z);
-	    MController->speedChange(throttle);
+            case 'd':
+              throttle.y_angle_dec(0.024543692);
+              break;
+
+            case 'w':
+              throttle.x_angle_dec(0.024543692);
+              break; 
+
+            case 's':
+              throttle.x_angle_inc(0.024543692);
+              break;
+            
+            case '1': case '2': case '3': case '4': 
+            case '5': case '6': case '7': case '8': case '9': 
+              double coef = (double) (command - 48) * 0.1;
+              throttle.norm();
+              throttle.x *= coef;
+              throttle.y *= coef;
+              throttle.z *= coef;
+              break;
+              
+            case '0':
+              throttle.x = 0;
+              throttle.y = 0;
+              throttle.z = 0;
+              break;  
+            }
+            
+            MController->speedChange(throttle);
         }
+        
 	delay(50);
 }
 
