@@ -221,7 +221,7 @@ private:
     static const int DEF_SPEED_STEP = 400;
 
     double throttle_abs;
-    static const double accelerometer_coefficient = -0.8;
+    static const double accelerometer_coefficient = -0.5;
     static const double accelerometer_min_correction = 0.1;
     static const double gyroscope_coefficient = -1;
     static const double joystick_coefficient = 0.2;
