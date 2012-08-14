@@ -3,9 +3,9 @@
 
 //#define DEBUG_NO_MOTORS
 //#define DEBUG_NO_GYROSCOPE
-//#define DEBUG_NO_ACCELEROMETER
+#define DEBUG_NO_ACCELEROMETER
 #define DEBUG_SERIAL
-#define DEBUG_SERIAL_HUMAN
+//#define DEBUG_SERIAL_HUMAN
 
 const int infoLedPin = 13;
 const int SERIAL_ACCURACY = 3;
@@ -835,8 +835,15 @@ void loop()
 #endif
 
     RVector3D throttle_corrected = throttle;
-    throttle_corrected += gyro_correction;
-    throttle_corrected += accel_correction;
+    
+    #ifndef DEBUG_NO_GYROSCOPE
+        throttle_corrected += gyro_correction;
+    #endif
+    
+    #ifndef DEBUG_NO_ACCELEROMETER
+        throttle_corrected += accel_correction;
+    #endif
+    
     throttle_corrected /= throttle_corrected.module();
     throttle_corrected *= MController->get_throttle_abs();
     
