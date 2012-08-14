@@ -1,11 +1,11 @@
-//For gyroscope
+ //For gyroscope
 #include <Wire.h>
 
-//#define DEBUG_NO_MOTORS
+#define DEBUG_NO_MOTORS
 //#define DEBUG_NO_GYROSCOPE
-#define DEBUG_NO_ACCELEROMETER
+//#define DEBUG_NO_ACCELEROMETER
 #define DEBUG_SERIAL
-//#define DEBUG_SERIAL_HUMAN
+#define DEBUG_SERIAL_HUMAN
 
 const int infoLedPin = 13;
 const int SERIAL_ACCURACY = 3;
@@ -202,8 +202,9 @@ inline const int Motor::power()
 void Motor::makeSpeed(int percentage)
 {
     if (percentage >= 100) speedie = MAX_SPEED;
-    if (percentage <=   0) speedie = MIN_SPEED;
-    speedie = (double) 0.01 * percentage * (MAX_SPEED - MIN_SPEED) + MIN_SPEED;
+    else if (percentage <=   0) speedie = MIN_SPEED;
+    else speedie = (double) 0.01 * percentage * (MAX_SPEED - MIN_SPEED) + MIN_SPEED;
+    
     analogWrite(control_pin, speedie);
 }
 
@@ -696,7 +697,7 @@ const double angle_period = 7.5;
     int serial_writing = 0;
 
     #ifdef DEBUG_SERIAL_HUMAN
-        unsigned int serial_auto_count = 0, serial_auto_count_M = 10;
+        unsigned int serial_auto_count = 0, serial_auto_count_M = 5;
         unsigned int serial_auto_send = 0;
     #endif
 #endif
