@@ -671,25 +671,26 @@ Accelerometer* Accel;
 Gyroscope* Gyro;
 TimerCount* TCount;
 
-const double throttle_step = 0.1;
-RVector3D throttle, throttle_tmp;
-const double angle_step = 0.024543692; // PI / 128
 const double M_PI_BY_2 = 1.57079632675;
 const double MPI = 3.141592653589793;
 
+RVector3D throttle;
+
 RVector3D angle;
-double angle_alpha = 0.98;
 const double angle_period = 7.5;
 
 #ifdef DEBUG_SERIAL
     enum serial_type_ {SERIAL_DEFAULT, SERIAL_RESTORE};
         
     serial_type_ serial_type = SERIAL_DEFAULT;
-    int serial_writing = 0;
 
     #ifdef DEBUG_SERIAL_HUMAN
         unsigned int serial_auto_count = 0, serial_auto_count_M = 5;
         unsigned int serial_auto_send = 0;
+        
+        //for wasd and digits
+        const double angle_step = 0.024543692; // PI / 128
+        const double throttle_step = 0.1;
     #endif
 #endif
 
@@ -724,8 +725,8 @@ void setup()
 
 void loop()
 {
-    static unsigned int t_low, t_high, t_int, i, last_dt;
-    static double t_double;
+    static unsigned int last_dt, i;
+    static double t_double, angle_alpha;
     static long double dt;
     
     RVector3D accel_data = Accel->get_readings();
@@ -743,10 +744,6 @@ void loop()
   
         angle.x = (angle.x + gyro_data.x * dt) * (1 - angle_alpha) + accel_angle.x * angle_alpha;
         angle.y = (angle.y + gyro_data.y * dt) * (1 - angle_alpha) + accel_angle.y * angle_alpha;
-  
-        //without angles
-//        angle.x = (angle.x + gyro_data.x * dt) * (1 - angle_alpha) + accel_data.y * angle_alpha;
-//        angle.y = (angle.y + gyro_data.y * dt) * (1 - angle_alpha) - accel_data.x * angle_alpha;
     }
     TCount->set_time();
     
@@ -754,7 +751,10 @@ void loop()
     RVector3D gyro_correction = MController->get_gyroscope_correction(gyro_data);
 
 #ifdef DEBUG_SERIAL
-    char c = 0;
+    static char c = 0;
+    static unsigned int t_low, t_high, t_int;
+    static RVector3D throttle_tmp;
+    
     if(Serial.available() > 0)
     {
         c = Serial.read();
@@ -774,6 +774,8 @@ void loop()
             else if(c == 'i')
             {                
                 serial_type = SERIAL_RESTORE;
+                
+                int serial_writing;
                 
                 for(serial_writing = 0; serial_writing < 4; serial_writing++)
                 {
@@ -901,5 +903,7 @@ void loop()
 
     MController->speedChange(throttle_corrected);
     
-    if(serial_type == SERIAL_RESTORE) serial_type = SERIAL_DEFAULT;
+    #ifdef DEBUG_SERIAL
+        if(serial_type == SERIAL_RESTORE) serial_type = SERIAL_DEFAULT;
+    #endif
 }
