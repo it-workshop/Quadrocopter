@@ -10,6 +10,8 @@
 const int infoLedPin = 13;
 const int SERIAL_ACCURACY = 3;
 
+double atan_inf(double x, double y);
+
 struct RVector3D
 {
     RVector3D();
@@ -38,6 +40,8 @@ struct RVector3D
     void y_angle_inc(double w);
     void x_angle_dec(double w);
     void y_angle_dec(double w);
+    
+    RVector3D angle_from_projections();
 };
 
 RVector3D::RVector3D()
@@ -179,6 +183,24 @@ double& RVector3D::value_by_axis_index(int index)
     case 2:
         return(z);
     }
+}
+
+RVector3D RVector3D::angle_from_projections()
+{
+    RVector3D result;
+    result.x = atan_inf(-y, z);
+    result.y = atan_inf(x, z);
+    result.z = 0;
+    
+    return(result);
+}
+
+double atan_inf(double x, double y)
+{
+    if(x == 0 && y == 0) return(0);
+    if(y == 0) return(x > 0 ? M_PI / 2 : -M_PI / 2);
+    
+    return(atan(x / y));
 }
 
 struct Motor
@@ -393,37 +415,24 @@ class Accelerometer
 {
 private:
     static const unsigned int AXIS = 3, AVG_N = 50;
-    double MIN_VALUES[AXIS];
-    double MAX_VALUES[AXIS];
-    double MIN_CUT_VALUES[AXIS];
-    double MAX_CUT_VALUES[AXIS];
-    double ACCURACY = 10;
+    double ACCURACY = 1E-2;
+    
+    static const double adc_aref = 5, adc_maxvalue = 1023;
+    double map_a[AXIS], map_b[AXIS];
+    
     int ports[AXIS];
     RVector3D defaults;
 
 public:
     Accelerometer(int new_ports[AXIS])
     {
-        MIN_CUT_VALUES[0] = 10;
-        MIN_CUT_VALUES[1] = 10;
-        MIN_CUT_VALUES[2] = 10;
+        map_a[0] = 0.8616664408; map_b[0] = 1.5204146893;
+        map_a[1] = 0.892143084;  map_b[1] = 1.8134632093;
+        map_a[2] = 0.8861390819; map_b[2] = 1.5457698227;
         
-        MAX_CUT_VALUES[0] = 800;
-        MAX_CUT_VALUES[1] = 800;
-        MAX_CUT_VALUES[2] = 800;
-        
-        MIN_VALUES[0] = 105;
-        MIN_VALUES[1] = 170;
-        MIN_VALUES[2] = 122;
-        
-        MAX_VALUES[0] = 462;
-        MAX_VALUES[1] = 535;
-        MAX_VALUES[2] = 493;
-        
-        defaults.x = 300;
-        defaults.y = 357;
-        defaults.z = 320;
-
+        defaults.x = 0;
+        defaults.y = 0;
+        defaults.z = 0;
         
         unsigned int i;
         for(i = 0; i < AXIS; i++)
@@ -434,12 +443,12 @@ public:
 //        set_defaults();
     }
 
-    RVector3D get_readings();
-    RVector3D get_raw_readings();
+    RVector3D get_readings(); //in m/s^2 divided by g
+    RVector3D get_raw_readings(); //in volts
 
     void set_defaults()
     {
-        defaults = get_raw_readings();
+        defaults = get_readings();
     }
 };
 
@@ -454,13 +463,9 @@ RVector3D Accelerometer::get_raw_readings()
         #ifdef DEBUG_NO_ACCELEROMETER
             result.value_by_axis_index(i) = 0;
         #else
-            result.value_by_axis_index(i) = analogRead(ports[i]);
-//            delayMicroseconds(100);
+            result.value_by_axis_index(i) = analogRead(ports[i]) * adc_aref / adc_maxvalue;
         #endif
     }
-    
-//    if(result.x != result.x || result.y != result.y || result.x == NAN || result.y == NAN)
-//        Serial.println("ACC ERROR RAW");
     
     return(result);
 }
@@ -477,34 +482,16 @@ RVector3D Accelerometer::get_readings()
         result += get_raw_readings();
     
     result /= AVG_N;
-    
-//    if(result.x != result.x || result.y != result.y || result.x == NAN || result.y == NAN)
-//        Serial.println("ACC ERROR AVG");
-    
-//    result.print_serial(RVector3D::PRINT_TAB);
-//    Serial.println();
-    
-    for(i = 0; i < AXIS; i++)
-    {
-        if(result.value_by_axis_index(i) < MIN_CUT_VALUES[i])
-            result.value_by_axis_index(i) = MIN_CUT_VALUES[i];
-        else if(result.value_by_axis_index(i) > MAX_CUT_VALUES[i])
-            result.value_by_axis_index(i) = MAX_CUT_VALUES[i];
-    }
 
     result -= defaults;
 
     for(i = 0; i < AXIS; i++)
     {
+        result.value_by_axis_index(i) = (result.value_by_axis_index(i) - map_b[i]) / map_a[i];
+
         if(fabs(result.value_by_axis_index(i)) < ACCURACY)
             result.value_by_axis_index(i) = 0;
-
-        if(result.value_by_axis_index(i) > 0) result.value_by_axis_index(i) /= MAX_VALUES[i] - defaults.value_by_axis_index(i);
-        else if(result.value_by_axis_index(i) < 0) result.value_by_axis_index(i) /= defaults.value_by_axis_index(i) - MIN_VALUES[i];
     }
-    
-//    if(result.x != result.x || result.y != result.y || result.x == NAN || result.y == NAN)
-//        Serial.println("ACC ERROR FINAL");
 
     return(result);
 }
@@ -748,8 +735,14 @@ void loop()
         
         angle_alpha = dt / (dt + angle_period / (2 * MPI));
         
-        angle.x = (angle.x + gyro_data.x * dt) * (1 - angle_alpha) + accel_data.y * angle_alpha;
-        angle.y = (angle.y + gyro_data.y * dt) * (1 - angle_alpha) - accel_data.x * angle_alpha;
+        RVector3D accel_angle = accel_data.angle_from_projections();
+  
+        angle.x = (angle.x + gyro_data.x * dt) * (1 - angle_alpha) + accel_angle.x * angle_alpha;
+        angle.y = (angle.y + gyro_data.y * dt) * (1 - angle_alpha) + accel_angle.y * angle_alpha;
+  
+        //without angles
+//        angle.x = (angle.x + gyro_data.x * dt) * (1 - angle_alpha) + accel_data.y * angle_alpha;
+//        angle.y = (angle.y + gyro_data.y * dt) * (1 - angle_alpha) - accel_data.x * angle_alpha;
     }
     TCount->set_time();
     
@@ -854,7 +847,7 @@ void loop()
         #ifdef DEBUG_SERIAL_HUMAN
             if(c == 'g' || (serial_auto_send && serial_auto_count == serial_auto_count_M))
             {
-                Serial.print(accel_data.module_sq());
+/*                Serial.print(accel_data.module_sq());
                 Serial.print("\t");
                 accel_data.print_serial(RVector3D::PRINT_TAB);
                 gyro_data.print_serial(RVector3D::PRINT_TAB);
@@ -874,7 +867,10 @@ void loop()
                 angle.print_serial(RVector3D::PRINT_TAB, RVector3D::USE_2D);
                 accel_correction.print_serial(RVector3D::PRINT_TAB, RVector3D::USE_2D);
                 
-                Serial.print(last_dt / 1.E3);
+                Serial.print(last_dt / 1.E3);*/
+                
+                accel_data.print_serial(RVector3D::PRINT_TAB);
+                accel_data.angle_from_projections().print_serial(RVector3D::PRINT_TAB, RVector3D::USE_2D);
         
                 Serial.print("\n");
                 
@@ -905,4 +901,4 @@ void loop()
     MController->speedChange(throttle_corrected);
     
     if(serial_type == SERIAL_RESTORE) serial_type = SERIAL_DEFAULT;
-}    
+}
