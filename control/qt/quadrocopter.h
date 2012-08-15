@@ -16,6 +16,8 @@ private:
     static const int MOTORS_N = 4;
     number_vect_t MOTORS[MOTORS_N];
 
+    static const double serial_gyroscope_coefficient = 0.08;
+
     number_vect_t read_time, write_time, loop_time;
 
     void defaults();

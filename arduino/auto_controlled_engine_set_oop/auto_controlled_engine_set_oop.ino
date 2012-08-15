@@ -504,33 +504,32 @@ class Gyroscope
 {
 private:
     // ITG3200 Register Defines
-    const static int WHO = 0x00;
-    const static int SMPL = 0x15;
-    const static int DLPF = 0x16;
-    const static int INT_C = 0x17;
-    const static int INT_S = 0x1A;
-    const static int TMP_H = 0x1B;
-    const static int TMP_L = 0x1C;
-    const static int GX_H = 0x1D;
-    const static int GX_L = 0x1E;
-    const static int GY_H = 0x1F;
-    const static int GY_L = 0x20;
-    const static int GZ_H = 0x21;
-    const static int GZ_L = 0x22;
-    const static int PWR_M = 0x3E;
+    const static unsigned char WHO = 0x00;
+    const static unsigned char SMPL = 0x15;
+    const static unsigned char DLPF = 0x16;
+    const static unsigned char INT_C = 0x17;
+    const static unsigned char INT_S = 0x1A;
+    const static unsigned char TMP_H = 0x1B;
+    const static unsigned char TMP_L = 0x1C;
+    const static unsigned char GX_H = 0x1D;
+    const static unsigned char GX_L = 0x1E;
+    const static unsigned char GY_H = 0x1F;
+    const static unsigned char GY_L = 0x20;
+    const static unsigned char GZ_H = 0x21;
+    const static unsigned char GZ_L = 0x22;
+    const static unsigned char PWR_M = 0x3E;
     const static int GYRO_ADDRESS = 0x68;
 
-    static const double ACCURACY = 1;
+    static const double ACCURACY = 1E-2; // in radians / sec.
     static const int AXIS = 3;
-    static const double MIN_VALUE = -10;
-    static const double MAX_VALUE = 10;
+    static const double lsb_per_deg_per_sec = 14.375;
 
 public:
     Gyroscope();
 
     char ITG3200Readbyte(unsigned char address);
 
-    char ITG3200Read(unsigned char addressh, unsigned char addressl);
+    int ITG3200Read(unsigned char addressh, unsigned char addressl);
 
     RVector3D get_raw_readings();
     RVector3D get_readings();
@@ -543,12 +542,12 @@ Gyroscope::Gyroscope()
     Wire.write(0x3E);
     Wire.write(0x80);  //send a reset to the device
     Wire.endTransmission(); //end transmission
-
+    
     Wire.beginTransmission(GYRO_ADDRESS);
     Wire.write(0x15);
     Wire.write(0x00);   //sample rate divider
     Wire.endTransmission(); //end transmission
-
+ 
     Wire.beginTransmission(GYRO_ADDRESS);
     Wire.write(0x16);
     Wire.write(0x18); // ±2000 degrees/s (default value)
@@ -558,37 +557,46 @@ Gyroscope::Gyroscope()
 char Gyroscope::ITG3200Readbyte(unsigned char address)
 {
     char data;
-
+ 
     Wire.beginTransmission(GYRO_ADDRESS);
     Wire.write(address);
     Wire.endTransmission();
+    
     Wire.requestFrom(GYRO_ADDRESS, 1);
     if(Wire.available() > 0)
     {
         data = Wire.read();
     }
+    
     return data;
-
+    
     Wire.endTransmission();
 }
 
-char Gyroscope::ITG3200Read(unsigned char addressh, unsigned char addressl)
+int Gyroscope::ITG3200Read(unsigned char addressh, unsigned char addressl)
 {
-    char data;
+    long int data, t_data;
+
     Wire.beginTransmission(GYRO_ADDRESS);
     Wire.write(addressh);
     Wire.endTransmission();
+    
     Wire.requestFrom(GYRO_ADDRESS, 1);
     if(Wire.available() > 0)
     {
-        data = Wire.read();
+        t_data = Wire.read();
+        data |= t_data << 8;
     }
+    
     Wire.beginTransmission(GYRO_ADDRESS);
-    Wire.write((addressl));
+    Wire.write(addressl);
     Wire.endTransmission();
+    
     if(Wire.available() > 0)
-        data |= Wire.read() << 8;
-        
+    {
+        data |= Wire.read();
+    }
+    
     return data;
 }
 
@@ -600,15 +608,10 @@ RVector3D Gyroscope::get_readings()
 
     for(i = 0; i < AXIS; i++)
     {
+        result.value_by_axis_index(i) *= M_PI / (180 * lsb_per_deg_per_sec);
+        
         if(fabs(result.value_by_axis_index(i)) < ACCURACY)
             result.value_by_axis_index(i) = 0;
-        else if(result.value_by_axis_index(i) < MIN_VALUE)
-            result.value_by_axis_index(i) = MIN_VALUE;
-        else if(result.value_by_axis_index(i) > MAX_VALUE)
-            result.value_by_axis_index(i) = MAX_VALUE;
-
-        if(result.value_by_axis_index(i) > 0) result.value_by_axis_index(i) /= MAX_VALUE;
-        else if(result.value_by_axis_index(i) < 0) result.value_by_axis_index(i) /= -MIN_VALUE;
     }
 
     return(result);
@@ -630,9 +633,6 @@ RVector3D Gyroscope::get_raw_readings()
         result.y = ITG3200Read(GY_H, GY_L);
         result.z = ITG3200Read(GZ_H, GZ_L);
         
-        //calibration
-        result.z++;
-
     #endif
     
     return(result);
@@ -680,12 +680,14 @@ RVector3D angle;
 const double angle_period = 7.5;
 
 #ifdef DEBUG_SERIAL
+    const double serial_gyroscope_coefficient = 0.08;
+
     enum serial_type_ {SERIAL_DEFAULT, SERIAL_RESTORE};
         
     serial_type_ serial_type = SERIAL_DEFAULT;
 
     #ifdef DEBUG_SERIAL_HUMAN
-        unsigned int serial_auto_count = 0, serial_auto_count_M = 5;
+        unsigned int serial_auto_count = 0, serial_auto_count_M = 10;
         unsigned int serial_auto_send = 0;
         
         //for wasd and digits
@@ -751,9 +753,11 @@ void loop()
     RVector3D gyro_correction = MController->get_gyroscope_correction(gyro_data);
 
 #ifdef DEBUG_SERIAL
-    static char c = 0;
+    static char c;
     static unsigned int t_low, t_high, t_int;
     static RVector3D throttle_tmp;
+    
+    c = 0;
     
     if(Serial.available() > 0)
     {
@@ -887,7 +891,8 @@ void loop()
             //22 bytes
             throttle_corrected.print_serial(RVector3D::PRINT_RAW);
             angle.print_serial(RVector3D::PRINT_RAW, RVector3D::USE_2D);
-            gyro_data.print_serial(RVector3D::PRINT_RAW);
+            
+            (gyro_data * serial_gyroscope_coefficient).print_serial(RVector3D::PRINT_RAW);
             accel_data.print_serial(RVector3D::PRINT_RAW);
             gyro_correction.print_serial(RVector3D::PRINT_RAW, RVector3D::USE_2D);
             accel_correction.print_serial(RVector3D::PRINT_RAW, RVector3D::USE_2D);
