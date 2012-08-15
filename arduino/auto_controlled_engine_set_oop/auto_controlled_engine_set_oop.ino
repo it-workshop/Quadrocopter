@@ -185,11 +185,12 @@ double& RVector3D::value_by_axis_index(int index)
     }
 }
 
+
 RVector3D RVector3D::angle_from_projections()
 {
     RVector3D result;
-    result.x = atan_inf(-y, z);
-    result.y = atan_inf(x, z);
+    result.x = -atan_inf(-y, z);
+    result.y = -atan_inf(x, z);
     result.z = 0;
     
     return(result);
@@ -200,7 +201,10 @@ double atan_inf(double x, double y)
     if(x == 0 && y == 0) return(0);
     if(y == 0) return(x > 0 ? M_PI / 2 : -M_PI / 2);
     
-    return(atan(x / y));
+    //this just works
+    if(y > 0) return(atan(x / y));
+    else if(x > 0) return(M_PI + atan(x / y));
+    else return(atan(x / y) - M_PI);
 }
 
 struct Motor
@@ -847,7 +851,7 @@ void loop()
         #ifdef DEBUG_SERIAL_HUMAN
             if(c == 'g' || (serial_auto_send && serial_auto_count == serial_auto_count_M))
             {
-/*                Serial.print(accel_data.module_sq());
+                Serial.print(accel_data.module_sq());
                 Serial.print("\t");
                 accel_data.print_serial(RVector3D::PRINT_TAB);
                 gyro_data.print_serial(RVector3D::PRINT_TAB);
@@ -867,10 +871,7 @@ void loop()
                 angle.print_serial(RVector3D::PRINT_TAB, RVector3D::USE_2D);
                 accel_correction.print_serial(RVector3D::PRINT_TAB, RVector3D::USE_2D);
                 
-                Serial.print(last_dt / 1.E3);*/
-                
-                accel_data.print_serial(RVector3D::PRINT_TAB);
-                accel_data.angle_from_projections().print_serial(RVector3D::PRINT_TAB, RVector3D::USE_2D);
+                Serial.print(last_dt / 1.E3);
         
                 Serial.print("\n");
                 
