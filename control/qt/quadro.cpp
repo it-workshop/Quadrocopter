@@ -85,6 +85,8 @@ void Quadro::interface_read()
 
     quadro_reconnect = ui->quadro_reconnect->isChecked();
     joy_reconnect = ui->joy_reconnect->isChecked();
+
+    quadro.set_reaction_type((quadrocopter::reaction_type_) ui->reaction_type->currentIndex());
 }
 
 void Quadro::interface_write()
@@ -114,6 +116,8 @@ void Quadro::interface_write()
         t_ss << ")";
 
         ui->motors->setText(t_ss.str().c_str());
+
+        ui->reaction_type->setCurrentIndex(quadro.get_reaction_type());
 
     }
 
@@ -169,7 +173,8 @@ void Quadro::save_data()
 
         //seconds time
         //gyro[3] accel[3]
-        //angle[2] gyroscope_correction[2] accelerometer_correction[2]
+        //reaction_type
+        //angle[2] gyroscope_correction[2] accelerometer_correction[3]
         //joystick_connected joystick_use joystick_readings[2] joystick_power joystick_power_switch
         //quadro_connected throttle_rotation[2] throttle_corrected[3] power motors[4]
         //mode_auto
@@ -179,6 +184,7 @@ void Quadro::save_data()
         t_ss << t_time.get_seconds() << "\t" << t_time.get_time() << "\t"
              << quadro.get_gyroscope_readings().print_tab() << "\t"
              << quadro.get_accelerometer_readings().print_tab() << "\t"
+             << quadro.get_reaction_type() << "\t"
              << quadro.get_angle().print2d_tab() << "\t"
 
              << quadro.get_throttle_gyroscope_correction().print2d_tab() << "\t"
@@ -247,7 +253,7 @@ void Quadro::set_quadro_data()
         t_power = power_interface;
 
     quadro.set_power(t_power);
-
+    quadro.set_reaction_type((quadrocopter::reaction_type_) ui->reaction_type->currentIndex());
 }
 
 void Quadro::set_auto(bool t)
@@ -361,16 +367,17 @@ void Quadro::timer_auto_update()
             interface_read();
 
             save_data();
-            set_quadro_data();
 
             quadro.read_data();
             joy.read_data();
-            interface_write();
 
             //cerr << "read: " << t_time.get_time_difference() << "\t";
             //t_time.set_time();
 
+            set_quadro_data();
             quadro.write_data();
+
+            interface_write();
 
             //cerr << "write: " << t_time.get_time_difference() << endl;
         }
@@ -424,7 +431,7 @@ void Quadro::save_open()
     if(save)
     {
         save_file.open(save_filename.c_str(), std::ios_base::app);
-        save_file << "#seconds\t\tdatetime\t\tgyro_x\tgyro_y\tgyro_z\tacc_x\tacc_y\tacc_z\tangle_x\tangle_y\t"
+        save_file << "#seconds\t\tdatetime\t\tgyro_x\tgyro_y\tgyro_z\tacc_x\tacc_y\tacc_z\treact._t\tangle_x\tangle_y\t"
                   << "gyr_c_x\tgyr_c_y\tacc_c_x\tacc_c_y\tacc_c_z\tj_conn\tj_use\tj_x\tj_y\tj_power\tj_switch\tquad_conn\trot_x\trot_y\tthr_x\t"
                   << "thr_y\tthr_z\tpower\tM_A\tM_B\tM_C\tM_D\tauto\tread_t\twrite_t\tloop_t" << endl;
     }

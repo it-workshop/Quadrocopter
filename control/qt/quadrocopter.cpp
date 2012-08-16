@@ -31,12 +31,16 @@ void quadrocopter::read_data()
             t_gyroscope_readings = read_vect_byte(), t_accelerometer_readings = read_vect_byte(),
             t_throttle_gyroscope_correction = read_vect_byte(2), t_throttle_accelerometer_correction = read_vect_byte(3);
 
+    reaction_type_ t_reaction_type;
+
     number_vect_t t_motors[MOTORS_N], t_loop_time;
 
     for(int i = 0; i < MOTORS_N; i++)
         t_motors[i] = sread();
 
     t_loop_time = read_unsigned_int_3byte() / 1.E6;
+
+    t_reaction_type = (reaction_type_) (sread() - '0');
 
     if(!read_error())
     {
@@ -50,6 +54,7 @@ void quadrocopter::read_data()
         throttle_gyroscope_correction = t_throttle_gyroscope_correction;
         throttle_accelerometer_correction = t_throttle_accelerometer_correction;
         loop_time = t_loop_time;
+        reaction_type = t_reaction_type;
     }
 
 
@@ -86,9 +91,15 @@ void quadrocopter::write_data()
     if(power > 1) power = 1;
     else if(power < 0) power = 0;
 
+    //send power
     swrite('m');
     swrite(power * 100); // in percents
 
+    //send reaction type
+    swrite('r');
+    swrite('0' + reaction_type);
+
+    //send throttle_rotation
     swrite('i');
 
     unsigned int t_int, t_high, t_low;
@@ -122,6 +133,8 @@ void quadrocopter::defaults()
     read_time = 0;
     write_time = 0;
     loop_time = 0;
+
+    reaction_type = REACTION_ANGULAR_VELOCITY;
 }
 
 void quadrocopter::connect()
@@ -232,4 +245,14 @@ number_vect_t quadrocopter::get_write_time()
 number_vect_t quadrocopter::get_loop_time()
 {
     return(loop_time);
+}
+
+quadrocopter::reaction_type_ quadrocopter::get_reaction_type()
+{
+    return(reaction_type);
+}
+
+void quadrocopter::set_reaction_type(quadrocopter::reaction_type_ n_reaction_type)
+{
+    reaction_type = n_reaction_type;
 }

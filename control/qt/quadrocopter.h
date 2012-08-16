@@ -3,9 +3,14 @@
 
 #include <serial.h>
 #include <vect.h>
+#include <vector>
+
+using std::vector;
 
 class quadrocopter: public serial
 {
+public:
+    enum reaction_type_ {REACTION_NONE, REACTION_ANGULAR_VELOCITY, REACTION_ACCELERATION};
 private:
     number_vect_t power;
     vect angle, throttle_corrected;
@@ -18,11 +23,14 @@ private:
 
     static const double serial_gyroscope_coefficient = 0.08;
 
+    reaction_type_ reaction_type;
+
     number_vect_t read_time, write_time, loop_time;
 
     void defaults();
 
 public:
+
     quadrocopter();
 
     number_vect_t get_power(); // returns power [0...1]
@@ -46,6 +54,9 @@ public:
     number_vect_t get_read_time(); //last read time in sec
     number_vect_t get_write_time(); //last write time in sec
     number_vect_t get_loop_time(); //last loop time in sec
+
+    reaction_type_ get_reaction_type();
+    void set_reaction_type(reaction_type_);
 
     void read_data(); // read data from device
     void write_data(); // write data to device

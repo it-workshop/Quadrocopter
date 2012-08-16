@@ -714,6 +714,10 @@ Accelerometer* Accel;
 Gyroscope* Gyro;
 TimerCount* TCount;
 
+enum reaction_type_ {REACTION_NONE, REACTION_ANGULAR_VELOCITY, REACTION_ACCELERATION};
+char reaction_type_names[][8] = {"none", "ang_vel", "accel"};
+reaction_type_ reaction_type = REACTION_ANGULAR_VELOCITY;
+
 RVector3D throttle;
 
 RVector3D angle;
@@ -839,7 +843,7 @@ void loop()
                         throttle_tmp.value_by_axis_index(serial_writing / 2) = t_double;   
                     }
                 }
-                    
+
                 throttle = MController->get_joystick_throttle(throttle_tmp);
             }
             else if(c == 'm')
@@ -850,6 +854,16 @@ void loop()
                 c = Serial.read();
                 
                 MController->set_throttle_abs(c / 100.);
+            }
+            else if(c == 'r')
+            {
+                serial_type = SERIAL_RESTORE;
+                while(Serial.available() <= 0);
+                
+                c = Serial.read();
+                
+                reaction_type = (reaction_type_) (c - '0');
+                
             }
             #ifdef DEBUG_SERIAL_HUMAN
                 else if(c == '+' && MController->get_throttle_abs() + throttle_step <= 1)
@@ -878,18 +892,19 @@ void loop()
     }
 #endif
 
-/*    RVector3D throttle_corrected = throttle;
+    RVector3D throttle_corrected = throttle;
     
-//    #ifndef DEBUG_NO_GYROSCOPE
-//        throttle_corrected += gyro_correction;
-//    #endif
-    
-    #ifndef DEBUG_NO_ACCELEROMETER
-        throttle_corrected += accel_correction;
-    #endif*/
-    
-    
-    RVector3D throttle_corrected = accel_correction;
+    #ifndef DEBUG_NO_GYROSCOPE
+        if(reaction_type == REACTION_ANGULAR_VELOCITY)
+            throttle_corrected += gyro_correction;
+            
+        #ifndef DEBUG_NO_ACCELEROMETER
+        
+            if(reaction_type == REACTION_ACCELERATION)
+                throttle_corrected = accel_correction;
+                
+        #endif
+    #endif
     
     throttle_corrected /= throttle_corrected.module();
     throttle_corrected *= MController->get_throttle_abs();
@@ -919,10 +934,14 @@ void loop()
                 }
         
                 angle.print_serial(RVector3D::PRINT_TAB, RVector3D::USE_2D);
-                accel_correction.print_serial(RVector3D::PRINT_TAB);
                 
                 Serial.print(last_dt / 1.E3);
-        
+                
+                Serial.print("\t");
+                
+                Serial.print("R:");
+                Serial.print(reaction_type_names[reaction_type]);
+                
                 Serial.print("\n");
                 
                 serial_auto_count = 0;
@@ -932,7 +951,7 @@ void loop()
         
         if(c == 'p')
         {
-            //22 bytes
+            //24 bytes
             throttle_corrected.print_serial(RVector3D::PRINT_RAW);
             angle.print_serial(RVector3D::PRINT_RAW, RVector3D::USE_2D);
             
@@ -946,6 +965,8 @@ void loop()
                 
             for(int si = 2; si >= 0; si--)
                 Serial.write((last_dt & (0xff << 8 * si)) >> (8 * si));
+                
+            Serial.write(reaction_type + '0');
         }
     }
 #endif
