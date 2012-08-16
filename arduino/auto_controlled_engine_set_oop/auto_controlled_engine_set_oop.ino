@@ -1,9 +1,9 @@
  //For gyroscope
 #include <Wire.h>
 
-//#define DEBUG_NO_MOTORS
+#define DEBUG_NO_MOTORS
 //#define DEBUG_NO_GYROSCOPE
-#define DEBUG_NO_ACCELEROMETER
+//#define DEBUG_NO_ACCELEROMETER
 #define DEBUG_SERIAL
 #define DEBUG_SERIAL_HUMAN
 
@@ -43,8 +43,9 @@ struct RVector3D
     void x_angle_dec(double w);
     void y_angle_dec(double w);
     
-    RVector3D angle_from_projections();
-    RVector3D projections_from_angle(double a = 1);
+    const static double projection_eps = 0.1;
+    RVector3D angle_from_projections(); //angle in [-MPI / 2; MPI / 2]
+    RVector3D projections_from_angle(double a = 1); //angle in [-MPI; MPI]
 };
 
 RVector3D::RVector3D()
@@ -188,42 +189,78 @@ double& RVector3D::value_by_axis_index(int index)
     }
 }
 
-
 RVector3D RVector3D::angle_from_projections()
 {
     RVector3D result;
-    result.x = -atan_inf(-y, z);
-    result.y = -atan_inf(x, z);
+    if(fabs(y) > projection_eps)
+        result.x = -atan_inf(-y, z);
+    else
+    {
+        if(z > 0) result.x = 0;
+        else result.x = y < 0 ? MPI : -MPI;
+    }
+
+    if(fabs(x) > projection_eps)
+        result.y = -atan_inf(x, z);
+    else
+    {
+        if(z > 0) result.y = 0;
+        else result.y = x > 0 ? MPI : -MPI;
+    }
+
     result.z = 0;
-    
+
     return(result);
 }
 
 double atan_inf(double x, double y)
 {
-    if(x == 0 && y == 0) return(0);
-    if(y == 0) return(x > 0 ? MPI / 2 : -MPI / 2);
-    
+    if(fabs(x) < double_eps && fabs(y) < double_eps) return(0);
+    if(fabs(y) < double_eps) return(x > 0 ? MPI / 2 : -MPI / 2);
+
+//    return(atan(x / y));
+
     //this just works
     if(y > 0) return(atan(x / y));
     else if(x > 0) return(MPI + atan(x / y));
     else return(atan(x / y) - MPI);
+
 }
 
 
 RVector3D RVector3D::projections_from_angle(double a)
 {
     RVector3D result;
+    result.x = 0;
+    result.y = 0;
+    result.z = 0;
 
     if(fabs(x - MPI / 2) < double_eps || fabs(y - MPI / 2) < double_eps
      || fabs(x + MPI / 2) < double_eps || fabs(y + MPI / 2) < double_eps)
+    {
         result.z = 0;
-    else result.z = +a / sqrt(1 + pow(tan(x), 2) + pow(tan(y), 2));
 
-    result.x = +result.z * tan(y);
-    result.y = -result.z * tan(x);
+        if(fabs(y + MPI / 2) < double_eps) result.x = -1;
+        if(fabs(y - MPI / 2) < double_eps) result.x = 1;
+
+        if(fabs(x + MPI / 2) < double_eps) result.y = 1;
+        if(fabs(x - MPI / 2) < double_eps) result.y = -1;
+    }
+    else
+    {
+        result.z = +a / sqrt(1 + pow(tan(x), 2) + pow(tan(y), 2));
+        result.x = +result.z * tan(y);
+        result.y = -result.z * tan(x);
+    }
+
+    if((fabs(y) - double_eps) >= MPI / 2 && (fabs(y) + double_eps) <= MPI) result.x *= -1;
+    if((x + double_eps) <= -MPI / 2 || x - (double_eps) >= MPI / 2) result.y *= -1;
+
+    result.x *= -1;
+    result.y *= -1;
 
     return(result);
+
 }
 
 
@@ -882,9 +919,11 @@ void loop()
                 
 //                accel_data_test.print_serial(RVector3D::PRINT_TAB);
                 
-                gyro_data.print_serial(RVector3D::PRINT_TAB);
-                throttle.print_serial(RVector3D::PRINT_TAB);
-                throttle_corrected.print_serial(RVector3D::PRINT_TAB);
+                accel_data.angle_from_projections().print_serial(RVector3D::PRINT_TAB, RVector3D::USE_2D);
+                
+//                gyro_data.print_serial(RVector3D::PRINT_TAB);
+//                throttle.print_serial(RVector3D::PRINT_TAB);
+//                throttle_corrected.print_serial(RVector3D::PRINT_TAB);
         
                 Serial.print(MController->get_throttle_abs(), SERIAL_ACCURACY);
         
