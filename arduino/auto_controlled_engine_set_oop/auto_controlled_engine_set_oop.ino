@@ -1,9 +1,9 @@
  //For gyroscope
 #include <Wire.h>
 
-#define DEBUG_NO_MOTORS
+//#define DEBUG_NO_MOTORS
 //#define DEBUG_NO_GYROSCOPE
-//#define DEBUG_NO_ACCELEROMETER
+#define DEBUG_NO_ACCELEROMETER
 #define DEBUG_SERIAL
 #define DEBUG_SERIAL_HUMAN
 
@@ -11,6 +11,8 @@ const int infoLedPin = 13;
 const int SERIAL_ACCURACY = 3;
 
 double atan_inf(double x, double y);
+double double_eps = 1E-2;
+const double MPI = 3.141592653589793;
 
 struct RVector3D
 {
@@ -42,6 +44,7 @@ struct RVector3D
     void y_angle_dec(double w);
     
     RVector3D angle_from_projections();
+    RVector3D projections_from_angle(double a = 1);
 };
 
 RVector3D::RVector3D()
@@ -199,13 +202,30 @@ RVector3D RVector3D::angle_from_projections()
 double atan_inf(double x, double y)
 {
     if(x == 0 && y == 0) return(0);
-    if(y == 0) return(x > 0 ? M_PI / 2 : -M_PI / 2);
+    if(y == 0) return(x > 0 ? MPI / 2 : -MPI / 2);
     
     //this just works
     if(y > 0) return(atan(x / y));
-    else if(x > 0) return(M_PI + atan(x / y));
-    else return(atan(x / y) - M_PI);
+    else if(x > 0) return(MPI + atan(x / y));
+    else return(atan(x / y) - MPI);
 }
+
+
+RVector3D RVector3D::projections_from_angle(double a)
+{
+    RVector3D result;
+
+    if(fabs(x - MPI / 2) < double_eps || fabs(y - MPI / 2) < double_eps
+     || fabs(x + MPI / 2) < double_eps || fabs(y + MPI / 2) < double_eps)
+        result.z = 0;
+    else result.z = +a / sqrt(1 + pow(tan(x), 2) + pow(tan(y), 2));
+
+    result.x = +result.z * tan(y);
+    result.y = -result.z * tan(x);
+
+    return(result);
+}
+
 
 struct Motor
 {
@@ -247,9 +267,9 @@ private:
     static const int DEF_SPEED_STEP = 400;
 
     double throttle_abs;
-    static const double accelerometer_coefficient = -0.5;
+    static const double accelerometer_coefficient = -0.9;
     static const double accelerometer_min_correction = 0.1;
-    static const double gyroscope_coefficient = -1;
+    static const double gyroscope_coefficient = -0.3;
     static const double joystick_coefficient = 0.2;
     static const double min_speed_percent = 10;
 
@@ -520,7 +540,7 @@ private:
     const static unsigned char PWR_M = 0x3E;
     const static int GYRO_ADDRESS = 0x68;
 
-    static const double ACCURACY = 1E-2; // in radians / sec.
+    static const double ACCURACY = 1E-1; // in radians / sec.
     static const int AXIS = 3;
     static const double lsb_per_deg_per_sec = 14.375;
 
@@ -608,7 +628,7 @@ RVector3D Gyroscope::get_readings()
 
     for(i = 0; i < AXIS; i++)
     {
-        result.value_by_axis_index(i) *= M_PI / (180 * lsb_per_deg_per_sec);
+        result.value_by_axis_index(i) *= MPI / (180 * lsb_per_deg_per_sec);
         
         if(fabs(result.value_by_axis_index(i)) < ACCURACY)
             result.value_by_axis_index(i) = 0;
@@ -670,9 +690,6 @@ MotorController* MController;
 Accelerometer* Accel;
 Gyroscope* Gyro;
 TimerCount* TCount;
-
-const double M_PI_BY_2 = 1.57079632675;
-const double MPI = 3.141592653589793;
 
 RVector3D throttle;
 
@@ -859,7 +876,12 @@ void loop()
             {
                 Serial.print(accel_data.module_sq());
                 Serial.print("\t");
+//                RVector3D accel_data_test = accel_data.angle_from_projections().projections_from_angle(accel_data.module_sq());
+                
                 accel_data.print_serial(RVector3D::PRINT_TAB);
+                
+//                accel_data_test.print_serial(RVector3D::PRINT_TAB);
+                
                 gyro_data.print_serial(RVector3D::PRINT_TAB);
                 throttle.print_serial(RVector3D::PRINT_TAB);
                 throttle_corrected.print_serial(RVector3D::PRINT_TAB);
