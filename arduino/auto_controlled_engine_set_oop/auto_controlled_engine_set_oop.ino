@@ -1,7 +1,7 @@
  //For gyroscope
 #include <Wire.h>
 
-//#define DEBUG_NO_MOTORS
+#define DEBUG_NO_MOTORS
 //#define DEBUG_NO_GYROSCOPE
 //#define DEBUG_NO_ACCELEROMETER
 #define DEBUG_SERIAL
@@ -461,7 +461,7 @@ void MotorController::linearSpeedInc(int inc_percent, int speed_step_time)
 class Accelerometer
 {
 private:
-    static const unsigned int AXIS = 3, AVG_N = 50;
+    static const unsigned int AXIS = 3, AVG_N = 20;
     double ACCURACY = 1E-2;
     
     static const double adc_aref = 5, adc_maxvalue = 1023;
@@ -784,8 +784,8 @@ void loop()
         
         RVector3D accel_angle = accel_data.angle_from_projections();
   
-        angle.x = (angle.x + gyro_data.x * dt) * (1 - angle_alpha) + accel_angle.x * angle_alpha;
-        angle.y = (angle.y + gyro_data.y * dt) * (1 - angle_alpha) + accel_angle.y * angle_alpha;
+        angle.x = angle.x * (1 - angle_alpha) + accel_angle.x * angle_alpha + gyro_data.x * dt;
+        angle.y = angle.y * (1 - angle_alpha) + accel_angle.y * angle_alpha + gyro_data.y * dt;
     }
     TCount->set_time();
     
@@ -878,7 +878,7 @@ void loop()
     }
 #endif
 
-    RVector3D throttle_corrected = throttle;
+/*    RVector3D throttle_corrected = throttle;
     
 //    #ifndef DEBUG_NO_GYROSCOPE
 //        throttle_corrected += gyro_correction;
@@ -886,7 +886,10 @@ void loop()
     
     #ifndef DEBUG_NO_ACCELEROMETER
         throttle_corrected += accel_correction;
-    #endif
+    #endif*/
+    
+    
+    RVector3D throttle_corrected = accel_correction;
     
     throttle_corrected /= throttle_corrected.module();
     throttle_corrected *= MController->get_throttle_abs();
@@ -897,7 +900,7 @@ void loop()
         #ifdef DEBUG_SERIAL_HUMAN
             if(c == 'g' || (serial_auto_send && serial_auto_count == serial_auto_count_M))
             {
-                Serial.print(accel_data.module_sq());
+                Serial.print(accel_data.module());
                 Serial.print("\t");
                 accel_data.print_serial(RVector3D::PRINT_TAB);
                 
