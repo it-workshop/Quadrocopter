@@ -29,7 +29,7 @@ void quadrocopter::read_data()
 
     vect t_throttle_corrected = read_vect_byte(), t_angle = read_vect_byte(2),
             t_gyroscope_readings = read_vect_byte(), t_accelerometer_readings = read_vect_byte(),
-            t_throttle_gyroscope_correction = read_vect_byte(2), t_throttle_accelerometer_correction = read_vect_byte(2);
+            t_throttle_gyroscope_correction = read_vect_byte(2), t_throttle_accelerometer_correction = read_vect_byte(3);
 
     number_vect_t t_motors[MOTORS_N], t_loop_time;
 

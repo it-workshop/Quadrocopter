@@ -1,7 +1,7 @@
  //For gyroscope
 #include <Wire.h>
 
-#define DEBUG_NO_MOTORS
+//#define DEBUG_NO_MOTORS
 //#define DEBUG_NO_GYROSCOPE
 //#define DEBUG_NO_ACCELEROMETER
 #define DEBUG_SERIAL
@@ -10,7 +10,6 @@
 const int infoLedPin = 13;
 const int SERIAL_ACCURACY = 3;
 
-double atan_inf(double x, double y);
 double double_eps = 1E-2;
 const double MPI = 3.141592653589793;
 
@@ -27,6 +26,7 @@ struct RVector3D
 
     RVector3D operator*(double);
     RVector3D operator+(RVector3D);
+    RVector3D operator-(RVector3D);
     RVector3D operator-=(RVector3D);
     RVector3D operator+=(RVector3D);
     RVector3D operator/=(double);
@@ -126,6 +126,15 @@ double RVector3D::module()
     return sqrt(module_sq());
 }
 
+RVector3D RVector3D::operator-(RVector3D c)
+{
+    RVector3D result;
+    result.x = x - c.x;
+    result.y = y - c.y;
+    result.z = z - c.z;
+    return(result);
+}
+
 RVector3D RVector3D::operator+(RVector3D c)
 {
     RVector3D result;
@@ -192,41 +201,13 @@ double& RVector3D::value_by_axis_index(int index)
 RVector3D RVector3D::angle_from_projections()
 {
     RVector3D result;
-    if(fabs(y) > projection_eps)
-        result.x = -atan_inf(-y, z);
-    else
-    {
-        if(z > 0) result.x = 0;
-        else result.x = y < 0 ? MPI : -MPI;
-    }
-
-    if(fabs(x) > projection_eps)
-        result.y = -atan_inf(x, z);
-    else
-    {
-        if(z > 0) result.y = 0;
-        else result.y = x > 0 ? MPI : -MPI;
-    }
-
+    
+    result.x = acos(y / sqrt(pow(y, 2) + pow(z, 2))) - MPI / 2;
+    result.y = acos(x / sqrt(pow(x, 2) + pow(z, 2))) - MPI / 2;
     result.z = 0;
-
+    
     return(result);
 }
-
-double atan_inf(double x, double y)
-{
-    if(fabs(x) < double_eps && fabs(y) < double_eps) return(0);
-    if(fabs(y) < double_eps) return(x > 0 ? MPI / 2 : -MPI / 2);
-
-//    return(atan(x / y));
-
-    //this just works
-    if(y > 0) return(atan(x / y));
-    else if(x > 0) return(MPI + atan(x / y));
-    else return(atan(x / y) - MPI);
-
-}
-
 
 RVector3D RVector3D::projections_from_angle(double a)
 {
@@ -262,7 +243,6 @@ RVector3D RVector3D::projections_from_angle(double a)
     return(result);
 
 }
-
 
 struct Motor
 {
@@ -304,10 +284,13 @@ private:
     static const int DEF_SPEED_STEP = 400;
 
     double throttle_abs;
-    static const double accelerometer_coefficient = -0.9;
-    static const double accelerometer_min_correction = 0.1;
+    
+    RVector3D accelerometer_xi;
+    
     static const double gyroscope_coefficient = -0.3;
+    
     static const double joystick_coefficient = 0.2;
+    
     static const double min_speed_percent = 10;
 
     enum SIGN
@@ -382,20 +365,20 @@ public:
 
     RVector3D get_accelerometer_correction(RVector3D angle, RVector3D accel_data)
     {
-        RVector3D correction = accel_data;
-        correction.x += angle.y;
-        correction.y -= angle.x;
-        correction.z = 0;
+        RVector3D g = angle.projections_from_angle();
+        RVector3D a = accel_data - g;
         
-        correction *= accelerometer_coefficient;
+        RVector3D rotation = a.angle_from_projections();
+        RVector3D moment_of_force;
+        moment_of_force.x = rotation.x * accelerometer_xi.x;
+        moment_of_force.y = rotation.y * accelerometer_xi.y;
         
-        for(int i = 0; i < 3; i++)
-        {
-            if(fabs(correction.value_by_axis_index(i)) < accelerometer_min_correction)
-                correction.value_by_axis_index(i) = 0;
-        }
+        RVector3D throttle_new;
+        throttle_new.z = 1 / sqrt(1 + pow(moment_of_force.x / 2, 2) + pow(moment_of_force.y / 2, 2));
+        throttle_new.x =  moment_of_force.y / 2 * throttle_new.z;
+        throttle_new.y = -moment_of_force.x / 2 * throttle_new.z;
         
-        return(correction);
+        return(throttle_new);
     }
 
     inline RVector3D get_gyroscope_correction(RVector3D gyro_data)
@@ -444,6 +427,9 @@ void MotorController::speedChange(RVector3D throttle_vec)
 
 MotorController::MotorController(const int motor_control_pins[N_MOTORS])
 {
+    accelerometer_xi.x = 1;
+    accelerometer_xi.y = 1;
+    
     for (int i = 0; i < N_MOTORS; i++)
     {
         pinMode(motor_control_pins[i], OUTPUT);
@@ -894,9 +880,9 @@ void loop()
 
     RVector3D throttle_corrected = throttle;
     
-    #ifndef DEBUG_NO_GYROSCOPE
-        throttle_corrected += gyro_correction;
-    #endif
+//    #ifndef DEBUG_NO_GYROSCOPE
+//        throttle_corrected += gyro_correction;
+//    #endif
     
     #ifndef DEBUG_NO_ACCELEROMETER
         throttle_corrected += accel_correction;
@@ -913,17 +899,11 @@ void loop()
             {
                 Serial.print(accel_data.module_sq());
                 Serial.print("\t");
-//                RVector3D accel_data_test = accel_data.angle_from_projections().projections_from_angle(accel_data.module_sq());
-                
                 accel_data.print_serial(RVector3D::PRINT_TAB);
                 
-//                accel_data_test.print_serial(RVector3D::PRINT_TAB);
-                
-                accel_data.angle_from_projections().print_serial(RVector3D::PRINT_TAB, RVector3D::USE_2D);
-                
-//                gyro_data.print_serial(RVector3D::PRINT_TAB);
-//                throttle.print_serial(RVector3D::PRINT_TAB);
-//                throttle_corrected.print_serial(RVector3D::PRINT_TAB);
+                gyro_data.print_serial(RVector3D::PRINT_TAB);
+                throttle.print_serial(RVector3D::PRINT_TAB);
+                throttle_corrected.print_serial(RVector3D::PRINT_TAB);
         
                 Serial.print(MController->get_throttle_abs(), SERIAL_ACCURACY);
         
@@ -936,7 +916,7 @@ void loop()
                 }
         
                 angle.print_serial(RVector3D::PRINT_TAB, RVector3D::USE_2D);
-                accel_correction.print_serial(RVector3D::PRINT_TAB, RVector3D::USE_2D);
+                accel_correction.print_serial(RVector3D::PRINT_TAB);
                 
                 Serial.print(last_dt / 1.E3);
         
@@ -956,7 +936,7 @@ void loop()
             (gyro_data * serial_gyroscope_coefficient).print_serial(RVector3D::PRINT_RAW);
             accel_data.print_serial(RVector3D::PRINT_RAW);
             gyro_correction.print_serial(RVector3D::PRINT_RAW, RVector3D::USE_2D);
-            accel_correction.print_serial(RVector3D::PRINT_RAW, RVector3D::USE_2D);
+            accel_correction.print_serial(RVector3D::PRINT_RAW);
             
             for(i = 0; i < 4; i++)
                 Serial.write((int) MController->speedGet(throttle_corrected, i));

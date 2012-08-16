@@ -96,7 +96,7 @@ void Quadro::interface_write()
         ui->gyro->setText(quadro.get_gyroscope_readings().print().c_str());
         ui->accel->setText(quadro.get_accelerometer_readings().print().c_str());
         ui->angle->setText(quadro.get_angle().print2d().c_str());
-        ui->throttle_accelerometer_correction->setText(quadro.get_throttle_accelerometer_correction().print2d().c_str());
+        ui->throttle_accelerometer_correction->setText(quadro.get_throttle_accelerometer_correction().print().c_str());
         ui->throttle_gyroscope_correction->setText(quadro.get_throttle_gyroscope_correction().print2d().c_str());
 
         t_ss2 << quadro.get_read_time() * 1E3 << " ms / " << quadro.get_write_time() * 1E3 << " ms / "
@@ -182,7 +182,7 @@ void Quadro::save_data()
              << quadro.get_angle().print2d_tab() << "\t"
 
              << quadro.get_throttle_gyroscope_correction().print2d_tab() << "\t"
-             << quadro.get_throttle_accelerometer_correction().print2d_tab() << "\t"
+             << quadro.get_throttle_accelerometer_correction().print_tab() << "\t"
 
              << joy.isconnected() << "\t"
              << joystick_use << "\t"
@@ -425,7 +425,7 @@ void Quadro::save_open()
     {
         save_file.open(save_filename.c_str(), std::ios_base::app);
         save_file << "#seconds\t\tdatetime\t\tgyro_x\tgyro_y\tgyro_z\tacc_x\tacc_y\tacc_z\tangle_x\tangle_y\t"
-                  << "gyr_c_x\tgyr_c_y\tacc_c_x\tacc_c_y\tj_conn\tj_use\tj_x\tj_y\tj_power\tj_switch\tquad_conn\trot_x\trot_y\tthr_x\t"
+                  << "gyr_c_x\tgyr_c_y\tacc_c_x\tacc_c_y\tacc_c_z\tj_conn\tj_use\tj_x\tj_y\tj_power\tj_switch\tquad_conn\trot_x\trot_y\tthr_x\t"
                   << "thr_y\tthr_z\tpower\tM_A\tM_B\tM_C\tM_D\tauto\tread_t\twrite_t\tloop_t" << endl;
     }
 }
