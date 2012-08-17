@@ -1,7 +1,7 @@
  //For gyroscope
 #include <Wire.h>
 
-#define DEBUG_NO_MOTORS
+//#define DEBUG_NO_MOTORS
 //#define DEBUG_NO_GYROSCOPE
 //#define DEBUG_NO_ACCELEROMETER
 #define DEBUG_SERIAL
@@ -287,7 +287,7 @@ private:
     
     RVector3D accelerometer_xi;
     
-    static const double gyroscope_coefficient = -0.3;
+    static const double gyroscope_coefficient = -0.375;
     
     static const double joystick_coefficient = 0.2;
     
