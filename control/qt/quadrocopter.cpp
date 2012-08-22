@@ -93,14 +93,6 @@ void quadrocopter::write_data()
     if(power > 1) power = 1;
     else if(power < 0) power = 0;
 
-    //send power
-    swrite('m');
-    swrite(power * 100); // in percents
-
-    //send reaction type
-    swrite('r');
-    swrite('0' + reaction_type);
-
     //send throttle_rotation
     swrite('i');
 
@@ -115,6 +107,14 @@ void quadrocopter::write_data()
         swrite(t_high);
         swrite(t_low);
     }
+
+    //send power
+    //swrite('m');
+    swrite(power * 100); // in percents
+
+    //send reaction type
+    //swrite('r');
+    swrite('0' + reaction_type);
 
     write_time = t_time.get_time_difference() / 1.E3;
 }

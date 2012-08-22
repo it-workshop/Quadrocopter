@@ -1,7 +1,7 @@
  //For gyroscope
 #include <Wire.h>
 
-//#define DEBUG_NO_MOTORS
+#define DEBUG_NO_MOTORS
 //#define DEBUG_NO_GYROSCOPE
 //#define DEBUG_NO_ACCELEROMETER
 #define DEBUG_SERIAL
@@ -847,19 +847,13 @@ void loop()
                 }
 
                 throttle = MController->get_joystick_throttle(throttle_tmp);
-            }
-            else if(c == 'm')
-            {
-                serial_type = SERIAL_RESTORE;
+                
                 while(Serial.available() <= 0);
                 
                 c = Serial.read();
                 
                 MController->set_throttle_abs(c / 100.);
-            }
-            else if(c == 'r')
-            {
-                serial_type = SERIAL_RESTORE;
+                
                 while(Serial.available() <= 0);
                 
                 c = Serial.read();
