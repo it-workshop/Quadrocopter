@@ -246,7 +246,7 @@ RVector3D RVector3D::projections_from_angle(double a)
 
 struct Motor
 {
-    enum EXTREMAL_SPEED
+    enum EXTREMAL_SPEED 
     {
         MIN_SPEED = 100,
         MAX_SPEED = 254
@@ -254,7 +254,7 @@ struct Motor
     int control_pin;
     int speedie;
     inline const int power();
-    void makeSpeed(int percentage);
+    void makeSpeed(int percentage); 
 };
 
 inline const int Motor::power()
@@ -306,6 +306,8 @@ private:
     };
 
     Motor motors_[N_MOTORS];
+
+    bool use_motors[N_MOTORS];
 
     inline const SIGN x_sign(int i)
     {
@@ -419,16 +421,18 @@ double MotorController::speedGet(RVector3D throttle_vec, int motor)
 void MotorController::speedChange(RVector3D throttle_vec)
 {
     for (int i = 0; i < N_MOTORS; i++)
-    {
-        double power = speedGet(throttle_vec, i);
-        motors_[i].makeSpeed(power);
-    }
+        motors_[i].makeSpeed(use_motors[i] ? speedGet(throttle_vec, i) : 0);
 }
 
 MotorController::MotorController(const int motor_control_pins[N_MOTORS])
 {
     accelerometer_xi.x = 1;
     accelerometer_xi.y = 1;
+    
+    use_motors[A] = 1;
+    use_motors[B] = 0;
+    use_motors[C] = 1;
+    use_motors[D] = 0;
     
     for (int i = 0; i < N_MOTORS; i++)
     {
@@ -765,8 +769,6 @@ void setup()
     angle.x = 0;
     angle.y = 0;
     angle.z = 0;
-    
-//    Serial.print("gyro readings\t\tthrottle_manual\t\tthrottle_corrected\tpower\tmotors\tangle\tacc_corr\n");
 }
 
 void loop()

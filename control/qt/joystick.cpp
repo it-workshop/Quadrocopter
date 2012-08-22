@@ -6,6 +6,8 @@ joystick::joystick()
     maxwait = 500;
     rate = 9600;
 
+    device = "/dev/ttyUSB0";
+
     defaults();
 }
 

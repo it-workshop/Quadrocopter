@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>691</width>
-    <height>449</height>
+    <width>709</width>
+    <height>452</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,13 +17,13 @@
    <widget class="QWidget" name="formLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>419</x>
-      <y>1</y>
+      <x>430</x>
+      <y>30</y>
       <width>271</width>
-      <height>181</height>
+      <height>58</height>
      </rect>
     </property>
-    <layout class="QFormLayout" name="formLayout">
+    <layout class="QFormLayout" name="ports">
      <property name="fieldGrowthPolicy">
       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
      </property>
@@ -52,111 +52,244 @@
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QLabel" name="label_speed">
+      <widget class="QLabel" name="label">
        <property name="text">
-        <string>Quadro Speed</string>
+        <string>Joystick Port</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QComboBox" name="speed">
-       <item>
-        <property name="text">
-         <string>115200</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>9600</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QPushButton" name="button_disconnect">
+      <widget class="QLineEdit" name="joystick_device">
        <property name="text">
-        <string>Disconnect</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QPushButton" name="button_connect">
-       <property name="text">
-        <string>Connect</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QCheckBox" name="quadro_reconnect">
-       <property name="text">
-        <string>Reconnect</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QPushButton" name="reset">
-       <property name="text">
-        <string>Quadro reset</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_readwrite_time">
-       <property name="text">
-        <string>Read/Write/Loop</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QLabel" name="readwrite_time">
-       <property name="text">
-        <string/>
+        <string>/dev/ttyUSB0</string>
        </property>
       </widget>
      </item>
     </layout>
    </widget>
+   <widget class="QTabWidget" name="tabWidget_mode">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>421</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tab_manual">
+     <attribute name="title">
+      <string>Manual</string>
+     </attribute>
+     <widget class="QWidget" name="formLayoutWidget_5">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>411</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <layout class="QFormLayout" name="formLayout_5">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_power">
+         <property name="text">
+          <string>Power</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QSlider" name="power">
+         <property name="maximum">
+          <number>10</number>
+         </property>
+         <property name="singleStep">
+          <number>1</number>
+         </property>
+         <property name="tracking">
+          <bool>true</bool>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="tickPosition">
+          <enum>QSlider::TicksBothSides</enum>
+         </property>
+         <property name="tickInterval">
+          <number>1</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_throttleangle">
+         <property name="text">
+          <string>Throttle Angle</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinimumSize</enum>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_angle_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>x</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="anglex">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="suffix">
+            <string>rad</string>
+           </property>
+           <property name="decimals">
+            <number>5</number>
+           </property>
+           <property name="minimum">
+            <double>-1.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>1.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.030000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>30</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_angley">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>y</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="angley">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="suffix">
+            <string>rad</string>
+           </property>
+           <property name="decimals">
+            <number>5</number>
+           </property>
+           <property name="minimum">
+            <double>-1.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>1.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.030000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_joystick">
+     <attribute name="title">
+      <string>Joystick controlled</string>
+     </attribute>
+     <widget class="QWidget" name="formLayoutWidget_4">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>411</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <layout class="QFormLayout" name="formLayout_4">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_throttle_joystick">
+         <property name="text">
+          <string>J Data</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="throttle_joystick">
+         <property name="font">
+          <font>
+           <family>Terminus</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </widget>
    <widget class="QWidget" name="formLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>1</x>
-      <y>0</y>
+      <x>0</x>
+      <y>120</y>
       <width>411</width>
-      <height>425</height>
+      <height>264</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_2">
      <property name="fieldGrowthPolicy">
       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
      </property>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_throttle_joystick">
-       <property name="text">
-        <string>Joystick</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="throttle_joystick">
-       <property name="font">
-        <font>
-         <family>Terminus</family>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
+     <item row="2" column="0">
       <widget class="QLabel" name="label_throttle">
        <property name="text">
         <string>Throttle</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="2" column="1">
       <widget class="QLineEdit" name="throttle">
        <property name="font">
         <font>
@@ -166,14 +299,14 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
+     <item row="3" column="0">
       <widget class="QLabel" name="label_throttle_gyroscope_correction">
        <property name="text">
         <string>Gyro corr.</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="3" column="1">
       <widget class="QLineEdit" name="throttle_gyroscope_correction">
        <property name="font">
         <font>
@@ -183,14 +316,14 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="4" column="0">
       <widget class="QLabel" name="label_throttle_accelerometer_correction">
        <property name="text">
         <string>Acc. corr.</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="4" column="1">
       <widget class="QLineEdit" name="throttle_accelerometer_correction">
        <property name="font">
         <font>
@@ -200,14 +333,14 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
+     <item row="5" column="0">
       <widget class="QLabel" name="label_gyro">
        <property name="text">
         <string>Gyro</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
+     <item row="5" column="1">
       <widget class="QLineEdit" name="gyro">
        <property name="font">
         <font>
@@ -217,14 +350,14 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="0">
+     <item row="6" column="0">
       <widget class="QLabel" name="label_accel">
        <property name="text">
         <string>Accel</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="1">
+     <item row="6" column="1">
       <widget class="QLineEdit" name="accel">
        <property name="font">
         <font>
@@ -234,14 +367,14 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
+     <item row="7" column="0">
       <widget class="QLabel" name="label_angle">
        <property name="text">
         <string>Angle</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="1">
+     <item row="7" column="1">
       <widget class="QLineEdit" name="angle">
        <property name="font">
         <font>
@@ -251,14 +384,14 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
+     <item row="8" column="0">
       <widget class="QLabel" name="label_motors">
        <property name="text">
         <string>Motors</string>
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
+     <item row="8" column="1">
       <widget class="QLineEdit" name="motors">
        <property name="font">
         <font>
@@ -268,67 +401,14 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="label_power">
+     <item row="9" column="0">
+      <widget class="QLabel" name="label_reaction_type">
        <property name="text">
-        <string>Power</string>
+        <string>Reaction</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
-      <widget class="QSlider" name="power">
-       <property name="maximum">
-        <number>10</number>
-       </property>
-       <property name="singleStep">
-        <number>1</number>
-       </property>
-       <property name="tracking">
-        <bool>true</bool>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="tickPosition">
-        <enum>QSlider::TicksBothSides</enum>
-       </property>
-       <property name="tickInterval">
-        <number>1</number>
-       </property>
-      </widget>
-     </item>
-     <item row="11" column="0">
-      <widget class="QPushButton" name="button_auto">
-       <property name="text">
-        <string>Auto</string>
-       </property>
-      </widget>
-     </item>
-     <item row="11" column="1">
-      <widget class="QLabel" name="label_auto">
-       <property name="text">
-        <string>Disabled</string>
-       </property>
-      </widget>
-     </item>
-     <item row="12" column="0">
-      <widget class="QCheckBox" name="save">
-       <property name="text">
-        <string>Save</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="12" column="1">
-      <widget class="QLineEdit" name="save_filename">
-       <property name="text">
-        <string>../log/log.txt</string>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="1">
+     <item row="9" column="1">
       <widget class="QComboBox" name="reaction_type">
        <property name="currentIndex">
         <number>1</number>
@@ -350,77 +430,17 @@
        </item>
       </widget>
      </item>
-     <item row="10" column="0">
-      <widget class="QLabel" name="label_reaction_type">
-       <property name="text">
-        <string>Power</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="formLayoutWidget_3">
-    <property name="geometry">
-     <rect>
-      <x>420</x>
-      <y>220</y>
-      <width>271</width>
-      <height>166</height>
-     </rect>
-    </property>
-    <layout class="QFormLayout" name="formLayout_3">
-     <property name="fieldGrowthPolicy">
-      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-     </property>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Joystick Port</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="joystick_device">
-       <property name="text">
-        <string>/dev/ttyUSB0</string>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="0">
-      <widget class="QPushButton" name="button_joystick_disconnect">
+      <widget class="QLabel" name="label_readwrite_time">
        <property name="text">
-        <string>Disconnect</string>
+        <string>Read/Write/Loop</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QPushButton" name="button_joystick_connect">
+      <widget class="QLabel" name="readwrite_time">
        <property name="text">
-        <string>Connect</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QCheckBox" name="joy_reconnect">
-       <property name="text">
-        <string>Reconnect</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QPushButton" name="button_joystick_read_defaults">
-       <property name="text">
-        <string>Joystick Def.</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0" colspan="2">
-      <widget class="QCheckBox" name="joystick_use">
-       <property name="text">
-        <string>Joystick control</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -432,10 +452,38 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>691</width>
+     <width>709</width>
      <height>23</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuQuadro">
+    <property name="title">
+     <string>Quadro</string>
+    </property>
+    <addaction name="actionQuadroConnect"/>
+    <addaction name="actionQuadroDisconnect"/>
+    <addaction name="actionQuadroReset"/>
+    <addaction name="quadro_reconnect"/>
+   </widget>
+   <widget class="QMenu" name="menuJoystick">
+    <property name="title">
+     <string>Joystick</string>
+    </property>
+    <addaction name="actionJoystickConnect"/>
+    <addaction name="actionJoystickDisconnect"/>
+    <addaction name="actionJoystickCalibrate_zero"/>
+    <addaction name="joy_reconnect"/>
+    <addaction name="JoystickUse"/>
+   </widget>
+   <widget class="QMenu" name="menuProgram">
+    <property name="title">
+     <string>Program</string>
+    </property>
+    <addaction name="LogSave_data"/>
+   </widget>
+   <addaction name="menuProgram"/>
+   <addaction name="menuQuadro"/>
+   <addaction name="menuJoystick"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -446,6 +494,74 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionQuadroConnect">
+   <property name="text">
+    <string>Connect</string>
+   </property>
+   <property name="softKeyRole">
+    <enum>QAction::NegativeSoftKey</enum>
+   </property>
+  </action>
+  <action name="actionQuadroDisconnect">
+   <property name="text">
+    <string>Disconnect</string>
+   </property>
+  </action>
+  <action name="actionJoystickConnect">
+   <property name="text">
+    <string>Connect</string>
+   </property>
+  </action>
+  <action name="actionJoystickDisconnect">
+   <property name="text">
+    <string>Disconnect</string>
+   </property>
+  </action>
+  <action name="actionQuadroReset">
+   <property name="text">
+    <string>Reset</string>
+   </property>
+  </action>
+  <action name="actionJoystickCalibrate_zero">
+   <property name="text">
+    <string>Calibrate zero</string>
+   </property>
+  </action>
+  <action name="quadro_reconnect">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Reconnect</string>
+   </property>
+  </action>
+  <action name="joy_reconnect">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Reconnect</string>
+   </property>
+  </action>
+  <action name="LogSave_data">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Save data</string>
+   </property>
+  </action>
+  <action name="JoystickUse">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Use</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

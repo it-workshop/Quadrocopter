@@ -35,21 +35,19 @@ Quadro::Quadro(QWidget *parent) :
 
     ui->setupUi(this);
 
-    interface_read();
-
     connect(&timer_auto, SIGNAL(timeout()), this, SLOT(timer_auto_update()));
     connect(&timer_reconnect, SIGNAL(timeout()), this, SLOT(timer_reconnect_update()));
 
-    save = true;
+    ui->LogSave_data->setChecked(true);
     save_filename = "../log/quadro_";
     save_filename.append(t_time.get_time());
     save_filename.append(".txt");
-    ui->save_filename->setText(save_filename.c_str());
 
-    mode_auto = false;
+    ui->quadro_reconnect->setChecked(false);
+    ui->joy_reconnect->setChecked(false);
 
-    quadro_reconnect = false;
-    joy_reconnect = false;
+    ui->joystick_device->setText(joy.get_device().c_str());
+    ui->device->setEditText(quadro.get_device().c_str());
 
     save_open();
 
@@ -57,36 +55,12 @@ Quadro::Quadro(QWidget *parent) :
     quadro_disconnect();
 
     timer_reconnect.start(timer_reconnect_interval);
+    timer_auto.start(timer_auto_interval);
 }
 
 Quadro::~Quadro()
 {
     delete ui;
-}
-
-void Quadro::interface_read()
-{
-    stringstream t_ss;
-    int t_int;
-
-    quadro.set_device(ui->device->currentText().toAscii().data());
-    joy.set_device(ui->joystick_device->text().toAscii().data());
-
-    t_ss << (ui->speed->currentText().toAscii().data());
-    t_ss >> t_int;
-    quadro.set_rate(t_int);
-
-    power_interface = ui->power->value() / 10.;
-
-    joystick_use = ui->joystick_use->isChecked();
-
-    save = ui->save->isChecked();
-    save_filename = ui->save_filename->text().toAscii().data();
-
-    quadro_reconnect = ui->quadro_reconnect->isChecked();
-    joy_reconnect = ui->joy_reconnect->isChecked();
-
-    quadro.set_reaction_type((quadrocopter::reaction_type_) ui->reaction_type->currentIndex());
 }
 
 void Quadro::interface_write()
@@ -131,9 +105,6 @@ void Quadro::interface_write()
         ui->throttle_joystick->setText(t_ss1.str().c_str());
     }
 
-    ui->quadro_reconnect->setChecked(quadro_reconnect);
-    ui->joy_reconnect->setChecked(joy_reconnect);
-
     if(joy.isconnected())
     {
         ui->joystick_device->setAutoFillBackground(true);
@@ -163,7 +134,7 @@ void Quadro::interface_write()
 
 void Quadro::save_data()
 {
-    if(save)
+    if(ui->LogSave_data->isChecked())
     {
         stringstream t_ss;
         int i;
@@ -177,7 +148,6 @@ void Quadro::save_data()
         //angle[2] gyroscope_correction[2] accelerometer_correction[3]
         //joystick_connected joystick_use joystick_readings[2] joystick_power joystick_power_switch
         //quadro_connected throttle_rotation[2] throttle_corrected[3] power motors[4]
-        //mode_auto
         //read_time_sec write_time_sec loop_time_sec
         //*quadro_device@quadro_speed
         //*joystick_device@joystick_speed
@@ -191,7 +161,7 @@ void Quadro::save_data()
              << quadro.get_throttle_accelerometer_correction().print_tab() << "\t"
 
              << joy.isconnected() << "\t"
-             << joystick_use << "\t"
+             << ui->JoystickUse->isChecked() << "\t"
              << joy.get_readings().print2d_tab() << "\t"
              << joy.get_power_value() << "\t"
              << joy.is_switched_on() << "\t"
@@ -207,8 +177,6 @@ void Quadro::save_data()
             //if(i != quadro.get_motors_n() - 1) t_ss << "\t";
         }
 
-        t_ss << mode_auto << "\t";
-
         t_ss.precision(6);
         t_ss << quadro.get_read_time() << "\t"
              << quadro.get_write_time() << "\t"
@@ -219,94 +187,58 @@ void Quadro::save_data()
     }
 }
 
-void Quadro::on_button_connect_clicked()
-{
-    interface_read();
-    quadro_connect();
-}
-
-void Quadro::on_button_disconnect_clicked()
-{
-    quadro_reconnect = false;
-    quadro_disconnect();
-}
-
-void Quadro::on_button_auto_clicked()
-{
-    mode_auto = mode_auto ? 0 : 1;
-    set_auto(mode_auto);
-}
-
 void Quadro::set_quadro_data()
 {
     number_vect_t t_power;
+    vect t_rotation;
 
-    if(joy.isconnected() && joystick_use)
-        quadro.set_throttle_rotation(joy.get_readings());
-
-    if(joy.isconnected() && joystick_use)
+    if(joy.isconnected() && ui->JoystickUse->isChecked())
     {
+        t_rotation = joy.get_readings();
+
         t_power = joy.get_power_value();
         if(!joy.is_switched_on()) t_power = 0;
     }
     else
-        t_power = power_interface;
+    {
+        t_rotation = vect(ui->anglex->value(), ui->angley->value(), 0);
+
+        t_power = ui->power->value() / 10.;
+    }
 
     quadro.set_power(t_power);
     quadro.set_reaction_type((quadrocopter::reaction_type_) ui->reaction_type->currentIndex());
-}
-
-void Quadro::set_auto(bool t)
-{
-    mode_auto = t;
-    if(mode_auto)
-    {
-        ui->label_auto->setText("Enabled");
-        timer_auto.start(timer_auto_interval);
-    }
-    else
-    {
-        ui->label_auto->setText("Disabled");
-        timer_auto.stop();
-    }
-}
-
-void Quadro::joy_disconnect()
-{
-    power_interface = 0;
-    ui->power->setValue(0);
-
-    joy.disconnect();
-
-    //joy_reconnect = false;
-
-    interface_write();
-    save_data();
-}
-
-void Quadro::joy_connect()
-{
-    interface_read();
-    joy.read_error_reset();
-    joy.connect();
-
-    joy.read_data();
-    joy.set_data_default();
-
-    interface_write();
-    save_data();
+    quadro.set_throttle_rotation(t_rotation);
 }
 
 void Quadro::quadro_disconnect()
 {
     quadro.disconnect();
 
-    save_data();
+    interface_write();
+}
 
-    //quadro_reconnect = false;
+void Quadro::joy_disconnect()
+{
+    ui->power->setValue(0);
+
+    joy.disconnect();
 
     interface_write();
-    save_data();
+}
+
+void Quadro::joy_connect()
+{
+    joy.read_error_reset();
+    joy.connect();
+
+    if(joy.isconnected())
+    {
+        joy.read_data();
+        joy.set_data_default();
+
+        interface_write();
+    }
 }
 
 void Quadro::quadro_connect()
@@ -315,7 +247,6 @@ void Quadro::quadro_connect()
     quadro.connect();
 
     interface_write();
-    save_data();
 }
 
 void Quadro::timer_reconnect_update()
@@ -324,13 +255,13 @@ void Quadro::timer_reconnect_update()
     if(allowed)
     {
         allowed = false;
-        if(!quadro.isconnected() && quadro_reconnect)
+        if(!quadro.isconnected() && ui->quadro_reconnect->isChecked())
         {
             quadro.read_error_reset();
             quadro_connect();
             interface_write();
         }
-        if(!joy.isconnected() && joy_reconnect)
+        if(!joy.isconnected() && ui->joy_reconnect->isChecked())
         {
             joy.read_error_reset();
             joy_connect();
@@ -350,75 +281,27 @@ void Quadro::timer_auto_update()
 
         if(quadro.read_error())
         {
-            quadro.read_error_reset();
             quadro_disconnect();
+            quadro.read_error_reset();
         }
         if(joy.read_error())
         {
-            joy.read_error_reset();
             joy_disconnect();
+            joy.read_error_reset();
         }
 
-        if(mode_auto)
-        {
-            //mytime t_time;
-            //t_time.set_time();
+        save_data();
 
-            interface_read();
+        quadro.read_data();
+        joy.read_data();
 
-            save_data();
+        set_quadro_data();
+        quadro.write_data();
 
-            quadro.read_data();
-            joy.read_data();
-
-            //cerr << "read: " << t_time.get_time_difference() << "\t";
-            //t_time.set_time();
-
-            set_quadro_data();
-            quadro.write_data();
-
-            interface_write();
-
-            //cerr << "write: " << t_time.get_time_difference() << endl;
-        }
+        interface_write();
 
         allowed = true;
     }
-}
-
-void Quadro::on_button_joystick_disconnect_clicked()
-{
-    joy_reconnect = false;
-    joy_disconnect();
-}
-
-void Quadro::on_button_joystick_connect_clicked()
-{
-    joy_connect();
-}
-
-void Quadro::on_joystick_use_clicked()
-{
-    joy.set_data_default();
-
-    ui->power->setValue(0);
-    power_interface = 0;
-
-    save_data();
-}
-
-void Quadro::on_reset_clicked()
-{
-    quadro.reset_throttle();
-}
-
-void Quadro::on_button_joystick_read_defaults_clicked()
-{
-    joy.read_error_reset();
-    joy.read_data();
-    joy.set_data_default();
-
-    save_data();
 }
 
 void Quadro::save_close()
@@ -428,21 +311,73 @@ void Quadro::save_close()
 
 void Quadro::save_open()
 {
-    if(save)
+    if(ui->LogSave_data->isChecked())
     {
         save_file.open(save_filename.c_str(), std::ios_base::app);
         save_file << "#seconds\t\tdatetime\t\tgyro_x\tgyro_y\tgyro_z\tacc_x\tacc_y\tacc_z\treact._t\tangle_x\tangle_y\t"
                   << "gyr_c_x\tgyr_c_y\tacc_c_x\tacc_c_y\tacc_c_z\tj_conn\tj_use\tj_x\tj_y\tj_power\tj_switch\tquad_conn\trot_x\trot_y\tthr_x\t"
-                  << "thr_y\tthr_z\tpower\tM_A\tM_B\tM_C\tM_D\tauto\tread_t\twrite_t\tloop_t" << endl;
+                  << "thr_y\tthr_z\tpower\tM_A\tM_B\tM_C\tM_D\tread_t\twrite_t\tloop_t" << endl;
     }
 }
 
-void Quadro::on_save_toggled()
+
+void Quadro::on_actionQuadroConnect_triggered()
 {
-    interface_read();
+    quadro_connect();
+}
 
-    save_close();
+void Quadro::on_actionQuadroDisconnect_triggered()
+{
+    ui->quadro_reconnect->setChecked(false);
+    quadro_disconnect();
+}
 
-    if(save)
-        save_open();
+void Quadro::on_actionQuadroReset_triggered()
+{
+    quadro.reset_throttle();
+}
+
+void Quadro::on_actionJoystickConnect_triggered()
+{
+    joy_connect();
+}
+
+void Quadro::on_actionJoystickDisconnect_triggered()
+{
+    ui->joy_reconnect->setChecked(false);
+    joy_disconnect();
+}
+
+void Quadro::on_actionJoystickCalibrate_zero_triggered()
+{
+    if(joy.isconnected())
+    {
+        joy.read_data();
+        joy.set_data_default();
+    }
+}
+
+void Quadro::on_device_editTextChanged(const QString &arg1)
+{
+    quadro.set_device(arg1.toAscii().data());
+}
+
+void Quadro::on_joystick_device_textChanged(const QString &arg1)
+{
+    joy.set_device(arg1.toAscii().data());
+}
+
+void Quadro::on_reaction_type_currentIndexChanged(int index)
+{
+    quadro.set_reaction_type((quadrocopter::reaction_type_) index);
+}
+
+void Quadro::on_JoystickUse_toggled()
+{
+    if(joy.isconnected())
+    {
+        joy.set_data_default();
+
+        ui->power->setValue(0);
+    }
 }

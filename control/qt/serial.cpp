@@ -29,7 +29,6 @@ vect serial::read_vect_byte(unsigned int axis)
     vect result;
     for(unsigned int i = 0; i < axis; i++)
         result.value_by_axis_index(i) = sread() / 255. * 2 - 1;
-
     if(read_error()) result = vect();
 
     return(result);
@@ -92,6 +91,8 @@ void serial::sopen()
 
         if(debug_level >= DEBUG_ALL)
             cerr << "device opened" << endl;
+
+        flush();
     }
 }
 
@@ -128,6 +129,11 @@ void serial::set_rate(unsigned int newrate)
 void serial::set_device(string newdevice)
 {
     device = newdevice;
+}
+
+string serial::get_device()
+{
+    return(device);
 }
 
 void serial::swrite(short unsigned int buf)

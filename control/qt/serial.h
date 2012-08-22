@@ -48,6 +48,8 @@ public:
     void set_rate(unsigned int);
     void set_device(string);
 
+    string get_device();
+
     void swrite(short unsigned int);
     short unsigned int sread();
     void flush();

@@ -13,6 +13,8 @@ quadrocopter::quadrocopter()
     rate = 115200;
     maxwait = 500;
 
+    device = "/dev/rfcomm0";
+
     defaults();
 }
 
