@@ -7,11 +7,13 @@
 #define DEBUG_SERIAL
 #define DEBUG_SERIAL_HUMAN
 
+#define MPI 3.141592653589793
+
 const int infoLedPin = 13;
 const int SERIAL_ACCURACY = 3;
 
 double double_eps = 1E-2;
-const double MPI = 3.141592653589793;
+
 
 struct RVector3D
 {
@@ -220,10 +222,10 @@ double& RVector3D::value_by_axis_index(int index)
 
 RVector3D RVector3D::angle_from_projections()
 {
-    RVector3D result = RVector3D;
+    RVector3D result = RVector3D();
     
-    result.x = acos(y / sqrt(y*y + z*z) - MPI / 2;
-    result.y = acos(x / sqrt(x*x + z*z) - MPI / 2;
+    result.x = acos(y / sqrt(y*y + z*z)) - MPI / 2;
+    result.y = acos(x / sqrt(x*x + z*z)) - MPI / 2;
     result.z = 0;
     
     return(result);
@@ -231,7 +233,7 @@ RVector3D RVector3D::angle_from_projections()
 
 RVector3D RVector3D::projections_from_angle(double a)
 {
-    RVector3D result = RVector3D;
+    RVector3D result = RVector3D();
 
     if (fabs(x - MPI / 2) < double_eps || fabs(y - MPI / 2) < double_eps
      || fabs(x + MPI / 2) < double_eps || fabs(y + MPI / 2) < double_eps)
@@ -398,7 +400,7 @@ public:
 
     inline RVector3D get_gyroscope_rotation(RVector3D gyro_data)
     {
-        RVector3D rotation = RVector3D;
+        RVector3D rotation = RVector3D();
         
         RVector3D gyro_data_norm = gyro_data;
         
@@ -501,7 +503,7 @@ class Accelerometer
 {
 private:
     static const unsigned int AXIS = 3, AVG_N = 1;
-    double ACCURACY = 1E-2;
+    static const double ACCURACY = 1E-2;
     
     static const double adc_aref = 5, adc_maxvalue = 1023;
     double map_a[AXIS], map_b[AXIS];
@@ -586,21 +588,21 @@ class Gyroscope
 {
 private:
     // ITG3200 Register Defines
-    const static unsigned char WHO   = 0x00;
-                               SMPL  = 0x15;
-                               DLPF  = 0x16;
-                               INT_C = 0x17;
-                               INT_S = 0x1A;
-                               TMP_H = 0x1B;
-                               TMP_L = 0x1C;
-                               GX_H  = 0x1D;
-                               GX_L  = 0x1E;
-                               GY_H  = 0x1F;
-                               GY_L  = 0x20;
-                               GZ_H  = 0x21;
-                               GZ_L  = 0x22;
+    static const unsigned char WHO   = 0x00,
+                               SMPL  = 0x15,
+                               DLPF  = 0x16,
+                               INT_C = 0x17,
+                               INT_S = 0x1A,
+                               TMP_H = 0x1B,
+                               TMP_L = 0x1C,
+                               GX_H  = 0x1D,
+                               GX_L  = 0x1E,
+                               GY_H  = 0x1F,
+                               GY_L  = 0x20,
+                               GZ_H  = 0x21,
+                               GZ_L  = 0x22,
                                PWR_M = 0x3E;
-    const static int GYRO_ADDRESS = 0x68;
+    static const int GYRO_ADDRESS = 0x68;
 
     static const double ACCURACY = 1E-1; // in radians / sec.
     static const int AXIS = 3;
@@ -622,18 +624,18 @@ Gyroscope::Gyroscope()
     Wire.begin();
     Wire.beginTransmission(GYRO_ADDRESS);
     Wire.write(0x3E);
-    Wire.write(0x80);  //send a reset to the device
-    Wire.endTransmission(); //end transmission
+    Wire.write(0x80);  // send a reset to the device
+    Wire.endTransmission(); // end transmission
     
     Wire.beginTransmission(GYRO_ADDRESS);
     Wire.write(0x15);
-    Wire.write(0x00);   //sample rate divider
-    Wire.endTransmission(); //end transmission
+    Wire.write((byte)0x00);   // sample rate divider
+    Wire.endTransmission(); // end transmission
  
     Wire.beginTransmission(GYRO_ADDRESS);
     Wire.write(0x16);
     Wire.write(0x18); // ±2000 degrees/s (default value)
-    Wire.endTransmission(); //end transmission
+    Wire.endTransmission(); // end transmission
 }
 
 char Gyroscope::ITG3200Readbyte(unsigned char address)
@@ -827,57 +829,53 @@ void setup()
 */
 unsigned int last_dt = 0, i = 0;
 double t_double = 0, angle_alpha = 0;
-long double dt;
+long double dt = 0;
 
 // for angular acceleration
-RVector3D gyro_prev_data = RVector3D;
+RVector3D gyro_prev_data = RVector3D();
 
 void loop()
 { 
-    //data from sensors
+    // data from sensors
     RVector3D accel_data = Accel->get_readings();
-    RVector3D gyro_data = Gyro->get_readings();
-    
-    gyro_prev_data = gyro_data;
+    RVector3D gyro_data = gyro_prev_data = Gyro->get_readings();
 
-    //on second loop() iteration
-    if(TCount->get_time_isset())
+    // on second loop() iteration
+    if (TCount->get_time_isset())
     {
-        //calculating dt from previous iteration
+        // calculating dt from previous iteration
         last_dt = TCount->get_time_difference();
         dt = TCount->get_time_difference();
         dt /= 1.E6;
         
-        //angular acceleration creates unwanted linear acceleration
+        // angular acceleration creates unwanted linear acceleration
         RVector3D angular_acceleration = (gyro_data - gyro_prev_data) / dt;
         accel_data.x -= (angular_acceleration.y * gyro_to_acc.z - angular_acceleration.z * gyro_to_acc.y) / g;
         accel_data.y -= (angular_acceleration.z * gyro_to_acc.x - angular_acceleration.x * gyro_to_acc.z) / g;
         accel_data.z -= (angular_acceleration.x * gyro_to_acc.y - angular_acceleration.y * gyro_to_acc.x) / g;
         
-        //angle from accel_data
+        // angle from accel_data
         RVector3D accel_angle = accel_data.angle_from_projections();
         
-        //alpha coefficient for low-pass filter
+        // alpha coefficient for low-pass filter
         angle_alpha = dt / (dt + angle_period / (2 * MPI));
   
-        //low-pass filter
+        // low-pass filter
         angle.x = (angle.x + gyro_data.x * dt) * (1 - angle_alpha) + accel_angle.x * angle_alpha;
         angle.y = (angle.y + gyro_data.y * dt) * (1 - angle_alpha) + accel_angle.y * angle_alpha;
     }
     TCount->set_time();
     
-    //calculating correction (both methods)
+    // calculating correction (both methods)
     RVector3D accel_correction = MController->get_accelerometer_correction(angle, accel_data);
     RVector3D gyro_correction = MController->get_gyroscope_rotation(gyro_data);
 
 #ifdef DEBUG_SERIAL
-    static char c;
-    static unsigned int t_low, t_high, t_int;
-    static RVector3D throttle_tmp;
+    static char c = 0;
+    static unsigned int t_low = 0, t_high = 0, t_int = 0;
+    static RVector3D throttle_tmp = RVector3D();
     
-    c = 0;
-    
-    if(Serial.available() > 0)
+    if (Serial.available() > 0)
     {
         c = Serial.read();
         
@@ -965,23 +963,23 @@ void loop()
     
     #ifndef DEBUG_NO_GYROSCOPE
     
-        //reaction to angular velocity from gyroscope
-        if(reaction_type == REACTION_ANGULAR_VELOCITY)
+        // reaction on angular velocity from gyroscope
+        if (reaction_type == REACTION_ANGULAR_VELOCITY)
         {
             throttle_corrected.x_angle_inc(gyro_correction.x);
             throttle_corrected.y_angle_inc(gyro_correction.y);
         }
             
         #ifndef DEBUG_NO_ACCELEROMETER
-        
-            //reaction to angle (+acceleration)
-            if(reaction_type == REACTION_ACCELERATION)
+            // reaction on angle (+acceleration)
+            if (reaction_type == REACTION_ACCELERATION)
+            {
                 throttle_corrected = accel_correction;
-                
+            }    
         #endif
     #endif
     
-    //normalizing
+    // normalizing
     throttle_corrected /= throttle_corrected.module();
     throttle_corrected *= MController->get_throttle_abs();
     
@@ -1025,7 +1023,7 @@ void loop()
             else serial_auto_count++;
         #endif
         
-        if(c == 'p')
+        if (c == 'p')
         {
             //24 bytes
             throttle_corrected.print_serial(RVector3D::PRINT_RAW);
@@ -1036,10 +1034,10 @@ void loop()
             gyro_correction.print_serial(RVector3D::PRINT_RAW, RVector3D::USE_2D);
             accel_correction.print_serial(RVector3D::PRINT_RAW);
             
-            for(i = 0; i < 4; i++)
+            for (i = 0; i < 4; i++)
                 Serial.write((int) MController->speedGet(throttle_corrected, i));
                 
-            for(int si = 2; si >= 0; si--)
+            for (int si = 2; si >= 0; si--)
                 Serial.write((last_dt & (0xff << 8 * si)) >> (8 * si));
                 
             Serial.write(reaction_type + '0');
@@ -1047,13 +1045,14 @@ void loop()
     }
 #endif
 
-    //setting speed
+    // setting speed
     MController->speedChange(throttle_corrected);
     
     #ifdef DEBUG_SERIAL
         if(serial_type == SERIAL_RESTORE) serial_type = SERIAL_DEFAULT;
     #endif
     
-    //for angular acceleration
+    // for angular acceleration
     gyro_prev_data = gyro_data;
 }
+
