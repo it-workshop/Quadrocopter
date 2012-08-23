@@ -8,6 +8,7 @@
 #include <string>
 #include <map>
 #include <vect.h>
+#include <mytime.h>
 
 using std::string;
 using std::map;
@@ -33,9 +34,11 @@ private:
 
     unsigned int maxwait;
     bool serror;
-    bool connected;
 
     map<int, int> rate_map;
+
+    mytime connect_delay;
+    number_vect_t connect_delay_time;
 
 public:
     serial();
@@ -58,6 +61,7 @@ public:
     void read_error_reset();
 
     bool isconnected();
+    bool iswaiting();
 
     vect read_vect_byte(unsigned int axis = 3);
     unsigned int read_unsigned_int_3byte();

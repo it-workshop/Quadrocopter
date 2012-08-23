@@ -19,7 +19,7 @@ serial::serial()
     rate = 9600;
     maxwait = 100;
 
-    connected = false;
+    connect_delay_time = 0;
 
     debug_level = DEBUG_ERROR;
 }
@@ -83,16 +83,22 @@ void serial::sopen()
         tio.c_cc[VMIN]  = 0;
         tio.c_cc[VTIME] = 0;
 
-        if(tcsetattr(tty_fd, TCSANOW, &tio) < 0) {
+        if(tcsetattr(tty_fd, TCSANOW, &tio) < 0)
+        {
             sclose();
             if(debug_level >= DEBUG_ERROR)
                 cerr << t_time.get_time() << " " << device << "@" << rate << ": couldn't set term attributes" << endl;
         }
 
-        if(debug_level >= DEBUG_ALL)
-            cerr << "device opened" << endl;
+        if(tty_fd != -1)
+        {
+            if(debug_level >= DEBUG_ALL)
+                cerr << "device opened" << endl;
 
-        flush();
+            connect_delay.set_time();
+
+            flush();
+        }
     }
 }
 
@@ -202,5 +208,10 @@ short unsigned int serial::sread()
 
 bool serial::isconnected()
 {
-    return(connected);
+    return(tty_fd != -1 && !read_error() && connect_delay.get_time_difference() >= connect_delay_time);
+}
+
+bool serial::iswaiting()
+{
+    return(tty_fd != -1 && !read_error() && connect_delay.get_time_difference() < connect_delay_time);
 }

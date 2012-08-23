@@ -15,6 +15,8 @@ quadrocopter::quadrocopter()
 
     device = "/dev/rfcomm0";
 
+    connect_delay_time = 500;
+
     defaults();
 }
 
@@ -137,6 +139,9 @@ void quadrocopter::defaults()
     loop_time = 0;
 
     reaction_type = REACTION_ANGULAR_VELOCITY;
+
+    //wait for arduino to load
+    connect_delay_time = !device.substr(0, 11).compare("/dev/ttyACM") ? 8000 : 500;
 }
 
 void quadrocopter::connect()
@@ -144,7 +149,6 @@ void quadrocopter::connect()
     defaults();
 
     sopen();
-    connected = true;
 }
 
 void quadrocopter::disconnect()
@@ -156,7 +160,6 @@ void quadrocopter::disconnect()
 
     sclose();
 
-    connected = false;
     read_error_reset();
 }
 

@@ -49,6 +49,9 @@ Quadro::Quadro(QWidget *parent) :
     ui->joystick_device->setText(joy.get_device().c_str());
     ui->device->setEditText(quadro.get_device().c_str());
 
+    ui->device->setAutoFillBackground(true);
+    ui->joystick_device->setAutoFillBackground(true);
+
     save_open();
 
     joy_disconnect();
@@ -107,27 +110,33 @@ void Quadro::interface_write()
 
     if(joy.isconnected())
     {
-        ui->joystick_device->setAutoFillBackground(true);
         ui->joystick_device->setStyleSheet("background-color: rgb(100, 255, 100);");
+        ui->joystick_device->setReadOnly(1);
+    }
+    else if(joy.iswaiting())
+    {
+        ui->joystick_device->setStyleSheet("background-color: rgb(255, 216, 0);");
         ui->joystick_device->setReadOnly(1);
     }
     else
     {
         ui->joystick_device->setReadOnly(0);
-        ui->joystick_device->setAutoFillBackground(true);
         ui->joystick_device->setStyleSheet("background-color: rgb(255, 100, 100);");
     }
 
     if(quadro.isconnected())
     {
         ui->device->setEditable(0);
-        ui->device->setAutoFillBackground(true);
         ui->device->setStyleSheet("background-color: rgb(100, 255, 100);");
+    }
+    else if(quadro.iswaiting())
+    {
+        ui->device->setEditable(0);
+        ui->device->setStyleSheet("background-color: rgb(255, 216, 0);");
     }
     else
     {
         ui->device->setEditable(1);
-        ui->device->setAutoFillBackground(true);
         ui->device->setStyleSheet("background-color: rgb(255, 100, 100);");
     }
 }

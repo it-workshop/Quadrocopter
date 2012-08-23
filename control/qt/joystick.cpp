@@ -8,6 +8,8 @@ joystick::joystick()
 
     device = "/dev/ttyUSB0";
 
+    connect_delay_time = 500;
+
     defaults();
 }
 
@@ -60,8 +62,6 @@ void joystick::disconnect()
     defaults();
 
     sclose();
-
-    connected = false;
 }
 
 void joystick::connect()
@@ -69,8 +69,6 @@ void joystick::connect()
     defaults();
 
     sopen();
-
-    connected = true;
 }
 
 vect joystick::get_readings()

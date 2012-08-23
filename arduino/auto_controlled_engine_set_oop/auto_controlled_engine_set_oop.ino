@@ -1,4 +1,4 @@
- //For gyroscope
+//For gyroscope
 #include <Wire.h>
 
 #define DEBUG_NO_MOTORS
@@ -287,7 +287,8 @@ private:
     
     RVector3D accelerometer_xi;
     
-    static const double gyroscope_coefficient = -0.375;
+    static const double gyroscope_coefficient = 0.5;
+    static const double gyroscope_max_rotation = 3.14 / 4;
     
     static const double joystick_coefficient = 0.2;
     
@@ -383,17 +384,23 @@ public:
         return(throttle_new);
     }
 
-    inline RVector3D get_gyroscope_correction(RVector3D gyro_data)
+    inline RVector3D get_gyroscope_rotation(RVector3D gyro_data)
     {
-        RVector3D correction = gyro_data * gyroscope_coefficient;
-        correction.x *= -1;
+        RVector3D rotation;
         
-        double t_double;
-        t_double = correction.x;
-        correction.x = correction.y;
-        correction.y = t_double;
+        rotation.x =  gyro_data.x * gyroscope_coefficient;
+        rotation.y = -gyro_data.y * gyroscope_coefficient;
         
-        return(correction);
+        for(int i = 0; i < 2; i++)
+        {
+            if(rotation.value_by_axis_index(i) > gyroscope_max_rotation)
+                rotation.value_by_axis_index(i) = gyroscope_max_rotation;
+                
+            if(rotation.value_by_axis_index(i) < -gyroscope_max_rotation)
+                rotation.value_by_axis_index(i) = -gyroscope_max_rotation;
+        }
+        
+        return(rotation);
     }
 
     inline double get_throttle_abs()
@@ -796,7 +803,7 @@ void loop()
     TCount->set_time();
     
     RVector3D accel_correction = MController->get_accelerometer_correction(angle, accel_data);
-    RVector3D gyro_correction = MController->get_gyroscope_correction(gyro_data);
+    RVector3D gyro_correction = MController->get_gyroscope_rotation(gyro_data);
 
 #ifdef DEBUG_SERIAL
     static char c;
@@ -825,9 +832,8 @@ void loop()
             {                
                 serial_type = SERIAL_RESTORE;
                 
-                int serial_writing;
-                
-                for(serial_writing = 0; serial_writing < 4; serial_writing++)
+                //rotation
+                for(int serial_writing = 0; serial_writing < 4; serial_writing++)
                 {
                     while(Serial.available() <= 0);
                     c = Serial.read();
@@ -848,12 +854,14 @@ void loop()
 
                 throttle = MController->get_joystick_throttle(throttle_tmp);
                 
+                //throttle_abs
                 while(Serial.available() <= 0);
                 
                 c = Serial.read();
                 
                 MController->set_throttle_abs(c / 100.);
                 
+                //reaction_type
                 while(Serial.available() <= 0);
                 
                 c = Serial.read();
@@ -892,7 +900,10 @@ void loop()
     
     #ifndef DEBUG_NO_GYROSCOPE
         if(reaction_type == REACTION_ANGULAR_VELOCITY)
-            throttle_corrected += gyro_correction;
+        {
+            throttle_corrected.x_angle_inc(gyro_correction.x);
+            throttle_corrected.y_angle_inc(gyro_correction.y);
+        }
             
         #ifndef DEBUG_NO_ACCELEROMETER
         
