@@ -141,7 +141,7 @@ void quadrocopter::defaults()
     reaction_type = REACTION_ANGULAR_VELOCITY;
 
     //wait for arduino to load
-    connect_delay_time = !device.substr(0, 11).compare("/dev/ttyACM") ? 8000 : 500;
+    connect_delay_time = !device.substr(0, 11).compare("/dev/ttyACM") ? 9000 : 500;
 }
 
 void quadrocopter::connect()

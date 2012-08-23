@@ -1,7 +1,7 @@
 //For gyroscope
 #include <Wire.h>
 
-#define DEBUG_NO_MOTORS
+//#define DEBUG_NO_MOTORS
 //#define DEBUG_NO_GYROSCOPE
 //#define DEBUG_NO_ACCELEROMETER
 #define DEBUG_SERIAL
@@ -24,13 +24,17 @@ struct RVector3D
     void norm();
     void set_module();
 
-    RVector3D operator*(double);
     RVector3D operator+(RVector3D);
     RVector3D operator-(RVector3D);
-    RVector3D operator-=(RVector3D);
+
     RVector3D operator+=(RVector3D);
-    RVector3D operator/=(double);
+    RVector3D operator-=(RVector3D);
+    
+    RVector3D operator*(double);
+    RVector3D operator/(double);
+    
     RVector3D operator*=(double);
+    RVector3D operator/=(double);
 
     double& value_by_axis_index(int index);
 
@@ -43,7 +47,6 @@ struct RVector3D
     void x_angle_dec(double w);
     void y_angle_dec(double w);
     
-    const static double projection_eps = 0.1;
     RVector3D angle_from_projections(); //angle in [-MPI / 2; MPI / 2]
     RVector3D projections_from_angle(double a = 1); //angle in [-MPI; MPI]
 };
@@ -150,6 +153,15 @@ RVector3D RVector3D::operator*(double c)
     result.x = x * c;
     result.y = y * c;
     result.z = z * c;
+    return(result);
+}
+
+RVector3D RVector3D::operator/(double c)
+{
+    RVector3D result;
+    result.x = x / c;
+    result.y = y / c;
+    result.z = z / c;
     return(result);
 }
 
@@ -287,7 +299,6 @@ private:
     
     RVector3D accelerometer_xi;
     
-    static const double gyroscope_coefficient = 0.5;
     static const double gyroscope_max_rotation = 3.14 / 4;
     
     static const double joystick_coefficient = 0.2;
@@ -388,9 +399,25 @@ public:
     {
         RVector3D rotation;
         
-        rotation.x =  gyro_data.x * gyroscope_coefficient;
-        rotation.y = -gyro_data.y * gyroscope_coefficient;
+        RVector3D gyro_data_norm = gyro_data;
         
+/*        double gyro_data_max = MPI * 0.8125;
+        
+        for(int i = 0; i < 2; i++)
+        {
+            if(gyro_data_norm.value_by_axis_index(i) > gyro_data_max)
+                gyro_data_norm.value_by_axis_index(i) = gyro_data_max;
+                
+            if(gyro_data_norm.value_by_axis_index(i) < -gyro_data_max)
+                gyro_data_norm.value_by_axis_index(i) = -gyro_data_max;
+        }*/
+        
+        double gyroscope_bin_coeff1 = 0.3;
+        double gyroscope_bin_coeff2 = 0.4;
+        
+        rotation.x =  atan(gyro_data.x * gyroscope_bin_coeff1) * gyroscope_bin_coeff2;
+        rotation.y = -atan(gyro_data.y * gyroscope_bin_coeff1) * gyroscope_bin_coeff2;
+       
         for(int i = 0; i < 2; i++)
         {
             if(rotation.value_by_axis_index(i) > gyroscope_max_rotation)
@@ -433,8 +460,8 @@ void MotorController::speedChange(RVector3D throttle_vec)
 
 MotorController::MotorController(const int motor_control_pins[N_MOTORS])
 {
-    accelerometer_xi.x = 1;
-    accelerometer_xi.y = 1;
+    accelerometer_xi.x = 0.5;
+    accelerometer_xi.y = 0.5;
     
     use_motors[A] = 1;
     use_motors[B] = 0;
@@ -472,7 +499,7 @@ void MotorController::linearSpeedInc(int inc_percent, int speed_step_time)
 class Accelerometer
 {
 private:
-    static const unsigned int AXIS = 3, AVG_N = 20;
+    static const unsigned int AXIS = 3, AVG_N = 1;
     double ACCURACY = 1E-2;
     
     static const double adc_aref = 5, adc_maxvalue = 1023;
@@ -725,14 +752,25 @@ Accelerometer* Accel;
 Gyroscope* Gyro;
 TimerCount* TCount;
 
+//reaction type (different types of processing sensors' data)
 enum reaction_type_ {REACTION_NONE, REACTION_ANGULAR_VELOCITY, REACTION_ACCELERATION};
 char reaction_type_names[][8] = {"none", "ang_vel", "accel"};
 reaction_type_ reaction_type = REACTION_ANGULAR_VELOCITY;
 
-RVector3D throttle;
+//distance from gyroscope to the accelerometer in meters
+RVector3D gyro_to_acc;
 
+//throttle manual rotation
+RVector3D throttle_manual_rotation;
+
+//angle between Earth's coordinate and ours
 RVector3D angle;
-const double angle_period = 7.5;
+
+//period for low-pass filter for accelerometer
+const double angle_period = 0.5;
+
+//gravitational acceleration
+const double g = 9.80665;
 
 #ifdef DEBUG_SERIAL
     const double serial_gyroscope_coefficient = 0.08;
@@ -769,13 +807,17 @@ void setup()
     
     TCount = new TimerCount;
     
-    throttle.x = 0;
-    throttle.y = 0;
-    throttle.z = 1;
+    throttle_manual_rotation.x = 0;
+    throttle_manual_rotation.y = 0;
+    throttle_manual_rotation.z = 1;
     
     angle.x = 0;
     angle.y = 0;
     angle.z = 0;
+    
+    gyro_to_acc.x = -1.9E-2;
+    gyro_to_acc.y = -1.7E-2;
+    gyro_to_acc.z =  2.1E-2;
 }
 
 void loop()
@@ -784,24 +826,40 @@ void loop()
     static double t_double, angle_alpha;
     static long double dt;
     
+    //data from sensors
     RVector3D accel_data = Accel->get_readings();
     RVector3D gyro_data = Gyro->get_readings();
+    
+    //for angular acceleration
+    static RVector3D gyro_prev_data = gyro_data;
 
+    //on second loop() iteration
     if(TCount->get_time_isset())
     {
+        //calculating dt from previous iteration
         last_dt = TCount->get_time_difference();
         dt = TCount->get_time_difference();
         dt /= 1.E6;
         
-        angle_alpha = dt / (dt + angle_period / (2 * MPI));
+        //angular acceleration creates unwanted linear acceleration
+        RVector3D angular_acceleration = (gyro_data - gyro_prev_data) / dt;
+        accel_data.x -= (angular_acceleration.y * gyro_to_acc.z - angular_acceleration.z * gyro_to_acc.y) / g;
+        accel_data.y -= (angular_acceleration.z * gyro_to_acc.x - angular_acceleration.x * gyro_to_acc.z) / g;
+        accel_data.z -= (angular_acceleration.x * gyro_to_acc.y - angular_acceleration.y * gyro_to_acc.x) / g;
         
+        //angle from accel_data
         RVector3D accel_angle = accel_data.angle_from_projections();
+        
+        //alpha coefficient for low-pass filter
+        angle_alpha = dt / (dt + angle_period / (2 * MPI));
   
-        angle.x = angle.x * (1 - angle_alpha) + accel_angle.x * angle_alpha + gyro_data.x * dt;
-        angle.y = angle.y * (1 - angle_alpha) + accel_angle.y * angle_alpha + gyro_data.y * dt;
+        //low-pass filter
+        angle.x = (angle.x + gyro_data.x * dt) * (1 - angle_alpha) + accel_angle.x * angle_alpha;
+        angle.y = (angle.y + gyro_data.y * dt) * (1 - angle_alpha) + accel_angle.y * angle_alpha;
     }
     TCount->set_time();
     
+    //calculating correction (both methods)
     RVector3D accel_correction = MController->get_accelerometer_correction(angle, accel_data);
     RVector3D gyro_correction = MController->get_gyroscope_rotation(gyro_data);
 
@@ -824,9 +882,9 @@ void loop()
                 angle.y = 0;
                 angle.z = 0;
                 
-                throttle.x = 0;
-                throttle.y = 0;
-                throttle.z = 1;
+                throttle_manual_rotation.x = 0;
+                throttle_manual_rotation.y = 0;
+                throttle_manual_rotation.z = 1;
             }
             else if(c == 'i')
             {                
@@ -852,7 +910,7 @@ void loop()
                     }
                 }
 
-                throttle = MController->get_joystick_throttle(throttle_tmp);
+                throttle_manual_rotation = MController->get_joystick_throttle(throttle_tmp);
                 
                 //throttle_abs
                 while(Serial.available() <= 0);
@@ -879,13 +937,13 @@ void loop()
                 else if(c >= '0' && c <= '9') MController->set_throttle_abs((c - '0') / 10.0);
                 
                 else if(c == 'a')
-                    throttle.y_angle_inc(angle_step);
+                    throttle_manual_rotation.y_angle_inc(angle_step);
                 else if(c == 'd')
-                    throttle.y_angle_dec(angle_step);
+                    throttle_manual_rotation.y_angle_dec(angle_step);
                 else if(c == 'w')
-                    throttle.x_angle_dec(angle_step);
+                    throttle_manual_rotation.x_angle_dec(angle_step);
                 else if(c == 's')
-                    throttle.x_angle_inc(angle_step);
+                    throttle_manual_rotation.x_angle_inc(angle_step);
                 else if(c == 't')
                 {
                     serial_auto_send = !serial_auto_send;
@@ -896,9 +954,11 @@ void loop()
     }
 #endif
 
-    RVector3D throttle_corrected = throttle;
+    RVector3D throttle_corrected = throttle_manual_rotation;
     
     #ifndef DEBUG_NO_GYROSCOPE
+    
+        //reaction to angular velocity from gyroscope
         if(reaction_type == REACTION_ANGULAR_VELOCITY)
         {
             throttle_corrected.x_angle_inc(gyro_correction.x);
@@ -907,12 +967,14 @@ void loop()
             
         #ifndef DEBUG_NO_ACCELEROMETER
         
+            //reaction to angle (+acceleration)
             if(reaction_type == REACTION_ACCELERATION)
                 throttle_corrected = accel_correction;
                 
         #endif
     #endif
     
+    //normalizing
     throttle_corrected /= throttle_corrected.module();
     throttle_corrected *= MController->get_throttle_abs();
     
@@ -927,7 +989,7 @@ void loop()
                 accel_data.print_serial(RVector3D::PRINT_TAB);
                 
                 gyro_data.print_serial(RVector3D::PRINT_TAB);
-                throttle.print_serial(RVector3D::PRINT_TAB);
+                throttle_manual_rotation.print_serial(RVector3D::PRINT_TAB);
                 throttle_corrected.print_serial(RVector3D::PRINT_TAB);
         
                 Serial.print(MController->get_throttle_abs(), SERIAL_ACCURACY);
@@ -978,9 +1040,13 @@ void loop()
     }
 #endif
 
+    //setting speed
     MController->speedChange(throttle_corrected);
     
     #ifdef DEBUG_SERIAL
         if(serial_type == SERIAL_RESTORE) serial_type = SERIAL_DEFAULT;
     #endif
+    
+    //for angular acceleration
+    gyro_prev_data = gyro_data;
 }
