@@ -16,7 +16,8 @@ const double MPI = 3.141592653589793;
 struct RVector3D
 {
     RVector3D();
-    
+    RVector3D(double x_0, double y_0, double z_0);
+
     double x, y, z;
 
     double module_sq();
@@ -56,6 +57,13 @@ RVector3D::RVector3D()
     x = 0;
     y = 0;
     z = 0;
+}
+
+RVector3D::RVector3D(double x_0, double y_0, double z_0)
+{
+    x = x_0;
+    y = y_0;
+    z = z_0;
 }
 
 void RVector3D::norm()
@@ -115,7 +123,7 @@ void RVector3D::print_serial(print_mode mode, use_axis uaxis)
             Serial.write((t + 1) / 2. * 255);
         }
         
-        if(uaxis == USE_2D && i == 1) return;
+        if (uaxis == USE_2D && i == 1) return;
     }
 }
 
@@ -212,10 +220,10 @@ double& RVector3D::value_by_axis_index(int index)
 
 RVector3D RVector3D::angle_from_projections()
 {
-    RVector3D result;
+    RVector3D result = RVector3D;
     
-    result.x = acos(y / sqrt(pow(y, 2) + pow(z, 2))) - MPI / 2;
-    result.y = acos(x / sqrt(pow(x, 2) + pow(z, 2))) - MPI / 2;
+    result.x = acos(y / sqrt(y*y + z*z) - MPI / 2;
+    result.y = acos(x / sqrt(x*x + z*z) - MPI / 2;
     result.z = 0;
     
     return(result);
@@ -223,21 +231,18 @@ RVector3D RVector3D::angle_from_projections()
 
 RVector3D RVector3D::projections_from_angle(double a)
 {
-    RVector3D result;
-    result.x = 0;
-    result.y = 0;
-    result.z = 0;
+    RVector3D result = RVector3D;
 
-    if(fabs(x - MPI / 2) < double_eps || fabs(y - MPI / 2) < double_eps
+    if (fabs(x - MPI / 2) < double_eps || fabs(y - MPI / 2) < double_eps
      || fabs(x + MPI / 2) < double_eps || fabs(y + MPI / 2) < double_eps)
     {
         result.z = 0;
 
-        if(fabs(y + MPI / 2) < double_eps) result.x = -1;
-        if(fabs(y - MPI / 2) < double_eps) result.x = 1;
+        if (fabs(y + MPI / 2) < double_eps) result.x = -1;
+        if (fabs(y - MPI / 2) < double_eps) result.x = 1;
 
-        if(fabs(x + MPI / 2) < double_eps) result.y = 1;
-        if(fabs(x - MPI / 2) < double_eps) result.y = -1;
+        if (fabs(x + MPI / 2) < double_eps) result.y = 1;
+        if (fabs(x - MPI / 2) < double_eps) result.y = -1;
     }
     else
     {
@@ -246,8 +251,8 @@ RVector3D RVector3D::projections_from_angle(double a)
         result.y = -result.z * tan(x);
     }
 
-    if((fabs(y) - double_eps) >= MPI / 2 && (fabs(y) + double_eps) <= MPI) result.x *= -1;
-    if((x + double_eps) <= -MPI / 2 || x - (double_eps) >= MPI / 2) result.y *= -1;
+    if ((fabs(y) - double_eps) >= MPI / 2 && (fabs(y) + double_eps) <= MPI) result.x *= -1;
+    if ((x + double_eps) <= -MPI / 2 || x - (double_eps) >= MPI / 2) result.y *= -1;
 
     result.x *= -1;
     result.y *= -1;
@@ -299,11 +304,11 @@ private:
     
     RVector3D accelerometer_xi;
     
-    static const double gyroscope_max_rotation = 3.14 / 4;
+    static const double gyroscope_max_rotation = MPI / 4;
     
-    static const double joystick_coefficient = 0.2;
+    static const double JOYSTICK_COEFFICIENT = 0.2;
     
-    static const double min_speed_percent = 10;
+    static const double MIN_SPEED_PERCENT = 10;
 
     enum SIGN
     {
@@ -365,14 +370,10 @@ public:
 
     inline RVector3D get_joystick_throttle(RVector3D joystick_data)
     {
-        RVector3D throttle;
+        RVector3D throttle = RVector3D(0, 0, 1);
         
-        throttle.x = 0;
-        throttle.y = 0;
-        throttle.z = 1;
-        
-        throttle.x_angle_inc(joystick_data.x * joystick_coefficient);
-        throttle.y_angle_inc(joystick_data.y * joystick_coefficient);
+        throttle.x_angle_inc(joystick_data.x * JOYSTICK_COEFFICIENT);
+        throttle.y_angle_inc(joystick_data.y * JOYSTICK_COEFFICIENT);
         
         return(throttle);
     }
@@ -397,7 +398,7 @@ public:
 
     inline RVector3D get_gyroscope_rotation(RVector3D gyro_data)
     {
-        RVector3D rotation;
+        RVector3D rotation = RVector3D;
         
         RVector3D gyro_data_norm = gyro_data;
         
@@ -446,8 +447,8 @@ double MotorController::speedGet(RVector3D throttle_vec, int motor)
     // This comes from the Cubic Vector Model
     double res = 100 * ( throttle_vec.module_sq() + x_sign(motor) * throttle_vec.x + y_sign(motor) * throttle_vec.y ) / throttle_vec.z;
     
-    //it is necessary because the motor controller starts a motor with greater speed than needed
-    if(res <= min_speed_percent && throttle_vec.module_sq() != 0) res = min_speed_percent;
+    // it is necessary because the motor controller starts a motor with greater speed than needed
+    if (res <= MIN_SPEED_PERCENT && throttle_vec.module_sq() != 0) res = MIN_SPEED_PERCENT;
     
     return(res);
 }
@@ -585,25 +586,25 @@ class Gyroscope
 {
 private:
     // ITG3200 Register Defines
-    const static unsigned char WHO = 0x00;
-    const static unsigned char SMPL = 0x15;
-    const static unsigned char DLPF = 0x16;
-    const static unsigned char INT_C = 0x17;
-    const static unsigned char INT_S = 0x1A;
-    const static unsigned char TMP_H = 0x1B;
-    const static unsigned char TMP_L = 0x1C;
-    const static unsigned char GX_H = 0x1D;
-    const static unsigned char GX_L = 0x1E;
-    const static unsigned char GY_H = 0x1F;
-    const static unsigned char GY_L = 0x20;
-    const static unsigned char GZ_H = 0x21;
-    const static unsigned char GZ_L = 0x22;
-    const static unsigned char PWR_M = 0x3E;
+    const static unsigned char WHO   = 0x00;
+                               SMPL  = 0x15;
+                               DLPF  = 0x16;
+                               INT_C = 0x17;
+                               INT_S = 0x1A;
+                               TMP_H = 0x1B;
+                               TMP_L = 0x1C;
+                               GX_H  = 0x1D;
+                               GX_L  = 0x1E;
+                               GY_H  = 0x1F;
+                               GY_L  = 0x20;
+                               GZ_H  = 0x21;
+                               GZ_L  = 0x22;
+                               PWR_M = 0x3E;
     const static int GYRO_ADDRESS = 0x68;
 
     static const double ACCURACY = 1E-1; // in radians / sec.
     static const int AXIS = 3;
-    static const double lsb_per_deg_per_sec = 14.375;
+    static const double LSB_PER_DEG_PER_SEC = 14.375;
 
 public:
     Gyroscope();
@@ -689,7 +690,7 @@ RVector3D Gyroscope::get_readings()
 
     for(i = 0; i < AXIS; i++)
     {
-        result.value_by_axis_index(i) *= MPI / (180 * lsb_per_deg_per_sec);
+        result.value_by_axis_index(i) *= MPI / (180 * LSB_PER_DEG_PER_SEC);
         
         if(fabs(result.value_by_axis_index(i)) < ACCURACY)
             result.value_by_axis_index(i) = 0;
@@ -820,18 +821,24 @@ void setup()
     gyro_to_acc.z =  2.1E-2;
 }
 
+
+/*
+   Global Variables
+*/
+unsigned int last_dt = 0, i = 0;
+double t_double = 0, angle_alpha = 0;
+long double dt;
+
+// for angular acceleration
+RVector3D gyro_prev_data = RVector3D;
+
 void loop()
-{
-    static unsigned int last_dt, i;
-    static double t_double, angle_alpha;
-    static long double dt;
-    
+{ 
     //data from sensors
     RVector3D accel_data = Accel->get_readings();
     RVector3D gyro_data = Gyro->get_readings();
     
-    //for angular acceleration
-    static RVector3D gyro_prev_data = gyro_data;
+    gyro_prev_data = gyro_data;
 
     //on second loop() iteration
     if(TCount->get_time_isset())
