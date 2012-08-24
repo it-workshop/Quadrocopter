@@ -57,7 +57,10 @@ private:
     static const int plot_size = 200 + 1;
     double plot_time[plot_size],
         plot_gyro_x[plot_size], plot_gyro_y[plot_size], plot_gyro_z[plot_size],
-    plot_acc_x[plot_size], plot_acc_y[plot_size], plot_acc_z[plot_size];
+        plot_acc_x[plot_size], plot_acc_y[plot_size], plot_acc_z[plot_size],
+        plot_acc_accx[plot_size], plot_acc_accy[plot_size], plot_acc_accz[plot_size],
+        plot_angle_x[plot_size], plot_angle_y[plot_size],
+        plot_angle_accx[plot_size], plot_angle_accy[plot_size];
 
     string save_filename;
     ofstream save_file;

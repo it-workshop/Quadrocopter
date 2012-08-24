@@ -1,7 +1,7 @@
 //For gyroscope
 #include <Wire.h>
 
-//#define DEBUG_NO_MOTORS
+#define DEBUG_NO_MOTORS
 //#define DEBUG_NO_GYROSCOPE
 //#define DEBUG_NO_ACCELEROMETER
 #define DEBUG_SERIAL
@@ -224,8 +224,8 @@ RVector3D RVector3D::angle_from_projections()
 {
     RVector3D result = RVector3D();
     
-    result.x = acos(y / sqrt(y*y + z*z)) - MPI / 2;
-    result.y = acos(x / sqrt(x*x + z*z)) - MPI / 2;
+    result.x = -(acos(y / sqrt(y*y + z*z)) - MPI / 2);
+    result.y =   acos(x / sqrt(x*x + z*z)) - MPI / 2;
     result.z = 0;
     
     return(result);
@@ -481,10 +481,7 @@ MotorController::MotorController(const int motor_control_pins[N_MOTORS])
     // Ожидание инициализации конроллов моторов + примерно три писка
     delay(INIT_TIMEOUT);
 
-    RVector3D start_throttle;
-    start_throttle.x = 0;
-    start_throttle.y = 0;
-    start_throttle.z = 0;
+    RVector3D start_throttle = RVector3D();
 
     throttle_abs = start_throttle.module();
 
@@ -518,9 +515,7 @@ public:
         map_a[1] = 0.892143084;  map_b[1] = 1.8134632093;
         map_a[2] = 0.8861390819; map_b[2] = 1.5457698227;
         
-        defaults.x = 0;
-        defaults.y = 0;
-        defaults.z = 0;
+        defaults = RVector3D();
         
         unsigned int i;
         for(i = 0; i < AXIS; i++)
@@ -552,6 +547,9 @@ RVector3D Accelerometer::get_raw_readings()
             result.value_by_axis_index(i) = 0;
         #else
             result.value_by_axis_index(i) = analogRead(ports[i]) * adc_aref / adc_maxvalue;
+            
+            if(result.value_by_axis_index(i) == NAN || result.value_by_axis_index(i) != result.value_by_axis_index(i))
+                result.value_by_axis_index(i) = 0;
         #endif
     }
     
@@ -562,9 +560,7 @@ RVector3D Accelerometer::get_readings()
 {
     unsigned int i;
     RVector3D result;
-    result.x = 0;
-    result.y = 0;
-    result.z = 0;
+    result = RVector3D();
     
     for(i = 0; i < AVG_N; i++)
         result += get_raw_readings();
@@ -707,9 +703,7 @@ RVector3D Gyroscope::get_raw_readings()
     
     #ifdef DEBUG_NO_GYROSCOPE
     
-        result.x = 0;
-        result.y = 0;
-        result.z = 0;
+        result = RVector3D();
     
     #else
 
@@ -770,7 +764,7 @@ RVector3D throttle_manual_rotation;
 RVector3D angle;
 
 //period for low-pass filter for accelerometer
-const double angle_period = 0.5;
+double angle_period = 4;
 
 //gravitational acceleration
 const double g = 9.80665;
@@ -810,19 +804,12 @@ void setup()
     
     TCount = new TimerCount;
     
-    throttle_manual_rotation.x = 0;
-    throttle_manual_rotation.y = 0;
-    throttle_manual_rotation.z = 1;
+    throttle_manual_rotation = RVector3D(0, 0, 1);
     
-    angle.x = 0;
-    angle.y = 0;
-    angle.z = 0;
+    angle = RVector3D();
     
-    gyro_to_acc.x = -1.9E-2;
-    gyro_to_acc.y = -1.7E-2;
-    gyro_to_acc.z =  2.1E-2;
+    gyro_to_acc = RVector3D(-1.9E-2, -1.7E-2, 2.1E-2);
 }
-
 
 /*
    Global Variables
@@ -853,7 +840,7 @@ void loop()
         accel_data.x -= (angular_acceleration.y * gyro_to_acc.z - angular_acceleration.z * gyro_to_acc.y) / g;
         accel_data.y -= (angular_acceleration.z * gyro_to_acc.x - angular_acceleration.x * gyro_to_acc.z) / g;
         accel_data.z -= (angular_acceleration.x * gyro_to_acc.y - angular_acceleration.y * gyro_to_acc.x) / g;
-        
+       
         // angle from accel_data
         RVector3D accel_angle = accel_data.angle_from_projections();
         
@@ -883,13 +870,9 @@ void loop()
         {
             if(c == 'n')
             {
-                angle.x = 0;
-                angle.y = 0;
-                angle.z = 0;
+                angle = RVector3D();
                 
-                throttle_manual_rotation.x = 0;
-                throttle_manual_rotation.y = 0;
-                throttle_manual_rotation.z = 1;
+                throttle_manual_rotation = RVector3D(0, 0, 1);
             }
             else if(c == 'i')
             {                

@@ -41,6 +41,9 @@ public:
     vect operator-=(vect t);
     vect operator*(number_vect_t t);
     number_vect_t operator*(vect t);
+
+    vect angle_from_projections();
+    vect projections_from_angle(double a = 1);
 };
 
 #endif // VECT_H

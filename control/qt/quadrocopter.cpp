@@ -13,9 +13,13 @@ quadrocopter::quadrocopter()
     rate = 115200;
     maxwait = 500;
 
-    device = "/dev/rfcomm0";
+    //device = "/dev/rfcomm0";
+    device = "/dev/ttyACM0";
 
     connect_delay_time = 500;
+
+    //connect_delay_arduino = 9000;
+    connect_delay_arduino = 2000;
 
     defaults();
 }
@@ -141,7 +145,7 @@ void quadrocopter::defaults()
     reaction_type = REACTION_ANGULAR_VELOCITY;
 
     //wait for arduino to load
-    connect_delay_time = !device.substr(0, 11).compare("/dev/ttyACM") ? 9000 : 500;
+    connect_delay_time = !device.substr(0, 11).compare("/dev/ttyACM") ? connect_delay_arduino : 500;
 }
 
 void quadrocopter::connect()
@@ -198,6 +202,14 @@ vect quadrocopter::get_accelerometer_readings()
 vect quadrocopter::get_angle()
 {
     return(angle);
+}
+
+vect quadrocopter::get_acceleration()
+{
+    vect g_vect = angle.projections_from_angle(g);
+    vect a = accelerometer_readings - g_vect;
+
+    return(a);
 }
 
 vect quadrocopter::get_throttle_gyroscope_correction()

@@ -64,6 +64,29 @@ Quadro::Quadro(QWidget *parent) :
     timer_reconnect.start(timer_reconnect_interval);
     timer_auto.start(timer_auto_interval);
 
+    for(int i = 0; i < plot_size; i++)
+    {
+        plot_time[i] = 0;
+
+        plot_gyro_x[i] = 0;
+        plot_gyro_y[i] = 0;
+        plot_gyro_z[i] = 0;
+
+        plot_acc_x[i] = 0;
+        plot_acc_y[i] = 0;
+        plot_acc_z[i] = 0;
+
+        plot_acc_accx[i] = 0;
+        plot_acc_accy[i] = 0;
+        plot_acc_accz[i] = 0;
+
+        plot_angle_x[i] = 0;
+        plot_angle_y[i] = 0;
+
+        plot_angle_accx[i] = 0;
+        plot_angle_accy[i] = 0;
+    }
+
     ui->plot_gyro->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
     ui->plot_gyro->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
     ui->plot_gyro->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
@@ -85,26 +108,13 @@ Quadro::Quadro(QWidget *parent) :
     gyro_y->setPen(QPen(Qt::green));
     gyro_z->setPen(QPen(Qt::blue));
 
-    for(int i = 0; i < plot_size; i++)
-    {
-        plot_time[i] = 0;
-
-        plot_gyro_x[i] = 0;
-        plot_gyro_y[i] = 0;
-        plot_gyro_z[i] = 0;
-
-        plot_acc_x[i] = 0;
-        plot_acc_y[i] = 0;
-        plot_acc_z[i] = 0;
-    }
-
     // Attach (don't copy) data.
     gyro_x->setRawData(plot_time, plot_gyro_x, plot_size);
     gyro_y->setRawData(plot_time, plot_gyro_y, plot_size);
     gyro_z->setRawData(plot_time, plot_gyro_z, plot_size);
 
-    ui->plot_gyro->setAxisTitle(QwtPlot::xBottom, "Time [ms]");
-    ui->plot_gyro->setAxisTitle(QwtPlot::yLeft, "Angular velocity [radians]");
+    ui->plot_gyro->setAxisTitle(QwtPlot::xBottom, "Time [s]");
+    ui->plot_gyro->setAxisTitle(QwtPlot::yLeft, "Angular velocity [radians/s]");
 
 
     ui->plot_acc->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
@@ -112,14 +122,23 @@ Quadro::Quadro(QWidget *parent) :
     ui->plot_acc->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
 
     // Insert new curves
-    QwtPlotCurve *acc_x = new QwtPlotCurve("x");
+    QwtPlotCurve *acc_x = new QwtPlotCurve("(g - a) x");
     acc_x->attach(ui->plot_acc);
 
-    QwtPlotCurve *acc_y = new QwtPlotCurve("y");
+    QwtPlotCurve *acc_y = new QwtPlotCurve("(g - a) y");
     acc_y->attach(ui->plot_acc);
 
-    QwtPlotCurve *acc_z = new QwtPlotCurve("z");
+    QwtPlotCurve *acc_z = new QwtPlotCurve("(g - a) z");
     acc_z->attach(ui->plot_acc);
+
+    QwtPlotCurve *acc_accx = new QwtPlotCurve("acc x");
+    acc_accx->attach(ui->plot_acc);
+
+    QwtPlotCurve *acc_accy = new QwtPlotCurve("acc y");
+    acc_accy->attach(ui->plot_acc);
+
+    QwtPlotCurve *acc_accz = new QwtPlotCurve("acc z");
+    acc_accz->attach(ui->plot_acc);
 
     ui->plot_acc->setAxisScale(QwtPlot::yLeft, -10, 10);
 
@@ -128,13 +147,57 @@ Quadro::Quadro(QWidget *parent) :
     acc_y->setPen(QPen(Qt::green));
     acc_z->setPen(QPen(Qt::blue));
 
+    acc_accx->setPen(QPen(Qt::yellow));
+    acc_accy->setPen(QPen(Qt::black));
+    acc_accz->setPen(QPen(Qt::magenta));
+
     // Attach (don't copy) data.
     acc_x->setRawData(plot_time, plot_acc_x, plot_size);
     acc_y->setRawData(plot_time, plot_acc_y, plot_size);
     acc_z->setRawData(plot_time, plot_acc_z, plot_size);
 
-    ui->plot_acc->setAxisTitle(QwtPlot::xBottom, "Time [ms]");
+    acc_accx->setRawData(plot_time, plot_acc_accx, plot_size);
+    acc_accy->setRawData(plot_time, plot_acc_accy, plot_size);
+    acc_accz->setRawData(plot_time, plot_acc_accz, plot_size);
+
+    ui->plot_acc->setAxisTitle(QwtPlot::xBottom, "Time [s]");
     ui->plot_acc->setAxisTitle(QwtPlot::yLeft, "Acceleration [m/s^2]");
+
+    ui->plot_angle->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
+    ui->plot_angle->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
+    ui->plot_angle->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
+
+    // Insert new curves
+    QwtPlotCurve *angle_x = new QwtPlotCurve("x");
+    angle_x->attach(ui->plot_angle);
+
+    QwtPlotCurve *angle_y = new QwtPlotCurve("y");
+    angle_y->attach(ui->plot_angle);
+
+    QwtPlotCurve *angle_accx = new QwtPlotCurve("acc x (angle)");
+    angle_accx->attach(ui->plot_angle);
+
+    QwtPlotCurve *angle_accy = new QwtPlotCurve("acc y (angle)");
+    angle_accy->attach(ui->plot_angle);
+
+    ui->plot_angle->setAxisScale(QwtPlot::yLeft, -M_PI / 2, M_PI / 2);
+
+    // Set curve styles
+    angle_x->setPen(QPen(Qt::red));
+    angle_y->setPen(QPen(Qt::green));
+
+    angle_accx->setPen(QPen(Qt::blue));
+    angle_accy->setPen(QPen(Qt::yellow));
+
+    // Attach (don't copy) data.
+    angle_x->setRawData(plot_time, plot_angle_x, plot_size);
+    angle_y->setRawData(plot_time, plot_angle_y, plot_size);
+
+    angle_accx->setRawData(plot_time, plot_angle_accx, plot_size);
+    angle_accy->setRawData(plot_time, plot_angle_accy, plot_size);
+
+    ui->plot_angle->setAxisTitle(QwtPlot::xBottom, "Time [s]");
+    ui->plot_angle->setAxisTitle(QwtPlot::yLeft, "Angle [radians]");
 }
 
 Quadro::~Quadro()
@@ -395,6 +458,13 @@ void Quadro::save_close()
 
 void Quadro::plot_update()
 {
+    static mytime plot_mytime;
+
+    int plot_current = plot_size - 1;
+
+    number_vect_t dt_seconds = plot_mytime.get_time_difference() / 1E3;
+
+    //shifting values
     for(int i = 0; i < plot_size - 1; i++)
     {
         plot_time[i] = plot_time[i + 1];
@@ -406,41 +476,55 @@ void Quadro::plot_update()
         plot_acc_x[i] = plot_acc_x[i + 1];
         plot_acc_y[i] = plot_acc_y[i + 1];
         plot_acc_z[i] = plot_acc_z[i + 1];
+
+        plot_acc_accx[i] = plot_acc_accx[i + 1];
+        plot_acc_accy[i] = plot_acc_accy[i + 1];
+        plot_acc_accz[i] = plot_acc_accz[i + 1];
+
+        plot_angle_x[i] = plot_angle_x[i + 1];
+        plot_angle_y[i] = plot_angle_y[i + 1];
+
+        plot_angle_accx[i] = plot_angle_accx[i + 1];
+        plot_angle_accy[i] = plot_angle_accy[i + 1];
     }
 
-    static mytime plot_mytime;
+    plot_time[plot_current] = plot_time[plot_current - 1] + dt_seconds;
 
-    static int plot_current = 1;
+    //for first run seconds
+    for(int i = plot_size - 2; i >= 0; i--)
+        if(plot_time[i] == 0) plot_time[i] = plot_time[i + 1] - dt_seconds;
 
-    if(plot_current >= plot_size) plot_current = plot_size - 1;
-
-    plot_time[plot_current] = plot_time[plot_current - 1] + plot_mytime.get_time_difference() / 1E3;
-
+    //gyro
     plot_gyro_x[plot_current] = quadro.get_gyroscope_readings().x;
     plot_gyro_y[plot_current] = quadro.get_gyroscope_readings().y;
     plot_gyro_z[plot_current] = quadro.get_gyroscope_readings().z;
 
+    ui->plot_gyro->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
+    ui->plot_gyro->replot();
+
+    //acc
     plot_acc_x[plot_current] = quadro.get_accelerometer_readings().x;
     plot_acc_y[plot_current] = quadro.get_accelerometer_readings().y;
     plot_acc_z[plot_current] = quadro.get_accelerometer_readings().z;
 
-    ui->plot_gyro->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
-
-    ui->plot_gyro->replot();
-    //ui->plot_gyro->repaint();
+    plot_acc_accx[plot_current] = quadro.get_acceleration().x;
+    plot_acc_accy[plot_current] = quadro.get_acceleration().y;
+    plot_acc_accz[plot_current] = quadro.get_acceleration().z;
 
     ui->plot_acc->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
-
     ui->plot_acc->replot();
-    //ui->plot_acc->repaint();
 
+    //angle
+    plot_angle_x[plot_current] = quadro.get_angle().x;
+    plot_angle_y[plot_current] = quadro.get_angle().y;
 
-    if(plot_current < plot_size - 1)
-    {
-        plot_time[plot_current + 1] = plot_time[plot_current] + plot_mytime.get_time_difference() / 1E3;
-        plot_current++;
-    }
+    plot_angle_accx[plot_current] = quadro.get_accelerometer_readings().angle_from_projections().x;
+    plot_angle_accy[plot_current] = quadro.get_accelerometer_readings().angle_from_projections().y;
 
+    ui->plot_angle->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
+    ui->plot_angle->replot();
+
+    //for dt_seconds
     plot_mytime.set_time();
 }
 

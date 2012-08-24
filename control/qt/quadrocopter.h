@@ -17,6 +17,7 @@ private:
     vect throttle_rotation;
     vect gyroscope_readings, throttle_gyroscope_correction;
     vect accelerometer_readings, throttle_accelerometer_correction;
+    vect acceleration;
 
     static const int MOTORS_N = 4;
     number_vect_t MOTORS[MOTORS_N];
@@ -28,6 +29,8 @@ private:
     number_vect_t read_time, write_time, loop_time;
 
     static const double g = 9.80665;
+
+    number_vect_t connect_delay_arduino;
 
     void defaults();
 
@@ -43,6 +46,7 @@ public:
     vect get_gyroscope_readings(); // returns gyroscope readings, values [0...1]
     vect get_accelerometer_readings(); // returns acceleromter readings, values [0...]
     vect get_angle(); //returns angle, values [0...1]
+    vect get_acceleration();
 
     vect get_throttle_gyroscope_correction();
     vect get_throttle_accelerometer_correction();

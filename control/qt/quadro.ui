@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>905</width>
-    <height>520</height>
+    <width>1054</width>
+    <height>566</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -451,8 +451,8 @@
      <rect>
       <x>430</x>
       <y>4</y>
-      <width>471</width>
-      <height>451</height>
+      <width>621</width>
+      <height>501</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -467,8 +467,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>471</width>
-        <height>421</height>
+        <width>621</width>
+        <height>471</height>
        </rect>
       </property>
      </widget>
@@ -482,8 +482,23 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>471</width>
-        <height>421</height>
+        <width>621</width>
+        <height>471</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Angle</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_angle">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>621</width>
+        <height>471</height>
        </rect>
       </property>
      </widget>
@@ -495,7 +510,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>905</width>
+     <width>1054</width>
      <height>23</height>
     </rect>
    </property>

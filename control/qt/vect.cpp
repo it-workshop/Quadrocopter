@@ -181,3 +181,47 @@ number_vect_t vect::operator*(vect t)
 {
     return(x * t.x + y * t.y + z * t.z);
 }
+
+vect vect::angle_from_projections()
+{
+    vect result;
+
+    result.x = -(acos(y / sqrt(y*y + z*z)) - M_PI / 2);
+    result.y =   acos(x / sqrt(x*x + z*z)) - M_PI / 2;
+    result.z = 0;
+
+    return(result);
+}
+
+vect vect::projections_from_angle(double a)
+{
+    vect result;
+
+    const number_vect_t double_eps = 1E-2;
+
+    if (fabs(x - M_PI / 2) < double_eps || fabs(y - M_PI / 2) < double_eps
+     || fabs(x + M_PI / 2) < double_eps || fabs(y + M_PI / 2) < double_eps)
+    {
+        result.z = 0;
+
+        if (fabs(y + M_PI / 2) < double_eps) result.x = -1;
+        if (fabs(y - M_PI / 2) < double_eps) result.x = 1;
+
+        if (fabs(x + M_PI / 2) < double_eps) result.y = 1;
+        if (fabs(x - M_PI / 2) < double_eps) result.y = -1;
+    }
+    else
+    {
+        result.z = +a / sqrt(1 + pow(tan(x), 2) + pow(tan(y), 2));
+        result.x = +result.z * tan(y);
+        result.y = -result.z * tan(x);
+    }
+
+    if ((fabs(y) - double_eps) >= M_PI / 2 && (fabs(y) + double_eps) <= M_PI) result.x *= -1;
+    if ((x + double_eps) <= -M_PI / 2 || x - (double_eps) >= M_PI / 2) result.y *= -1;
+
+    result.x *= -1;
+    result.y *= -1;
+
+    return(result);
+}
