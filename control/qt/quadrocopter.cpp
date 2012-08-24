@@ -54,7 +54,7 @@ void quadrocopter::read_data()
         throttle_corrected = t_throttle_corrected;
         angle = t_angle;
         gyroscope_readings = t_gyroscope_readings / serial_gyroscope_coefficient;
-        accelerometer_readings = t_accelerometer_readings;
+        accelerometer_readings = t_accelerometer_readings * g;
         throttle_gyroscope_correction = t_throttle_gyroscope_correction;
         throttle_accelerometer_correction = t_throttle_accelerometer_correction;
         loop_time = t_loop_time;

@@ -47,12 +47,17 @@ private slots:
 private:
     Ui::Quadro *ui;
 
-    static const double timer_auto_interval = 50;
+    static const double timer_auto_interval = 80;
     static const double timer_reconnect_interval = 1000;
     QTimer timer_auto, timer_reconnect;
 
     quadrocopter quadro;
     joystick joy;
+
+    static const int plot_size = 200 + 1;
+    double plot_time[plot_size],
+        plot_gyro_x[plot_size], plot_gyro_y[plot_size], plot_gyro_z[plot_size],
+    plot_acc_x[plot_size], plot_acc_y[plot_size], plot_acc_z[plot_size];
 
     string save_filename;
     ofstream save_file;
@@ -68,6 +73,8 @@ private:
     void save_data();
     void save_open();
     void save_close();
+
+    void plot_update();
 
     void interface_read();
     void interface_write();

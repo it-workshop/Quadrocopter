@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>709</width>
-    <height>452</height>
+    <width>905</width>
+    <height>520</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QWidget" name="formLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>30</y>
+      <x>0</x>
+      <y>400</y>
       <width>271</width>
       <height>58</height>
      </rect>
@@ -275,13 +275,27 @@
       <x>0</x>
       <y>124</y>
       <width>411</width>
-      <height>264</height>
+      <height>271</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_2">
      <property name="fieldGrowthPolicy">
       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
      </property>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_readwrite_time">
+       <property name="text">
+        <string>Read/Write/Loop</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="readwrite_time">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_throttle">
        <property name="text">
@@ -430,21 +444,50 @@
        </item>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_readwrite_time">
-       <property name="text">
-        <string>Read/Write/Loop</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="readwrite_time">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
     </layout>
+   </widget>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>4</y>
+      <width>471</width>
+      <height>451</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="gyro_data">
+     <attribute name="title">
+      <string>Gyroscope data</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_gyro">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>471</width>
+        <height>421</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="acc_data">
+     <attribute name="title">
+      <string>Accelerometer data</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_acc">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>471</width>
+        <height>421</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -452,7 +495,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>709</width>
+     <width>905</width>
      <height>23</height>
     </rect>
    </property>
@@ -564,6 +607,13 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QwtPlot</class>
+   <extends>QFrame</extends>
+   <header>qwt_plot.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

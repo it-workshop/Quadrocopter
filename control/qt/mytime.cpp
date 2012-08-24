@@ -7,7 +7,7 @@ using std::string;
 
 mytime::mytime()
 {
-    old = 0;
+    old = get_time_ms();
 }
 
 void mytime::set_time()

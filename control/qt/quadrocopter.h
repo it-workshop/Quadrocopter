@@ -27,6 +27,8 @@ private:
 
     number_vect_t read_time, write_time, loop_time;
 
+    static const double g = 9.80665;
+
     void defaults();
 
 public:
