@@ -47,7 +47,7 @@ private slots:
 private:
     Ui::Quadro *ui;
 
-    static const double timer_auto_interval = 80;
+    static const double timer_auto_interval = 180;
     static const double timer_reconnect_interval = 1000;
     QTimer timer_auto, timer_reconnect;
 
@@ -58,9 +58,13 @@ private:
     double plot_time[plot_size],
         plot_gyro_x[plot_size], plot_gyro_y[plot_size], plot_gyro_z[plot_size],
         plot_acc_x[plot_size], plot_acc_y[plot_size], plot_acc_z[plot_size],
-        plot_acc_accx[plot_size], plot_acc_accy[plot_size], plot_acc_accz[plot_size],
         plot_angle_x[plot_size], plot_angle_y[plot_size],
-        plot_angle_accx[plot_size], plot_angle_accy[plot_size];
+        plot_angle_accx[plot_size], plot_angle_accy[plot_size],
+        plot_throttle_x[plot_size], plot_throttle_y[plot_size], plot_throttle_z[plot_size], plot_throttle[plot_size],
+        plot_acc_correction_x[plot_size], plot_acc_correction_y[plot_size],
+        plot_gyro_correction_x[plot_size], plot_gyro_correction_y[plot_size];
+
+    mytime plot_mytime;
 
     string save_filename;
     ofstream save_file;
@@ -78,6 +82,8 @@ private:
     void save_close();
 
     void plot_update();
+    void plot_init();
+    void plot_reset_data();
 
     void interface_read();
     void interface_write();

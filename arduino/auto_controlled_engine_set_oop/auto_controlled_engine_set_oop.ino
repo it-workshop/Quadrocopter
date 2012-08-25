@@ -1,7 +1,7 @@
 //For gyroscope
 #include <Wire.h>
 
-#define DEBUG_NO_MOTORS
+//#define DEBUG_NO_MOTORS
 //#define DEBUG_NO_GYROSCOPE
 //#define DEBUG_NO_ACCELEROMETER
 #define DEBUG_SERIAL
@@ -14,6 +14,33 @@ const int SERIAL_ACCURACY = 3;
 
 double double_eps = 1E-2;
 
+class TimerCount
+{
+    private:
+        unsigned long time;
+        bool time_isset;
+    public:
+        TimerCount()
+        {
+            time_isset = false;
+        }
+        
+        void set_time()
+        {
+            time = micros();
+            time_isset = true;
+        }
+        
+        unsigned long get_time_difference()
+        {
+            return(micros() - time);
+        }
+        
+        bool get_time_isset()
+        {
+            return(time_isset);
+        }
+};
 
 struct RVector3D
 {
@@ -385,7 +412,30 @@ public:
         RVector3D g = angle.projections_from_angle();
         RVector3D a = accel_data - g;
         
-        RVector3D rotation = a.angle_from_projections();
+        static RVector3D a_prev = a, res;
+        static TimerCount t_time;
+    
+        double period = 4, alpha, dt;
+    
+        if(!t_time.get_time_isset()) res = RVector3D(0, 0, 0);
+        else {
+            dt = t_time.get_time_difference() / 1.E6;
+    
+            alpha = dt / (dt + period / (2 * M_PI));
+    
+            //cerr << "alpha=" << alpha << endl;
+    
+            res = a_prev * (1 - alpha) + a * alpha;
+        }
+    
+        a_prev = res;
+        t_time.set_time();
+  
+        RVector3D rotation;
+        rotation.x = res.y;
+        rotation.y = res.x;
+        
+/*        RVector3D rotation = res.angle_from_projections();
         RVector3D moment_of_force;
         moment_of_force.x = rotation.x * accelerometer_xi.x;
         moment_of_force.y = rotation.y * accelerometer_xi.y;
@@ -395,7 +445,9 @@ public:
         throttle_new.x =  moment_of_force.y / 2 * throttle_new.z;
         throttle_new.y = -moment_of_force.x / 2 * throttle_new.z;
         
-        return(throttle_new);
+        return(throttle_new);*/
+        
+        return(rotation);
     }
 
     inline RVector3D get_gyroscope_rotation(RVector3D gyro_data)
@@ -418,7 +470,7 @@ public:
         double gyroscope_bin_coeff1 = 0.3;
         double gyroscope_bin_coeff2 = 0.4;
         
-        rotation.x =  atan(gyro_data.x * gyroscope_bin_coeff1) * gyroscope_bin_coeff2;
+        rotation.x = -atan(gyro_data.x * gyroscope_bin_coeff1) * gyroscope_bin_coeff2;
         rotation.y = -atan(gyro_data.y * gyroscope_bin_coeff1) * gyroscope_bin_coeff2;
        
         for(int i = 0; i < 2; i++)
@@ -467,9 +519,9 @@ MotorController::MotorController(const int motor_control_pins[N_MOTORS])
     accelerometer_xi.y = 0.5;
     
     use_motors[A] = 1;
-    use_motors[B] = 0;
+    use_motors[B] = 1;
     use_motors[C] = 1;
-    use_motors[D] = 0;
+    use_motors[D] = 1;
     
     for (int i = 0; i < N_MOTORS; i++)
     {
@@ -716,34 +768,6 @@ RVector3D Gyroscope::get_raw_readings()
     return(result);
 }
 
-class TimerCount
-{
-    private:
-        unsigned long time;
-        bool time_isset;
-    public:
-        TimerCount()
-        {
-            time_isset = false;
-        }
-        
-        void set_time()
-        {
-            time = micros();
-            time_isset = true;
-        }
-        
-        unsigned long get_time_difference()
-        {
-            return(micros() - time);
-        }
-        
-        bool get_time_isset()
-        {
-            return(time_isset);
-        }
-};
-
 MotorController* MController;
 Accelerometer* Accel;
 Gyroscope* Gyro;
@@ -957,7 +981,8 @@ void loop()
             // reaction on angle (+acceleration)
             if (reaction_type == REACTION_ACCELERATION)
             {
-                throttle_corrected = accel_correction;
+                throttle_corrected.x_angle_inc(accel_correction.x);
+                throttle_corrected.y_angle_inc(accel_correction.y);
             }    
         #endif
     #endif

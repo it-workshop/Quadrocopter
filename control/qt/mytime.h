@@ -16,11 +16,15 @@ public:
     unsigned long long int get_time_difference();
     unsigned long long int get_time_ms();
 
+    void reset();
+    bool is_set();
+
     const time_t get_seconds();
     const string get_time();
 
 private:
     unsigned long long int old;
+    bool isset;
 };
 
 #endif // MYTIME_H

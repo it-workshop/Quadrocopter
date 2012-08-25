@@ -8,11 +8,13 @@ using std::string;
 mytime::mytime()
 {
     old = get_time_ms();
+    reset();
 }
 
 void mytime::set_time()
 {
     old = get_time_ms();
+    isset = true;
 }
 
 unsigned long long int mytime::get_time_ms()
@@ -21,6 +23,16 @@ unsigned long long int mytime::get_time_ms()
     ftime(tp);
 
     return(tp->time * 1000 + tp->millitm);
+}
+
+void mytime::reset()
+{
+    isset = false;
+}
+
+bool mytime::is_set()
+{
+    return(isset);
 }
 
 unsigned long long int mytime::get_time_difference()

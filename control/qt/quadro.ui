@@ -446,7 +446,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QTabWidget" name="tabWidget">
+   <widget class="QTabWidget" name="tabwidgetplot">
     <property name="geometry">
      <rect>
       <x>430</x>
@@ -458,7 +458,7 @@
     <property name="currentIndex">
      <number>0</number>
     </property>
-    <widget class="QWidget" name="gyro_data">
+    <widget class="QWidget" name="tabgyro_data">
      <attribute name="title">
       <string>Gyroscope data</string>
      </attribute>
@@ -473,7 +473,7 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="acc_data">
+    <widget class="QWidget" name="tabacc_data">
      <attribute name="title">
       <string>Accelerometer data</string>
      </attribute>
@@ -488,11 +488,41 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab">
+    <widget class="QWidget" name="tabangle">
      <attribute name="title">
       <string>Angle</string>
      </attribute>
      <widget class="QwtPlot" name="plot_angle">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>621</width>
+        <height>471</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabthrottle">
+     <attribute name="title">
+      <string>Throttle</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_throttle">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>621</width>
+        <height>471</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabcorrections">
+     <attribute name="title">
+      <string>Corrections</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_corrections">
       <property name="geometry">
        <rect>
         <x>0</x>

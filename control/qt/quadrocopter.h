@@ -46,7 +46,6 @@ public:
     vect get_gyroscope_readings(); // returns gyroscope readings, values [0...1]
     vect get_accelerometer_readings(); // returns acceleromter readings, values [0...]
     vect get_angle(); //returns angle, values [0...1]
-    vect get_acceleration();
 
     vect get_throttle_gyroscope_correction();
     vect get_throttle_accelerometer_correction();
