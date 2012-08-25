@@ -81,8 +81,8 @@ void Quadro::interface_write()
         ui->gyro->setText(quadro.get_gyroscope_readings().print().c_str());
         ui->accel->setText(quadro.get_accelerometer_readings().print().c_str());
         ui->angle->setText(quadro.get_angle().print2d().c_str());
-        ui->throttle_accelerometer_correction->setText(quadro.get_throttle_accelerometer_correction().print().c_str());
-        ui->throttle_gyroscope_correction->setText(quadro.get_throttle_gyroscope_correction().print2d().c_str());
+        ui->throttle_accelerometer_correction->setText(quadro.get_throttle_accelerometer_rotation().print().c_str());
+        ui->throttle_gyroscope_correction->setText(quadro.get_throttle_gyroscope_rotation().print2d().c_str());
 
         t_ss2 << quadro.get_read_time() * 1E3 << " ms / " << quadro.get_write_time() * 1E3 << " ms / "
               << quadro.get_loop_time() * 1E6 << " us";
@@ -159,7 +159,7 @@ void Quadro::save_data()
         //seconds time
         //gyro[3] accel[3]
         //reaction_type
-        //angle[2] gyroscope_correction[2] accelerometer_correction[3]
+        //angle[2] gyroscope_rotation[2] accelerometer_rotation[3]
         //joystick_connected joystick_use joystick_readings[2] joystick_power joystick_power_switch
         //quadro_connected throttle_rotation[2] throttle_corrected[3] power motors[4]
         //read_time_sec write_time_sec loop_time_sec
@@ -171,8 +171,8 @@ void Quadro::save_data()
              << quadro.get_reaction_type() << "\t"
              << quadro.get_angle().print2d_tab() << "\t"
 
-             << quadro.get_throttle_gyroscope_correction().print2d_tab() << "\t"
-             << quadro.get_throttle_accelerometer_correction().print_tab() << "\t"
+             << quadro.get_throttle_gyroscope_rotation().print2d_tab() << "\t"
+             << quadro.get_throttle_accelerometer_rotation().print_tab() << "\t"
 
              << joy.isconnected() << "\t"
              << ui->JoystickUse->isChecked() << "\t"
@@ -471,32 +471,44 @@ void Quadro::plot_init()
 
     // Insert new curves
     QwtPlotCurve *correction_gyro_x = new QwtPlotCurve("gyro x");
-    correction_gyro_x->attach(ui->plot_corrections);
+    //correction_gyro_x->attach(ui->plot_corrections);
 
     QwtPlotCurve *correction_gyro_y = new QwtPlotCurve("gyro y");
-    correction_gyro_y->attach(ui->plot_corrections);
+    //correction_gyro_y->attach(ui->plot_corrections);
 
     QwtPlotCurve *correction_acc_x = new QwtPlotCurve("acc x");
-    correction_acc_x->attach(ui->plot_corrections);
+    //correction_acc_x->attach(ui->plot_corrections);
 
     QwtPlotCurve *correction_acc_y = new QwtPlotCurve("acc y");
-    correction_acc_y->attach(ui->plot_corrections);
+    //correction_acc_y->attach(ui->plot_corrections);
+
+    QwtPlotCurve *correction_angle_x = new QwtPlotCurve("angle x");
+    correction_angle_x->attach(ui->plot_corrections);
+
+    QwtPlotCurve *correction_angle_y = new QwtPlotCurve("angle y");
+    correction_angle_y->attach(ui->plot_corrections);
 
     ui->plot_corrections->setAxisScale(QwtPlot::yLeft, -1, 1);
 
     // Set curve styles
-    correction_gyro_x->setPen(QPen(Qt::red));
-    correction_gyro_y->setPen(QPen(Qt::green));
+    //correction_gyro_x->setPen(QPen(Qt::red));
+    //correction_gyro_y->setPen(QPen(Qt::green));
 
-    correction_acc_x->setPen(QPen(Qt::yellow));
-    correction_acc_y->setPen(QPen(Qt::magenta));
+    //correction_acc_x->setPen(QPen(Qt::yellow));
+    //correction_acc_y->setPen(QPen(Qt::magenta));
+
+    correction_angle_x->setPen(QPen(Qt::red));
+    correction_angle_y->setPen(QPen(Qt::green));
 
     // Attach (don't copy) data.
-    correction_gyro_x->setRawData(plot_time, plot_gyro_correction_x, plot_size);
-    correction_gyro_y->setRawData(plot_time, plot_gyro_correction_y, plot_size);
+    correction_gyro_x->setRawData(plot_time, plot_gyro_rotation_x, plot_size);
+    correction_gyro_y->setRawData(plot_time, plot_gyro_rotation_y, plot_size);
 
-    correction_acc_x->setRawData(plot_time, plot_acc_correction_x, plot_size);
-    correction_acc_y->setRawData(plot_time, plot_acc_correction_y, plot_size);
+    correction_acc_x->setRawData(plot_time, plot_acc_rotation_x, plot_size);
+    correction_acc_y->setRawData(plot_time, plot_acc_rotation_y, plot_size);
+
+    correction_angle_x->setRawData(plot_time, plot_angle_rotation_x, plot_size);
+    correction_angle_y->setRawData(plot_time, plot_angle_rotation_y, plot_size);
 
     ui->plot_corrections->setAxisTitle(QwtPlot::xBottom, "Time [s]");
     ui->plot_corrections->setAxisTitle(QwtPlot::yLeft, "Angle [radians]");
@@ -528,11 +540,14 @@ void Quadro::plot_reset_data()
 
         plot_throttle[i] = 0;
 
-        plot_acc_correction_x[i] = 0;
-        plot_acc_correction_y[i] = 0;
+        plot_acc_rotation_x[i] = 0;
+        plot_acc_rotation_y[i] = 0;
 
-        plot_gyro_correction_x[i] = 0;
-        plot_gyro_correction_y[i] = 0;
+        plot_gyro_rotation_x[i] = 0;
+        plot_gyro_rotation_y[i] = 0;
+
+        plot_angle_rotation_x[i] = 0;
+        plot_angle_rotation_y[i] = 0;
     }
 }
 
@@ -572,11 +587,14 @@ void Quadro::plot_update()
         plot_throttle_z[i] = plot_throttle_z[i + 1];
         plot_throttle[i] = plot_throttle[i + 1];
 
-        plot_gyro_correction_x[i] = plot_gyro_correction_x[i + 1];
-        plot_gyro_correction_y[i] = plot_gyro_correction_y[i + 1];
+        plot_gyro_rotation_x[i] = plot_gyro_rotation_x[i + 1];
+        plot_gyro_rotation_y[i] = plot_gyro_rotation_y[i + 1];
 
-        plot_acc_correction_x[i] = plot_acc_correction_x[i + 1];
-        plot_acc_correction_y[i] = plot_acc_correction_y[i + 1];
+        plot_acc_rotation_x[i] = plot_acc_rotation_x[i + 1];
+        plot_acc_rotation_y[i] = plot_acc_rotation_y[i + 1];
+
+        plot_angle_rotation_x[i] = plot_angle_rotation_x[i + 1];
+        plot_angle_rotation_y[i] = plot_angle_rotation_y[i + 1];
     }
 
     plot_time[plot_current] = plot_time[plot_current - 1] + dt_seconds;
@@ -611,11 +629,14 @@ void Quadro::plot_update()
     ui->plot_throttle->replot();
 
     //corrections
-    plot_gyro_correction_x[plot_current] = quadro.get_throttle_gyroscope_correction().x;
-    plot_gyro_correction_y[plot_current] = quadro.get_throttle_gyroscope_correction().y;
+    plot_gyro_rotation_x[plot_current] = quadro.get_throttle_gyroscope_rotation().x;
+    plot_gyro_rotation_y[plot_current] = quadro.get_throttle_gyroscope_rotation().y;
 
-    plot_acc_correction_x[plot_current] = quadro.get_throttle_accelerometer_correction().x;
-    plot_acc_correction_y[plot_current] = quadro.get_throttle_accelerometer_correction().y;
+    plot_acc_rotation_x[plot_current] = quadro.get_throttle_accelerometer_rotation().x;
+    plot_acc_rotation_y[plot_current] = quadro.get_throttle_accelerometer_rotation().y;
+
+    plot_angle_rotation_x[plot_current] = quadro.get_throttle_angle_rotation().x;
+    plot_angle_rotation_y[plot_current] = quadro.get_throttle_angle_rotation().y;
 
     ui->plot_corrections->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
     ui->plot_corrections->replot();

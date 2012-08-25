@@ -37,7 +37,8 @@ void quadrocopter::read_data()
 
     vect t_throttle_corrected = read_vect_byte(), t_angle = read_vect_byte(2),
             t_gyroscope_readings = read_vect_byte(), t_accelerometer_readings = read_vect_byte(),
-            t_throttle_gyroscope_correction = read_vect_byte(2), t_throttle_accelerometer_correction = read_vect_byte(3);
+            t_throttle_gyroscope_rotation = read_vect_byte(2), t_throttle_accelerometer_rotation = read_vect_byte(3),
+            t_throttle_angle_rotation = read_vect_byte(2);
 
     reaction_type_ t_reaction_type;
 
@@ -59,8 +60,11 @@ void quadrocopter::read_data()
         angle = t_angle;
         gyroscope_readings = t_gyroscope_readings / serial_gyroscope_coefficient;
         accelerometer_readings = t_accelerometer_readings * g;
-        throttle_gyroscope_correction = t_throttle_gyroscope_correction;
-        throttle_accelerometer_correction = t_throttle_accelerometer_correction;
+
+        throttle_gyroscope_rotation = t_throttle_gyroscope_rotation;
+        throttle_accelerometer_rotation = t_throttle_accelerometer_rotation;
+        throttle_angle_rotation = t_throttle_angle_rotation;
+
         loop_time = t_loop_time;
         reaction_type = t_reaction_type;
     }
@@ -131,8 +135,8 @@ void quadrocopter::defaults()
     throttle_corrected = vect();
     gyroscope_readings = vect();
     accelerometer_readings = vect();
-    throttle_gyroscope_correction = vect();
-    throttle_accelerometer_correction = vect();
+    throttle_gyroscope_rotation = vect();
+    throttle_accelerometer_rotation = vect();
 
     angle = vect();
     power = 0;
@@ -142,7 +146,7 @@ void quadrocopter::defaults()
     write_time = 0;
     loop_time = 0;
 
-    reaction_type = REACTION_ANGULAR_VELOCITY;
+    reaction_type = REACTION_NONE;
 
     //wait for arduino to load
     connect_delay_time = !device.substr(0, 11).compare("/dev/ttyACM") ? connect_delay_arduino : 500;
@@ -204,9 +208,9 @@ vect quadrocopter::get_angle()
     return(angle);
 }
 
-vect quadrocopter::get_throttle_gyroscope_correction()
+vect quadrocopter::get_throttle_gyroscope_rotation()
 {
-    return(throttle_gyroscope_correction);
+    return(throttle_gyroscope_rotation);
 }
 
 number_vect_t quadrocopter::get_motor_power(int i)
@@ -241,9 +245,14 @@ number_vect_t quadrocopter::get_power()
     return(power);
 }
 
-vect quadrocopter::get_throttle_accelerometer_correction()
+vect quadrocopter::get_throttle_accelerometer_rotation()
 {
-    return(throttle_accelerometer_correction);
+    return(throttle_accelerometer_rotation);
+}
+
+vect quadrocopter::get_throttle_angle_rotation()
+{
+    return(throttle_angle_rotation);
 }
 
 number_vect_t quadrocopter::get_write_time()

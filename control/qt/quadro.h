@@ -61,8 +61,9 @@ private:
         plot_angle_x[plot_size], plot_angle_y[plot_size],
         plot_angle_accx[plot_size], plot_angle_accy[plot_size],
         plot_throttle_x[plot_size], plot_throttle_y[plot_size], plot_throttle_z[plot_size], plot_throttle[plot_size],
-        plot_acc_correction_x[plot_size], plot_acc_correction_y[plot_size],
-        plot_gyro_correction_x[plot_size], plot_gyro_correction_y[plot_size];
+        plot_acc_rotation_x[plot_size], plot_acc_rotation_y[plot_size],
+        plot_gyro_rotation_x[plot_size], plot_gyro_rotation_y[plot_size],
+        plot_angle_rotation_x[plot_size], plot_angle_rotation_y[plot_size];
 
     mytime plot_mytime;
 
