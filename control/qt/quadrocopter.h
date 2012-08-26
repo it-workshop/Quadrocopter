@@ -33,6 +33,7 @@ private:
     number_vect_t connect_delay_arduino;
 
     number_vect_t PID_angle_Kp, PID_angle_Ki, PID_angle_Kd;
+    number_vect_t PID_angular_velocity_Kp, PID_angular_velocity_Ki, PID_angular_velocity_Kd;
 
     void defaults();
 
@@ -59,6 +60,10 @@ public:
     void set_PID_angle_Kp(number_vect_t);
     void set_PID_angle_Ki(number_vect_t);
     void set_PID_angle_Kd(number_vect_t);
+
+    void set_PID_angular_velocity_Kp(number_vect_t);
+    void set_PID_angular_velocity_Ki(number_vect_t);
+    void set_PID_angular_velocity_Kd(number_vect_t);
 
     void connect();
     void disconnect();

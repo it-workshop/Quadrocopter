@@ -208,7 +208,9 @@ void serial::swrite(short unsigned int buf)
         {
             if(debug_level >= DEBUG_ALL)
                 cerr << t_time.get_time() << " " << device << "@" << rate << ": drain" << endl;
+
             tcdrain(tty_fd);
+
             if(debug_level >= DEBUG_ALL)
                 cerr << t_time.get_time() << " " << device << "@" << rate << ": drain ok" << endl;
         }

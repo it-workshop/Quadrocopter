@@ -90,7 +90,7 @@ void Quadro::interface_write()
 
         ui->motors->setText(t_ss.str().c_str());
 
-        ui->reaction_type->setCurrentIndex(quadro.get_reaction_type());
+        //ui->reaction_type->setCurrentIndex(quadro.get_reaction_type());
     }
 
     if(joy.isconnected())
@@ -462,10 +462,10 @@ void Quadro::plot_init()
 
     // Insert new curves
     QwtPlotCurve *correction_gyro_x = new QwtPlotCurve("gyro x");
-    //correction_gyro_x->attach(ui->plot_corrections);
+    correction_gyro_x->attach(ui->plot_corrections);
 
     QwtPlotCurve *correction_gyro_y = new QwtPlotCurve("gyro y");
-    //correction_gyro_y->attach(ui->plot_corrections);
+    correction_gyro_y->attach(ui->plot_corrections);
 
     QwtPlotCurve *correction_acc_x = new QwtPlotCurve("acc x");
     //correction_acc_x->attach(ui->plot_corrections);
@@ -474,22 +474,22 @@ void Quadro::plot_init()
     //correction_acc_y->attach(ui->plot_corrections);
 
     QwtPlotCurve *correction_angle_x = new QwtPlotCurve("angle x");
-    correction_angle_x->attach(ui->plot_corrections);
+    //correction_angle_x->attach(ui->plot_corrections);
 
     QwtPlotCurve *correction_angle_y = new QwtPlotCurve("angle y");
-    correction_angle_y->attach(ui->plot_corrections);
+    //correction_angle_y->attach(ui->plot_corrections);
 
     ui->plot_corrections->setAxisScale(QwtPlot::yLeft, -1, 1);
 
     // Set curve styles
-    //correction_gyro_x->setPen(QPen(Qt::red));
-    //correction_gyro_y->setPen(QPen(Qt::green));
+    correction_gyro_x->setPen(QPen(Qt::red));
+    correction_gyro_y->setPen(QPen(Qt::green));
 
     //correction_acc_x->setPen(QPen(Qt::yellow));
     //correction_acc_y->setPen(QPen(Qt::magenta));
 
-    correction_angle_x->setPen(QPen(Qt::red));
-    correction_angle_y->setPen(QPen(Qt::green));
+    //correction_angle_x->setPen(QPen(Qt::red));
+    //correction_angle_y->setPen(QPen(Qt::green));
 
     // Attach (don't copy) data.
     correction_gyro_x->setRawData(plot_time, plot_gyro_rotation_x, plot_size);
@@ -732,4 +732,19 @@ void Quadro::on_PID_angle_Ki_valueChanged(double arg1)
 void Quadro::on_PID_angle_Kd_valueChanged(double arg1)
 {
     quadro.set_PID_angle_Kd(arg1);
+}
+
+void Quadro::on_PID_angular_velocity_Kp_valueChanged(double arg1)
+{
+    quadro.set_PID_angular_velocity_Kp(arg1);
+}
+
+void Quadro::on_PID_angular_velocity_Ki_valueChanged(double arg1)
+{
+    quadro.set_PID_angular_velocity_Ki(arg1);
+}
+
+void Quadro::on_PID_angular_velocity_Kd_valueChanged(double arg1)
+{
+    quadro.set_PID_angular_velocity_Kd(arg1);
 }

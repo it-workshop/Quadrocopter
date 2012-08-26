@@ -50,6 +50,12 @@ private slots:
 
     void on_PID_angle_Kd_valueChanged(double arg1);
 
+    void on_PID_angular_velocity_Kp_valueChanged(double arg1);
+
+    void on_PID_angular_velocity_Ki_valueChanged(double arg1);
+
+    void on_PID_angular_velocity_Kd_valueChanged(double arg1);
+
 private:
     Ui::Quadro *ui;
 

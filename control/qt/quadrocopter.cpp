@@ -13,8 +13,8 @@ quadrocopter::quadrocopter()
     rate = 115200;
     maxwait = 2000;
 
-    //device = "/dev/rfcomm0";
-    device = "/dev/ttyACM0";
+    device = "/dev/rfcomm0";
+    //device = "/dev/ttyACM0";
 
     connect_delay_time = 500;
 
@@ -24,6 +24,10 @@ quadrocopter::quadrocopter()
     PID_angle_Kp = 1;
     PID_angle_Ki = 0;
     PID_angle_Kd = 0;
+
+    PID_angular_velocity_Kp = 1;
+    PID_angular_velocity_Ki = 0;
+    PID_angular_velocity_Kd = 0;
 
     defaults();
 }
@@ -133,9 +137,18 @@ void quadrocopter::write_data()
     //swrite('r');
     swrite('0' + reaction_type);
 
+    usleep(100);
     write_number_vect_t(-10, 10, PID_angle_Kp, 2);
+    usleep(100);
     write_number_vect_t(-10, 10, PID_angle_Ki, 2);
+    usleep(100);
     write_number_vect_t(-10, 10, PID_angle_Kd, 2);
+
+    write_number_vect_t(-10, 10, PID_angular_velocity_Kp, 2);
+    usleep(100);
+    write_number_vect_t(-10, 10, PID_angular_velocity_Ki, 2);
+    usleep(100);
+    write_number_vect_t(-10, 10, PID_angular_velocity_Kd, 2);
 
     write_time = t_time.get_time_difference() / 1.E3;
 }
@@ -259,6 +272,21 @@ void quadrocopter::set_PID_angle_Ki(number_vect_t t_Ki)
 void quadrocopter::set_PID_angle_Kd(number_vect_t t_Kd)
 {
     PID_angle_Kd = t_Kd;
+}
+
+void quadrocopter::set_PID_angular_velocity_Kp(number_vect_t t_Kp)
+{
+    PID_angular_velocity_Kp = t_Kp;
+}
+
+void quadrocopter::set_PID_angular_velocity_Ki(number_vect_t t_Ki)
+{
+    PID_angular_velocity_Ki = t_Ki;
+}
+
+void quadrocopter::set_PID_angular_velocity_Kd(number_vect_t t_Kd)
+{
+    PID_angular_velocity_Kd = t_Kd;
 }
 
 vect quadrocopter::get_throttle_rotation()
