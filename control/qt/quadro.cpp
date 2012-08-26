@@ -15,18 +15,8 @@ using std::endl;
 
 /*
   Protocol description (PC <=> DEVICE):
-   => 'p' to request status:
-    <= throttle x
-    <= throttle y
-    <= throttle z
-    <= gyro x
-    <= gyro y
-    <= gyro z
-    <= motor A
-    <= motor B
-    <= motor C
-    <= motor D
-  */
+   *todo: update protocol description
+*/
 
 using std::stringstream;
 using std::string;
@@ -159,7 +149,7 @@ void Quadro::save_data()
         //seconds time
         //gyro[3] accel[3]
         //reaction_type
-        //angle[2] gyroscope_rotation[2] accelerometer_rotation[3]
+        //angle[2] gyroscope_rotation[2] accelerometer_rotation[3] angle_rotation[2]
         //joystick_connected joystick_use joystick_readings[2] joystick_power joystick_power_switch
         //quadro_connected throttle_rotation[2] throttle_corrected[3] power motors[4]
         //read_time_sec write_time_sec loop_time_sec
@@ -173,6 +163,7 @@ void Quadro::save_data()
 
              << quadro.get_throttle_gyroscope_rotation().print2d_tab() << "\t"
              << quadro.get_throttle_accelerometer_rotation().print_tab() << "\t"
+             << quadro.get_throttle_angle_rotation().print2d_tab() << "\t"
 
              << joy.isconnected() << "\t"
              << ui->JoystickUse->isChecked() << "\t"
@@ -660,8 +651,8 @@ void Quadro::save_open()
     if(ui->LogSave_data->isChecked())
     {
         save_file.open(save_filename.c_str(), std::ios_base::app);
-        save_file << "#seconds\t\tdatetime\t\tgyro_x\tgyro_y\tgyro_z\tacc_x\tacc_y\tacc_z\treact._t\tangle_x\tangle_y\t"
-                  << "gyr_c_x\tgyr_c_y\tacc_c_x\tacc_c_y\tacc_c_z\tj_conn\tj_use\tj_x\tj_y\tj_power\tj_switch\tquad_conn\trot_x\trot_y\tthr_x\t"
+        save_file << "#seconds\tdatetime\tgyro_x\tgyro_y\tgyro_z\tacc_x\tacc_y\tacc_z\treact._t\tangle_x\tangle_y\t"
+                  << "gyr_c_x\tgyr_c_y\tacc_c_x\tacc_c_y\tacc_c_z\tangle_c_x\tangle_c_y\tj_conn\tj_use\tj_x\tj_y\tj_power\tj_switch\tquad_conn\trot_x\trot_y\tthr_x\t"
                   << "thr_y\tthr_z\tpower\tM_A\tM_B\tM_C\tM_D\tread_t\twrite_t\tloop_t" << endl;
     }
 }
@@ -726,4 +717,19 @@ void Quadro::on_JoystickUse_toggled()
 
         ui->power->setValue(0);
     }
+}
+
+void Quadro::on_PID_angle_Kp_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_Kp(arg1);
+}
+
+void Quadro::on_PID_angle_Ki_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_Ki(arg1);
+}
+
+void Quadro::on_PID_angle_Kd_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_Kd(arg1);
 }

@@ -44,6 +44,12 @@ private slots:
     void on_joystick_device_textChanged(const QString &arg1);
     void on_JoystickUse_toggled();
 
+    void on_PID_angle_Kp_valueChanged(double arg1);
+
+    void on_PID_angle_Ki_valueChanged(double arg1);
+
+    void on_PID_angle_Kd_valueChanged(double arg1);
+
 private:
     Ui::Quadro *ui;
 

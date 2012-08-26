@@ -336,7 +336,7 @@ private:
     static const double gyroscope_max_rotation = MPI / 4;
     
     static const double angle_max_rotation = MPI / 4;
-    static const double angle_Kp = 1, angle_Ki = 0, angle_Kd = 0;
+    double angle_Kp, angle_Ki, angle_Kd;
     
     static const double JOYSTICK_COEFFICIENT = 0.2;
     
@@ -358,39 +358,8 @@ private:
 
     bool use_motors[N_MOTORS];
 
-    inline const SIGN x_sign(int i)
-    {
-        switch (i)
-        {
-        case A:
-            return MINUS;
-        case B:
-            return ZERO;
-        case C:
-            return PLUS;
-        case D:
-            return ZERO;
-        default:
-            return ZERO;
-        }
-    }
-
-    inline const SIGN y_sign(int i)
-    {
-        switch (i)
-        {
-        case A:
-            return ZERO;
-        case B:
-            return PLUS;
-        case C:
-            return ZERO;
-        case D:
-            return MINUS;
-        default:
-            return ZERO;
-        }
-    }
+    inline const SIGN x_sign(int i);
+    inline const SIGN y_sign(int i);
 
 public:
     MotorController(const int motor_control_pins[N_MOTORS]);
@@ -400,140 +369,203 @@ public:
     double speedGet(RVector3D throttle_vec, int motor);
     //void linearSpeedInc(int inc_percent, int speed_step_time);
 
-    inline RVector3D get_joystick_throttle(RVector3D joystick_data)
-    {
-        RVector3D throttle = RVector3D(0, 0, 1);
-        
-        throttle.x_angle_inc(joystick_data.x * JOYSTICK_COEFFICIENT);
-        throttle.y_angle_inc(joystick_data.y * JOYSTICK_COEFFICIENT);
-        
-        return(throttle);
-    }
-    
-    RVector3D get_angle_rotation(RVector3D angle, double dt)
-    {
-        static RVector3D prev_e = RVector3D(0, 0, 0),
-            e_integral = RVector3D(0, 0, 0);
-        
-        //requested angle
-        RVector3D angle0 = RVector3D(0, 0, 0);
-        
-        //difference between requested and current angle
-        RVector3D e = angle0 - angle;
-        
-        //discrete angle
-        RVector3D e_derivative = (e - prev_e) / dt;
-        
-        //discrete integral
-        e_integral += e * dt;
-        
-        //correction
-        RVector3D u = e * angle_Kp + e_integral * angle_Ki + e_derivative * angle_Kd;
-        
-        //max and min correction
-        for(int i = 0; i < 2; i++)
-        {
-            if(u.value_by_axis_index(i) < -angle_max_rotation)
-                u.value_by_axis_index(i) = -angle_max_rotation;
-            if(u.value_by_axis_index(i) > angle_max_rotation)
-                u.value_by_axis_index(i) = angle_max_rotation;
-        }
-        
-        //for integral and derivative
-        prev_e = e;
-        
-        return(u);
-    }
-    
-    RVector3D get_accelerometer_correction(RVector3D angle, RVector3D accel_data)
-    {
-        RVector3D g = angle.projections_from_angle();
-        RVector3D a = accel_data - g;
-        
-        static RVector3D a_prev = a, res;
-        static TimerCount t_time;
-    
-        double period = 4, alpha, dt;
-    
-        if(!t_time.get_time_isset()) res = RVector3D(0, 0, 0);
-        else {
-            dt = t_time.get_time_difference() / 1.E6;
-    
-            alpha = dt / (dt + period / (2 * M_PI));
-     
-            //cerr << "alpha=" << alpha << endl;
-    
-            res = a_prev * (1 - alpha) + a * alpha;
-        }
-    
-        a_prev = res;
-        t_time.set_time();
-  
-        RVector3D rotation;
-        rotation.x = res.y;
-        rotation.y = res.x;
-         
-/*        RVector3D rotation = res.angle_from_projections();
-        RVector3D moment_of_force;
-        moment_of_force.x = rotation.x * accelerometer_xi.x;
-        moment_of_force.y = rotation.y * accelerometer_xi.y;
-         
-        RVector3D throttle_new;
-        throttle_new.z = 1 / sqrt(1 + pow(moment_of_force.x / 2, 2) + pow(moment_of_force.y / 2, 2));
-        throttle_new.x =  moment_of_force.y / 2 * throttle_new.z;
-        throttle_new.y = -moment_of_force.x / 2 * throttle_new.z;
-         
-        return(throttle_new);*/
-         
-        return(rotation);
-     }
+    inline double get_throttle_abs();
 
-
-    RVector3D get_gyroscope_rotation(RVector3D gyro_data)
-    {
-        RVector3D rotation = RVector3D();
-        
-        RVector3D gyro_data_norm = gyro_data;
-        
-/*        double gyro_data_max = MPI * 0.8125;
-        
-        for(int i = 0; i < 2; i++)
-        {
-            if(gyro_data_norm.value_by_axis_index(i) > gyro_data_max)
-                gyro_data_norm.value_by_axis_index(i) = gyro_data_max;
-                
-            if(gyro_data_norm.value_by_axis_index(i) < -gyro_data_max)
-                gyro_data_norm.value_by_axis_index(i) = -gyro_data_max;
-        }*/
-        
-        double gyroscope_bin_coeff1 = 0.3;
-        double gyroscope_bin_coeff2 = 0.4;
-        
-        rotation.x = -atan(gyro_data.x * gyroscope_bin_coeff1) * gyroscope_bin_coeff2;
-        rotation.y = -atan(gyro_data.y * gyroscope_bin_coeff1) * gyroscope_bin_coeff2;
-       
-        for(int i = 0; i < 2; i++)
-        {
-            if(rotation.value_by_axis_index(i) > gyroscope_max_rotation)
-                rotation.value_by_axis_index(i) = gyroscope_max_rotation;
-                
-            if(rotation.value_by_axis_index(i) < -gyroscope_max_rotation)
-                rotation.value_by_axis_index(i) = -gyroscope_max_rotation;
-        }
-        
-        return(rotation);
-    }
-
-    inline double get_throttle_abs()
-    {
-        return(throttle_abs);
-    }
-
-    inline void set_throttle_abs(double a)
-    {
-        throttle_abs = a;
-    }
+    inline void set_throttle_abs(double a);
+    
+    RVector3D get_joystick_throttle(RVector3D joystick_data);
+    RVector3D get_angle_rotation(RVector3D angle, double dt);
+    RVector3D get_accelerometer_correction(RVector3D angle, RVector3D accel_data);
+    RVector3D get_gyroscope_rotation(RVector3D gyro_data);
+    
+    void set_PID_angle_Kp(double);
+    void set_PID_angle_Ki(double);
+    void set_PID_angle_Kd(double);
+    
+    double get_PID_angle_Kp();
+    double get_PID_angle_Ki();
+    double get_PID_angle_Kd();
 };
+
+void MotorController::set_PID_angle_Kp(double arg)
+{
+    angle_Kp = arg;
+}
+
+void MotorController::set_PID_angle_Ki(double arg)
+{
+    angle_Ki = arg;
+}
+
+void MotorController::set_PID_angle_Kd(double arg)
+{
+    angle_Kd = arg;
+}
+
+double MotorController::get_PID_angle_Kp()
+{
+    return(angle_Kp);
+}
+
+double MotorController::get_PID_angle_Ki()
+{
+    return(angle_Ki);
+}
+
+double MotorController::get_PID_angle_Kd()
+{
+    return(angle_Kd);
+}
+
+inline const MotorController::SIGN MotorController::x_sign(int i)
+{
+    switch (i)
+    {
+        case A:
+            return MINUS;
+        case B:
+            return ZERO;
+        case C:
+            return PLUS;
+        case D:
+            return ZERO;
+        default:
+            return ZERO;
+    }
+}
+
+inline const MotorController::SIGN MotorController::y_sign(int i)
+{
+    switch (i)
+    {
+        case A:
+            return ZERO;
+        case B:
+            return PLUS;
+        case C:
+            return ZERO;
+        case D:
+            return MINUS;
+        default:
+            return ZERO;
+    }
+}
+
+inline double MotorController::get_throttle_abs()
+{
+    return(throttle_abs);
+}
+
+inline void MotorController::set_throttle_abs(double a)
+{
+    throttle_abs = a;
+}
+
+RVector3D MotorController::get_joystick_throttle(RVector3D joystick_data)
+{
+    RVector3D throttle = RVector3D(0, 0, 1);
+    
+    throttle.x_angle_inc(joystick_data.x * JOYSTICK_COEFFICIENT);
+    throttle.y_angle_inc(joystick_data.y * JOYSTICK_COEFFICIENT);
+    
+    return(throttle);
+}
+
+RVector3D MotorController::get_angle_rotation(RVector3D angle, double dt)
+{
+    static RVector3D prev_e = RVector3D(0, 0, 0),
+        e_integral = RVector3D(0, 0, 0);
+    
+    //requested angle
+    RVector3D angle0 = RVector3D(0, 0, 0);
+    
+    //difference between requested and current angle
+    RVector3D e = angle0 - angle;
+    
+    //discrete angle
+    RVector3D e_derivative = (e - prev_e) / dt;
+    
+    //discrete integral
+    e_integral += e * dt;
+    
+    //correction
+    RVector3D u = e * angle_Kp + e_integral * angle_Ki + e_derivative * angle_Kd;
+    
+    //max and min correction
+    for(int i = 0; i < 2; i++)
+    {
+        if(u.value_by_axis_index(i) < -angle_max_rotation)
+            u.value_by_axis_index(i) = -angle_max_rotation;
+        if(u.value_by_axis_index(i) > angle_max_rotation)
+            u.value_by_axis_index(i) = angle_max_rotation;
+    }
+    
+    //for integral and derivative
+    prev_e = e;
+    
+    return(u);
+}
+
+RVector3D MotorController::get_accelerometer_correction(RVector3D angle, RVector3D accel_data)
+{
+    RVector3D g = angle.projections_from_angle();
+    RVector3D a = accel_data - g;
+    
+    static RVector3D a_prev = a, res;
+    static TimerCount t_time;
+
+    double period = 4, alpha, dt;
+
+    if(!t_time.get_time_isset()) res = RVector3D(0, 0, 0);
+    else {
+        dt = t_time.get_time_difference() / 1.E6;
+
+        alpha = dt / (dt + period / (2 * M_PI));
+ 
+        //cerr << "alpha=" << alpha << endl;
+
+        res = a_prev * (1 - alpha) + a * alpha;
+    }
+
+    a_prev = res;
+    t_time.set_time();
+     
+    RVector3D rotation = res.angle_from_projections();
+    RVector3D moment_of_force;
+    moment_of_force.x = rotation.x * accelerometer_xi.x;
+    moment_of_force.y = rotation.y * accelerometer_xi.y;
+     
+    RVector3D throttle_new;
+    throttle_new.z = 1 / sqrt(1 + pow(moment_of_force.x / 2, 2) + pow(moment_of_force.y / 2, 2));
+    throttle_new.x =  moment_of_force.y / 2 * throttle_new.z;
+    throttle_new.y = -moment_of_force.x / 2 * throttle_new.z;
+     
+    return(throttle_new);
+}
+
+RVector3D MotorController::get_gyroscope_rotation(RVector3D gyro_data)
+{
+    RVector3D rotation = RVector3D();
+    
+    RVector3D gyro_data_norm = gyro_data;
+    
+    double gyroscope_bin_coeff1 = 0.3;
+    double gyroscope_bin_coeff2 = 0.4;
+    
+    rotation.x = -atan(gyro_data.x * gyroscope_bin_coeff1) * gyroscope_bin_coeff2;
+    rotation.y = -atan(gyro_data.y * gyroscope_bin_coeff1) * gyroscope_bin_coeff2;
+   
+    for(int i = 0; i < 2; i++)
+    {
+        if(rotation.value_by_axis_index(i) > gyroscope_max_rotation)
+            rotation.value_by_axis_index(i) = gyroscope_max_rotation;
+            
+        if(rotation.value_by_axis_index(i) < -gyroscope_max_rotation)
+            rotation.value_by_axis_index(i) = -gyroscope_max_rotation;
+    }
+    
+    return(rotation);
+}
 
 double MotorController::speedGet(RVector3D throttle_vec, int motor)
 {
@@ -554,13 +586,17 @@ void MotorController::speedChange(RVector3D throttle_vec)
 
 MotorController::MotorController(const int motor_control_pins[N_MOTORS])
 {
+    angle_Kp = 1;
+    angle_Ki = 0;
+    angle_Kd = 0;
+    
     accelerometer_xi.x = 0.5;
     accelerometer_xi.y = 0.5;
     
     use_motors[A] = 1;
-    use_motors[B] = 1;
+    use_motors[B] = 0;
     use_motors[C] = 1;
-    use_motors[D] = 1;
+    use_motors[D] = 0;
     
     for (int i = 0; i < N_MOTORS; i++)
     {
@@ -807,6 +843,54 @@ RVector3D Gyroscope::get_raw_readings()
     return(result);
 }
 
+void write_double(double min_value, double max_value, double value, unsigned int bytes)
+{
+    //mapping
+    value -= min_value;
+    value /= (max_value - min_value);
+
+    //scaling to bytes
+    value *= pow(2, 8 * bytes);
+
+    //bytes to send in one int
+    unsigned long t_int = value;
+
+    //writing
+    unsigned char t_char;
+    for(int i = bytes - 1; i >= 0; i--)
+    {
+        t_char = (t_int >> (8 * i));
+        Serial.write((unsigned int) t_char);
+    }
+}
+
+double read_double(double min_value, double max_value, unsigned int bytes)
+{
+    unsigned long long t_int = 0;
+
+    //reading
+    unsigned int t_int_curr;
+    for(int i = bytes - 1; i >= 0; i--)
+    {
+        while(Serial.available() <= 0) {}
+        t_int_curr = Serial.read();
+        t_int_curr = t_int_curr << (8 * i);
+        
+        t_int |= t_int_curr;
+    }
+
+    double value = t_int;
+
+    //scaling from bytes
+    value /= pow(2, 8 * bytes);
+
+    //mapping
+    value *= (max_value - min_value);
+    value += min_value;
+
+    return(value);
+}
+
 MotorController* MController;
 Accelerometer* Accel;
 Gyroscope* Gyro;
@@ -926,6 +1010,7 @@ void loop()
     static unsigned int t_low = 0, t_high = 0, t_int = 0;
     static RVector3D throttle_tmp = RVector3D();
     
+    c = 0;
     if (Serial.available() > 0)
     {
         c = Serial.read();
@@ -978,6 +1063,10 @@ void loop()
                 
                 reaction_type = (reaction_type_) (c - '0');
                 
+                //PID angle coefficients
+                MController->set_PID_angle_Kp(read_double(-10, 10, 2));
+                MController->set_PID_angle_Ki(read_double(-10, 10, 2));
+                MController->set_PID_angle_Kd(read_double(-10, 10, 2));
             }
             #ifdef DEBUG_SERIAL_HUMAN
                 else if(c == '+' && MController->get_throttle_abs() + throttle_step <= 1)
@@ -1018,7 +1107,7 @@ void loop()
         }
             
         #ifndef DEBUG_NO_ACCELEROMETER
-            // reaction on angle (+acceleration)
+            // reaction on acceleration
             if (reaction_type == REACTION_ACCELERATION)
             {
                 throttle_corrected.x_angle_inc(accel_correction.x);
@@ -1095,6 +1184,10 @@ void loop()
                 Serial.write((last_dt & (0xff << 8 * si)) >> (8 * si));
                 
             Serial.write(reaction_type + '0');
+            
+            //write_double(-10, 10, MController->get_PID_angle_Kp(), 2);
+            //write_double(-10, 10, MController->get_PID_angle_Ki(), 2);
+            //write_double(-10, 10, MController->get_PID_angle_Kd(), 2);
         }
     }
 #endif

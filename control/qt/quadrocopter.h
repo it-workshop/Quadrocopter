@@ -10,7 +10,7 @@ using std::vector;
 class quadrocopter: public serial
 {
 public:
-    enum reaction_type_ {REACTION_NONE, REACTION_ANGULAR_VELOCITY, REACTION_ACCELERATION};
+    enum reaction_type_ {REACTION_NONE, REACTION_ANGULAR_VELOCITY, REACTION_ACCELERATION, REACTION_ANGLE};
 private:
     number_vect_t power;
     vect angle, throttle_corrected;
@@ -31,6 +31,8 @@ private:
     static const double g = 9.80665;
 
     number_vect_t connect_delay_arduino;
+
+    number_vect_t PID_angle_Kp, PID_angle_Ki, PID_angle_Kd;
 
     void defaults();
 
@@ -53,6 +55,10 @@ public:
 
     void set_power(number_vect_t);
     void set_throttle_rotation(vect);
+
+    void set_PID_angle_Kp(number_vect_t);
+    void set_PID_angle_Ki(number_vect_t);
+    void set_PID_angle_Kd(number_vect_t);
 
     void connect();
     void disconnect();

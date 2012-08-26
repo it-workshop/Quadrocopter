@@ -11,15 +11,19 @@ quadrocopter::quadrocopter()
 {
     tty_fd = -1;
     rate = 115200;
-    maxwait = 1000;
+    maxwait = 2000;
 
-    device = "/dev/rfcomm0";
-    //device = "/dev/ttyACM0";
+    //device = "/dev/rfcomm0";
+    device = "/dev/ttyACM0";
 
     connect_delay_time = 500;
 
-    connect_delay_arduino = 9000;
-    //connect_delay_arduino = 2000;
+    //connect_delay_arduino = 9000;
+    connect_delay_arduino = 2000;
+
+    PID_angle_Kp = 1;
+    PID_angle_Ki = 0;
+    PID_angle_Kd = 0;
 
     defaults();
 }
@@ -51,6 +55,10 @@ void quadrocopter::read_data()
 
     t_reaction_type = (reaction_type_) (sread() - '0');
 
+    //cerr << "Kp=" << read_number_vect_t(-10, 10, 2) << "\t";
+    //cerr << "Ki=" << read_number_vect_t(-10, 10, 2) << "\t";
+    //cerr << "Kd=" << read_number_vect_t(-10, 10, 2) << endl;
+
     if(!read_error())
     {
         for(int i = 0; i < MOTORS_N; i++)
@@ -68,7 +76,6 @@ void quadrocopter::read_data()
         loop_time = t_loop_time;
         reaction_type = t_reaction_type;
     }
-
 
     read_time = t_time.get_time_difference() / 1.E3;
 
@@ -125,6 +132,10 @@ void quadrocopter::write_data()
     //send reaction type
     //swrite('r');
     swrite('0' + reaction_type);
+
+    write_number_vect_t(-10, 10, PID_angle_Kp, 2);
+    write_number_vect_t(-10, 10, PID_angle_Ki, 2);
+    write_number_vect_t(-10, 10, PID_angle_Kd, 2);
 
     write_time = t_time.get_time_difference() / 1.E3;
 }
@@ -233,6 +244,21 @@ void quadrocopter::set_power(number_vect_t n_power)
 void quadrocopter::set_throttle_rotation(vect n_throttle_rotation)
 {
     throttle_rotation = n_throttle_rotation;
+}
+
+void quadrocopter::set_PID_angle_Kp(number_vect_t t_Kp)
+{
+    PID_angle_Kp = t_Kp;
+}
+
+void quadrocopter::set_PID_angle_Ki(number_vect_t t_Ki)
+{
+    PID_angle_Ki = t_Ki;
+}
+
+void quadrocopter::set_PID_angle_Kd(number_vect_t t_Kd)
+{
+    PID_angle_Kd = t_Kd;
 }
 
 vect quadrocopter::get_throttle_rotation()

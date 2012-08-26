@@ -4,6 +4,7 @@
 #include <mytime.h>
 
 using std::cerr;
+using std::cout;
 using std::endl;
 
 using std::map;
@@ -32,6 +33,51 @@ vect serial::read_vect_byte(unsigned int axis)
     if(read_error()) result = vect();
 
     return(result);
+}
+
+void serial::write_number_vect_t(number_vect_t min_value, number_vect_t max_value, number_vect_t value, unsigned int bytes)
+{
+    //mapping
+    value -= min_value;
+    value /= (max_value - min_value);
+
+    //scaling to bytes
+    value *= 1 << (8 * bytes);
+
+    //bytes to send in one int
+    unsigned long long t_int = value;
+
+    //writing
+    unsigned char t_char;
+    for(int i = bytes - 1; i >= 0; i--)
+    {
+        t_char = t_int >> (8 * i);
+        swrite(t_char);
+    }
+}
+
+number_vect_t serial::read_number_vect_t(number_vect_t min_value, number_vect_t max_value, unsigned int bytes)
+{
+    unsigned long long t_int = 0;
+
+    //reading
+    unsigned char t_char;
+    for(int i = bytes - 1; i >= 0; i--)
+    {
+        t_char = sread();
+        t_int |= t_char << (8 * i);
+    }
+
+    number_vect_t value = t_int;
+
+    //scaling from bytes
+    value /= 1 << (8 * bytes);
+
+    //mapping
+    value *= (max_value - min_value);
+    value += min_value;
+
+    return(value);
 }
 
 unsigned int serial::read_unsigned_int_3byte()

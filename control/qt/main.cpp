@@ -1,5 +1,10 @@
 #include <QtGui/QApplication>
 #include "quadro.h"
+#include "serial.h"
+#include <iostream>
+
+using std::cout;
+using std::endl;
 
 int main(int argc, char *argv[])
 {

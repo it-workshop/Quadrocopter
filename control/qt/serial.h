@@ -65,6 +65,9 @@ public:
 
     vect read_vect_byte(unsigned int axis = 3);
     unsigned int read_unsigned_int_3byte();
+
+    void write_number_vect_t(number_vect_t min_value, number_vect_t max_value, number_vect_t value, unsigned int bytes);
+    number_vect_t read_number_vect_t(number_vect_t min_value, number_vect_t max_value, unsigned int bytes);
 };
 
 #endif // SERIAL_H
