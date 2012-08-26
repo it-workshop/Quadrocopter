@@ -37,6 +37,10 @@ vect serial::read_vect_byte(unsigned int axis)
 
 void serial::write_number_vect_t(number_vect_t min_value, number_vect_t max_value, number_vect_t value, unsigned int bytes)
 {
+    //cutting
+    if(value > max_value) value = max_value;
+    if(value < min_value) value = min_value;
+
     //mapping
     value -= min_value;
     value /= (max_value - min_value);

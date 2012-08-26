@@ -46,6 +46,14 @@ Quadro::Quadro(QWidget *parent) :
     ui->device->setAutoFillBackground(true);
     ui->joystick_device->setAutoFillBackground(true);
 
+    ui->PID_angle_Kp->setValue(quadro.get_PID_angle_Kp());
+    ui->PID_angle_Ki->setValue(quadro.get_PID_angle_Ki());
+    ui->PID_angle_Kd->setValue(quadro.get_PID_angle_Kd());
+
+    ui->PID_angular_velocity_Kp->setValue(quadro.get_PID_angular_velocity_Kp());
+    ui->PID_angular_velocity_Ki->setValue(quadro.get_PID_angular_velocity_Ki());
+    ui->PID_angular_velocity_Kd->setValue(quadro.get_PID_angular_velocity_Kd());
+
     save_open();
 
     joy_disconnect();
@@ -474,10 +482,10 @@ void Quadro::plot_init()
     //correction_acc_y->attach(ui->plot_corrections);
 
     QwtPlotCurve *correction_angle_x = new QwtPlotCurve("angle x");
-    //correction_angle_x->attach(ui->plot_corrections);
+    correction_angle_x->attach(ui->plot_corrections);
 
     QwtPlotCurve *correction_angle_y = new QwtPlotCurve("angle y");
-    //correction_angle_y->attach(ui->plot_corrections);
+    correction_angle_y->attach(ui->plot_corrections);
 
     ui->plot_corrections->setAxisScale(QwtPlot::yLeft, -1, 1);
 
@@ -488,8 +496,8 @@ void Quadro::plot_init()
     //correction_acc_x->setPen(QPen(Qt::yellow));
     //correction_acc_y->setPen(QPen(Qt::magenta));
 
-    //correction_angle_x->setPen(QPen(Qt::red));
-    //correction_angle_y->setPen(QPen(Qt::green));
+    correction_angle_x->setPen(QPen(Qt::yellow));
+    correction_angle_y->setPen(QPen(Qt::magenta));
 
     // Attach (don't copy) data.
     correction_gyro_x->setRawData(plot_time, plot_gyro_rotation_x, plot_size);

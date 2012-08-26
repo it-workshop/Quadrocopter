@@ -65,6 +65,14 @@ public:
     void set_PID_angular_velocity_Ki(number_vect_t);
     void set_PID_angular_velocity_Kd(number_vect_t);
 
+    number_vect_t get_PID_angle_Kp();
+    number_vect_t get_PID_angle_Ki();
+    number_vect_t get_PID_angle_Kd();
+
+    number_vect_t get_PID_angular_velocity_Kp();
+    number_vect_t get_PID_angular_velocity_Ki();
+    number_vect_t get_PID_angular_velocity_Kd();
+
     void connect();
     void disconnect();
 

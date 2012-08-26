@@ -1,882 +1,16 @@
-//For gyroscope
 #include <Wire.h>
 
-//#define DEBUG_NO_MOTORS
-//#define DEBUG_NO_GYROSCOPE
-//#define DEBUG_NO_ACCELEROMETER
-#define DEBUG_SERIAL
-#define DEBUG_SERIAL_HUMAN
+#include "Definitions.h"
 
-#define MPI 3.141592653589793
+#include "RVector3D.h"
+#include "TimerCount.h"
+#include "SerialFunctions.h"
 
-const int infoLedPin = 13;
-const int SERIAL_ACCURACY = 3;
+#include "Accelerometer.h"
+#include "Gyroscope.h"
 
-double double_eps = 1E-2;
-
-class TimerCount
-{
-    private:
-        unsigned long time;
-        bool time_isset;
-    public:
-        TimerCount()
-        {
-            time_isset = false;
-        }
-        
-        void set_time()
-        {
-            time = micros();
-            time_isset = true;
-        }
-        
-        unsigned long get_time_difference()
-        {
-            return(micros() - time);
-        }
-        
-        bool get_time_isset()
-        {
-            return(time_isset);
-        }
-};
-
-struct RVector3D
-{
-    RVector3D();
-    RVector3D(double x_0, double y_0, double z_0);
-
-    double x, y, z;
-
-    double module_sq();
-    double module();
-    void norm();
-    void set_module();
-
-    RVector3D operator+(RVector3D);
-    RVector3D operator-(RVector3D);
-
-    RVector3D operator+=(RVector3D);
-    RVector3D operator-=(RVector3D);
-    
-    RVector3D operator*(double);
-    RVector3D operator/(double);
-    
-    RVector3D operator*=(double);
-    RVector3D operator/=(double);
-
-    double& value_by_axis_index(int index);
-
-    enum print_mode {PRINT_INDEX, PRINT_TAB, PRINT_RAW, PRINT_TAB_2D, PRINT_RAW_2D};
-    enum use_axis {USE_2D, USE_3D};
-    void print_serial(print_mode, use_axis uaxis = USE_3D);
-
-    void x_angle_inc(double w);
-    void y_angle_inc(double w);
-    void x_angle_dec(double w);
-    void y_angle_dec(double w);
-    
-    RVector3D angle_from_projections(); //angle in [-MPI / 2; MPI / 2]
-    RVector3D projections_from_angle(double a = 1); //angle in [-MPI; MPI]
-};
-
-RVector3D::RVector3D()
-{
-    x = 0;
-    y = 0;
-    z = 0;
-}
-
-RVector3D::RVector3D(double x_0, double y_0, double z_0)
-{
-    x = x_0;
-    y = y_0;
-    z = z_0;
-}
-
-void RVector3D::norm()
-{
-    double k = 1.0 / sqrt(module_sq());
-    x *= k;
-    y *= k;
-    z *= k;
-}
-
-void RVector3D::x_angle_inc(double w)
-{
-    double old_y = y;
-    y =     y * cos(w) - z * sin(w);
-    z = old_y * sin(w) + z * cos(w);
-}
-
-void RVector3D::x_angle_dec(double w)
-{
-    x_angle_inc(-w);
-}
-
-void RVector3D::y_angle_inc(double w)
-{
-    double old_x = x;
-    x =      x * cos(w) + z * sin(w);
-    z = -old_x * sin(w) + z * cos(w);
-}
-
-void RVector3D::y_angle_dec(double w)
-{
-    y_angle_inc(-w);
-}
-
-void RVector3D::print_serial(print_mode mode, use_axis uaxis)
-{
-    unsigned int i;
-    for(i = 0; i < 3; i++)
-    {
-        if(mode == PRINT_INDEX)
-        {
-            Serial.print(i);
-            Serial.print("");
-            Serial.print(value_by_axis_index(i), SERIAL_ACCURACY);
-            Serial.print("; ");
-        }
-        else if(mode == PRINT_TAB)
-        {
-            Serial.print(value_by_axis_index(i), SERIAL_ACCURACY);
-            Serial.print("\t");
-        }
-        else if(mode == PRINT_RAW)
-        {
-            double t = value_by_axis_index(i);
-            if(t > 1) t = 1;
-            else if(t < -1) t = -1;
-            Serial.write((t + 1) / 2. * 255);
-        }
-        
-        if (uaxis == USE_2D && i == 1) return;
-    }
-}
-
-double RVector3D::module_sq()
-{
-    return x * x + y * y + z * z;
-}
-
-double RVector3D::module()
-{
-    return sqrt(module_sq());
-}
-
-RVector3D RVector3D::operator-(RVector3D c)
-{
-    RVector3D result;
-    result.x = x - c.x;
-    result.y = y - c.y;
-    result.z = z - c.z;
-    return(result);
-}
-
-RVector3D RVector3D::operator+(RVector3D c)
-{
-    RVector3D result;
-    result.x = x + c.x;
-    result.y = y + c.y;
-    result.z = z + c.z;
-    return(result);
-}
-
-RVector3D RVector3D::operator*(double c)
-{
-    RVector3D result;
-    result.x = x * c;
-    result.y = y * c;
-    result.z = z * c;
-    return(result);
-}
-
-RVector3D RVector3D::operator/(double c)
-{
-    RVector3D result;
-    result.x = x / c;
-    result.y = y / c;
-    result.z = z / c;
-    return(result);
-}
-
-RVector3D RVector3D::operator/=(double c)
-{
-    x /= c;
-    y /= c;
-    z /= c;
-    return(*this);
-}
-
-RVector3D RVector3D::operator*=(double c)
-{
-    x *= c;
-    y *= c;
-    z *= c;
-    return(*this);
-}
-
-RVector3D RVector3D::operator-=(RVector3D b)
-{
-    x -= b.x;
-    y -= b.y;
-    z -= b.z;
-    return(*this);
-}
-
-RVector3D RVector3D::operator+=(RVector3D b)
-{
-    x += b.x;
-    y += b.y;
-    z += b.z;
-    return(*this);
-}
-
-double& RVector3D::value_by_axis_index(int index)
-{
-    switch(index)
-    {
-    case 0:
-        return(x);
-    case 1:
-        return(y);
-    case 2:
-        return(z);
-    }
-}
-
-RVector3D RVector3D::angle_from_projections()
-{
-    RVector3D result = RVector3D();
-    
-    result.x = -(acos(y / sqrt(y*y + z*z)) - MPI / 2);
-    result.y =   acos(x / sqrt(x*x + z*z)) - MPI / 2;
-    result.z = 0;
-    
-    return(result);
-}
-
-RVector3D RVector3D::projections_from_angle(double a)
-{
-    RVector3D result = RVector3D();
-
-    if (fabs(x - MPI / 2) < double_eps || fabs(y - MPI / 2) < double_eps
-     || fabs(x + MPI / 2) < double_eps || fabs(y + MPI / 2) < double_eps)
-    {
-        result.z = 0;
-
-        if (fabs(y + MPI / 2) < double_eps) result.x = -1;
-        if (fabs(y - MPI / 2) < double_eps) result.x = 1;
-
-        if (fabs(x + MPI / 2) < double_eps) result.y = 1;
-        if (fabs(x - MPI / 2) < double_eps) result.y = -1;
-    }
-    else
-    {
-        result.z = +a / sqrt(1 + pow(tan(x), 2) + pow(tan(y), 2));
-        result.x = +result.z * tan(y);
-        result.y = -result.z * tan(x);
-    }
-
-    if ((fabs(y) - double_eps) >= MPI / 2 && (fabs(y) + double_eps) <= MPI) result.x *= -1;
-    if ((x + double_eps) <= -MPI / 2 || x - (double_eps) >= MPI / 2) result.y *= -1;
-
-    result.x *= -1;
-    result.y *= -1;
-
-    return(result);
-
-}
-
-struct Motor
-{
-    enum EXTREMAL_SPEED 
-    {
-        MIN_SPEED = 100,
-        MAX_SPEED = 254
-    };
-    int control_pin;
-    int speedie;
-    inline const int power();
-    void makeSpeed(int percentage); 
-};
-
-inline const int Motor::power()
-{
-    return (double) 100 * (speedie - MIN_SPEED) / (MAX_SPEED - MIN_SPEED);
-}
-
-void Motor::makeSpeed(int percentage)
-{
-    if (percentage >= 100) speedie = MAX_SPEED;
-    else if (percentage <=   0) speedie = MIN_SPEED;
-    else speedie = (double) 0.01 * percentage * (MAX_SPEED - MIN_SPEED) + MIN_SPEED;
-    
-    analogWrite(control_pin, speedie);
-}
-
-class MotorController
-{
-private:
-
-#ifdef DEBUG_NO_MOTORS
-    static const int INIT_TIMEOUT = 0; // ms
-#else
-    static const int INIT_TIMEOUT = 8000; // ms
-#endif
-
-    static const int DEF_SPEED_STEP = 400;
-
-    double throttle_abs;
-    
-    RVector3D accelerometer_xi;
-    
-    static const double angle_max_rotation = MPI / 4;
-
-
-    static const double angular_velocity_max_rotation = MPI / 4;    
-    
-    static const double JOYSTICK_COEFFICIENT = 0.2;
-    
-    static const double MIN_SPEED_PERCENT = 10;
-
-    enum SIGN
-    {
-        ZERO = 0,
-        PLUS = 1,
-        MINUS = -1
-    };
-
-    enum MOTORS
-    {
-        A, B, C, D, N_MOTORS
-    };
-
-    Motor motors_[N_MOTORS];
-
-    bool use_motors[N_MOTORS];
-
-    inline const SIGN x_sign(int i);
-    inline const SIGN y_sign(int i);
-
-public:
-    double angle_Kp, angle_Ki, angle_Kd;
-    double angular_velocity_Kp, angular_velocity_Ki, angular_velocity_Kd;
-
-    MotorController(const int motor_control_pins[N_MOTORS]);
-    ~MotorController();
-
-    void speedChange(RVector3D throttle_vec);
-    double speedGet(RVector3D throttle_vec, int motor);
-    //void linearSpeedInc(int inc_percent, int speed_step_time);
-
-    inline double get_throttle_abs();
-
-    inline void set_throttle_abs(double a);
-    
-    RVector3D get_joystick_throttle(RVector3D joystick_data);
-    RVector3D get_angle_rotation(RVector3D angle, double dt);
-    RVector3D get_acceleration_rotation(RVector3D angle, RVector3D accel_data); // totally doesnt work
-    RVector3D get_angular_velocity_rotation(RVector3D angular_velocity, double dt);
-};
-
-inline const MotorController::SIGN MotorController::x_sign(int i)
-{
-    switch (i)
-    {
-        case A:
-            return MINUS;
-        case B:
-            return ZERO;
-        case C:
-            return PLUS;
-        case D:
-            return ZERO;
-        default:
-            return ZERO;
-    }
-}
-
-inline const MotorController::SIGN MotorController::y_sign(int i)
-{
-    switch (i)
-    {
-        case A:
-            return ZERO;
-        case B:
-            return PLUS;
-        case C:
-            return ZERO;
-        case D:
-            return MINUS;
-        default:
-            return ZERO;
-    }
-}
-
-inline double MotorController::get_throttle_abs()
-{
-    return(throttle_abs);
-}
-
-inline void MotorController::set_throttle_abs(double a)
-{
-    throttle_abs = a;
-}
-
-RVector3D MotorController::get_joystick_throttle(RVector3D joystick_data)
-{
-    RVector3D throttle = RVector3D(0, 0, 1);
-    
-    throttle.x_angle_inc(joystick_data.x * JOYSTICK_COEFFICIENT);
-    throttle.y_angle_inc(joystick_data.y * JOYSTICK_COEFFICIENT);
-    
-    return(throttle);
-}
-
-RVector3D MotorController::get_angle_rotation(RVector3D angle, double dt)
-{
-    static RVector3D prev_e = RVector3D(0, 0, 0),
-        e_integral = RVector3D(0, 0, 0);
-    
-    //requested angle
-    RVector3D angle0 = RVector3D(0, 0, 0);
-    
-    //difference between requested and current angle
-    RVector3D e = angle0 - angle;
-    
-    //discrete derivative
-    RVector3D e_derivative = (e - prev_e) / dt;
-    
-    //discrete integral
-    e_integral += e * dt;
-    
-    //correction
-    RVector3D y = e * angle_Kp + e_integral * angle_Ki + e_derivative * angle_Kd;
-    
-    RVector3D u = y; // reaction
-    
-    //max and min correction
-    for(int i = 0; i < 2; i++)
-    {
-        if(u.value_by_axis_index(i) < -angle_max_rotation)
-            u.value_by_axis_index(i) = -angle_max_rotation;
-        if(u.value_by_axis_index(i) > angle_max_rotation)
-            u.value_by_axis_index(i) = angle_max_rotation;
-    }
-    
-    //for integral and derivative
-    prev_e = e;
-    
-    return(u);
-}
-
-RVector3D MotorController::get_acceleration_rotation(RVector3D angle, RVector3D accel_data)
-{
-    RVector3D g = angle.projections_from_angle();
-    RVector3D a = accel_data - g;
-    
-    static RVector3D a_prev = a, res;
-    static TimerCount t_time;
-
-    double period = 4, alpha, dt;
-
-    if(!t_time.get_time_isset()) res = RVector3D(0, 0, 0);
-    else {
-        dt = t_time.get_time_difference() / 1.E6;
-
-        alpha = dt / (dt + period / (2 * M_PI));
- 
-        //cerr << "alpha=" << alpha << endl;
-
-        res = a_prev * (1 - alpha) + a * alpha;
-    }
-
-    a_prev = res;
-    t_time.set_time();
-     
-    RVector3D rotation = res.angle_from_projections();
-    RVector3D moment_of_force;
-    moment_of_force.x = rotation.x * accelerometer_xi.x;
-    moment_of_force.y = rotation.y * accelerometer_xi.y;
-     
-    RVector3D throttle_new;
-    throttle_new.z = 1 / sqrt(1 + pow(moment_of_force.x / 2, 2) + pow(moment_of_force.y / 2, 2));
-    throttle_new.x =  moment_of_force.y / 2 * throttle_new.z;
-    throttle_new.y = -moment_of_force.x / 2 * throttle_new.z;
-     
-    return(throttle_new);
-}
-
-RVector3D MotorController::get_angular_velocity_rotation(RVector3D angular_velocity, double dt)
-{
-    static RVector3D prev_e = RVector3D(0, 0, 0),
-        e_integral = RVector3D(0, 0, 0);
-    
-    //requested angular velocity
-    RVector3D angular_velocity0 = RVector3D(0, 0, 0);
-    
-    //difference between requested and current angular velocity
-    RVector3D e = angular_velocity0 - angular_velocity;
-    
-    //discrete derivative
-    RVector3D e_derivative = (e - prev_e) / dt;
-    
-    //discrete integral
-    e_integral += e * dt;
-    
-    //correction
-    RVector3D y = e * angular_velocity_Kp + e_integral * angular_velocity_Ki + e_derivative * angular_velocity_Kd;
-    
-    RVector3D u = y; // reaction
-    
-    //max and min correction
-    for(int i = 0; i < 2; i++)
-    {
-        if(u.value_by_axis_index(i) < -angular_velocity_max_rotation)
-            u.value_by_axis_index(i) = -angular_velocity_max_rotation;
-        if(u.value_by_axis_index(i) > angular_velocity_max_rotation)
-            u.value_by_axis_index(i) = angular_velocity_max_rotation;
-    }
-    
-    //for integral and derivative
-    prev_e = e;
-    
-    return(u);
-}
-
-double MotorController::speedGet(RVector3D throttle_vec, int motor)
-{
-    // This comes from the Cubic Vector Model
-    double res = 100 * ( throttle_vec.module_sq() + x_sign(motor) * throttle_vec.x + y_sign(motor) * throttle_vec.y ) / throttle_vec.z;
-    
-    // it is necessary because the motor controller starts a motor with greater speed than needed
-    if (res <= MIN_SPEED_PERCENT && throttle_vec.module_sq() != 0) res = MIN_SPEED_PERCENT;
-    
-    // use_motors implementation
-    if(!use_motors[motor]) res = 0;
-    
-    return(res);
-}
-
-void MotorController::speedChange(RVector3D throttle_vec)
-{
-    for (int i = 0; i < N_MOTORS; i++)
-        motors_[i].makeSpeed(speedGet(throttle_vec, i));
-}
-
-MotorController::MotorController(const int motor_control_pins[N_MOTORS])
-{
-    angle_Kp = 1;
-    angle_Ki = 0;
-    angle_Kd = 0;
-    
-    angular_velocity_Kp = 1;
-    angular_velocity_Ki = 0;
-    angular_velocity_Kd = 0;
-    
-    accelerometer_xi.x = 0.5;
-    accelerometer_xi.y = 0.5;
-    
-    use_motors[A] = 1;
-    use_motors[B] = 0;
-    use_motors[C] = 1;
-    use_motors[D] = 0;
-    
-    for (int i = 0; i < N_MOTORS; i++)
-    {
-        pinMode(motor_control_pins[i], OUTPUT);
-        motors_[i].control_pin = motor_control_pins[i];
-        motors_[i].makeSpeed(0);
-    }
-
-    // Ожидание инициализации конроллов моторов + примерно три писка
-    delay(INIT_TIMEOUT);
-
-    RVector3D start_throttle = RVector3D();
-
-    throttle_abs = start_throttle.module();
-
-    speedChange(start_throttle);
-}
-
-/*
-// Увеличить обороты двигателя на inc_percent (за время, кратное speed_step_time``)
-void MotorController::linearSpeedInc(int inc_percent, int speed_step_time)
-{
-    linearSpeedChange(power() + inc_percent, speed_step_time);
-}
-*/
-
-class Accelerometer
-{
-private:
-    static const unsigned int AXIS = 3, AVG_N = 1;
-    static const double ACCURACY = 1E-2;
-    
-    static const double adc_aref = 5, adc_maxvalue = 1023;
-    double map_a[AXIS], map_b[AXIS];
-    
-    int ports[AXIS];
-    RVector3D defaults;
-
-public:
-    Accelerometer(int new_ports[AXIS])
-    {
-        map_a[0] = 0.8616664408; map_b[0] = 1.5204146893;
-        map_a[1] = 0.892143084;  map_b[1] = 1.8134632093;
-        map_a[2] = 0.8861390819; map_b[2] = 1.5457698227;
-        
-        defaults = RVector3D();
-        
-        unsigned int i;
-        for(i = 0; i < AXIS; i++)
-        {
-            ports[i] = new_ports[i];
-        }
-        
-//        set_defaults();
-    }
-
-    RVector3D get_readings(); //in m/s^2 divided by g
-    RVector3D get_raw_readings(); //in volts
-
-    void set_defaults()
-    {
-        defaults = get_readings();
-    }
-};
-
-RVector3D Accelerometer::get_raw_readings()
-{
-    unsigned int i;
-    RVector3D result;
-    result *= 0;
-    
-    for(i = 0; i < AXIS; i++)
-    {
-        #ifdef DEBUG_NO_ACCELEROMETER
-            result.value_by_axis_index(i) = 0;
-        #else
-            result.value_by_axis_index(i) = analogRead(ports[i]) * adc_aref / adc_maxvalue;
-            
-            if(result.value_by_axis_index(i) == NAN || result.value_by_axis_index(i) != result.value_by_axis_index(i))
-                result.value_by_axis_index(i) = 0;
-        #endif
-    }
-    
-    return(result);
-}
-
-RVector3D Accelerometer::get_readings()
-{
-    unsigned int i;
-    RVector3D result;
-    result = RVector3D();
-    
-    for(i = 0; i < AVG_N; i++)
-        result += get_raw_readings();
-    
-    result /= AVG_N;
-
-    result -= defaults;
-
-    for(i = 0; i < AXIS; i++)
-    {
-        result.value_by_axis_index(i) = (result.value_by_axis_index(i) - map_b[i]) / map_a[i];
-
-        if(fabs(result.value_by_axis_index(i)) < ACCURACY)
-            result.value_by_axis_index(i) = 0;
-    }
-
-    return(result);
-}
-
-class Gyroscope
-{
-private:
-    // ITG3200 Register Defines
-    static const unsigned char WHO   = 0x00,
-                               SMPL  = 0x15,
-                               DLPF  = 0x16,
-                               INT_C = 0x17,
-                               INT_S = 0x1A,
-                               TMP_H = 0x1B,
-                               TMP_L = 0x1C,
-                               GX_H  = 0x1D,
-                               GX_L  = 0x1E,
-                               GY_H  = 0x1F,
-                               GY_L  = 0x20,
-                               GZ_H  = 0x21,
-                               GZ_L  = 0x22,
-                               PWR_M = 0x3E;
-    static const int GYRO_ADDRESS = 0x68;
-
-    static const double ACCURACY = 1E-1; // in radians / sec.
-    static const int AXIS = 3;
-    static const double LSB_PER_DEG_PER_SEC = 14.375;
-
-public:
-    Gyroscope();
-
-    char ITG3200Readbyte(unsigned char address);
-
-    int ITG3200Read(unsigned char addressh, unsigned char addressl);
-
-    RVector3D get_raw_readings();
-    RVector3D get_readings();
-};
-
-Gyroscope::Gyroscope()
-{
-    Wire.begin();
-    Wire.beginTransmission(GYRO_ADDRESS);
-    Wire.write(0x3E);
-    Wire.write(0x80);  // send a reset to the device
-    Wire.endTransmission(); // end transmission
-    
-    Wire.beginTransmission(GYRO_ADDRESS);
-    Wire.write(0x15);
-    Wire.write((byte)0x00);   // sample rate divider
-    Wire.endTransmission(); // end transmission
- 
-    Wire.beginTransmission(GYRO_ADDRESS);
-    Wire.write(0x16);
-    Wire.write(0x18); // ±2000 degrees/s (default value)
-    Wire.endTransmission(); // end transmission
-}
-
-char Gyroscope::ITG3200Readbyte(unsigned char address)
-{
-    char data;
- 
-    Wire.beginTransmission(GYRO_ADDRESS);
-    Wire.write(address);
-    Wire.endTransmission();
-    
-    Wire.requestFrom(GYRO_ADDRESS, 1);
-    if(Wire.available() > 0)
-    {
-        data = Wire.read();
-    }
-    
-    return data;
-    
-    Wire.endTransmission();
-}
-
-int Gyroscope::ITG3200Read(unsigned char addressh, unsigned char addressl)
-{
-    long int data, t_data;
-
-    Wire.beginTransmission(GYRO_ADDRESS);
-    Wire.write(addressh);
-    Wire.endTransmission();
-    
-    Wire.requestFrom(GYRO_ADDRESS, 1);
-    if(Wire.available() > 0)
-    {
-        t_data = Wire.read();
-        data |= t_data << 8;
-    }
-    
-    Wire.beginTransmission(GYRO_ADDRESS);
-    Wire.write(addressl);
-    Wire.endTransmission();
-    
-    if(Wire.available() > 0)
-    {
-        data |= Wire.read();
-    }
-    
-    return data;
-}
-
-RVector3D Gyroscope::get_readings()
-{
-    RVector3D result = get_raw_readings();
-
-    int i;
-
-    for(i = 0; i < AXIS; i++)
-    {
-        result.value_by_axis_index(i) *= MPI / (180 * LSB_PER_DEG_PER_SEC);
-        
-        if(fabs(result.value_by_axis_index(i)) < ACCURACY)
-            result.value_by_axis_index(i) = 0;
-    }
-
-    return(result);
-}
-
-RVector3D Gyroscope::get_raw_readings()
-{
-    RVector3D result;
-    
-    #ifdef DEBUG_NO_GYROSCOPE
-    
-        result = RVector3D();
-    
-    #else
-
-        result.x = ITG3200Read(GX_H, GX_L);
-        result.y = ITG3200Read(GY_H, GY_L);
-        result.z = ITG3200Read(GZ_H, GZ_L);
-        
-    #endif
-    
-    return(result);
-}
-
-void write_double(double min_value, double max_value, double value, unsigned int bytes)
-{
-    //mapping
-    value -= min_value;
-    value /= (max_value - min_value);
-
-    //scaling to bytes
-    value *= pow(2, 8 * bytes);
-
-    //bytes to send in one int
-    unsigned long t_int = value;
-
-    //writing
-    unsigned char t_char;
-    for(int i = bytes - 1; i >= 0; i--)
-    {
-        t_char = (t_int >> (8 * i));
-        Serial.write((unsigned int) t_char);
-    }
-}
-
-double read_double(double min_value, double max_value, unsigned int bytes)
-{
-    unsigned long long t_int = 0;
-
-    //reading
-    unsigned int t_int_curr;
-    for(int i = bytes - 1; i >= 0; i--)
-    {
-        while(Serial.available() <= 0) {}
-        t_int_curr = Serial.read();
-        t_int_curr = t_int_curr << (8 * i);
-        
-        t_int |= t_int_curr;
-    }
-
-    double value = t_int;
-
-    //scaling from bytes
-    value /= pow(2, 8 * bytes);
-
-    //mapping
-    value *= (max_value - min_value);
-    value += min_value;
-
-    return(value);
-}
+#include "Motor.h"
+#include "MotorController.h"
 
 MotorController* MController;
 Accelerometer* Accel;
@@ -888,37 +22,26 @@ enum reaction_type_ {REACTION_NONE, REACTION_ANGULAR_VELOCITY, REACTION_ACCELERA
 char reaction_type_names[][8] = {"none", "ang_vel", "accel", "angle"};
 reaction_type_ reaction_type = REACTION_NONE;
 
-//distance from gyroscope to the accelerometer in meters
-RVector3D gyro_to_acc;
+// distance from gyroscope to the accelerometer in meters
+RVector3D gyro_to_acc = RVector3D(-1.9E-2, -1.7E-2, 2.1E-2);
 
-//throttle manual rotation
-RVector3D throttle_manual_rotation;
+// throttle manual rotation
+RVector3D throttle_manual_rotation = RVector3D(0, 0, 0);
 
-//angle between Earth's coordinate and ours
+// throttle default value
+const RVector3D throttle_default = RVector3D(0, 0, 1);
+
+// angle between Earth's coordinate and ours
 RVector3D angle;
 
-//period for low-pass filter for accelerometer
+// period for low-pass filter for accelerometer
 double angle_period = 4;
 
-//gravitational acceleration
+// gravitational acceleration
 const double g = 9.80665;
 
-#ifdef DEBUG_SERIAL
-    const double serial_gyroscope_coefficient = 0.08;
-
-    enum serial_type_ {SERIAL_DEFAULT, SERIAL_RESTORE};
-        
-    serial_type_ serial_type = SERIAL_DEFAULT;
-
-    #ifdef DEBUG_SERIAL_HUMAN
-        unsigned int serial_auto_count = 0, serial_auto_count_M = 10;
-        unsigned int serial_auto_send = 0;
-        
-        //for wasd and digits
-        const double angle_step = 0.024543692; // PI / 128
-        const double throttle_step = 0.1;
-    #endif
-#endif
+// corrections
+RVector3D angular_velocity_rotation, acceleration_rotation, angle_rotation;
 
 void setup()
 {
@@ -938,19 +61,24 @@ void setup()
     
     TCount = new TimerCount;
     
-    throttle_manual_rotation = RVector3D(0, 0, 1);
-    
-    angle = RVector3D();
-    
-    gyro_to_acc = RVector3D(-1.9E-2, -1.7E-2, 2.1E-2);
-}
+    #ifdef DEBUG_SERIAL
+        serial_type = SERIAL_WAITING;
+    #endif
+}    
 
 /*
    Global Variables
 */
 unsigned int last_dt = 0, i = 0;
-double t_double = 0, angle_alpha = 0;
+double angle_alpha = 0;
 long double dt = 0;
+
+char c = 0;
+
+// sensors' data
+RVector3D accel_data, gyro_data;
+
+RVector3D throttle_corrected;
 
 // for angular acceleration
 RVector3D gyro_prev_data = RVector3D();
@@ -958,8 +86,8 @@ RVector3D gyro_prev_data = RVector3D();
 void loop()
 { 
     // data from sensors
-    RVector3D accel_data = Accel->get_readings();
-    RVector3D gyro_data = Gyro->get_readings();
+    accel_data = Accel->get_readings();
+    gyro_data = Gyro->get_readings();
 
     // on second loop() iteration
     if (TCount->get_time_isset())
@@ -981,140 +109,53 @@ void loop()
         // alpha coefficient for low-pass filter
         angle_alpha = dt / (dt + angle_period / (2 * MPI));
   
-        // low-pass filter
-        
+        // low-pass filter      
         angle.x = (angle.x + gyro_data.x * dt) * (1 - angle_alpha) + accel_angle.x * angle_alpha;
         angle.y = (angle.y + gyro_data.y * dt) * (1 - angle_alpha) + accel_angle.y * angle_alpha;
         
+        // sometimes some stuff happen
         for(i = 0; i < 2; i++)
-            if(angle.value_by_axis_index(i) == NAN || angle.value_by_axis_index(i) != angle.value_by_axis_index(i))
+            if (!(angle.value_by_axis_index(i) >= -MPI && angle.value_by_axis_index(i) <= MPI))
                 angle.value_by_axis_index(i) = 0;
     }
     TCount->set_time();
     
-    // calculating correction (both methods)angle_rotation
-    RVector3D acceleration_rotation = MController->get_acceleration_rotation(angle, accel_data);
-    RVector3D angular_velocity_rotation = MController->get_angular_velocity_rotation(gyro_data, dt);
-    RVector3D angle_rotation = MController->get_angle_rotation(angle, dt);
+    // calculating correction (all methods)
+    acceleration_rotation = MController->get_acceleration_rotation(angle, accel_data);
+    angular_velocity_rotation = MController->get_angular_velocity_rotation(gyro_data, dt);
+    angle_rotation = MController->get_angle_rotation(angle, dt);
 
-#ifdef DEBUG_SERIAL
-    static char c = 0;
-    static unsigned int t_low = 0, t_high = 0, t_int = 0;
-    static RVector3D throttle_tmp = RVector3D();
+    #ifdef DEBUG_SERIAL
     
-    c = 0;
-    if (Serial.available() > 0)
-    {
-        c = Serial.read();
+        // reading command, if available
+        serial_get_command();
         
-        if(serial_type == SERIAL_DEFAULT)
-        {
-            if(c == 'n')
-            {
-                angle = RVector3D();
-                
-                throttle_manual_rotation = RVector3D(0, 0, 1);
-            }
-            else if(c == 'i')
-            {                
-                serial_type = SERIAL_RESTORE;
-                
-                //rotation
-                for(int serial_writing = 0; serial_writing < 4; serial_writing++)
-                {
-                    while(Serial.available() <= 0);
-                    c = Serial.read();
-                    
-                    //high byte
-                    if(serial_writing % 2 == 0) t_high = c;
-                    else
-                    {
-                        //recieved low byte;
-                        t_low = c;
-                        t_int = (t_high << 8) + (t_low & 0xff);
-                        
-                        t_double = ((double) t_int) / 65535. * 2. - 1;
-                        
-                        throttle_tmp.value_by_axis_index(serial_writing / 2) = t_double;   
-                    }
-                }
+        // processing read commands (to arduino)
+        serial_process_read();
+        
+    #endif
 
-                throttle_manual_rotation = MController->get_joystick_throttle(throttle_tmp);
-                
-                //throttle_abs
-                while(Serial.available() <= 0);
-                
-                c = Serial.read();
-                
-                MController->set_throttle_abs(c / 100.);
-                
-                //reaction_type
-                while(Serial.available() <= 0);
-                
-                c = Serial.read();
-                
-                reaction_type = (reaction_type_) (c - '0');
-                
-                //PID angle coefficients
-                MController->angle_Kp = read_double(-10, 10, 2);
-                MController->angle_Ki = read_double(-10, 10, 2);
-                MController->angle_Kd = read_double(-10, 10, 2);
-                
-                //PID angular velocity coefficients
-                MController->angular_velocity_Kp = read_double(-10, 10, 2);
-                MController->angular_velocity_Ki = read_double(-10, 10, 2);
-                MController->angular_velocity_Kd = read_double(-10, 10, 2);
-            }
-            #ifdef DEBUG_SERIAL_HUMAN
-                else if(c == '+' && MController->get_throttle_abs() + throttle_step <= 1)
-                    MController->set_throttle_abs(MController->get_throttle_abs() + throttle_step);
-                    
-                else if(c == '-' && MController->get_throttle_abs() - throttle_step >= 0)
-                    MController->set_throttle_abs(MController->get_throttle_abs() - throttle_step);
-                    
-                else if(c >= '0' && c <= '9') MController->set_throttle_abs((c - '0') / 10.0);
-                
-                else if(c == 'a')
-                    throttle_manual_rotation.y_angle_inc(angle_step);
-                else if(c == 'd')
-                    throttle_manual_rotation.y_angle_dec(angle_step);
-                else if(c == 'w')
-                    throttle_manual_rotation.x_angle_dec(angle_step);
-                else if(c == 's')
-                    throttle_manual_rotation.x_angle_inc(angle_step);
-                else if(c == 't')
-                {
-                    serial_auto_send = !serial_auto_send;
-                    serial_auto_count = 0;
-                }
-            #endif
-        }
-    }
-#endif
-
-    RVector3D throttle_corrected = throttle_manual_rotation;
+    // resulting vector
+    throttle_corrected = throttle_default;
+    throttle_corrected.angle_inc(throttle_manual_rotation);
     
+    // applying corrections
     #ifndef DEBUG_NO_GYROSCOPE
     
         // reaction on angular velocity from gyroscope
         if (reaction_type == REACTION_ANGULAR_VELOCITY)
-        {
-            throttle_corrected.x_angle_inc(angular_velocity_rotation.x);
-            throttle_corrected.y_angle_inc(angular_velocity_rotation.y);
-        }
+            throttle_corrected.angle_inc(angular_velocity_rotation);
             
         #ifndef DEBUG_NO_ACCELEROMETER
+        
             // reaction on acceleration
             if (reaction_type == REACTION_ACCELERATION)
-            {
-                throttle_corrected.x_angle_inc(acceleration_rotation.x);
-                throttle_corrected.y_angle_inc(acceleration_rotation.y);
-            }
+                throttle_corrected.angle_inc(acceleration_rotation);
+                
+            // reaction on angle
             else if (reaction_type == REACTION_ANGLE)
-            {
-                throttle_corrected.x_angle_inc(angle_rotation.x);
-                throttle_corrected.y_angle_inc(angle_rotation.y);
-            }
+                throttle_corrected.angle_inc(angle_rotation);
+                
         #endif
     #endif
     
@@ -1122,75 +163,15 @@ void loop()
     throttle_corrected /= throttle_corrected.module();
     throttle_corrected *= MController->get_throttle_abs();
     
-#ifdef DEBUG_SERIAL
-    if(serial_type == SERIAL_DEFAULT)
-    {
-        #ifdef DEBUG_SERIAL_HUMAN
-            if(c == 'g' || (serial_auto_send && serial_auto_count == serial_auto_count_M))
-            {
-                Serial.print(accel_data.module());
-                Serial.print("\t");
-                accel_data.print_serial(RVector3D::PRINT_TAB);
-                gyro_data.print_serial(RVector3D::PRINT_TAB);
-                
-                throttle_manual_rotation.print_serial(RVector3D::PRINT_TAB);
-                throttle_corrected.print_serial(RVector3D::PRINT_TAB);
+    #ifdef DEBUG_SERIAL
+    
+        //processing write commands (from arduino)
+        serial_process_write();
         
-                Serial.print(MController->get_throttle_abs(), SERIAL_ACCURACY);
-        
-                Serial.print("\t");
-                
-                for(unsigned int i = 0; i < 4; i++)
-                {
-                    Serial.print(MController->speedGet(throttle_corrected, i));
-                    Serial.print("\t");
-                }
-        
-                angle.print_serial(RVector3D::PRINT_TAB, RVector3D::USE_2D);
-                
-                Serial.print(last_dt / 1.E3);
-                
-                Serial.print("\t");
-                
-                Serial.print("R:");
-                Serial.print(reaction_type_names[reaction_type]);
-                
-                Serial.print("\n");
-                
-                serial_auto_count = 0;
-            }
-            else serial_auto_count++;
-        #endif
-        
-        if (c == 'p')
-        {
-            //26 bytes
-            throttle_corrected.print_serial(RVector3D::PRINT_RAW);
-            angle.print_serial(RVector3D::PRINT_RAW, RVector3D::USE_2D);
-            
-            (gyro_data * serial_gyroscope_coefficient).print_serial(RVector3D::PRINT_RAW);
-            accel_data.print_serial(RVector3D::PRINT_RAW);
-            angular_velocity_rotation.print_serial(RVector3D::PRINT_RAW, RVector3D::USE_2D);
-            acceleration_rotation.print_serial(RVector3D::PRINT_RAW);
-            angle_rotation.print_serial(RVector3D::PRINT_RAW, RVector3D::USE_2D);
-            
-            for (i = 0; i < 4; i++)
-                Serial.write((int) MController->speedGet(throttle_corrected, i));
-                
-            for (int si = 2; si >= 0; si--)
-                Serial.write((last_dt & (0xff << 8 * si)) >> (8 * si));
-                
-            Serial.write(reaction_type + '0');
-        }
-    }
-#endif
+    #endif
 
     // setting speed
     MController->speedChange(throttle_corrected);
-    
-    #ifdef DEBUG_SERIAL
-        if(serial_type == SERIAL_RESTORE) serial_type = SERIAL_DEFAULT;
-    #endif
     
     // for angular acceleration
     gyro_prev_data = gyro_data;

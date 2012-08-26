@@ -21,11 +21,11 @@ quadrocopter::quadrocopter()
     //connect_delay_arduino = 9000;
     connect_delay_arduino = 2000;
 
-    PID_angle_Kp = 1;
+    PID_angle_Kp = 0.37;
     PID_angle_Ki = 0;
-    PID_angle_Kd = 0;
+    PID_angle_Kd = 0.12;
 
-    PID_angular_velocity_Kp = 1;
+    PID_angular_velocity_Kp = 0.11;
     PID_angular_velocity_Ki = 0;
     PID_angular_velocity_Kd = 0;
 
@@ -58,10 +58,6 @@ void quadrocopter::read_data()
     t_loop_time = read_unsigned_int_3byte() / 1.E6;
 
     t_reaction_type = (reaction_type_) (sread() - '0');
-
-    //cerr << "Kp=" << read_number_vect_t(-10, 10, 2) << "\t";
-    //cerr << "Ki=" << read_number_vect_t(-10, 10, 2) << "\t";
-    //cerr << "Kd=" << read_number_vect_t(-10, 10, 2) << endl;
 
     if(!read_error())
     {
@@ -117,17 +113,8 @@ void quadrocopter::write_data()
     //send throttle_rotation
     swrite('i');
 
-    unsigned int t_int, t_high, t_low;
-
     for(int i = 0; i < 2; i++) // 2 - axis count
-    {
-        t_int = fabs((throttle_rotation.value_by_axis_index(i) + 1) * 65535 / 2);
-        t_high = t_int >> 8;
-        t_low = t_int & 0xff;
-
-        swrite(t_high);
-        swrite(t_low);
-    }
+        write_number_vect_t(-1, 1, throttle_rotation.value_by_axis_index(i), 2);
 
     //send power
     //swrite('m');
@@ -137,17 +124,17 @@ void quadrocopter::write_data()
     //swrite('r');
     swrite('0' + reaction_type);
 
-    usleep(100);
+    //usleep(100);
     write_number_vect_t(-10, 10, PID_angle_Kp, 2);
-    usleep(100);
+    //usleep(100);
     write_number_vect_t(-10, 10, PID_angle_Ki, 2);
-    usleep(100);
+    //usleep(100);
     write_number_vect_t(-10, 10, PID_angle_Kd, 2);
 
     write_number_vect_t(-10, 10, PID_angular_velocity_Kp, 2);
-    usleep(100);
+    //usleep(100);
     write_number_vect_t(-10, 10, PID_angular_velocity_Ki, 2);
-    usleep(100);
+    //usleep(100);
     write_number_vect_t(-10, 10, PID_angular_velocity_Kd, 2);
 
     write_time = t_time.get_time_difference() / 1.E3;
@@ -214,7 +201,9 @@ void quadrocopter::reset_throttle()
 
 vect quadrocopter::get_throttle_corrected()
 {
-    return(throttle_corrected);
+    if(power != 0)
+        return(throttle_corrected / power);
+    else return(vect());
 }
 
 vect quadrocopter::get_gyroscope_readings()
@@ -287,6 +276,36 @@ void quadrocopter::set_PID_angular_velocity_Ki(number_vect_t t_Ki)
 void quadrocopter::set_PID_angular_velocity_Kd(number_vect_t t_Kd)
 {
     PID_angular_velocity_Kd = t_Kd;
+}
+
+number_vect_t quadrocopter::get_PID_angle_Kp()
+{
+    return(PID_angle_Kp);
+}
+
+number_vect_t quadrocopter::get_PID_angle_Ki()
+{
+    return(PID_angle_Ki);
+}
+
+number_vect_t quadrocopter::get_PID_angle_Kd()
+{
+    return(PID_angle_Kd);
+}
+
+number_vect_t quadrocopter::get_PID_angular_velocity_Kp()
+{
+    return(PID_angular_velocity_Kp);
+}
+
+number_vect_t quadrocopter::get_PID_angular_velocity_Ki()
+{
+    return(PID_angular_velocity_Ki);
+}
+
+number_vect_t quadrocopter::get_PID_angular_velocity_Kd()
+{
+    return(PID_angular_velocity_Kd);
 }
 
 vect quadrocopter::get_throttle_rotation()
