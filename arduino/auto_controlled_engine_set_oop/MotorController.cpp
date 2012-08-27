@@ -172,6 +172,12 @@ double MotorController::speedGet(RVector3D throttle_vec, int motor)
     return(res);
 }
 
+void MotorController::speedChangeRaw(double power[N_MOTORS])
+{
+    for(int i = 0; i < N_MOTORS; i++)
+        motors_[i].makeSpeed(power[i]);
+}
+
 void MotorController::speedChange(RVector3D throttle_vec)
 {
     for (int i = 0; i < N_MOTORS; i++)

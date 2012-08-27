@@ -54,6 +54,7 @@ public:
     ~MotorController();
 
     void speedChange(RVector3D throttle_vec);
+    void speedChangeRaw(double power[N_MOTORS]);
     double speedGet(RVector3D throttle_vec, int motor);
     //void linearSpeedInc(int inc_percent, int speed_step_time);
 

@@ -11,7 +11,7 @@ quadrocopter::quadrocopter()
 {
     tty_fd = -1;
     rate = 115200;
-    maxwait = 2000;
+    maxwait = 500;
 
     device = "/dev/rfcomm0";
     //device = "/dev/ttyACM0";
@@ -201,9 +201,11 @@ void quadrocopter::reset_throttle()
 
 vect quadrocopter::get_throttle_corrected()
 {
-    if(power != 0)
+    /*if(power != 0)
         return(throttle_corrected / power);
-    else return(vect());
+    else return(vect());*/
+
+    return(throttle_corrected);
 }
 
 vect quadrocopter::get_gyroscope_readings()

@@ -4,7 +4,9 @@
 #include "Accelerometer.h"
 #include "Gyroscope.h"
 #include "Arduino.h"
+#include "TimerCount.h"
 
+#ifdef DEBUG_SERIAL
 
 extern unsigned int last_dt, i;
 extern double t_double, angle_alpha;
@@ -15,12 +17,14 @@ extern long double dt;
 
 extern RVector3D accel_data, gyro_data;
 extern RVector3D angle_rotation, acceleration_rotation, angular_velocity_rotation;
-extern RVector3D throttle_manual_rotation, throttle_corrected;
+extern RVector3D throttle_manual_rotation, throttle_corrected, throttle_scaled;
 extern RVector3D angle;
 
 const double serial_gyroscope_coefficient = 0.08;
     
 int serial_type;
+
+bool serial_read_error = false;
 
 #ifdef DEBUG_SERIAL_HUMAN
     unsigned int serial_auto_count = 0;
@@ -52,7 +56,7 @@ void write_double(double min_value, double max_value, double value, unsigned int
     }
 }
 
-double read_double(double min_value, double max_value, unsigned int bytes)
+void read_double(double min_value, double max_value, double& value, unsigned int bytes)
 {
     unsigned long long t_int = 0;
 
@@ -60,14 +64,18 @@ double read_double(double min_value, double max_value, unsigned int bytes)
     unsigned int t_int_curr;
     for(int i = bytes - 1; i >= 0; i--)
     {
-        while(Serial.available() <= 0) {}
+        serial_wait_for_byte();
+        if(serial_read_error) break;
+        
         t_int_curr = Serial.read();
         t_int_curr = t_int_curr << (8 * i);
         
         t_int |= t_int_curr;
     }
 
-    double value = t_int;
+    if(serial_read_error) return;
+
+    value = t_int;
 
     //scaling from bytes
     value /= pow(2, 8 * bytes);
@@ -75,8 +83,16 @@ double read_double(double min_value, double max_value, unsigned int bytes)
     //mapping
     value *= (max_value - min_value);
     value += min_value;
+}
 
-    return(value);
+void serial_wait_for_byte()
+{
+    TimerCount t_count;
+    t_count.set_time();
+    
+    while(Serial.available() <= 0 && t_count.get_time_difference() < SERIAL_MAXWAIT_U) {}
+    
+    if(t_count.get_time_difference() >= SERIAL_MAXWAIT_U) serial_read_error = true;
 }
 
 void serial_process_write()
@@ -90,7 +106,7 @@ void serial_process_write()
             gyro_data.print_serial(RVector3D::PRINT_TAB);
             
             throttle_manual_rotation.print_serial(RVector3D::PRINT_TAB);
-            throttle_corrected.print_serial(RVector3D::PRINT_TAB);
+            throttle_scaled.print_serial(RVector3D::PRINT_TAB);
     
             Serial.print(MController->get_throttle_abs(), SERIAL_ACCURACY);
     
@@ -98,7 +114,7 @@ void serial_process_write()
             
             for(unsigned int i = 0; i < 4; i++)
             {
-                Serial.print(MController->speedGet(throttle_corrected, i));
+                Serial.print(MController->speedGet(throttle_scaled, i));
                 Serial.print("\t");
             }
     
@@ -124,7 +140,9 @@ void serial_process_write()
     {   
         if (c == 'p')
         {
-            serial_auto_send = 0;
+            #ifdef DEBUG_SERIAL_HUMAN
+                serial_auto_send = 0;
+            #endif
             
             //26 bytes
             throttle_corrected.print_serial(RVector3D::PRINT_RAW);
@@ -137,7 +155,7 @@ void serial_process_write()
             angle_rotation.print_serial(RVector3D::PRINT_RAW, RVector3D::USE_2D);
             
             for (i = 0; i < 4; i++)
-                Serial.write((int) MController->speedGet(throttle_corrected, i));
+                Serial.write((int) MController->speedGet(throttle_scaled, i));
                 
             for (int si = 2; si >= 0; si--)
                 Serial.write((last_dt & (0xff << 8 * si)) >> (8 * si));
@@ -162,37 +180,42 @@ void serial_process_read()
         }
         else if(c == 'i')
         {
-            serial_auto_send = 0;
+            // modes
+            serial_type = SERIAL_WAITING;
             
-            //throttle_manual_rotation
+            #ifdef DEBUG_SERIAL_HUMAN
+                serial_auto_send = 0;
+            #endif
+            
+            // throttle_manual_rotation
             for(int i = 0; i < 2; i++)
-                throttle_manual_rotation.value_by_axis_index(i) = read_double(-1, 1, 2);
+                read_double(-1, 1, throttle_manual_rotation.value_by_axis_index(i), 2);
             
             //throttle_abs
-            while(Serial.available() <= 0);
+            serial_wait_for_byte();
+            if(serial_read_error) return;
             
             c = Serial.read();
             
             MController->set_throttle_abs(c / 100.);
             
             //reaction_type
-            while(Serial.available() <= 0);
+            serial_wait_for_byte();
+            if(serial_read_error) return;
             
             c = Serial.read();
             
             reaction_type = c - '0';
             
             //PID angle coefficients
-            MController->angle_Kp = read_double(-10, 10, 2);
-            MController->angle_Ki = read_double(-10, 10, 2);
-            MController->angle_Kd = read_double(-10, 10, 2);
+            read_double(-10, 10, MController->angle_Kp, 2);
+            read_double(-10, 10, MController->angle_Ki, 2);
+            read_double(-10, 10, MController->angle_Kd, 2);
             
             //PID angular velocity coefficients
-            MController->angular_velocity_Kp = read_double(-10, 10, 2);
-            MController->angular_velocity_Ki = read_double(-10, 10, 2);
-            MController->angular_velocity_Kd = read_double(-10, 10, 2);
-            
-            serial_type = SERIAL_WAITING;
+            read_double(-10, 10, MController->angular_velocity_Kp, 2);
+            read_double(-10, 10, MController->angular_velocity_Ki, 2);
+            read_double(-10, 10, MController->angular_velocity_Kd, 2);
         }
         #ifdef DEBUG_SERIAL_HUMAN
             else if(c == '+' && MController->get_throttle_abs() + SERIAL_THROTTLE_STEP <= 1)
@@ -258,6 +281,16 @@ void serial_get_command()
     {
         c = Serial.read();
         serial_type = SERIAL_DEFAULT;
+        
+        serial_read_error = false;
+        
+        digitalWrite(infoLedPin, HIGH);
     }
-    else serial_type = SERIAL_WAITING;
+    else
+    {
+        serial_type = SERIAL_WAITING;
+        digitalWrite(infoLedPin, LOW);
+    }
 }
+
+#endif

@@ -14,14 +14,18 @@
     #define SERIAL_ANGLE_STEP 0.024543692 // PI / 128
     #define SERIAL_THROTTLE_STEP 0.1
     
+    #define SERIAL_MAXWAIT_U 1000
+    
     extern int serial_type;
     
-    double read_double(double min_value, double max_value, unsigned int bytes);
+    void read_double(double min_value, double max_value, double& value, unsigned int bytes);
     void write_double(double min_value, double max_value, double value, unsigned int bytes);
     
     void serial_process_read();
     void serial_process_write();
     void serial_get_command();
+    
+    void serial_wait_for_byte();
 
 #endif
 

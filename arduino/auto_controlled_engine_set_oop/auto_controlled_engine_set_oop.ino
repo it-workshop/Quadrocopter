@@ -78,7 +78,7 @@ char c = 0;
 // sensors' data
 RVector3D accel_data, gyro_data;
 
-RVector3D throttle_corrected;
+RVector3D throttle_corrected, throttle_scaled;
 
 // for angular acceleration
 RVector3D gyro_prev_data = RVector3D();
@@ -161,7 +161,8 @@ void loop()
     
     // normalizing
     throttle_corrected /= throttle_corrected.module();
-    throttle_corrected *= MController->get_throttle_abs();
+    
+    throttle_scaled = throttle_corrected * MController->get_throttle_abs();
     
     #ifdef DEBUG_SERIAL
     
@@ -171,7 +172,7 @@ void loop()
     #endif
 
     // setting speed
-    MController->speedChange(throttle_corrected);
+    MController->speedChange(throttle_scaled);
     
     // for angular acceleration
     gyro_prev_data = gyro_data;

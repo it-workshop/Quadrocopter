@@ -59,7 +59,7 @@ private slots:
 private:
     Ui::Quadro *ui;
 
-    static const double timer_auto_interval = 20;
+    static const double timer_auto_interval = 140;
     static const double timer_reconnect_interval = 1000;
     QTimer timer_auto, timer_reconnect;
 
