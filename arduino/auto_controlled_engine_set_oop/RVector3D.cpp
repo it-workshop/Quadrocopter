@@ -54,35 +54,6 @@ void RVector3D::angle_inc(RVector3D rotation)
     y_angle_inc(rotation.y);
 }
 
-void RVector3D::print_serial(RVector3D::print_mode mode, RVector3D::use_axis uaxis)
-{
-    unsigned int i;
-    for(i = 0; i < 3; i++)
-    {
-        if(mode == PRINT_INDEX)
-        {
-            Serial.print(i);
-            Serial.print("");
-            Serial.print(value_by_axis_index(i), SERIAL_ACCURACY);
-            Serial.print("; ");
-        }
-        else if(mode == PRINT_TAB)
-        {
-            Serial.print(value_by_axis_index(i), SERIAL_ACCURACY);
-            Serial.print("\t");
-        }
-        else if(mode == PRINT_RAW)
-        {
-            double t = value_by_axis_index(i);
-            if(t > 1) t = 1;
-            else if(t < -1) t = -1;
-            Serial.write((t + 1) / 2. * 255);
-        }
-        
-        if (uaxis == USE_2D && i == 1) return;
-    }
-}
-
 double RVector3D::module_sq()
 {
     return x * x + y * y + z * z;

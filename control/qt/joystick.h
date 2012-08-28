@@ -19,14 +19,18 @@ private:
 
     void defaults();
 
+    void read_data(); // read data from device
+
+    virtual void on_rx();
+
 public:
     joystick();
 
-    void connect();
-    void disconnect();
+    void do_connect();
+    void do_disconnect();
 
     void set_data_default(); // set zero position
-    void read_data(); // read data from device
+    void read_data_request(); // read data from device
 
     vect get_readings(); // 2D vect, values [0...1]
     bool is_switched_on();

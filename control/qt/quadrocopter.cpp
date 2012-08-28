@@ -4,17 +4,19 @@
 #include <mytime.h>
 #include <vect.h>
 
+#include "qextserialport.h"
+#include <QDebug>
+
 using std::cerr;
 using std::endl;
 
 quadrocopter::quadrocopter()
 {
-    tty_fd = -1;
     rate = 115200;
     maxwait = 500;
 
-    device = "/dev/rfcomm0";
-    //device = "/dev/ttyACM0";
+    //device = "rfcomm0";
+    device = "ttyACM0";
 
     connect_delay_time = 500;
 
@@ -29,20 +31,25 @@ quadrocopter::quadrocopter()
     PID_angular_velocity_Ki = 0;
     PID_angular_velocity_Kd = 0;
 
+    //see arduino code
+    read_bytes_N = 26;
+
     defaults();
 }
 
-void quadrocopter::read_data()
+void quadrocopter::read_data_request()
 {
-    mytime t_time;
-    t_time.set_time();
-
-    if(!isconnected() || read_error()) return;
+    if(!isoperational() || read_error()) return;
 
     flush();
 
     swrite('p');
 
+    //read_time = t_time.get_time_difference() / 1.E3;
+}
+
+void quadrocopter::read_data()
+{
     vect t_throttle_corrected = read_vect_byte(), t_angle = read_vect_byte(2),
             t_gyroscope_readings = read_vect_byte(), t_accelerometer_readings = read_vect_byte(),
             t_throttle_gyroscope_rotation = read_vect_byte(2), t_throttle_accelerometer_rotation = read_vect_byte(3),
@@ -76,26 +83,6 @@ void quadrocopter::read_data()
         loop_time = t_loop_time;
         reaction_type = t_reaction_type;
     }
-
-    read_time = t_time.get_time_difference() / 1.E3;
-
-    /*mytime t_time, t_curr_time;
-    t_time.set_time();
-
-    const unsigned int N = 19;
-    char* a = new char[N + 1];
-    for(unsigned int i = 0; i <= N; i++) a[i] = 0;
-
-    cerr << "started" << endl;
-
-    for(unsigned int i = 0; i < N; i++)
-    {
-        t_curr_time.set_time();
-        while(read(tty_fd, &(a[i]), 1) <= 0) usleep(1000);
-        cerr << " got [" << a[i] << "] time=" << t_curr_time.get_time_difference() << endl;
-    }
-
-    cerr << "str=" << a << " time=" << t_time.get_time_difference() << endl;*/
 }
 
 void quadrocopter::write_data()
@@ -103,38 +90,32 @@ void quadrocopter::write_data()
     mytime t_time;
     t_time.set_time();
 
-    if(!isconnected() || read_error()) return;
+    if(!isoperational() || read_error()) return;
 
     flush();
 
     if(power > 1) power = 1;
     else if(power < 0) power = 0;
 
-    //send throttle_rotation
+    //send write command
     swrite('i');
 
+    //send throttle_rotation
     for(int i = 0; i < 2; i++) // 2 - axis count
         write_number_vect_t(-1, 1, throttle_rotation.value_by_axis_index(i), 2);
 
     //send power
-    //swrite('m');
     swrite(power * 100); // in percents
 
     //send reaction type
-    //swrite('r');
     swrite('0' + reaction_type);
 
-    //usleep(100);
     write_number_vect_t(-10, 10, PID_angle_Kp, 2);
-    //usleep(100);
     write_number_vect_t(-10, 10, PID_angle_Ki, 2);
-    //usleep(100);
     write_number_vect_t(-10, 10, PID_angle_Kd, 2);
 
     write_number_vect_t(-10, 10, PID_angular_velocity_Kp, 2);
-    //usleep(100);
     write_number_vect_t(-10, 10, PID_angular_velocity_Ki, 2);
-    //usleep(100);
     write_number_vect_t(-10, 10, PID_angular_velocity_Kd, 2);
 
     write_time = t_time.get_time_difference() / 1.E3;
@@ -160,17 +141,17 @@ void quadrocopter::defaults()
     reaction_type = REACTION_NONE;
 
     //wait for arduino to load
-    connect_delay_time = !device.substr(0, 11).compare("/dev/ttyACM") ? connect_delay_arduino : 500;
+    connect_delay_time = !device.substr(0, 6).compare("ttyACM") ? connect_delay_arduino : 500;
 }
 
-void quadrocopter::connect()
+void quadrocopter::do_connect()
 {
     defaults();
 
     sopen();
 }
 
-void quadrocopter::disconnect()
+void quadrocopter::do_disconnect()
 {
     defaults();
     power = 0;
@@ -193,18 +174,11 @@ void quadrocopter::reset_throttle()
     throttle_rotation.y = 0;
 
     swrite('n');
-
-    /*if(isconnected())
-        write_data();*/
 }
 
 
 vect quadrocopter::get_throttle_corrected()
 {
-    /*if(power != 0)
-        return(throttle_corrected / power);
-    else return(vect());*/
-
     return(throttle_corrected);
 }
 
@@ -348,4 +322,17 @@ quadrocopter::reaction_type_ quadrocopter::get_reaction_type()
 void quadrocopter::set_reaction_type(quadrocopter::reaction_type_ n_reaction_type)
 {
     reaction_type = n_reaction_type;
+}
+
+void quadrocopter::on_rx()
+{
+    //qDebug() << "available: " << port->bytesAvailable();
+
+    while(port->bytesAvailable() >= read_bytes_N)
+    {
+        //qDebug() << "calling read_data()";
+        read_data();
+    }
+
+    write_data();
 }

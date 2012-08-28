@@ -19,8 +19,8 @@ public:
     void reset();
     bool is_set();
 
-    const time_t get_seconds();
-    const string get_time();
+    time_t get_seconds();
+    string get_time();
 
 private:
     unsigned long long int old;

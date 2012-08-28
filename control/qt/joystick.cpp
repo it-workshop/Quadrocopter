@@ -1,14 +1,16 @@
 #include "joystick.h"
+#include <QDebug>
 
 joystick::joystick()
 {
-    tty_fd = -1;
     maxwait = 500;
     rate = 9600;
 
-    device = "/dev/ttyUSB0";
+    device = "ttyUSB0";
 
     connect_delay_time = 500;
+
+    read_bytes_N = 7;
 
     defaults();
 }
@@ -23,15 +25,18 @@ void joystick::defaults()
     power_value = 0;
 }
 
-void joystick::read_data()
+void joystick::read_data_request()
 {
-    if(!isconnected() || read_error()) return;
+    if(!isoperational() || read_error()) return;
 
     flush();
 
-    int t_high, t_low, t_int;
-
     swrite('r');
+}
+
+void joystick::read_data()
+{
+    int t_high, t_low, t_int;
 
     vect t_vect;
 
@@ -55,16 +60,17 @@ void joystick::read_data()
         power_value = ((t_low & 0xff) + (t_high << 8));
         power_switch = t_bool;
     }
+    else qDebug() << "error";
 }
 
-void joystick::disconnect()
+void joystick::do_disconnect()
 {
     defaults();
 
     sclose();
 }
 
-void joystick::connect()
+void joystick::do_connect()
 {
     defaults();
 
@@ -111,4 +117,15 @@ bool joystick::is_switched_on()
 number_vect_t joystick::get_power_value()
 {
     return(power_value / (MAX_POWER_VALUE * 1.0));
+}
+
+void joystick::on_rx()
+{
+    //qDebug() << "available: " << port->bytesAvailable();
+
+    while(port->bytesAvailable() >= read_bytes_N)
+    {
+        //qDebug() << "calling read_data()";
+        read_data();
+    }
 }

@@ -37,6 +37,8 @@ private:
 
     void defaults();
 
+    void read_data(); // read data from device
+
 public:
 
     quadrocopter();
@@ -73,8 +75,8 @@ public:
     number_vect_t get_PID_angular_velocity_Ki();
     number_vect_t get_PID_angular_velocity_Kd();
 
-    void connect();
-    void disconnect();
+    void do_connect();
+    void do_disconnect();
 
     number_vect_t get_read_time(); //last read time in sec
     number_vect_t get_write_time(); //last write time in sec
@@ -83,9 +85,12 @@ public:
     reaction_type_ get_reaction_type();
     void set_reaction_type(reaction_type_);
 
-    void read_data(); // read data from device
+    void read_data_request(); // request read data from device
     void write_data(); // write data to device
+
     void reset_throttle(); // set throttle to (0, 0, 1)
+
+    virtual void on_rx();
 };
 
 #endif // QUADROCOPTER_H

@@ -27,10 +27,6 @@ struct RVector3D
 
     double& value_by_axis_index(int index);
 
-    enum print_mode {PRINT_INDEX, PRINT_TAB, PRINT_RAW, PRINT_TAB_2D, PRINT_RAW_2D};
-    enum use_axis {USE_2D, USE_3D};
-    void print_serial(print_mode, use_axis uaxis = USE_3D);
-
     void x_angle_inc(double w);
     void y_angle_inc(double w);
     void x_angle_dec(double w);

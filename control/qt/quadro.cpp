@@ -9,6 +9,10 @@
 #include <qwt_legend.h>
 #include <qwt_plot_curve.h>
 
+#include "qextserialenumerator.h"
+#include <QtCore/QList>
+#include <QtCore/QDebug>
+
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -27,10 +31,19 @@ Quadro::Quadro(QWidget *parent) :
 {
     mytime t_time;
 
+
     ui->setupUi(this);
 
     connect(&timer_auto, SIGNAL(timeout()), this, SLOT(timer_auto_update()));
     connect(&timer_reconnect, SIGNAL(timeout()), this, SLOT(timer_reconnect_update()));
+
+    //only works on Windows and OSX
+    /*QeSEnumerator.setUpNotifications();
+
+    connect(&QeSEnumerator, SIGNAL(deviceDiscovered()), this, SLOT(update_ports()));
+    connect(&QeSEnumerator, SIGNAL(deviceRemoved()), this, SLOT(update_ports()));*/
+
+    update_ports();
 
     ui->LogSave_data->setChecked(true);
     save_filename = "../log/quadro_";
@@ -40,10 +53,10 @@ Quadro::Quadro(QWidget *parent) :
     ui->quadro_reconnect->setChecked(false);
     ui->joy_reconnect->setChecked(false);
 
-    ui->joystick_device->setText(joy.get_device().c_str());
-    ui->device->setEditText(quadro.get_device().c_str());
+    ui->joystick_device->setEditText(joy.get_device().c_str());
+    ui->quadro_device->setEditText(quadro.get_device().c_str());
 
-    ui->device->setAutoFillBackground(true);
+    ui->quadro_device->setAutoFillBackground(true);
     ui->joystick_device->setAutoFillBackground(true);
 
     ui->PID_angle_Kp->setValue(quadro.get_PID_angle_Kp());
@@ -65,6 +78,29 @@ Quadro::Quadro(QWidget *parent) :
     plot_init();
 }
 
+void Quadro::update_ports()
+{
+    QString quadro_device_prev_name = ui->quadro_device->currentText();
+    QString joystick_device_prev_name = ui->joystick_device->currentText();
+
+    ui->quadro_device->clear();
+    ui->joystick_device->clear();
+
+    QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
+
+    foreach (QextPortInfo info, ports) {
+
+        ui->quadro_device->addItem(info.portName);
+        ui->joystick_device->addItem(info.portName);
+
+        if(!info.portName.compare(quadro_device_prev_name))
+            ui->quadro_device->setCurrentIndex(ui->quadro_device->count() - 1);
+
+        if(!info.portName.compare(joystick_device_prev_name))
+            ui->joystick_device->setCurrentIndex(ui->joystick_device->count() - 1);
+    }
+}
+
 Quadro::~Quadro()
 {
     delete ui;
@@ -73,7 +109,7 @@ Quadro::~Quadro()
 void Quadro::interface_write()
 {
     stringstream t_ss, t_ss1, t_ss2;
-    if(quadro.isconnected())
+    if(quadro.isoperational())
     {
         ui->throttle->setText(quadro.get_throttle_corrected().print().c_str());
         ui->gyro->setText(quadro.get_gyroscope_readings().print().c_str());
@@ -101,46 +137,52 @@ void Quadro::interface_write()
         //ui->reaction_type->setCurrentIndex(quadro.get_reaction_type());
     }
 
-    if(joy.isconnected())
+    if(joy.isoperational())
     {
+        ui->joystick_power->setValue(joy.get_power_value() * 100);
+        if(joy.is_switched_on())
+            ui->joystick_power->setStyleSheet("background-color: rgb(100, 255, 100);");
+        else
+            ui->joystick_power->setStyleSheet("background-color: rgb(255, 100, 100);");
+
         t_ss1 << (joy.is_switched_on() ? "online" : "offline") << "\t";
-        t_ss1 << "p=" << joy.get_power_value() << "\t";
+        //t_ss1 << "p=" << joy.get_power_value() << "\t";
         t_ss1 << joy.get_readings().print2d();
 
         ui->throttle_joystick->clear();
         ui->throttle_joystick->setText(t_ss1.str().c_str());
     }
 
-    if(joy.isconnected())
+    if(joy.isoperational())
     {
         ui->joystick_device->setStyleSheet("background-color: rgb(100, 255, 100);");
-        ui->joystick_device->setReadOnly(1);
+        //ui->joystick_device->setReadOnly(1);
     }
     else if(joy.iswaiting())
     {
         ui->joystick_device->setStyleSheet("background-color: rgb(255, 216, 0);");
-        ui->joystick_device->setReadOnly(1);
+        //ui->joystick_device->setReadOnly(1);
     }
     else
     {
-        ui->joystick_device->setReadOnly(0);
+        //ui->joystick_device->setReadOnly(0);
         ui->joystick_device->setStyleSheet("background-color: rgb(255, 100, 100);");
     }
 
-    if(quadro.isconnected())
+    if(quadro.isoperational())
     {
-        ui->device->setEditable(0);
-        ui->device->setStyleSheet("background-color: rgb(100, 255, 100);");
+        //ui->quadro_device->setEditable(0);
+        ui->quadro_device->setStyleSheet("background-color: rgb(100, 255, 100);");
     }
     else if(quadro.iswaiting())
     {
-        ui->device->setEditable(0);
-        ui->device->setStyleSheet("background-color: rgb(255, 216, 0);");
+        //ui->quadro_device->setEditable(0);
+        ui->quadro_device->setStyleSheet("background-color: rgb(255, 216, 0);");
     }
     else
     {
-        ui->device->setEditable(1);
-        ui->device->setStyleSheet("background-color: rgb(255, 100, 100);");
+        //ui->quadro_device->setEditable(1);
+        ui->quadro_device->setStyleSheet("background-color: rgb(255, 100, 100);");
     }
 }
 
@@ -161,7 +203,7 @@ void Quadro::save_data()
         //joystick_connected joystick_use joystick_readings[2] joystick_power joystick_power_switch
         //quadro_connected throttle_rotation[2] throttle_corrected[3] power motors[4]
         //read_time_sec write_time_sec loop_time_sec
-        //*quadro_device@quadro_speed
+        //*device@quadro_speed
         //*joystick_device@joystick_speed
         t_ss << t_time.get_seconds() << "\t" << t_time.get_time() << "\t"
              << quadro.get_gyroscope_readings().print_tab() << "\t"
@@ -173,13 +215,13 @@ void Quadro::save_data()
              << quadro.get_throttle_accelerometer_rotation().print_tab() << "\t"
              << quadro.get_throttle_angle_rotation().print2d_tab() << "\t"
 
-             << joy.isconnected() << "\t"
+             << joy.isoperational() << "\t"
              << ui->JoystickUse->isChecked() << "\t"
              << joy.get_readings().print2d_tab() << "\t"
              << joy.get_power_value() << "\t"
              << joy.is_switched_on() << "\t"
 
-             << quadro.isconnected() << "\t"
+             << quadro.isoperational() << "\t"
              << quadro.get_throttle_rotation().print2d_tab() << "\t"
              << quadro.get_throttle_corrected().print_tab() << "\t"
              << quadro.get_power() << "\t";
@@ -203,7 +245,7 @@ void Quadro::set_quadro_data()
     number_vect_t t_power;
     vect t_rotation;
 
-    if(joy.isconnected() && ui->JoystickUse->isChecked())
+    if(joy.isoperational() && ui->JoystickUse->isChecked())
     {
         t_rotation = joy.get_readings();
 
@@ -224,7 +266,7 @@ void Quadro::set_quadro_data()
 
 void Quadro::quadro_disconnect()
 {
-    quadro.disconnect();
+    quadro.do_disconnect();
 
     interface_write();
 }
@@ -233,7 +275,7 @@ void Quadro::joy_disconnect()
 {
     ui->power->setValue(0);
 
-    joy.disconnect();
+    joy.do_disconnect();
 
     interface_write();
 }
@@ -241,11 +283,11 @@ void Quadro::joy_disconnect()
 void Quadro::joy_connect()
 {
     joy.read_error_reset();
-    joy.connect();
+    joy.do_connect();
 
-    if(joy.isconnected())
+    if(joy.isoperational())
     {
-        joy.read_data();
+        joy.read_data_request();
         joy.set_data_default();
 
         interface_write();
@@ -258,24 +300,26 @@ void Quadro::quadro_connect()
     plot_mytime.reset();
 
     quadro.read_error_reset();
-    quadro.connect();
+    quadro.do_connect();
 
     interface_write();
 }
 
 void Quadro::timer_reconnect_update()
 {
+    update_ports();
+
     static bool allowed = true;
     if(allowed)
     {
         allowed = false;
-        if(!quadro.isconnected() && ui->quadro_reconnect->isChecked())
+        if(!quadro.isoperational() && ui->quadro_reconnect->isChecked())
         {
             quadro.read_error_reset();
             quadro_connect();
             interface_write();
         }
-        if(!joy.isconnected() && ui->joy_reconnect->isChecked())
+        if(!joy.isoperational() && ui->joy_reconnect->isChecked())
         {
             joy.read_error_reset();
             joy_connect();
@@ -306,15 +350,20 @@ void Quadro::timer_auto_update()
 
         save_data();
 
-        quadro.read_data();
-        joy.read_data();
-
         set_quadro_data();
-        quadro.write_data();
+
+        if(quadro.isoperational())
+            quadro.write_data();
+
+        //if(quadro.isoperational())
+        //    quadro.read_data_request();
+
+        if(joy.isoperational())
+            joy.read_data_request();
 
         interface_write();
 
-        if(quadro.isconnected())
+        if(quadro.isoperational())
         {
             if(!plot_mytime.is_set()) plot_mytime.set_time();
             else plot_update();
@@ -695,14 +744,14 @@ void Quadro::on_actionJoystickDisconnect_triggered()
 
 void Quadro::on_actionJoystickCalibrate_zero_triggered()
 {
-    if(joy.isconnected())
+    if(joy.isoperational())
     {
-        joy.read_data();
+        joy.read_data_request();
         joy.set_data_default();
     }
 }
 
-void Quadro::on_device_editTextChanged(const QString &arg1)
+void Quadro::on_quadro_device_textChanged(const QString &arg1)
 {
     quadro.set_device(arg1.toAscii().data());
 }
@@ -719,7 +768,7 @@ void Quadro::on_reaction_type_currentIndexChanged(int index)
 
 void Quadro::on_JoystickUse_toggled()
 {
-    if(joy.isconnected())
+    if(joy.isoperational())
     {
         joy.set_data_default();
 
@@ -755,4 +804,14 @@ void Quadro::on_PID_angular_velocity_Ki_valueChanged(double arg1)
 void Quadro::on_PID_angular_velocity_Kd_valueChanged(double arg1)
 {
     quadro.set_PID_angular_velocity_Kd(arg1);
+}
+
+void Quadro::on_joystick_device_currentIndexChanged(const QString &arg1)
+{
+    joy.set_device(arg1.toAscii().data());
+}
+
+void Quadro::on_quadro_device_currentIndexChanged(const QString &arg1)
+{
+    quadro.set_device(arg1.toAscii().data());
 }

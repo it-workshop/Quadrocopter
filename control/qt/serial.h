@@ -1,14 +1,13 @@
 #ifndef SERIAL_H
 #define SERIAL_H
 
-#include <unistd.h>
-#include <string.h>
-#include <fcntl.h>
-#include <termios.h>
 #include <string>
 #include <map>
 #include <vect.h>
 #include <mytime.h>
+
+#include <QObject>
+#include "qextserialport.h"
 
 using std::string;
 using std::map;
@@ -16,18 +15,16 @@ using std::map;
 class quadrocopter;
 class joystick;
 
-class serial
+typedef short unsigned int serial_t;
+
+class serial : public QObject
 {
+Q_OBJECT
 friend class quadrocopter;
 friend class joystick;
 
-private:
-    enum debug_type {DEBUG_NONE, DEBUG_ERROR, DEBUG_ALL};
-
-    debug_type debug_level;
-
-    struct termios tio;
-    int tty_fd;
+protected:
+    QextSerialPort *port;
 
     unsigned int rate;
     string device;
@@ -35,17 +32,22 @@ private:
     unsigned int maxwait;
     bool serror;
 
-    map<int, int> rate_map;
+    map<int, BaudRateType> rate_map;
 
     mytime connect_delay;
     number_vect_t connect_delay_time;
 
-public:
-    serial();
+    unsigned int read_bytes_N;
 
     void sopen();
     void sclose();
     void reopen();
+public:
+    serial();
+
+    //device-specific initialization (unused)
+    //virtual void do_connect();
+    //virtual void do_disconnect();
 
     void set_maxwait(unsigned int);
     void set_rate(unsigned int);
@@ -53,8 +55,8 @@ public:
 
     string get_device();
 
-    void swrite(short unsigned int);
-    short unsigned int sread();
+    void swrite(serial_t);
+    serial_t sread();
     void flush();
 
     bool read_error();
@@ -62,12 +64,16 @@ public:
 
     bool isconnected();
     bool iswaiting();
+    bool isoperational();
 
     vect read_vect_byte(unsigned int axis = 3);
     unsigned int read_unsigned_int_3byte();
 
     void write_number_vect_t(number_vect_t min_value, number_vect_t max_value, number_vect_t value, unsigned int bytes);
     number_vect_t read_number_vect_t(number_vect_t min_value, number_vect_t max_value, unsigned int bytes);
+
+public slots:
+    virtual void on_rx();
 };
 
 #endif // SERIAL_H

@@ -10,6 +10,8 @@
 #include <quadrocopter.h>
 #include <joystick.h>
 
+#include "qextserialenumerator.h"
+
 using std::string;
 using std::ofstream;
 
@@ -33,7 +35,7 @@ private slots:
     void on_actionQuadroConnect_triggered();
     void on_actionQuadroDisconnect_triggered();
     void on_actionQuadroReset_triggered();
-    void on_device_editTextChanged(const QString &arg1);
+    void on_quadro_device_textChanged(const QString &arg1);
 
     void on_reaction_type_currentIndexChanged(int index);
 
@@ -45,21 +47,19 @@ private slots:
     void on_JoystickUse_toggled();
 
     void on_PID_angle_Kp_valueChanged(double arg1);
-
     void on_PID_angle_Ki_valueChanged(double arg1);
-
     void on_PID_angle_Kd_valueChanged(double arg1);
 
     void on_PID_angular_velocity_Kp_valueChanged(double arg1);
-
     void on_PID_angular_velocity_Ki_valueChanged(double arg1);
-
     void on_PID_angular_velocity_Kd_valueChanged(double arg1);
 
 private:
     Ui::Quadro *ui;
 
-    static const double timer_auto_interval = 140;
+    QextSerialEnumerator QeSEnumerator;
+
+    static const double timer_auto_interval = 50;
     static const double timer_reconnect_interval = 1000;
     QTimer timer_auto, timer_reconnect;
 
@@ -100,6 +100,11 @@ private:
 
     void interface_read();
     void interface_write();
+
+private slots:
+    void update_ports();
+    void on_joystick_device_currentIndexChanged(const QString &arg1);
+    void on_quadro_device_currentIndexChanged(const QString &arg1);
 };
 
 #endif // QUADRO_H

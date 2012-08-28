@@ -40,7 +40,7 @@ unsigned long long int mytime::get_time_difference()
     return(get_time_ms() - old);
 }
 
-const string mytime::get_time()
+string mytime::get_time()
 {
     string result;
 
@@ -56,7 +56,7 @@ const string mytime::get_time()
     return(result);
 }
 
-const time_t mytime::get_seconds()
+time_t mytime::get_seconds()
 {
     time_t seconds = time(NULL);
 

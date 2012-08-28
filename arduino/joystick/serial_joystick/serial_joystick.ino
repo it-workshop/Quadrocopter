@@ -8,6 +8,8 @@ const int DPINS[DPINS_N] = {10};
 
 const char C_REQUEST = 'r';
 
+#define infoLedPin 13
+
 //#define DEBUG
 
 void setup()
@@ -61,6 +63,9 @@ void loop()
             for(i = 0; i < DPINS_N; i++)
             {
                 t_int = digitalRead(DPINS[i]);
+                
+                //info led
+                digitalWrite(infoLedPin, t_int ? HIGH: LOW);
                 
                 #ifdef DEBUG
                     Serial.print(t_int);

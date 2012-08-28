@@ -34,34 +34,24 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="device">
-       <property name="editable">
-        <bool>true</bool>
-       </property>
-       <item>
-        <property name="text">
-         <string>/dev/rfcomm0</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>/dev/ttyACM0</string>
-        </property>
-       </item>
-      </widget>
-     </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Joystick Port</string>
+        <string>Joystick port</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="joystick_device">
-       <property name="text">
-        <string>/dev/ttyUSB0</string>
+      <widget class="QComboBox" name="joystick_device">
+       <property name="editable">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="quadro_device">
+       <property name="editable">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -244,7 +234,7 @@
         <x>0</x>
         <y>0</y>
         <width>411</width>
-        <height>71</height>
+        <height>91</height>
        </rect>
       </property>
       <layout class="QFormLayout" name="formLayout_4">
@@ -267,6 +257,35 @@
           </font>
          </property>
         </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QDial" name="joystick_power">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="singleStep">
+            <number>0</number>
+           </property>
+           <property name="tracking">
+            <bool>false</bool>
+           </property>
+           <property name="wrapping">
+            <bool>false</bool>
+           </property>
+           <property name="notchTarget">
+            <double>29.000000000000000</double>
+           </property>
+           <property name="notchesVisible">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>

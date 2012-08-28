@@ -31,6 +31,26 @@ bool serial_read_error = false;
     unsigned int serial_auto_send = 0;
 #endif
 
+int serial_buffer_count = 0;
+uint8_t serial_buffer[SERIAL_BUFFER_MAX];
+
+void serial_buffer_init()
+{
+    serial_buffer_count = 0;
+    for(int i = 0; i < SERIAL_BUFFER_MAX; i++)
+        serial_buffer[i] = 0;
+}
+
+void serial_buffer_write()
+{
+    Serial.write(serial_buffer, serial_buffer_count);
+}
+
+void serial_buffer_add(uint8_t t_char)
+{
+    serial_buffer[serial_buffer_count++] = t_char;
+}
+
 void write_double(double min_value, double max_value, double value, unsigned int bytes)
 {
     //cutting
@@ -95,6 +115,35 @@ void serial_wait_for_byte()
     if(t_count.get_time_difference() >= SERIAL_MAXWAIT_U) serial_read_error = true;
 }
 
+void write_RVector3D(RVector3D vect, RVector3D_print_mode mode, RVector3D_use_axis uaxis)
+{
+    unsigned int i;
+    for(i = 0; i < 3; i++)
+    {
+        if(mode == PRINT_INDEX)
+        {
+            Serial.print(i);
+            Serial.print("");
+            Serial.print(vect.value_by_axis_index(i), SERIAL_ACCURACY);
+            Serial.print("; ");
+        }
+        else if(mode == PRINT_TAB)
+        {
+            Serial.print(vect.value_by_axis_index(i), SERIAL_ACCURACY);
+            Serial.print("\t");
+        }
+        else if(mode == PRINT_RAW)
+        {
+            double t = vect.value_by_axis_index(i);
+            if(t > 1) t = 1;
+            else if(t < -1) t = -1;
+            serial_buffer_add((t + 1) / 2. * 255);
+        }
+        
+        if (uaxis == USE_2D && i == 1) return;
+    }
+}
+
 void serial_process_write()
 {    
      #ifdef DEBUG_SERIAL_HUMAN
@@ -102,11 +151,11 @@ void serial_process_write()
         {
             Serial.print(accel_data.module());
             Serial.print("\t");
-            accel_data.print_serial(RVector3D::PRINT_TAB);
-            gyro_data.print_serial(RVector3D::PRINT_TAB);
+            write_RVector3D(accel_data, PRINT_TAB);
+            write_RVector3D(gyro_data, PRINT_TAB);
             
-            throttle_manual_rotation.print_serial(RVector3D::PRINT_TAB);
-            throttle_scaled.print_serial(RVector3D::PRINT_TAB);
+            write_RVector3D(throttle_manual_rotation, PRINT_TAB);
+            write_RVector3D(throttle_scaled, PRINT_TAB);
     
             Serial.print(MController->get_throttle_abs(), SERIAL_ACCURACY);
     
@@ -118,7 +167,7 @@ void serial_process_write()
                 Serial.print("\t");
             }
     
-            angle.print_serial(RVector3D::PRINT_TAB, RVector3D::USE_2D);
+            write_RVector3D(angle, PRINT_TAB, USE_2D);
             
             Serial.print(last_dt / 1.E3);
             
@@ -144,23 +193,30 @@ void serial_process_write()
                 serial_auto_send = 0;
             #endif
             
+            serial_buffer_init();
+            
             //26 bytes
-            throttle_corrected.print_serial(RVector3D::PRINT_RAW);
-            angle.print_serial(RVector3D::PRINT_RAW, RVector3D::USE_2D);
+            write_RVector3D(throttle_corrected, PRINT_RAW);
+            write_RVector3D(angle, PRINT_RAW, USE_2D);
             
-            (gyro_data * serial_gyroscope_coefficient).print_serial(RVector3D::PRINT_RAW);
-            accel_data.print_serial(RVector3D::PRINT_RAW);
-            angular_velocity_rotation.print_serial(RVector3D::PRINT_RAW, RVector3D::USE_2D);
-            acceleration_rotation.print_serial(RVector3D::PRINT_RAW);
-            angle_rotation.print_serial(RVector3D::PRINT_RAW, RVector3D::USE_2D);
+            write_RVector3D((gyro_data * serial_gyroscope_coefficient), PRINT_RAW);
+            write_RVector3D(accel_data, PRINT_RAW);
+            write_RVector3D(angular_velocity_rotation, PRINT_RAW, USE_2D);
+            write_RVector3D(acceleration_rotation, PRINT_RAW);
+            write_RVector3D(angle_rotation, PRINT_RAW, USE_2D);
             
+            //motors
             for (i = 0; i < 4; i++)
-                Serial.write((int) MController->speedGet(throttle_scaled, i));
+                serial_buffer_add(MController->speedGet(throttle_scaled, i));
                 
+            //dt
             for (int si = 2; si >= 0; si--)
-                Serial.write((last_dt & (0xff << 8 * si)) >> (8 * si));
+                serial_buffer_add((last_dt & (0xff << 8 * si)) >> (8 * si));
                 
-            Serial.write(reaction_type + '0');
+            //reaction type
+            serial_buffer_add(reaction_type + '0');
+            
+            serial_buffer_write();
             
             serial_type = SERIAL_WAITING;
         }

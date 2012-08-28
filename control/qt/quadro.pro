@@ -4,16 +4,20 @@
 #
 #-------------------------------------------------
 
-QT       += core gui qwt
+QT       += core gui
 
-INCLUDEPATH += /usr/include /usr/local/include /usr/include/qwt-qt4
+INCLUDEPATH += /usr/include /usr/local/include /usr/include/qwt-qt4 /usr/include/qt4/QtExtSerialPort
 
 LIBS += -L/usr/local/lib -lqwt-qt4
 LIBS += -L/usr/local/lib -lQtSvg
 
-TARGET = qt
-TEMPLATE = app
+CONFIG += extserialport qwt
 
+# magick?
+LIBS += -L/usr/lib/x86_64-linux-gnu/ -lqextserialport-1.2
+
+TARGET = quadro
+TEMPLATE = app
 
 SOURCES += main.cpp\
         quadro.cpp \
