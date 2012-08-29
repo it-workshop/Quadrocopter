@@ -16,7 +16,7 @@
     #define SERIAL_ANGLE_STEP 0.024543692 // PI / 128
     #define SERIAL_THROTTLE_STEP 0.1
     
-    #define SERIAL_MAXWAIT_U 1000000
+    #define SERIAL_MAXWAIT_U 100000
     
     #define SERIAL_BUFFER_MAX 100
     void serial_buffer_init();

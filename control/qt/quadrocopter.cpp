@@ -34,6 +34,8 @@ quadrocopter::quadrocopter()
     //see arduino code
     read_bytes_N = 26;
 
+    joystick_coefficient = 0.2;
+
     defaults();
 }
 
@@ -41,11 +43,20 @@ void quadrocopter::read_data_request()
 {
     if(!isoperational() || read_error()) return;
 
+    mytime write_timer;
+    write_timer.set_time();
+
     flush();
+    swrite_clear();
 
     swrite('p');
+    write_data();
 
-    //read_time = t_time.get_time_difference() / 1.E3;
+    swrite_put();
+
+    write_time = write_timer.get_time_difference() / 1.E3;
+
+    read_timer.set_time();
 }
 
 void quadrocopter::read_data()
@@ -82,23 +93,24 @@ void quadrocopter::read_data()
 
         loop_time = t_loop_time;
         reaction_type = t_reaction_type;
+
+        read_time = read_timer.get_time_difference() / 1.E3;
     }
 }
 
 void quadrocopter::write_data()
 {
-    mytime t_time;
-    t_time.set_time();
+    //if(!isoperational() || read_error()) return;
 
-    if(!isoperational() || read_error()) return;
-
-    flush();
+    //flush();
 
     if(power > 1) power = 1;
     else if(power < 0) power = 0;
 
     //send write command
-    swrite('i');
+
+    //remove after
+    // swrite('i');
 
     //send throttle_rotation
     for(int i = 0; i < 2; i++) // 2 - axis count
@@ -117,8 +129,6 @@ void quadrocopter::write_data()
     write_number_vect_t(-10, 10, PID_angular_velocity_Kp, 2);
     write_number_vect_t(-10, 10, PID_angular_velocity_Ki, 2);
     write_number_vect_t(-10, 10, PID_angular_velocity_Kd, 2);
-
-    write_time = t_time.get_time_difference() / 1.E3;
 }
 
 void quadrocopter::defaults()
@@ -217,6 +227,11 @@ void quadrocopter::set_power(number_vect_t n_power)
     if(n_power > 1) n_power = 1;
     else if(n_power < 0) n_power = 0;
     power = n_power;
+}
+
+void quadrocopter::set_joystick_rotation(vect n_joystick_rotation)
+{
+    set_throttle_rotation(n_joystick_rotation * joystick_coefficient);
 }
 
 void quadrocopter::set_throttle_rotation(vect n_throttle_rotation)
@@ -333,6 +348,4 @@ void quadrocopter::on_rx()
         //qDebug() << "calling read_data()";
         read_data();
     }
-
-    write_data();
 }

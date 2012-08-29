@@ -186,62 +186,16 @@ void serial_process_write()
     #endif
     
     if(serial_type == SERIAL_DEFAULT)
-    {   
-        if (c == 'p')
-        {
-            #ifdef DEBUG_SERIAL_HUMAN
-                serial_auto_send = 0;
-            #endif
-            
-            serial_buffer_init();
-            
-            //26 bytes
-            write_RVector3D(throttle_corrected, PRINT_RAW);
-            write_RVector3D(angle, PRINT_RAW, USE_2D);
-            
-            write_RVector3D((gyro_data * serial_gyroscope_coefficient), PRINT_RAW);
-            write_RVector3D(accel_data, PRINT_RAW);
-            write_RVector3D(angular_velocity_rotation, PRINT_RAW, USE_2D);
-            write_RVector3D(acceleration_rotation, PRINT_RAW);
-            write_RVector3D(angle_rotation, PRINT_RAW, USE_2D);
-            
-            //motors
-            for (i = 0; i < 4; i++)
-                serial_buffer_add(MController->speedGet(throttle_scaled, i));
-                
-            //dt
-            for (int si = 2; si >= 0; si--)
-                serial_buffer_add((last_dt & (0xff << 8 * si)) >> (8 * si));
-                
-            //reaction type
-            serial_buffer_add(reaction_type + '0');
-            
-            serial_buffer_write();
-            
-            serial_type = SERIAL_WAITING;
-        }
-    }
-}
-
-void serial_process_read()
-{
-    if(serial_type == SERIAL_DEFAULT)
     {
-        if(c == 'n')
+        if(c == 'p')
         {
-            angle = RVector3D();
-            throttle_manual_rotation = RVector3D(0, 0, 1);
-            
-            serial_type = SERIAL_WAITING;
-        }
-        else if(c == 'i')
-        {
-            // modes
-            serial_type = SERIAL_WAITING;
-            
             #ifdef DEBUG_SERIAL_HUMAN
                 serial_auto_send = 0;
             #endif
+            
+            serial_type = SERIAL_WAITING;
+            
+            // reading
             
             // throttle_manual_rotation
             for(int i = 0; i < 2; i++)
@@ -271,7 +225,47 @@ void serial_process_read()
             //PID angular velocity coefficients
             read_double(-10, 10, MController->angular_velocity_Kp, 2);
             read_double(-10, 10, MController->angular_velocity_Ki, 2);
-            read_double(-10, 10, MController->angular_velocity_Kd, 2);
+            read_double(-10, 10, MController->angular_velocity_Kd, 2);    
+            
+            serial_buffer_init();
+            
+            // writing 26 bytes
+            
+            write_RVector3D(throttle_corrected, PRINT_RAW);
+            write_RVector3D(angle, PRINT_RAW, USE_2D);
+            
+            write_RVector3D((gyro_data * serial_gyroscope_coefficient), PRINT_RAW);
+            write_RVector3D(accel_data, PRINT_RAW);
+            write_RVector3D(angular_velocity_rotation, PRINT_RAW, USE_2D);
+            write_RVector3D(acceleration_rotation, PRINT_RAW);
+            write_RVector3D(angle_rotation, PRINT_RAW, USE_2D);
+            
+            //motors
+            for (i = 0; i < 4; i++)
+                serial_buffer_add(MController->speedGet(throttle_scaled, i));
+                
+            //dt
+            for (int si = 2; si >= 0; si--)
+                serial_buffer_add((last_dt & (0xff << 8 * si)) >> (8 * si));
+                
+            //reaction type
+            serial_buffer_add(reaction_type + '0');
+            
+            serial_buffer_write();
+        }
+    }
+}
+
+void serial_process_read()
+{
+    if(serial_type == SERIAL_DEFAULT)
+    {
+        if(c == 'n')
+        {
+            angle = RVector3D();
+            throttle_manual_rotation = RVector3D(0, 0, 1);
+            
+            serial_type = SERIAL_WAITING;
         }
         #ifdef DEBUG_SERIAL_HUMAN
             else if(c == '+' && MController->get_throttle_abs() + SERIAL_THROTTLE_STEP <= 1)

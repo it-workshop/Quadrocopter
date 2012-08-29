@@ -261,7 +261,7 @@ void Quadro::set_quadro_data()
 
     quadro.set_power(t_power);
     quadro.set_reaction_type((quadrocopter::reaction_type_) ui->reaction_type->currentIndex());
-    quadro.set_throttle_rotation(t_rotation);
+    quadro.set_joystick_rotation(t_rotation);
 }
 
 void Quadro::quadro_disconnect()
@@ -352,11 +352,11 @@ void Quadro::timer_auto_update()
 
         set_quadro_data();
 
-        if(quadro.isoperational())
-            quadro.write_data();
-
         //if(quadro.isoperational())
-        //    quadro.read_data_request();
+        //    quadro.write_data();
+
+        if(quadro.iswriteable())
+            quadro.read_data_request();
 
         if(joy.isoperational())
             joy.read_data_request();

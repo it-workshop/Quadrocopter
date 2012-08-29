@@ -196,6 +196,7 @@ void loop()
     MController->speedChangeRaw(motors_speed);*/
 
     // for angular acceleration
+    
     gyro_prev_data = gyro_data;
 }
 

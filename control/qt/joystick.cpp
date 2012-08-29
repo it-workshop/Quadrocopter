@@ -31,7 +31,9 @@ void joystick::read_data_request()
 
     flush();
 
+    swrite_clear();
     swrite('r');
+    swrite_put();
 }
 
 void joystick::read_data()
@@ -96,7 +98,6 @@ vect joystick::get_readings()
 
 void joystick::set_data_default()
 {
-    read_data();
     data_default = data;
 
     for(int i = 0; i < 2; i++) // 2 - axis count

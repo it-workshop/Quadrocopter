@@ -178,10 +178,34 @@ string serial::get_device()
     return(device);
 }
 
+void serial::swrite_clear()
+{
+    buffer.clear();
+}
+
 void serial::swrite(serial_t buf)
 {
-    char c = buf;
-    port->write(&c, 1);
+    buffer.push_back(buf);
+}
+
+void serial::swrite_put()
+{
+    char* c = new char[buffer.size()];
+
+    //cerr << "writing [" << buffer.size() << "] = ";
+
+    for(unsigned int i = 0; i < buffer.size(); i++)
+    {
+        //cerr << buffer[i] << " ";
+        c[i] = buffer[i];
+
+    }
+
+    port->write(c, buffer.size());
+
+    delete c;
+
+    //cerr << endl;
 }
 
 void serial::flush()
@@ -199,6 +223,11 @@ serial_t serial::sread()
 bool serial::isoperational()
 {
     return(isconnected() && connect_delay.get_time_difference() >= connect_delay_time);
+}
+
+bool serial::iswriteable()
+{
+    return(isconnected() && !port->bytesToWrite());
 }
 
 bool serial::isconnected()

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include <vect.h>
 #include <mytime.h>
 
@@ -10,6 +11,7 @@
 #include "qextserialport.h"
 
 using std::string;
+using std::vector;
 using std::map;
 
 class quadrocopter;
@@ -34,8 +36,10 @@ protected:
 
     map<int, BaudRateType> rate_map;
 
-    mytime connect_delay;
+    mytime connect_delay, read_timer;
     number_vect_t connect_delay_time;
+
+    vector<serial_t> buffer;
 
     unsigned int read_bytes_N;
 
@@ -56,6 +60,9 @@ public:
     string get_device();
 
     void swrite(serial_t);
+    void swrite_put();
+    void swrite_clear();
+
     serial_t sread();
     void flush();
 
@@ -65,6 +72,7 @@ public:
     bool isconnected();
     bool iswaiting();
     bool isoperational();
+    bool iswriteable();
 
     vect read_vect_byte(unsigned int axis = 3);
     unsigned int read_unsigned_int_3byte();
