@@ -15,8 +15,6 @@ private:
     static const int INIT_TIMEOUT = 8000; // ms
 #endif
 
-    static const int DEF_SPEED_STEP = 400;
-
     double throttle_abs;
     
     RVector3D accelerometer_xi;
@@ -25,7 +23,7 @@ private:
 
     static const double angular_velocity_max_rotation = MPI / 4 / 2;
     
-    static const double MIN_SPEED_PERCENT = 10;
+    static const double MIN_SPEED = 0.1;
 
     enum SIGN
     {
@@ -54,9 +52,8 @@ public:
     ~MotorController();
 
     void speedChange(RVector3D throttle_vec);
-    void speedChangeRaw(double power[N_MOTORS]);
+    void speedChangeRaw(double power[N_MOTORS]); // values in [0...1]
     double speedGet(RVector3D throttle_vec, int motor);
-    //void linearSpeedInc(int inc_percent, int speed_step_time);
 
     double get_throttle_abs();
 

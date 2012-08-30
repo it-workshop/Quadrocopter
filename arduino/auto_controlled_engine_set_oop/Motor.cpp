@@ -1,16 +1,44 @@
 #include "Motor.h"
 #include "Arduino.h"
 
-inline const int Motor::power()
+Motor::Motor(int control_pin_)
 {
-    return (double) 100 * (speedie - MIN_SPEED) / (MAX_SPEED - MIN_SPEED);
+    set_control_pin(control_pin_);
+
+    set_power(0);
 }
 
-void Motor::makeSpeed(int percentage)
+Motor::Motor()
 {
-    if (percentage >= 100) speedie = MAX_SPEED;
-    else if (percentage <=   0) speedie = MIN_SPEED;
-    else speedie = (double) 0.01 * percentage * (MAX_SPEED - MIN_SPEED) + MIN_SPEED;
-    
-    analogWrite(control_pin, speedie);
+    control_pin = -1;
+    power = 0;
+}
+
+inline double Motor::get_power()
+{
+    return(power);
+}
+
+void Motor::set_power(double n_power)
+{
+    if(control_pin != -1)
+    {
+        power = n_power;
+
+        int speedie;
+
+        if (power >= 1) speedie = MAX_SPEED;
+        else if (power <= 0) speedie = MIN_SPEED;
+        else speedie = power * (MAX_SPEED - MIN_SPEED) + MIN_SPEED;
+
+        analogWrite(control_pin, speedie);
+    }
+}
+
+void Motor::set_control_pin(int control_pin_)
+{
+    control_pin = control_pin_;
+    pinMode(control_pin, OUTPUT);
+
+    set_power(0);
 }

@@ -17,7 +17,7 @@ extern long double dt;
 
 extern RVector3D accel_data, gyro_data;
 extern RVector3D angle_rotation, acceleration_rotation, angular_velocity_rotation;
-extern RVector3D throttle_manual_rotation, throttle_corrected, throttle_scaled;
+extern RVector3D throttle_manual_rotation, throttle_corrected;
 extern RVector3D angle;
 
 const double serial_gyroscope_coefficient = 0.08;
@@ -155,7 +155,7 @@ void serial_process_write()
             write_RVector3D(gyro_data, PRINT_TAB);
             
             write_RVector3D(throttle_manual_rotation, PRINT_TAB);
-            write_RVector3D(throttle_scaled, PRINT_TAB);
+            write_RVector3D(throttle_corrected, PRINT_TAB);
     
             Serial.print(MController->get_throttle_abs(), SERIAL_ACCURACY);
     
@@ -163,7 +163,7 @@ void serial_process_write()
             
             for(unsigned int i = 0; i < 4; i++)
             {
-                Serial.print(MController->speedGet(throttle_scaled, i));
+                Serial.print(100 * MController->speedGet(throttle_corrected, i));
                 Serial.print("\t");
             }
     
@@ -242,7 +242,7 @@ void serial_process_write()
             
             //motors
             for (i = 0; i < 4; i++)
-                serial_buffer_add(MController->speedGet(throttle_scaled, i));
+                serial_buffer_add(100 * MController->speedGet(throttle_corrected, i));
                 
             //dt
             for (int si = 2; si >= 0; si--)

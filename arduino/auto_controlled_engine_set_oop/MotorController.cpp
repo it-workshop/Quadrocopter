@@ -161,10 +161,13 @@ RVector3D MotorController::get_angular_velocity_rotation(RVector3D angular_veloc
 double MotorController::speedGet(RVector3D throttle_vec, int motor)
 {
     // This comes from the Cubic Vector Model
-    double res = 100 * ( throttle_vec.module_sq() + x_sign(motor) * throttle_vec.x + y_sign(motor) * throttle_vec.y ) / throttle_vec.z;
-    
+    double res = ( throttle_vec.module_sq() + x_sign(motor) * throttle_vec.x + y_sign(motor) * throttle_vec.y ) / throttle_vec.z;
+
+    // throttle_abs implementation
+    res *= get_throttle_abs();
+
     // it is necessary because the motor controller starts a motor with greater speed than needed
-    if (res <= MIN_SPEED_PERCENT && throttle_vec.module_sq() != 0) res = MIN_SPEED_PERCENT;
+    if (res <= MIN_SPEED && throttle_vec.module_sq() != 0) res = MIN_SPEED;
     
     // use_motors implementation
     if(!use_motors[motor]) res = 0;
@@ -175,13 +178,13 @@ double MotorController::speedGet(RVector3D throttle_vec, int motor)
 void MotorController::speedChangeRaw(double power[N_MOTORS])
 {
     for(int i = 0; i < N_MOTORS; i++)
-        motors_[i].makeSpeed(power[i]);
+        motors_[i].set_power(power[i]);
 }
 
 void MotorController::speedChange(RVector3D throttle_vec)
 {
     for (int i = 0; i < N_MOTORS; i++)
-        motors_[i].makeSpeed(speedGet(throttle_vec, i));
+        motors_[i].set_power(speedGet(throttle_vec, i));
 }
 
 MotorController::MotorController(const int motor_control_pins[N_MOTORS])
@@ -204,25 +207,13 @@ MotorController::MotorController(const int motor_control_pins[N_MOTORS])
     
     for (int i = 0; i < N_MOTORS; i++)
     {
-        pinMode(motor_control_pins[i], OUTPUT);
-        motors_[i].control_pin = motor_control_pins[i];
-        motors_[i].makeSpeed(0);
+        motors_[i].set_control_pin(motor_control_pins[i]);
+        motors_[i].set_power(0);
     }
 
-    // Ожидание инициализации конроллов моторов + примерно три писка
+    // wait for ESC
     delay(INIT_TIMEOUT);
 
-    RVector3D start_throttle = RVector3D();
-
-    throttle_abs = start_throttle.module();
-
-    speedChange(start_throttle);
+    set_throttle_abs(0);
+    speedChange(RVector3D(0, 0, 1));
 }
-
-/*
-// Увеличить обороты двигателя на inc_percent (за время, кратное speed_step_time``)
-void MotorController::linearSpeedInc(int inc_percent, int speed_step_time)
-{
-    linearSpeedChange(power() + inc_percent, speed_step_time);
-}
-*/
