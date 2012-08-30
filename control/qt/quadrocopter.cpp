@@ -122,13 +122,13 @@ void quadrocopter::write_data()
     //send reaction type
     swrite('0' + reaction_type);
 
-    write_number_vect_t(-10, 10, PID_angle_Kp, 2);
-    write_number_vect_t(-10, 10, PID_angle_Ki, 2);
-    write_number_vect_t(-10, 10, PID_angle_Kd, 2);
+    write_number_vect_t(-1.5, 1.5, PID_angle_Kp, 2);
+    write_number_vect_t(-1.5, 1.5, PID_angle_Ki, 2);
+    write_number_vect_t(-1.5, 1.5, PID_angle_Kd, 2);
 
-    write_number_vect_t(-10, 10, PID_angular_velocity_Kp, 2);
-    write_number_vect_t(-10, 10, PID_angular_velocity_Ki, 2);
-    write_number_vect_t(-10, 10, PID_angular_velocity_Kd, 2);
+    write_number_vect_t(-1.5, 1.5, PID_angular_velocity_Kp, 2);
+    write_number_vect_t(-1.5, 1.5, PID_angular_velocity_Ki, 2);
+    write_number_vect_t(-1.5, 1.5, PID_angular_velocity_Kd, 2);
 }
 
 void quadrocopter::defaults()

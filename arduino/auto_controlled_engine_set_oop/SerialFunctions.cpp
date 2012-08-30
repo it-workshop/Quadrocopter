@@ -218,14 +218,14 @@ void serial_process_write()
             reaction_type = c - '0';
             
             //PID angle coefficients
-            read_double(-10, 10, MController->angle_Kp, 2);
-            read_double(-10, 10, MController->angle_Ki, 2);
-            read_double(-10, 10, MController->angle_Kd, 2);
+            read_double(-1.5, 1.5, MController->angle_Kp, 2);
+            read_double(-1.5, 1.5, MController->angle_Ki, 2);
+            read_double(-1.5, 1.5, MController->angle_Kd, 2);
             
             //PID angular velocity coefficients
-            read_double(-10, 10, MController->angular_velocity_Kp, 2);
-            read_double(-10, 10, MController->angular_velocity_Ki, 2);
-            read_double(-10, 10, MController->angular_velocity_Kd, 2);    
+            read_double(-1.5, 1.5, MController->angular_velocity_Kp, 2);
+            read_double(-1.5, 1.5, MController->angular_velocity_Ki, 2);
+            read_double(-1.5, 1.5, MController->angular_velocity_Kd, 2);
             
             serial_buffer_init();
             
