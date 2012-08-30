@@ -167,7 +167,7 @@ double MotorController::speedGet(RVector3D throttle_vec, int motor)
     res *= get_throttle_abs();
 
     // it is necessary because the motor controller starts a motor with greater speed than needed
-    if (res <= MIN_SPEED && throttle_vec.module_sq() != 0) res = MIN_SPEED;
+    if (res <= MIN_SPEED && get_throttle_abs() != 0) res = MIN_SPEED;
     
     // use_motors implementation
     if(!use_motors[motor]) res = 0;
