@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     vect.cpp \
     joystick.cpp \
     quadrocopter.cpp \
-    mytime.cpp
+    mytime.cpp \
+    quadro_plot.cpp
 
 HEADERS  += quadro.h \
     serial.h \

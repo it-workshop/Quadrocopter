@@ -3,51 +3,17 @@
 #include "TimerCount.h"
 #include "RVector3D.h"
 
-inline const MotorController::SIGN MotorController::x_sign(int i)
+double MotorController::get_force()
 {
-    switch (i)
-    {
-        case A:
-            return MINUS;
-        case B:
-            return ZERO;
-        case C:
-            return PLUS;
-        case D:
-            return ZERO;
-        default:
-            return ZERO;
-    }
+    return(force);
 }
 
-inline const MotorController::SIGN MotorController::y_sign(int i)
+void MotorController::set_force(double a)
 {
-    switch (i)
-    {
-        case A:
-            return ZERO;
-        case B:
-            return PLUS;
-        case C:
-            return ZERO;
-        case D:
-            return MINUS;
-        default:
-            return ZERO;
-    }
+    force = a;
 }
 
-double MotorController::get_throttle_abs()
-{
-    return(throttle_abs);
-}
-
-void MotorController::set_throttle_abs(double a)
-{
-    throttle_abs = a;
-}
-
-RVector3D MotorController::get_angle_rotation(RVector3D angle, double dt)
+RVector3D MotorController::get_angle_correction(RVector3D angle, double dt)
 {
     static RVector3D prev_e = RVector3D(0, 0, 0),
         e_integral = RVector3D(0, 0, 0);
@@ -72,10 +38,10 @@ RVector3D MotorController::get_angle_rotation(RVector3D angle, double dt)
     //max and min correction
     for(int i = 0; i < 2; i++)
     {
-        if(u.value_by_axis_index(i) < -angle_max_rotation)
-            u.value_by_axis_index(i) = -angle_max_rotation;
-        if(u.value_by_axis_index(i) > angle_max_rotation)
-            u.value_by_axis_index(i) = angle_max_rotation;
+        if(u.value_by_axis_index(i) < -angle_max_correction)
+            u.value_by_axis_index(i) = -angle_max_correction;
+        if(u.value_by_axis_index(i) > angle_max_correction)
+            u.value_by_axis_index(i) = angle_max_correction;
     }
     
     //for integral and derivative
@@ -84,7 +50,7 @@ RVector3D MotorController::get_angle_rotation(RVector3D angle, double dt)
     return(u);
 }
 
-RVector3D MotorController::get_acceleration_rotation(RVector3D angle, RVector3D accel_data)
+RVector3D MotorController::get_acceleration_correction(RVector3D angle, RVector3D accel_data)
 {
     RVector3D g = angle.projections_from_angle();
     RVector3D a = accel_data - g;
@@ -108,20 +74,20 @@ RVector3D MotorController::get_acceleration_rotation(RVector3D angle, RVector3D 
     a_prev = res;
     t_time.set_time();
      
-    RVector3D rotation = res.angle_from_projections();
+    RVector3D correction = res.angle_from_projections();
     RVector3D moment_of_force;
-    moment_of_force.x = rotation.x * accelerometer_xi.x;
-    moment_of_force.y = rotation.y * accelerometer_xi.y;
+    moment_of_force.x = correction.x * accelerometer_xi.x;
+    moment_of_force.y = correction.y * accelerometer_xi.y;
      
-    RVector3D throttle_new;
-    throttle_new.z = 1 / sqrt(1 + pow(moment_of_force.x / 2, 2) + pow(moment_of_force.y / 2, 2));
-    throttle_new.x =  moment_of_force.y / 2 * throttle_new.z;
-    throttle_new.y = -moment_of_force.x / 2 * throttle_new.z;
+    RVector3D torque_new;
+    torque_new.z = 1 / sqrt(1 + pow(moment_of_force.x / 2, 2) + pow(moment_of_force.y / 2, 2));
+    torque_new.x =  moment_of_force.y / 2 * torque_new.z;
+    torque_new.y = -moment_of_force.x / 2 * torque_new.z;
      
-    return(throttle_new);
+    return(torque_new);
 }
 
-RVector3D MotorController::get_angular_velocity_rotation(RVector3D angular_velocity, double dt)
+RVector3D MotorController::get_angular_velocity_correction(RVector3D angular_velocity, double dt)
 {
     static RVector3D prev_e = RVector3D(0, 0, 0),
         e_integral = RVector3D(0, 0, 0);
@@ -146,10 +112,10 @@ RVector3D MotorController::get_angular_velocity_rotation(RVector3D angular_veloc
     //max and min correction
     for(int i = 0; i < 2; i++)
     {
-        if(u.value_by_axis_index(i) < -angular_velocity_max_rotation)
-            u.value_by_axis_index(i) = -angular_velocity_max_rotation;
-        if(u.value_by_axis_index(i) > angular_velocity_max_rotation)
-            u.value_by_axis_index(i) = angular_velocity_max_rotation;
+        if(u.value_by_axis_index(i) < -angular_velocity_max_correction)
+            u.value_by_axis_index(i) = -angular_velocity_max_correction;
+        if(u.value_by_axis_index(i) > angular_velocity_max_correction)
+            u.value_by_axis_index(i) = angular_velocity_max_correction;
     }
     
     //for integral and derivative
@@ -158,33 +124,41 @@ RVector3D MotorController::get_angular_velocity_rotation(RVector3D angular_veloc
     return(u);
 }
 
-double MotorController::speedGet(RVector3D throttle_vec, int motor)
+double MotorController::get_speed(RVector3D torque_vec, int motor)
 {
-    // This comes from the Cubic Vector Model
-    double res = ( throttle_vec.module_sq() + x_sign(motor) * throttle_vec.x + y_sign(motor) * throttle_vec.y ) / throttle_vec.z;
+    // This comes from the Cubic Vector Model, which one sucks
+    /*double res = ( torque_vec.module_sq() + coordinates_of_motors[motor].x * torque_vec.x
+                   + coordinates_of_motors[motor].y * torque_vec.y ) / torque_vec.z;
 
-    // throttle_abs implementation
-    res *= get_throttle_abs();
+    // force implementation
+    res *= get_force();
+    */
+
+    double res = get_force();
+    res += torque_vec.x * coordinates_of_motors[motor].y - torque_vec.y * coordinates_of_motors[motor].x;
 
     // it is necessary because the motor controller starts a motor with greater speed than needed
-    if (res <= MIN_SPEED && get_throttle_abs() != 0) res = MIN_SPEED;
-    
+    if (res <= MIN_SPEED && get_force() != 0) res = MIN_SPEED;
+
+    // motors offline
+    if(get_force() < MIN_SPEED) res = 0;
+
     // use_motors implementation
     if(!use_motors[motor]) res = 0;
-    
+
     return(res);
 }
 
-void MotorController::speedChangeRaw(double power[N_MOTORS])
-{
-    for(int i = 0; i < N_MOTORS; i++)
-        motors_[i].set_power(power[i]);
-}
-
-void MotorController::speedChange(RVector3D throttle_vec)
+void MotorController::set_torque(RVector3D torque_vec)
 {
     for (int i = 0; i < N_MOTORS; i++)
-        motors_[i].set_power(speedGet(throttle_vec, i));
+        motors_[i].set_power(get_speed(torque_vec, i));
+}
+
+void MotorController::set_motors(double power[N_MOTORS])
+{
+    for (int i = 0; i < N_MOTORS; i++)
+        motors_[i].set_power(power[i]);
 }
 
 MotorController::MotorController(const int motor_control_pins[N_MOTORS])
@@ -214,6 +188,11 @@ MotorController::MotorController(const int motor_control_pins[N_MOTORS])
     // wait for ESC
     delay(INIT_TIMEOUT);
 
-    set_throttle_abs(0);
-    speedChange(RVector3D(0, 0, 1));
+    set_force(0);
+    set_torque(RVector3D());
+
+    coordinates_of_motors[A] = RVector3D(1, 0, 0);
+    coordinates_of_motors[B] = RVector3D(0, -1, 0);
+    coordinates_of_motors[C] = RVector3D(-1, 0, 0);
+    coordinates_of_motors[D] = RVector3D(0, 1, 0);
 }

@@ -32,9 +32,9 @@ quadrocopter::quadrocopter()
     PID_angular_velocity_Kd = 0;
 
     //see arduino code
-    read_bytes_N = 26;
+    read_bytes_N = 28;
 
-    joystick_coefficient = 0.2;
+    joystick_coefficient = 0.5;
 
     defaults();
 }
@@ -61,10 +61,10 @@ void quadrocopter::read_data_request()
 
 void quadrocopter::read_data()
 {
-    vect t_throttle_corrected = read_vect_byte(), t_angle = read_vect_byte(2),
+    vect t_torque_corrected = read_vect_byte(), t_angle = read_vect_byte(2),
             t_gyroscope_readings = read_vect_byte(), t_accelerometer_readings = read_vect_byte(),
-            t_throttle_gyroscope_rotation = read_vect_byte(2), t_throttle_accelerometer_rotation = read_vect_byte(3),
-            t_throttle_angle_rotation = read_vect_byte(2);
+            t_torque_gyroscope_correction = read_vect_byte(), t_torque_accelerometer_correction = read_vect_byte(),
+            t_torque_angle_correction = read_vect_byte();
 
     reaction_type_ t_reaction_type;
 
@@ -82,14 +82,14 @@ void quadrocopter::read_data()
         for(int i = 0; i < MOTORS_N; i++)
             MOTORS[i] = t_motors[i];
 
-        throttle_corrected = t_throttle_corrected;
+        torque_corrected = t_torque_corrected;
         angle = t_angle;
         gyroscope_readings = t_gyroscope_readings / serial_gyroscope_coefficient;
         accelerometer_readings = t_accelerometer_readings * g;
 
-        throttle_gyroscope_rotation = t_throttle_gyroscope_rotation;
-        throttle_accelerometer_rotation = t_throttle_accelerometer_rotation;
-        throttle_angle_rotation = t_throttle_angle_rotation;
+        torque_gyroscope_correction = t_torque_gyroscope_correction;
+        torque_accelerometer_correction = t_torque_accelerometer_correction;
+        torque_angle_correction = t_torque_angle_correction;
 
         loop_time = t_loop_time;
         reaction_type = t_reaction_type;
@@ -100,21 +100,12 @@ void quadrocopter::read_data()
 
 void quadrocopter::write_data()
 {
-    //if(!isoperational() || read_error()) return;
-
-    //flush();
-
     if(power > 1) power = 1;
     else if(power < 0) power = 0;
 
-    //send write command
-
-    //remove after
-    // swrite('i');
-
-    //send throttle_rotation
-    for(int i = 0; i < 2; i++) // 2 - axis count
-        write_number_vect_t(-1, 1, throttle_rotation.value_by_axis_index(i), 2);
+    //send torque_manual_correction
+    for(int i = 0; i < 3; i++) // 2 - axis count
+        write_number_vect_t(-1, 1, torque_manual_correction.value_by_axis_index(i), 2);
 
     //send power
     swrite(power * 100); // in percents
@@ -133,12 +124,12 @@ void quadrocopter::write_data()
 
 void quadrocopter::defaults()
 {
-    throttle_rotation = vect();
-    throttle_corrected = vect();
+    torque_manual_correction = vect();
+    torque_corrected = vect();
     gyroscope_readings = vect();
     accelerometer_readings = vect();
-    throttle_gyroscope_rotation = vect();
-    throttle_accelerometer_rotation = vect();
+    torque_gyroscope_correction = vect();
+    torque_accelerometer_correction = vect();
 
     angle = vect();
     power = 0;
@@ -178,18 +169,18 @@ number_vect_t quadrocopter::get_read_time()
     return(read_time);
 }
 
-void quadrocopter::reset_throttle()
+void quadrocopter::reset()
 {
-    throttle_rotation.x = 0;
-    throttle_rotation.y = 0;
+    torque_manual_correction.x = 0;
+    torque_manual_correction.y = 0;
 
     swrite('n');
 }
 
 
-vect quadrocopter::get_throttle_corrected()
+vect quadrocopter::get_torque_corrected()
 {
-    return(throttle_corrected);
+    return(torque_corrected);
 }
 
 vect quadrocopter::get_gyroscope_readings()
@@ -207,9 +198,9 @@ vect quadrocopter::get_angle()
     return(angle);
 }
 
-vect quadrocopter::get_throttle_gyroscope_rotation()
+vect quadrocopter::get_torque_gyroscope_correction()
 {
-    return(throttle_gyroscope_rotation);
+    return(torque_gyroscope_correction);
 }
 
 number_vect_t quadrocopter::get_motor_power(int i)
@@ -229,14 +220,14 @@ void quadrocopter::set_power(number_vect_t n_power)
     power = n_power;
 }
 
-void quadrocopter::set_joystick_rotation(vect n_joystick_rotation)
+void quadrocopter::set_joystick_correction(vect n_joystick_correction)
 {
-    set_throttle_rotation(n_joystick_rotation * joystick_coefficient);
+    set_torque_manual_correction(n_joystick_correction * joystick_coefficient);
 }
 
-void quadrocopter::set_throttle_rotation(vect n_throttle_rotation)
+void quadrocopter::set_torque_manual_correction(vect n_torque_manual_correction)
 {
-    throttle_rotation = n_throttle_rotation;
+    torque_manual_correction = n_torque_manual_correction;
 }
 
 void quadrocopter::set_PID_angle_Kp(number_vect_t t_Kp)
@@ -299,9 +290,9 @@ number_vect_t quadrocopter::get_PID_angular_velocity_Kd()
     return(PID_angular_velocity_Kd);
 }
 
-vect quadrocopter::get_throttle_rotation()
+vect quadrocopter::get_torque_manual_correction()
 {
-    return(throttle_rotation);
+    return(torque_manual_correction);
 }
 
 number_vect_t quadrocopter::get_power()
@@ -309,14 +300,14 @@ number_vect_t quadrocopter::get_power()
     return(power);
 }
 
-vect quadrocopter::get_throttle_accelerometer_rotation()
+vect quadrocopter::get_torque_accelerometer_correction()
 {
-    return(throttle_accelerometer_rotation);
+    return(torque_accelerometer_correction);
 }
 
-vect quadrocopter::get_throttle_angle_rotation()
+vect quadrocopter::get_torque_angle_correction()
 {
-    return(throttle_angle_rotation);
+    return(torque_angle_correction);
 }
 
 number_vect_t quadrocopter::get_write_time()

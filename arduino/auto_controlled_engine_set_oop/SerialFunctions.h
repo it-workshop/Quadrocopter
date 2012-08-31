@@ -13,8 +13,8 @@
     #define SERIAL_AUTO_COUNT_M 10        
     
     //for wasd and digits
-    #define SERIAL_ANGLE_STEP 0.024543692 // PI / 128
-    #define SERIAL_THROTTLE_STEP 0.1
+    #define SERIAL_TORQUE_STEP 0.024543692 // PI / 128
+    #define SERIAL_FORCE_STEP 0.1
     
     #define SERIAL_MAXWAIT_U 100000
     

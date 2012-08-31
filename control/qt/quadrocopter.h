@@ -13,11 +13,11 @@ public:
     enum reaction_type_ {REACTION_NONE, REACTION_ANGULAR_VELOCITY, REACTION_ACCELERATION, REACTION_ANGLE};
 private:
     number_vect_t power;
-    vect angle, throttle_corrected;
-    vect throttle_rotation;
-    vect gyroscope_readings, throttle_gyroscope_rotation;
-    vect accelerometer_readings, throttle_accelerometer_rotation,;
-    vect throttle_angle_rotation;
+    vect angle, torque_corrected;
+    vect gyroscope_readings, accelerometer_readings;
+    vect torque_gyroscope_correction, torque_accelerometer_correction, torque_angle_correction;
+
+    vect torque_manual_correction;
 
     static const int MOTORS_N = 4;
     number_vect_t MOTORS[MOTORS_N];
@@ -46,21 +46,21 @@ public:
     quadrocopter();
 
     number_vect_t get_power(); // returns power [0...1]
-    vect get_throttle_corrected(); // returns vect throttle_corrected
-    vect get_throttle_rotation(); // returns vect throttle_rotation
+    vect get_torque_corrected(); // returns vect torque_corrected
+    vect get_torque_manual_correction(); // returns vect torque_manual_correction
     int get_motors_n(); // returns MOTORS_N
     number_vect_t get_motor_power(int); // returns motor power [0...1]
     vect get_gyroscope_readings(); // returns gyroscope readings, values [0...1]
     vect get_accelerometer_readings(); // returns acceleromter readings, values [0...]
     vect get_angle(); //returns angle, values [0...1]
 
-    vect get_throttle_gyroscope_rotation();
-    vect get_throttle_accelerometer_rotation();
-    vect get_throttle_angle_rotation();
+    vect get_torque_gyroscope_correction();
+    vect get_torque_accelerometer_correction();
+    vect get_torque_angle_correction();
 
     void set_power(number_vect_t);
-    void set_throttle_rotation(vect);
-    void set_joystick_rotation(vect);
+    void set_torque_manual_correction(vect);
+    void set_joystick_correction(vect);
 
     void set_PID_angle_Kp(number_vect_t);
     void set_PID_angle_Ki(number_vect_t);
@@ -91,7 +91,7 @@ public:
     void read_data_request(); // request read data from device
     void write_data(); // write data to device
 
-    void reset_throttle(); // set throttle to (0, 0, 1)
+    void reset(); // set torque to (0, 0, 1)
 
     virtual void on_rx();
 };

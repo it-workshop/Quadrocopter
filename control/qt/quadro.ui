@@ -78,7 +78,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>411</width>
+        <width>414</width>
         <height>81</height>
        </rect>
       </property>
@@ -86,7 +86,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label_power">
          <property name="text">
-          <string>Power</string>
+          <string>Force</string>
          </property>
         </widget>
        </item>
@@ -113,9 +113,9 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QLabel" name="label_throttleangle">
+        <widget class="QLabel" name="label_torque_manual_correction">
          <property name="text">
-          <string>Throttle Angle</string>
+          <string>Torque manual</string>
          </property>
         </widget>
        </item>
@@ -125,7 +125,7 @@
           <enum>QLayout::SetMinimumSize</enum>
          </property>
          <item>
-          <widget class="QLabel" name="label_angle_2">
+          <widget class="QLabel" name="label_torque_manual_correction_x">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -138,7 +138,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="anglex">
+          <widget class="QDoubleSpinBox" name="torque_manual_correction_x">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -146,7 +146,7 @@
             </sizepolicy>
            </property>
            <property name="suffix">
-            <string>rad</string>
+            <string/>
            </property>
            <property name="decimals">
             <number>5</number>
@@ -179,7 +179,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QLabel" name="label_angley">
+          <widget class="QLabel" name="label_torque_manual_correction_y">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -192,7 +192,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="angley">
+          <widget class="QDoubleSpinBox" name="torque_manual_correction_y">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -200,7 +200,7 @@
             </sizepolicy>
            </property>
            <property name="suffix">
-            <string>rad</string>
+            <string/>
            </property>
            <property name="decimals">
             <number>5</number>
@@ -242,14 +242,14 @@
         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
        </property>
        <item row="0" column="0">
-        <widget class="QLabel" name="label_throttle_joystick">
+        <widget class="QLabel" name="label_joystick_data">
          <property name="text">
           <string>J Data</string>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="throttle_joystick">
+        <widget class="QLineEdit" name="joystick_data">
          <property name="font">
           <font>
            <family>Terminus</family>
@@ -321,12 +321,12 @@
      <item row="2" column="0">
       <widget class="QLabel" name="label_throttle">
        <property name="text">
-        <string>Throttle</string>
+        <string>Torque</string>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLineEdit" name="throttle">
+      <widget class="QLineEdit" name="torque">
        <property name="font">
         <font>
          <family>Terminus</family>
@@ -336,47 +336,13 @@
       </widget>
      </item>
      <item row="3" column="0">
-      <widget class="QLabel" name="label_throttle_gyroscope_correction">
+      <widget class="QLabel" name="label_gyro">
        <property name="text">
-        <string>Gyro corr.</string>
+        <string>Gyro data</string>
        </property>
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QLineEdit" name="throttle_gyroscope_correction">
-       <property name="font">
-        <font>
-         <family>Terminus</family>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_throttle_accelerometer_correction">
-       <property name="text">
-        <string>Acc. corr.</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QLineEdit" name="throttle_accelerometer_correction">
-       <property name="font">
-        <font>
-         <family>Terminus</family>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_gyro">
-       <property name="text">
-        <string>Gyro</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
       <widget class="QLineEdit" name="gyro">
        <property name="font">
         <font>
@@ -386,14 +352,14 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
+     <item row="4" column="0">
       <widget class="QLabel" name="label_accel">
        <property name="text">
-        <string>Accel</string>
+        <string>Accel. data</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="1">
+     <item row="4" column="1">
       <widget class="QLineEdit" name="accel">
        <property name="font">
         <font>
@@ -403,14 +369,14 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
+     <item row="5" column="0">
       <widget class="QLabel" name="label_angle">
        <property name="text">
-        <string>Angle</string>
+        <string>Angle (filtered)</string>
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
+     <item row="5" column="1">
       <widget class="QLineEdit" name="angle">
        <property name="font">
         <font>
@@ -420,14 +386,14 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
+     <item row="6" column="0">
       <widget class="QLabel" name="label_motors">
        <property name="text">
-        <string>Motors</string>
+        <string>Motors power</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
+     <item row="6" column="1">
       <widget class="QLineEdit" name="motors">
        <property name="font">
         <font>
@@ -437,14 +403,14 @@
        </property>
       </widget>
      </item>
-     <item row="9" column="0">
+     <item row="7" column="0">
       <widget class="QLabel" name="label_reaction_type">
        <property name="text">
-        <string>Reaction</string>
+        <string>Reaction type</string>
        </property>
       </widget>
      </item>
-     <item row="9" column="1">
+     <item row="7" column="1">
       <widget class="QComboBox" name="reaction_type">
        <property name="currentIndex">
         <number>0</number>
@@ -471,14 +437,14 @@
        </item>
       </widget>
      </item>
-     <item row="10" column="0">
+     <item row="8" column="0">
       <widget class="QLabel" name="label_PID_angle">
        <property name="text">
         <string>PID angle</string>
        </property>
       </widget>
      </item>
-     <item row="10" column="1">
+     <item row="8" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <property name="sizeConstraint">
         <enum>QLayout::SetMinimumSize</enum>
@@ -605,14 +571,14 @@
        </item>
       </layout>
      </item>
-     <item row="11" column="0">
+     <item row="9" column="0">
       <widget class="QLabel" name="label_PID_angular_velocity">
        <property name="text">
         <string>PID angle'</string>
        </property>
       </widget>
      </item>
-     <item row="11" column="1">
+     <item row="9" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <property name="sizeConstraint">
         <enum>QLayout::SetMinimumSize</enum>
@@ -759,7 +725,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>621</width>
+        <width>617</width>
         <height>471</height>
        </rect>
       </property>
@@ -774,7 +740,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>621</width>
+        <width>617</width>
         <height>471</height>
        </rect>
       </property>
@@ -789,7 +755,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>621</width>
+        <width>617</width>
         <height>471</height>
        </rect>
       </property>
@@ -797,14 +763,14 @@
     </widget>
     <widget class="QWidget" name="tabthrottle">
      <attribute name="title">
-      <string>Throttle</string>
+      <string>Torques and force</string>
      </attribute>
-     <widget class="QwtPlot" name="plot_throttle">
+     <widget class="QwtPlot" name="plot_torques_and_force">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>621</width>
+        <width>617</width>
         <height>471</height>
        </rect>
       </property>
@@ -819,7 +785,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>621</width>
+        <width>617</width>
         <height>471</height>
        </rect>
       </property>

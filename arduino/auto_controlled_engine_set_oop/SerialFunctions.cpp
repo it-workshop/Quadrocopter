@@ -16,8 +16,8 @@ extern int reaction_type;
 extern long double dt;
 
 extern RVector3D accel_data, gyro_data;
-extern RVector3D angle_rotation, acceleration_rotation, angular_velocity_rotation;
-extern RVector3D throttle_manual_rotation, throttle_corrected;
+extern RVector3D angle_correction, acceleration_correction, angular_velocity_correction;
+extern RVector3D torque_manual_correction, torque_corrected;
 extern RVector3D angle;
 
 const double serial_gyroscope_coefficient = 0.08;
@@ -154,16 +154,16 @@ void serial_process_write()
             write_RVector3D(accel_data, PRINT_TAB);
             write_RVector3D(gyro_data, PRINT_TAB);
             
-            write_RVector3D(throttle_manual_rotation, PRINT_TAB);
-            write_RVector3D(throttle_corrected, PRINT_TAB);
+            write_RVector3D(torque_manual_correction, PRINT_TAB);
+            write_RVector3D(torque_corrected, PRINT_TAB);
     
-            Serial.print(MController->get_throttle_abs(), SERIAL_ACCURACY);
+            Serial.print(MController->get_force(), SERIAL_ACCURACY);
     
             Serial.print("\t");
             
             for(unsigned int i = 0; i < 4; i++)
             {
-                Serial.print(100 * MController->speedGet(throttle_corrected, i));
+                Serial.print(100 * MController->get_speed(torque_corrected, i));
                 Serial.print("\t");
             }
     
@@ -197,17 +197,17 @@ void serial_process_write()
             
             // reading
             
-            // throttle_manual_rotation
-            for(int i = 0; i < 2; i++)
-                read_double(-1, 1, throttle_manual_rotation.value_by_axis_index(i), 2);
+            // torque_manual_correction
+            for(int i = 0; i < 3; i++)
+                read_double(-1, 1, torque_manual_correction.value_by_axis_index(i), 2);
             
-            //throttle_abs
+            //force
             serial_wait_for_byte();
             if(serial_read_error) return;
             
             c = Serial.read();
             
-            MController->set_throttle_abs(c / 100.);
+            MController->set_force(c / 100.);
             
             //reaction_type
             serial_wait_for_byte();
@@ -229,20 +229,20 @@ void serial_process_write()
             
             serial_buffer_init();
             
-            // writing 26 bytes
+            // writing 28 bytes
             
-            write_RVector3D(throttle_corrected, PRINT_RAW);
+            write_RVector3D(torque_corrected, PRINT_RAW);
             write_RVector3D(angle, PRINT_RAW, USE_2D);
             
             write_RVector3D((gyro_data * serial_gyroscope_coefficient), PRINT_RAW);
             write_RVector3D(accel_data, PRINT_RAW);
-            write_RVector3D(angular_velocity_rotation, PRINT_RAW, USE_2D);
-            write_RVector3D(acceleration_rotation, PRINT_RAW);
-            write_RVector3D(angle_rotation, PRINT_RAW, USE_2D);
+            write_RVector3D(angular_velocity_correction, PRINT_RAW);
+            write_RVector3D(acceleration_correction, PRINT_RAW);
+            write_RVector3D(angle_correction, PRINT_RAW);
             
             //motors
             for (i = 0; i < 4; i++)
-                serial_buffer_add(100 * MController->speedGet(throttle_corrected, i));
+                serial_buffer_add(100 * MController->get_speed(torque_corrected, i));
                 
             //dt
             for (int si = 2; si >= 0; si--)
@@ -263,53 +263,53 @@ void serial_process_read()
         if(c == 'n')
         {
             angle = RVector3D();
-            throttle_manual_rotation = RVector3D(0, 0, 1);
+            torque_manual_correction = RVector3D();
             
             serial_type = SERIAL_WAITING;
         }
         #ifdef DEBUG_SERIAL_HUMAN
-            else if(c == '+' && MController->get_throttle_abs() + SERIAL_THROTTLE_STEP <= 1)
+            else if(c == '+' && MController->get_force() + SERIAL_FORCE_STEP <= 1)
             {
-                MController->set_throttle_abs(MController->get_throttle_abs() + SERIAL_THROTTLE_STEP);
+                MController->set_force(MController->get_force() + SERIAL_FORCE_STEP);
                 
                 serial_type = SERIAL_WAITING;
             }
                 
-            else if(c == '-' && MController->get_throttle_abs() - SERIAL_THROTTLE_STEP >= 0)
+            else if(c == '-' && MController->get_force() - SERIAL_FORCE_STEP >= 0)
             {
-                MController->set_throttle_abs(MController->get_throttle_abs() - SERIAL_THROTTLE_STEP);
+                MController->set_force(MController->get_force() - SERIAL_FORCE_STEP);
                 
                 serial_type = SERIAL_WAITING;
             }
 
             else if(c >= '0' && c <= '9')
             {
-                MController->set_throttle_abs((c - '0') / 10.0);
+                MController->set_force((c - '0') / 10.0);
                 
                 serial_type = SERIAL_WAITING;
             }
             
             else if(c == 'a')
             {
-                throttle_manual_rotation.y += SERIAL_ANGLE_STEP;
+                torque_manual_correction.y += SERIAL_TORQUE_STEP;
                 
                 serial_type = SERIAL_WAITING;
             }
             else if(c == 'd')
             {
-                throttle_manual_rotation.y -= SERIAL_ANGLE_STEP;
+                torque_manual_correction.y -= SERIAL_TORQUE_STEP;
                 
                 serial_type = SERIAL_WAITING;
             }
             else if(c == 'w')
             {
-                throttle_manual_rotation.x -= SERIAL_ANGLE_STEP;
+                torque_manual_correction.x -= SERIAL_TORQUE_STEP;
                 
                 serial_type = SERIAL_WAITING;
             }
             else if(c == 's')
             {
-                throttle_manual_rotation.x += SERIAL_ANGLE_STEP;
+                torque_manual_correction.x += SERIAL_TORQUE_STEP;
                 
                 serial_type = SERIAL_WAITING;
             }

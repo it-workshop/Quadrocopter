@@ -15,22 +15,15 @@ private:
     static const int INIT_TIMEOUT = 8000; // ms
 #endif
 
-    double throttle_abs;
+    double force;
     
     RVector3D accelerometer_xi;
     
-    static const double angle_max_rotation = MPI / 4;
+    static const double angle_max_correction = MPI / 4;
 
-    static const double angular_velocity_max_rotation = MPI / 4 / 2;
+    static const double angular_velocity_max_correction = MPI / 4 / 2;
     
     static const double MIN_SPEED = 0.1;
-
-    enum SIGN
-    {
-        ZERO = 0,
-        PLUS = 1,
-        MINUS = -1
-    };
 
     enum MOTORS
     {
@@ -41,8 +34,7 @@ private:
 
     bool use_motors[N_MOTORS];
 
-    inline const SIGN x_sign(int i);
-    inline const SIGN y_sign(int i);
+    RVector3D coordinates_of_motors[N_MOTORS];
 
 public:
     double angle_Kp, angle_Ki, angle_Kd;
@@ -51,17 +43,17 @@ public:
     MotorController(const int motor_control_pins[N_MOTORS]);
     ~MotorController();
 
-    void speedChange(RVector3D throttle_vec);
-    void speedChangeRaw(double power[N_MOTORS]); // values in [0...1]
-    double speedGet(RVector3D throttle_vec, int motor);
+    void set_torque(RVector3D torque_vec);
+    void set_motors(double power[N_MOTORS]); // values in [0...1]
+    double get_speed(RVector3D torque_vec, int motor);
 
-    double get_throttle_abs();
+    double get_force();
 
-    void set_throttle_abs(double a);
+    void set_force(double a);
     
-    RVector3D get_angle_rotation(RVector3D angle, double dt);
-    RVector3D get_acceleration_rotation(RVector3D angle, RVector3D accel_data); // totally doesnt work
-    RVector3D get_angular_velocity_rotation(RVector3D angular_velocity, double dt);
+    RVector3D get_angle_correction(RVector3D angle, double dt);
+    RVector3D get_acceleration_correction(RVector3D angle, RVector3D accel_data); // totally doesnt work
+    RVector3D get_angular_velocity_correction(RVector3D angular_velocity, double dt);
 };
 
 #endif

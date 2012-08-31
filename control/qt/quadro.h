@@ -12,6 +12,8 @@
 
 #include "qextserialenumerator.h"
 
+#include <qwt_plot_curve.h>
+
 using std::string;
 using std::ofstream;
 
@@ -66,16 +68,24 @@ private:
     quadrocopter quadro;
     joystick joy;
 
+    // plot
+
     static const int plot_size = 200 + 1;
     double plot_time[plot_size],
         plot_gyro_x[plot_size], plot_gyro_y[plot_size], plot_gyro_z[plot_size],
         plot_acc_x[plot_size], plot_acc_y[plot_size], plot_acc_z[plot_size],
         plot_angle_x[plot_size], plot_angle_y[plot_size],
         plot_angle_accx[plot_size], plot_angle_accy[plot_size],
-        plot_throttle_x[plot_size], plot_throttle_y[plot_size], plot_throttle_z[plot_size], plot_throttle[plot_size],
-        plot_acc_rotation_x[plot_size], plot_acc_rotation_y[plot_size],
-        plot_gyro_rotation_x[plot_size], plot_gyro_rotation_y[plot_size],
-        plot_angle_rotation_x[plot_size], plot_angle_rotation_y[plot_size];
+        plot_torque_x[plot_size], plot_torque_y[plot_size], plot_torque_z[plot_size], plot_force[plot_size],
+        plot_acceleration_correction_x[plot_size], plot_acceleration_correction_y[plot_size], plot_acceleration_correction_z[plot_size],
+        plot_angular_velocity_correction_x[plot_size], plot_angular_velocity_correction_y[plot_size], plot_angular_velocity_correction_z[plot_size],
+        plot_angle_correction_x[plot_size], plot_angle_correction_y[plot_size], plot_angle_correction_z[plot_size];
+
+    QwtPlotCurve *plot_curve_angular_velocity_correction_x, *plot_curve_angular_velocity_correction_y, *plot_curve_angular_velocity_correction_z;
+    QwtPlotCurve *plot_curve_acceleration_correction_x, *plot_curve_acceleration_correction_y, *plot_curve_acceleration_correction_z;
+    QwtPlotCurve *plot_curve_angle_correction_x, *plot_curve_angle_correction_y, *plot_curve_angle_correction_z;
+
+    // /plot
 
     mytime plot_mytime;
 
@@ -97,6 +107,7 @@ private:
     void plot_update();
     void plot_init();
     void plot_reset_data();
+    void plot_torque_and_force_update_legend();
 
     void interface_read();
     void interface_write();

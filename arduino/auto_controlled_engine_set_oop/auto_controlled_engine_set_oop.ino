@@ -25,11 +25,11 @@ reaction_type_ reaction_type = REACTION_NONE;
 // distance from gyroscope to the accelerometer in meters
 RVector3D gyro_to_acc = RVector3D(-1.9E-2, -1.7E-2, 2.1E-2);
 
-// throttle manual rotation
-RVector3D throttle_manual_rotation = RVector3D(0, 0, 0);
+// torque manual correction
+RVector3D torque_manual_correction = RVector3D(0, 0, 0);
 
-// throttle default value
-const RVector3D throttle_default = RVector3D(0, 0, 1);
+// torque default value
+const RVector3D torque_default = RVector3D(0, 0, 0);
 
 // angle between Earth's coordinate and ours
 RVector3D angle;
@@ -41,7 +41,7 @@ double angle_period = 4;
 const double g = 9.80665;
 
 // corrections
-RVector3D angular_velocity_rotation, acceleration_rotation, angle_rotation;
+RVector3D angular_velocity_correction, acceleration_correction, angle_correction;
 
 void setup()
 {
@@ -54,7 +54,7 @@ void setup()
     int accelerometer_pins[3] = {A0, A1, A2};
     
     MController = new MotorController(motor_control_pins);
-    MController->set_throttle_abs(0);
+    MController->set_force(0);
     
     Accel = new Accelerometer(accelerometer_pins);
     Gyro = new Gyroscope();
@@ -78,7 +78,7 @@ char c = 0;
 // sensors' data
 RVector3D accel_data, gyro_data;
 
-RVector3D throttle_corrected;
+RVector3D torque_corrected;
 
 // for angular acceleration
 RVector3D gyro_prev_data = RVector3D();
@@ -121,9 +121,9 @@ void loop()
     TCount->set_time();
     
     // calculating correction (all methods)
-    acceleration_rotation = MController->get_acceleration_rotation(angle, accel_data);
-    angular_velocity_rotation = MController->get_angular_velocity_rotation(gyro_data, dt);
-    angle_rotation = MController->get_angle_rotation(angle, dt);
+    acceleration_correction = MController->get_acceleration_correction(angle, accel_data);
+    angular_velocity_correction = MController->get_angular_velocity_correction(gyro_data, dt);
+    angle_correction = MController->get_angle_correction(angle, dt);
 
     #ifdef DEBUG_SERIAL
     
@@ -136,8 +136,8 @@ void loop()
     #endif
 
     // resulting vector
-    throttle_corrected = throttle_default;
-    throttle_corrected.angle_inc(throttle_manual_rotation);
+    torque_corrected = torque_default;
+    torque_corrected += torque_manual_correction;
     
     RVector3D t_correction = RVector3D(0, 0, 0);
     
@@ -147,28 +147,25 @@ void loop()
         // reaction on angular velocity from gyroscope
         if (reaction_type == REACTION_ANGULAR_VELOCITY)
         {
-            throttle_corrected.angle_inc(angular_velocity_rotation);
-            t_correction = angular_velocity_rotation;
+            torque_corrected += angular_velocity_correction;
+            t_correction = angular_velocity_correction;
         }
             
         #ifndef DEBUG_NO_ACCELEROMETER
         
             // reaction on acceleration
             if (reaction_type == REACTION_ACCELERATION)
-                throttle_corrected.angle_inc(acceleration_rotation);
+                torque_corrected += acceleration_correction;
                 
             // reaction on angle
             else if (reaction_type == REACTION_ANGLE)
             {
-                throttle_corrected.angle_inc(angle_rotation);
-                t_correction = angle_rotation;
+                torque_corrected += angle_correction;
+                t_correction = angle_correction;
             }
                 
         #endif
     #endif
-    
-    // normalizing
-    throttle_corrected /= throttle_corrected.module();
     
     #ifdef DEBUG_SERIAL
     
@@ -178,12 +175,12 @@ void loop()
     #endif
 
     // setting speed
-    MController->speedChange(throttle_corrected);
+    MController->set_torque(torque_corrected);
     
 /*    double motors_speed[4];
     
     for(int i = 0; i < 4; i++)
-        motors_speed[i] = MController->get_throttle_abs();
+        motors_speed[i] = MController->get_force();
 
     motors_speed[3] += t_correction.x;
     motors_speed[1] -= t_correction.x;
