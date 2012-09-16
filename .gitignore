@@ -1,0 +1,7 @@
+control/log
+control/qt/*.o
+control/qt/moc*
+control/qt/Makefile
+control/qt/quadro
+control/qt/quadro.pro.user
+control/qt/ui*
