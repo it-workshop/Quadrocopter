@@ -1,6 +1,15 @@
 В этом репозитории хранится код, который каким-то образом связан с разработкой квадрокоптеров.
 
-Некоторую информацию по проекту можно найти на вики проекта, а также в блоге рабочей группы: http://tech.incraft.ru/category/quadrocopter.
+Некоторую информацию по проекту можно найти на [/it-workshop/Quadrocopter/wiki вики проекта], а также в [http://tech.incraft.ru/category/quadrocopter блоге рабочей группы].
 
-Скетч pot_controlled_engine иллюстрирует способ управления ESC посредством переменного резистора. В данном скетче процедуру вхождения в штатный режим необходимо производить непосредственно меняя состояние потенциометра. Войдя в штатный режим, управление оборотами двигателя полностью задается состоянием потенциометра (throttle). Кроме того, с помощью этого скетча возможно программирование ESC.
+== Описание скетчей для arduino ==
+* Основная разработка ведется над [[/it-workshop/Quadrocopter/tree/master/arduino/auto_controlled_engine_set_oop|версией с использованием ООП]].
 
+* [[/it-workshop/Quadrocopter/tree/master/arduino/joystick|joystick]]&nbsp;&mdash; программа для джойстика на arduino, который подключается к компьютеру.
+
+* Скетч [[/it-workshop/Quadrocopter/tree/master/arduino/pot_controlled_engine|pot_controlled_engine]]&nbsp;позволяет управлять ESC при помощи переменного резистора.
+
+* [[/it-workshop/Quadrocopter/tree/master/arduino/bee_programmer|bee_programmer]]&nbsp;использует UART arduino для изменения режима работы Bluetooth Bee, который используется в проекте.
+
+== Описание программы для компьютера ==
+Управление квадрокоптером осуществляется с использованием [[/it-workshop/Quadrocopter/tree/master/control/qt|программы на Qt]]&nbsp;(джойстик подключается к компьютеру по USB, квадрокоптер&nbsp;&mdash; через Bluetooth).
