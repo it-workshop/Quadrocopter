@@ -126,12 +126,13 @@ RVector3D MotorController::get_angular_velocity_correction(RVector3D angular_vel
 
 double MotorController::get_speed(RVector3D torque_vec, int motor)
 {
-    // This comes from the Cubic Vector Model, which one sucks
-    /*double res = ( torque_vec.module_sq() + coordinates_of_motors[motor].x * torque_vec.x
-                   + coordinates_of_motors[motor].y * torque_vec.y ) / torque_vec.z;
-
+    /*
     // force implementation
-    res *= get_force();
+    torque_vec *= get_force();
+
+    // This comes from the Cubic Vector Model, which one sucks
+    double res = ( throttle.module_sq() + coordinates_of_motors[motor].x * throttle.x
+                   + coordinates_of_motors[motor].y * throttle.y ) / throttle.z;
     */
 
     double res = get_force();
