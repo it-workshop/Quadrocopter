@@ -4,16 +4,6 @@
 #include "PID.h"
 #include "RVector3D.h"
 
-double MotorController::get_force()
-{
-    return(force);
-}
-
-void MotorController::set_force(double a)
-{
-    force = a;
-}
-
 RVector3D MotorController::get_angle_correction(RVector3D angle, double dt)
 {
     return(pid_angle.get_y(angle, dt));
@@ -34,8 +24,6 @@ RVector3D MotorController::get_acceleration_correction(RVector3D angle, RVector3
         dt = t_time.get_time_difference() / 1.E6;
 
         alpha = dt / (dt + period / (2 * MPI));
- 
-        //cerr << "alpha=" << alpha << endl;
 
         res = a_prev * (1 - alpha) + a * alpha;
     }
@@ -48,30 +36,12 @@ RVector3D MotorController::get_acceleration_correction(RVector3D angle, RVector3
     moment_of_force.x = correction.x * accelerometer_xi.x;
     moment_of_force.y = correction.y * accelerometer_xi.y;
      
-    RVector3D torque_new;
-    torque_new.z = 1 / sqrt(1 + pow(moment_of_force.x / 2, 2) + pow(moment_of_force.y / 2, 2));
-    torque_new.x =  moment_of_force.y / 2 * torque_new.z;
-    torque_new.y = -moment_of_force.x / 2 * torque_new.z;
-     
-    return(torque_new);
+    return(moment_of_force);
 }
 
 RVector3D MotorController::get_angular_velocity_correction(RVector3D angular_velocity, double dt)
 {
     return(pid_angular_velocity.get_y(angular_velocity, dt));
-}
-
-void MotorController::reset()
-{
-    pid_angle = PID();
-    pid_angular_velocity = PID();
-
-    pid_angle.set_KpKiKd(0.2, 0, 0.1);
-    pid_angular_velocity.set_KpKiKd(0.2, 0, 0.1);
-    pid_angle.set_y_min(- MPI / 4);
-    pid_angular_velocity.set_y_min(- MPI / 4);
-    pid_angle.set_y_max(MPI / 4);
-    pid_angular_velocity.set_y_max(MPI / 4);
 }
 
 double MotorController::get_speed(RVector3D torque_vec, int motor)
@@ -103,6 +73,19 @@ void MotorController::set_motors(double power[N_MOTORS])
         motors_[i].set_power(power[i]);
 }
 
+void MotorController::reset()
+{
+    pid_angle = PID();
+    pid_angular_velocity = PID();
+
+    pid_angle.set_KpKiKd(0.2, 0, 0.1);
+    pid_angular_velocity.set_KpKiKd(0.2, 0, 0.1);
+    pid_angle.set_y_min(- MPI / 4);
+    pid_angular_velocity.set_y_min(- MPI / 4);
+    pid_angle.set_y_max(MPI / 4);
+    pid_angular_velocity.set_y_max(MPI / 4);
+}
+
 MotorController::MotorController(const int motor_control_pins[N_MOTORS])
 {
     reset();
@@ -130,4 +113,14 @@ MotorController::MotorController(const int motor_control_pins[N_MOTORS])
     coordinates_of_motors[B] = RVector3D(0, -1, 0);
     coordinates_of_motors[C] = RVector3D(-1, 0, 0);
     coordinates_of_motors[D] = RVector3D(0, 1, 0);
+}
+
+double MotorController::get_force()
+{
+    return(force);
+}
+
+void MotorController::set_force(double a)
+{
+    force = a;
 }
