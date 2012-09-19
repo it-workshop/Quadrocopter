@@ -26,19 +26,19 @@ private:
         PWR_M = 0x3E;
     static const int GYRO_ADDRESS = 0x68;
 
-    static const double ACCURACY = 1E-1; // in radians / sec.
-    static const int AXIS = 3;
-    static const double LSB_PER_DEG_PER_SEC = 14.375;
+    static const double Accuracy = 1E-1; // in radians / sec.
+    static const int Axis = 3;
+    static const double LsbPerDegPerSec = 14.375;
 
 public:
     Gyroscope();
 
-    char ITG3200Readbyte(unsigned char address);
+    char readByte(unsigned char address);
 
-    int ITG3200Read(unsigned char addressh, unsigned char addressl);
+    int read(unsigned char addressh, unsigned char addressl);
 
-    RVector3D get_raw_readings();
-    RVector3D get_readings();
+    RVector3D getRawReadings();
+    RVector3D getReadings();
 };
 
 #endif

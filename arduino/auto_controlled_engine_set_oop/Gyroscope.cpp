@@ -23,7 +23,7 @@ Gyroscope::Gyroscope()
     Wire.endTransmission(); // end transmission
 }
 
-char Gyroscope::ITG3200Readbyte(unsigned char address)
+char Gyroscope::readByte(unsigned char address)
 {
     char data;
  
@@ -42,7 +42,7 @@ char Gyroscope::ITG3200Readbyte(unsigned char address)
     Wire.endTransmission();
 }
 
-int Gyroscope::ITG3200Read(unsigned char addressh, unsigned char addressl)
+int Gyroscope::read(unsigned char addressh, unsigned char addressl)
 {
     long int data, t_data;
 
@@ -69,24 +69,24 @@ int Gyroscope::ITG3200Read(unsigned char addressh, unsigned char addressl)
     return data;
 }
 
-RVector3D Gyroscope::get_readings()
+RVector3D Gyroscope::getReadings()
 {
-    RVector3D result = get_raw_readings();
+    RVector3D result = getRawReadings();
 
     int i;
 
-    for(i = 0; i < AXIS; i++)
+    for(i = 0; i < Axis; i++)
     {
-        result.value_by_axis_index(i) *= MPI / (180 * LSB_PER_DEG_PER_SEC);
+        result.value_by_axis_index(i) *= MPI / (180 * LsbPerDegPerSec);
         
-        if(fabs(result.value_by_axis_index(i)) < ACCURACY)
+        if(fabs(result.value_by_axis_index(i)) < Accuracy)
             result.value_by_axis_index(i) = 0;
     }
 
     return(result);
 }
 
-RVector3D Gyroscope::get_raw_readings()
+RVector3D Gyroscope::getRawReadings()
 {
     RVector3D result;
     
@@ -96,9 +96,9 @@ RVector3D Gyroscope::get_raw_readings()
     
     #else
 
-        result.x = ITG3200Read(GX_H, GX_L);
-        result.y = ITG3200Read(GY_H, GY_L);
-        result.z = ITG3200Read(GZ_H, GZ_L);
+        result.x = read(GX_H, GX_L);
+        result.y = read(GY_H, GY_L);
+        result.z = read(GZ_H, GZ_L);
         
     #endif
     

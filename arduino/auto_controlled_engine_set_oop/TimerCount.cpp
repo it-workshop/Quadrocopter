@@ -3,21 +3,26 @@
 
 TimerCount::TimerCount()
 {
-    time_isset = false;
+    timeIsset = false;
 }
 
-void TimerCount::set_time()
+void TimerCount::setTime()
 {
     time = micros();
-    time_isset = true;
+    timeIsset = true;
 }
 
-unsigned long TimerCount::get_time_difference()
+unsigned long TimerCount::getTimeDifference()
 {
     return(micros() - time);
 }
 
-bool TimerCount::get_time_isset()
+double TimerCount::getTimeDifferenceSeconds()
 {
-    return(time_isset);
+    return(getTimeDifference() / 1.E6);
+}
+
+bool TimerCount::getTimeIsset()
+{
+    return(timeIsset);
 }

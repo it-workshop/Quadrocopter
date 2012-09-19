@@ -7,15 +7,17 @@ class TimerCount
 {
     private:
         unsigned long time;
-        bool time_isset;
+        bool timeIsset;
     public:
         TimerCount();
 
-        void set_time();
+        void setTime();
         
-        unsigned long get_time_difference();
+        unsigned long getTimeDifference();
+
+        double getTimeDifferenceSeconds();
         
-        bool get_time_isset();
+        bool getTimeIsset();
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include "RVector3D.h"
+#include "Arduino.h"
 
 #ifndef ACCELEROMETER_H
 #define ACCELEROMETER_H
@@ -6,40 +7,28 @@
 class Accelerometer
 {
 private:
-    static const unsigned int AXIS = 3, AVG_N = 1;
-    static const double ACCURACY = 1E-2;
+    static const unsigned int Axis = 3, AvgN = 1;
+    static const double Accuracy = 1E-2;
     
-    static const double adc_aref = 5, adc_maxvalue = 1023;
-    double map_a[AXIS], map_b[AXIS];
+    static const double adcAref = 5, adcMaxvalue = 1023;
+    double mapA[Axis], mapB[Axis];
     
-    int ports[AXIS];
-    RVector3D defaults;
+    int ports[Axis];
 
 public:
-    Accelerometer(int new_ports[AXIS])
+    Accelerometer(int newPorts[Axis])
     {
-        map_a[0] = 0.8616664408; map_b[0] = 1.5204146893;
-        map_a[1] = 0.892143084;  map_b[1] = 1.8134632093;
-        map_a[2] = 0.8861390819; map_b[2] = 1.5457698227;
-        
-        defaults = RVector3D();
-        
-        unsigned int i;
-        for(i = 0; i < AXIS; i++)
-        {
-            ports[i] = new_ports[i];
-        }
-        
-//        set_defaults();
+        mapA[0] = 0.8616664408; mapB[0] = 1.5204146893;
+        mapA[1] = 0.892143084;  mapB[1] = 1.8134632093;
+        mapA[2] = 0.8861390819; mapB[2] = 1.5457698227;
+
+        ports[0] = A0;
+        ports[1] = A1;
+        ports[2] = A2;
     }
 
-    RVector3D get_readings(); //in m/s^2 divided by g
-    RVector3D get_raw_readings(); //in volts
-
-    void set_defaults()
-    {
-        defaults = get_readings();
-    }
+    RVector3D getReadings(); //in m/s^2 divided by g
+    RVector3D getRawReadings(); //in volts
 };
 
 #endif

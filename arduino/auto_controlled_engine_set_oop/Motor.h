@@ -5,22 +5,22 @@ class Motor
 {
 private:
     // raw data for analogWrite
-    enum EXTREMAL_SPEED 
+    enum RawSpeedLimits
     {
-        MIN_SPEED = 100,
-        MAX_SPEED = 254
+        MinSpeed = 100,
+        MaxSpeed = 254
     };
 
-    int control_pin;
+    int controlPin;
     double power;
 
 public:
-    Motor(int control_pin_);
+    Motor(int pin);
     Motor();
 
-    inline double get_power(); // value in [0...1]
-    void set_power(double); // value in [0...1]
-    void set_control_pin(int control_pin_);
+    inline double getPower(); // value in [0...1]
+    void setPower(double powerValue); // value in [0...1]
+    void setControlPin(int newPin);
 };
 
 #endif
