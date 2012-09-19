@@ -18,6 +18,15 @@ RVector3D PID::get_y(RVector3D data, double dt)
 
     e_prev = e;
 
+    for(int i = 0; i < 3; i++)
+    {
+        if(y.value_by_axis_index(i) < y_min.value_by_axis_index(i))
+            y.value_by_axis_index(i) = y_min.value_by_axis_index(i);
+
+        if(y.value_by_axis_index(i) > y_max.value_by_axis_index(i))
+            y.value_by_axis_index(i) = y_max.value_by_axis_index(i);
+    }
+
     return(y);
 }
 
@@ -73,7 +82,17 @@ void PID::set_Kd(double arg)
     Kd = arg;
 }
 
-void PID::seRVector3D0(RVector3D arg)
+void PID::set_y_min(RVector3D arg)
+{
+    y_min = arg;
+}
+
+void PID::set_y_max(RVector3D arg)
+{
+    y_max = arg;
+}
+
+void PID::set_data0(RVector3D arg)
 {
     data0 = arg;
 }

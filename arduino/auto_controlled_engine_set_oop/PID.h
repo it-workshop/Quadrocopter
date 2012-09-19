@@ -31,7 +31,10 @@ public:
     void set_Ki(double);
     void set_Kd(double);
 
-    void seRVector3D0(RVector3D); // sets needed value
+    void set_y_min(RVector3D);
+    void set_y_max(RVector3D);
+
+    void set_data0(RVector3D); // sets needed value
 
     RVector3D get_y(RVector3D, double); // iteration
 };
