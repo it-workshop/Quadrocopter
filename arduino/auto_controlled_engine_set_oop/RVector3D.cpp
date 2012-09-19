@@ -16,6 +16,22 @@ RVector3D::RVector3D(double x_0, double y_0, double z_0)
     z = z_0;
 }
 
+RVector3D::RVector3D(double xyz)
+{
+    x = xyz;
+    y = xyz;
+    z = xyz;
+}
+
+RVector3D RVector3D::operator =(double xyz)
+{
+    x = xyz;
+    y = xyz;
+    z = xyz;
+
+    return(*this);
+}
+
 void RVector3D::norm()
 {
     double k = 1.0 / sqrt(module_sq());
@@ -143,6 +159,16 @@ double& RVector3D::value_by_axis_index(int index)
     case 2:
         return(z);
     }
+}
+
+RVector3D RVector3D::operator %(RVector3D b)
+{
+    RVector3D result = *this;
+    result.x *= b.x;
+    result.y *= b.y;
+    result.z *= b.z;
+
+    return(result);
 }
 
 RVector3D RVector3D::angle_from_projections()

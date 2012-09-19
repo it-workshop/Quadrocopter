@@ -1,17 +1,27 @@
 #ifndef RVECTOR3D_H
 #define RVECTOR3D_H
 
-struct RVector3D
+class RVector3D
 {
-    RVector3D();
-    RVector3D(double x_0, double y_0, double z_0);
-
+public:
+//private:
     double x, y, z;
 
+public:
+    RVector3D();
+    RVector3D(double x_0, double y_0, double z_0);
+    RVector3D(double xyz);
+
+    RVector3D operator=(double);
+
+    //length squared
     double module_sq();
+
+    //length
     double module();
+
+    //make length equal 1
     void norm();
-    void set_module();
 
     RVector3D operator+(RVector3D);
     RVector3D operator-(RVector3D);
@@ -26,6 +36,8 @@ struct RVector3D
     RVector3D operator/=(double);
 
     double& value_by_axis_index(int index);
+
+    RVector3D operator%(RVector3D);
 
     void x_angle_inc(double w);
     void y_angle_inc(double w);
