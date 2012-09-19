@@ -77,6 +77,13 @@ void PID::set_Ki(double arg)
     Ki = arg;
 }
 
+void PID::set_KpKiKd(double nKp, double nKi, double nKd)
+{
+    Kp = nKp;
+    Ki = nKi;
+    Kd = nKd;
+}
+
 void PID::set_Kd(double arg)
 {
     Kd = arg;

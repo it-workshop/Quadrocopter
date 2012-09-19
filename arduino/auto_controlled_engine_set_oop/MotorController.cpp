@@ -1,6 +1,7 @@
 #include "MotorController.h"
 #include "Arduino.h"
 #include "TimerCount.h"
+#include "PID.h"
 #include "RVector3D.h"
 
 double MotorController::get_force()
@@ -15,39 +16,7 @@ void MotorController::set_force(double a)
 
 RVector3D MotorController::get_angle_correction(RVector3D angle, double dt)
 {
-    static RVector3D prev_e = RVector3D(0, 0, 0),
-        e_integral = RVector3D(0, 0, 0);
-    
-    //requested angle
-    RVector3D angle0 = RVector3D(0, 0, 0);
-    
-    //difference between requested and current angle
-    RVector3D e = angle0 - angle;
-    
-    //discrete derivative
-    RVector3D e_derivative = (e - prev_e) / dt;
-    
-    //discrete integral
-    e_integral += e * dt;
-    
-    //correction
-    RVector3D y = e * angle_Kp + e_integral * angle_Ki + e_derivative * angle_Kd;
-    
-    RVector3D u = y; // reaction
-    
-    //max and min correction
-    for(int i = 0; i < 2; i++)
-    {
-        if(u.value_by_axis_index(i) < -angle_max_correction)
-            u.value_by_axis_index(i) = -angle_max_correction;
-        if(u.value_by_axis_index(i) > angle_max_correction)
-            u.value_by_axis_index(i) = angle_max_correction;
-    }
-    
-    //for integral and derivative
-    prev_e = e;
-    
-    return(u);
+    return(pid_angle.get_y(angle, dt));
 }
 
 RVector3D MotorController::get_acceleration_correction(RVector3D angle, RVector3D accel_data)
@@ -89,52 +58,24 @@ RVector3D MotorController::get_acceleration_correction(RVector3D angle, RVector3
 
 RVector3D MotorController::get_angular_velocity_correction(RVector3D angular_velocity, double dt)
 {
-    static RVector3D prev_e = RVector3D(0, 0, 0),
-        e_integral = RVector3D(0, 0, 0);
-    
-    //requested angular velocity
-    RVector3D angular_velocity0 = RVector3D(0, 0, 0);
-    
-    //difference between requested and current angular velocity
-    RVector3D e = angular_velocity0 - angular_velocity;
-    
-    //discrete derivative
-    RVector3D e_derivative = (e - prev_e) / dt;
-    
-    //discrete integral
-    e_integral += e * dt;
-    
-    //correction
-    RVector3D y = e * angular_velocity_Kp + e_integral * angular_velocity_Ki + e_derivative * angular_velocity_Kd;
-    
-    RVector3D u = y; // reaction
-    
-    //max and min correction
-    for(int i = 0; i < 2; i++)
-    {
-        if(u.value_by_axis_index(i) < -angular_velocity_max_correction)
-            u.value_by_axis_index(i) = -angular_velocity_max_correction;
-        if(u.value_by_axis_index(i) > angular_velocity_max_correction)
-            u.value_by_axis_index(i) = angular_velocity_max_correction;
-    }
-    
-    //for integral and derivative
-    prev_e = e;
-    
-    return(u);
+    return(pid_angular_velocity.get_y(angular_velocity, dt));
+}
+
+void MotorController::reset()
+{
+    pid_angle = PID();
+    pid_angular_velocity = PID();
+
+    pid_angle.set_KpKiKd(0.2, 0, 0.1);
+    pid_angular_velocity.set_KpKiKd(0.2, 0, 0.1);
+    pid_angle.set_y_min(- MPI / 4);
+    pid_angular_velocity.set_y_min(- MPI / 4);
+    pid_angle.set_y_max(MPI / 4);
+    pid_angular_velocity.set_y_max(MPI / 4);
 }
 
 double MotorController::get_speed(RVector3D torque_vec, int motor)
 {
-    /*
-    // force implementation
-    torque_vec *= get_force();
-
-    // This comes from the Cubic Vector Model, which one sucks
-    double res = ( throttle.module_sq() + coordinates_of_motors[motor].x * throttle.x
-                   + coordinates_of_motors[motor].y * throttle.y ) / throttle.z;
-    */
-
     double res = get_force();
     res += torque_vec.x * coordinates_of_motors[motor].y - torque_vec.y * coordinates_of_motors[motor].x;
 
@@ -164,16 +105,9 @@ void MotorController::set_motors(double power[N_MOTORS])
 
 MotorController::MotorController(const int motor_control_pins[N_MOTORS])
 {
-    angle_Kp = 1;
-    angle_Ki = 0;
-    angle_Kd = 0;
-    
-    angular_velocity_Kp = 1;
-    angular_velocity_Ki = 0;
-    angular_velocity_Kd = 0;
-    
-    accelerometer_xi.x = 0.5;
-    accelerometer_xi.y = 0.5;
+    reset();
+
+    accelerometer_xi = RVector3D(0.5, 0.5, 0);
     
     use_motors[A] = 1;
     use_motors[B] = 0;

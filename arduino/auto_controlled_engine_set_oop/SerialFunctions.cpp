@@ -217,15 +217,16 @@ void serial_process_write()
             
             reaction_type = c - '0';
             
+            double t_double;
             //PID angle coefficients
-            read_double(-1.5, 1.5, MController->angle_Kp, 2);
-            read_double(-1.5, 1.5, MController->angle_Ki, 2);
-            read_double(-1.5, 1.5, MController->angle_Kd, 2);
+            read_double(-1.5, 1.5, t_double, 2); MController->pid_angle.set_Kp(t_double);
+            read_double(-1.5, 1.5, t_double, 2); MController->pid_angle.set_Ki(t_double);
+            read_double(-1.5, 1.5, t_double, 2); MController->pid_angle.set_Kd(t_double);
             
             //PID angular velocity coefficients
-            read_double(-1.5, 1.5, MController->angular_velocity_Kp, 2);
-            read_double(-1.5, 1.5, MController->angular_velocity_Ki, 2);
-            read_double(-1.5, 1.5, MController->angular_velocity_Kd, 2);
+            read_double(-1.5, 1.5, t_double, 2); MController->pid_angular_velocity.set_Kp(t_double);
+            read_double(-1.5, 1.5, t_double, 2); MController->pid_angular_velocity.set_Ki(t_double);
+            read_double(-1.5, 1.5, t_double, 2); MController->pid_angular_velocity.set_Kd(t_double);
             
             serial_buffer_init();
             
@@ -264,6 +265,8 @@ void serial_process_read()
         {
             angle = RVector3D();
             torque_manual_correction = RVector3D();
+
+            MController->reset();
             
             serial_type = SERIAL_WAITING;
         }

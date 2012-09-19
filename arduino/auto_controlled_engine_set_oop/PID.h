@@ -31,6 +31,8 @@ public:
     void set_Ki(double);
     void set_Kd(double);
 
+    void set_KpKiKd(double, double, double);
+
     void set_y_min(RVector3D);
     void set_y_max(RVector3D);
 
