@@ -103,3 +103,9 @@ void PID::set_data0(RVector3D arg)
 {
     data0 = arg;
 }
+
+void PID::reset()
+{
+    e_prev = data0;
+    e_integral = 0;
+}

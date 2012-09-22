@@ -38,6 +38,8 @@ public:
 
     void set_data0(RVector3D); // sets needed value
 
+    void reset();
+
     RVector3D get_y(RVector3D, double); // iteration
 };
 

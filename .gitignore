@@ -5,5 +5,13 @@ control/qt/Makefile
 control/qt/quadro
 control/qt/quadro.pro.user
 control/qt/ui*
+
+pid_test/*.o
+pid_test/moc*
+pid_test/Makefile
+pid_test/pid_test
+pid_test/pid_test.pro.user
+pid_test/ui*
+
 arduino/auto_controlled_engine_set_oop/auto_controlled_engine_set_oop.pro.user
 arduino/auto_controlled_engine_set_oop/auto_controlled_engine_set_oop.pro

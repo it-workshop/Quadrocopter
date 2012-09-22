@@ -1,6 +1,12 @@
 #include "RVector3D.h"
 #include "Definitions.h"
-#include "Arduino.h"
+
+//arduino define
+#ifndef HIGH
+    #include "math.h"
+#else
+    #include "Arduino.h"
+#endif
 
 RVector3D::RVector3D()
 {
@@ -158,6 +164,8 @@ double& RVector3D::value_by_axis_index(int index)
         return(y);
     case 2:
         return(z);
+    default:
+        return (x);
     }
 }
 
