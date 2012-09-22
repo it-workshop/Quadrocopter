@@ -104,6 +104,11 @@ void PID::set_data0(RVector3D arg)
     data0 = arg;
 }
 
+RVector3D PID::get_data0()
+{
+    return(data0);
+}
+
 void PID::reset()
 {
     e_prev = data0;

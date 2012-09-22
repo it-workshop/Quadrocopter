@@ -29,7 +29,7 @@
      <rect>
       <x>0</x>
       <y>380</y>
-      <width>305</width>
+      <width>301</width>
       <height>62</height>
      </rect>
     </property>
@@ -49,10 +49,10 @@
           <number>3</number>
          </property>
          <property name="minimum">
-          <double>-50.000000000000000</double>
+          <double>-100.000000000000000</double>
          </property>
          <property name="maximum">
-          <double>50.000000000000000</double>
+          <double>100.000000000000000</double>
          </property>
          <property name="singleStep">
           <double>0.100000000000000</double>
@@ -72,10 +72,10 @@
           <number>3</number>
          </property>
          <property name="minimum">
-          <double>-50.000000000000000</double>
+          <double>-100.000000000000000</double>
          </property>
          <property name="maximum">
-          <double>50.000000000000000</double>
+          <double>100.000000000000000</double>
          </property>
          <property name="singleStep">
           <double>0.100000000000000</double>
@@ -95,10 +95,10 @@
           <number>3</number>
          </property>
          <property name="minimum">
-          <double>-50.000000000000000</double>
+          <double>-100.000000000000000</double>
          </property>
          <property name="maximum">
-          <double>50.000000000000000</double>
+          <double>100.000000000000000</double>
          </property>
          <property name="singleStep">
           <double>0.100000000000000</double>
@@ -128,7 +128,10 @@
           <double>10.000000000000000</double>
          </property>
          <property name="singleStep">
-          <double>0.100000000000000</double>
+          <double>1.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>0.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -162,24 +165,24 @@
      <string>Start</string>
     </property>
    </widget>
-   <widget class="QWidget" name="horizontalLayoutWidget_3">
+   <widget class="QWidget" name="formLayoutWidget">
     <property name="geometry">
      <rect>
       <x>310</x>
       <y>380</y>
-      <width>160</width>
-      <height>31</height>
+      <width>171</width>
+      <height>61</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
       <widget class="QLabel" name="label_dt">
        <property name="text">
         <string>dt</string>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="0" column="1">
       <widget class="QSpinBox" name="dt">
        <property name="minimum">
         <number>1</number>
@@ -188,8 +191,29 @@
         <number>100</number>
        </property>
        <property name="value">
-        <number>20</number>
+        <number>10</number>
        </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_type">
+       <property name="text">
+        <string>type</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="comboBox_type">
+       <item>
+        <property name="text">
+         <string>angular velocity</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>angle</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>

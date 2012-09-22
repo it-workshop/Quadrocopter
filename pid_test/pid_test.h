@@ -43,7 +43,7 @@ private:
     void plot_reset_data();
     void plot_update();
 
-    PID mypid;
+    PID pid_angular_velocity, pid_angle;
 
 private slots:
     void timer_auto_update();
@@ -55,6 +55,7 @@ private slots:
     void on_Ki_valueChanged(double arg1);
     void on_Kd_valueChanged(double arg1);
     void on_dt_valueChanged(int arg1);
+    void on_comboBox_type_currentIndexChanged(int index);
 };
 
 #endif // PID_TEST_H

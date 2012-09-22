@@ -37,6 +37,7 @@ public:
     void set_y_max(RVector3D);
 
     void set_data0(RVector3D); // sets needed value
+    RVector3D get_data0();
 
     void reset();
 
