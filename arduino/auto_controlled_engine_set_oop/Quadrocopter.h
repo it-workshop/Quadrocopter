@@ -30,7 +30,7 @@ private:
     // torque corrections
     RVector3D torqueManualCorrection, torqueAutomaticCorrection;
 
-    double anglePeriod = 4; // period for low-pass filter for accelerometer
+    double anglePeriod = 7.5; // period for low-pass filter for accelerometer
 
     const double g = 9.80665; // gravitational acceleration
 
@@ -69,6 +69,8 @@ public:
     void processSerialTx();
 
     void iteration();
+
+    RVector3D get_torques();
 };
 
 #endif // QUADROCOPTER_H

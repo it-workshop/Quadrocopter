@@ -32,7 +32,7 @@ quadrocopter::quadrocopter()
     PID_angular_velocity_Kd = 0;
 
     //see arduino code
-    read_bytes_N = 28;
+    read_bytes_N = 48;
 
     joystick_coefficient = 0.5;
 
@@ -174,9 +174,10 @@ void quadrocopter::reset()
     torque_manual_correction.x = 0;
     torque_manual_correction.y = 0;
 
+    swrite_clear();
     swrite('n');
+    swrite_put();
 }
-
 
 vect quadrocopter::get_torque_corrected()
 {

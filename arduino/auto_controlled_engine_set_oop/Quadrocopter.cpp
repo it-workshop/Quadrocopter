@@ -28,8 +28,8 @@ void Quadrocopter::reset()
     MController->set_force(0);
     MController->set_torque(RVector3D());
 
-    pid_angle = PID();
-    pid_angular_velocity = PID();
+    pid_angle.reset();
+    pid_angular_velocity.reset();
 
     accelerometerXi = RVector3D(0.5, 0.5, 0);
 
@@ -49,9 +49,9 @@ void Quadrocopter::processSensorsData()
     if(DeltaT.getTimeIsset())
     {
         angularAcceleration = (angularVelocity - angularVelocityPrev) / dt;
-        accelData.x -= (angularAcceleration.y * gyroToAcc.z - angularAcceleration.z * gyroToAcc.y) / g;
+        /*accelData.x -= (angularAcceleration.y * gyroToAcc.z - angularAcceleration.z * gyroToAcc.y) / g;
         accelData.y -= (angularAcceleration.z * gyroToAcc.x - angularAcceleration.x * gyroToAcc.z) / g;
-        accelData.z -= (angularAcceleration.x * gyroToAcc.y - angularAcceleration.y * gyroToAcc.x) / g;
+        accelData.z -= (angularAcceleration.x * gyroToAcc.y - angularAcceleration.y * gyroToAcc.x) / g;*/
 
         RVector3D accelAngle = accelData.angle_from_projections();
 
@@ -97,7 +97,7 @@ void Quadrocopter::processCorrection()
 
 void Quadrocopter::processMotors()
 {
-    MController->set_torque(torqueManualCorrection + torqueAutomaticCorrection);
+    MController->set_torque(get_torques());
 }
 
 void Quadrocopter::iteration()
@@ -111,3 +111,14 @@ void Quadrocopter::iteration()
     processSerialTx();
 }
 
+RVector3D Quadrocopter::get_torques()
+{
+    RVector3D res;
+
+    if(reactionType == ReactionAngularVelocity)
+        res += torqueManualCorrection;
+
+    res += torqueAutomaticCorrection;
+
+    return(res);
+}

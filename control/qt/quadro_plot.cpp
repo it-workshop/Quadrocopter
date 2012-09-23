@@ -100,7 +100,7 @@ void Quadro::plot_init()
     QwtPlotCurve *angle_accy = new QwtPlotCurve("acc_data_angle<sub>y</sub>");
     angle_accy->attach(ui->plot_angle);
 
-    ui->plot_angle->setAxisScale(QwtPlot::yLeft, -M_PI / 2, M_PI / 2);
+    ui->plot_angle->setAxisScale(QwtPlot::yLeft, -M_PI, M_PI);
 
     // Set curve styles
     angle_x->setPen(QPen(Qt::red));

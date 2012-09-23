@@ -1,4 +1,5 @@
 #include "MySerial.h"
+#include "stdio.h"
 #include "TimerCount.h"
 #include "Arduino.h"
 
@@ -9,6 +10,10 @@ MySerial::MySerial()
     led = InfoLED(13);
     commandAvailable = false;
     readError = false;
+
+    Accuracy = "%f";
+
+    sendAutomaticly = false;
 }
 
 void MySerial::bufferInit()
@@ -26,6 +31,23 @@ void MySerial::bufferWrite()
 void MySerial::bufferAdd(uint8_t t_char)
 {
     buffer[bufferCount++] = t_char;
+}
+
+void MySerial::bufferAdd(char *t_arr)
+{
+    for(unsigned i = 0; t_arr[i]; i++)
+        bufferAdd((uint8_t) t_arr[i]);
+}
+
+void MySerial::bufferWriteN()
+{
+    uint8_t buffer1[BufferMax + 1];
+    buffer1[0] = bufferCount;
+
+    for(int i = 0; i < bufferCount; i++)
+        buffer1[i + 1] = buffer[i];
+
+    Serial.write(buffer1, bufferCount + 1);
 }
 
 void MySerial::writeDouble(double min_value, double max_value, double value, unsigned int bytes)
@@ -112,17 +134,19 @@ char MySerial::read()
 void MySerial::RVector3D_write(RVector3D vect, RVector3DPrintMode mode, RVector3DUseAxis uaxis)
 {
     unsigned int i;
+    char x[BufferMax];
     for(i = 0; i < 3; i++)
     {
         if(mode == PRINT_TAB)
         {
-            Serial.print(vect.value_by_axis_index(i), Accuracy);
-            Serial.print("\t");
+            sprintf(x, "%d", (int) vect.value_by_axis_index(i));
+            bufferAdd(x);
+            bufferAdd('\t');
         }
         else if(mode == PRINT_RAW)
-            writeDouble(-1, 1, vect.value_by_axis_index(i), 1);
+            writeDouble(-10, 10, vect.value_by_axis_index(i), 2);
 
-        if (uaxis == USE_2D && i == 1) return;
+        if(uaxis == USE_2D && i == 1) return;
     }
 }
 
@@ -139,7 +163,18 @@ void MySerial::receiveCommand()
     }
     else
     {
-        led.setOff();
+        if(!sendAutomaticly) led.setOff();
         commandAvailable = false;
     }
+}
+
+bool MySerial::isSendAutomaticlyEnabled()
+{
+    return(sendAutomaticly);
+}
+
+void MySerial::toggleSendAutomaticly()
+{
+    sendAutomaticly ^= 1;
+    led.setState(sendAutomaticly);
 }

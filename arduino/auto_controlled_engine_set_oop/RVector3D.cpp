@@ -182,9 +182,11 @@ RVector3D RVector3D::operator %(RVector3D b)
 RVector3D RVector3D::angle_from_projections()
 {
     RVector3D result = RVector3D();
-    
-    result.x = -(acos(y / sqrt(y*y + z*z)) - MPI / 2);
-    result.y =   acos(x / sqrt(x*x + z*z)) - MPI / 2;
+
+    result.x = atan2(y, z);
+    //result.x = -(acos(y / sqrt(y*y + z*z)) - MPI / 2);
+    result.y = - atan2(x, z);
+    //result.y =   acos(x / sqrt(x*x + z*z)) - MPI / 2;
     result.z = 0;
     
     return(result);

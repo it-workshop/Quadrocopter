@@ -22,13 +22,13 @@ public:
         mapA[1] = 0.892143084;  mapB[1] = 1.8134632093;
         mapA[2] = 0.8861390819; mapB[2] = 1.5457698227;
 
-        ports[0] = A0;
-        ports[1] = A1;
-        ports[2] = A2;
+        for(unsigned i = 0; i < Axis; i++)
+            ports[i] = newPorts[i];
     }
 
     RVector3D getReadings(); //in m/s^2 divided by g
-    RVector3D getRawReadings(); //in volts
+    RVector3D getVoltageReadings(); //in volts
+    RVector3D getRawReadings();
 };
 
 #endif

@@ -33,7 +33,7 @@ vect serial::read_vect_byte(unsigned int axis)
 {
     vect result;
     for(unsigned int i = 0; i < axis; i++)
-        result.value_by_axis_index(i) = sread() / 255. * 2 - 1;
+        result.value_by_axis_index(i) = read_number_vect_t(-10, 10, 2);
     if(read_error()) result = vect();
 
     return(result);

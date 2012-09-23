@@ -25,13 +25,13 @@ PID_test::PID_test(QWidget *parent) :
     value = 0;
     x = 0;
 
-    pid_angular_velocity.set_KpKiKd(10, 0, 0);
-    pid_angular_velocity.set_y_min(-5);
-    pid_angular_velocity.set_y_max(5);
+    pid_angular_velocity.set_KpKiKd(10, 8, 0);
+    pid_angular_velocity.set_y_min(-30);
+    pid_angular_velocity.set_y_max(30);
 
     pid_angle.set_KpKiKd(50, 0, 70);
-    pid_angle.set_y_min(-5);
-    pid_angle.set_y_max(5);
+    pid_angle.set_y_min(-30);
+    pid_angle.set_y_max(30);
 
     timer_auto_interval = ui->dt->value();
 
@@ -164,6 +164,7 @@ void PID_test::on_pushButton_reset_clicked()
     value_speed = 0;
     plot_mytime.reset();
     plot_reset_data();
+    timer_auto_interval = ui->dt->value();
     if(ui->comboBox_type->currentIndex() == 0)
     {
         pid_angular_velocity.set_KpKiKd(ui->Kp->value(), ui->Ki->value(), ui->Kd->value());

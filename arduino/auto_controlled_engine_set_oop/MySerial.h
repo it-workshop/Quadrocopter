@@ -9,9 +9,9 @@ class MySerial
 {
 private:
     //constants
-    static const unsigned int Accuracy = 3; //precision
+    const char* Accuracy; //precision
     static const unsigned int MaxwaitU = 100000; //maximal wait time in useconds
-    static const unsigned int BufferMax = 100; //maximal buffer size
+    static const unsigned int BufferMax = 300; //maximal buffer size
 
     bool readError = false; //read error
 
@@ -21,6 +21,8 @@ private:
     char command;
     bool commandAvailable;
 
+    bool sendAutomaticly;
+
     InfoLED led;
 
 public:
@@ -29,6 +31,8 @@ public:
     void bufferInit();
     void bufferWrite();
     void bufferAdd(uint8_t t_char);
+    void bufferAdd(char* t_arr);
+    void bufferWriteN();
 
     //read-write methods
     void readDouble(double min_value, double max_value, double& value, unsigned int bytes);
@@ -41,6 +45,8 @@ public:
     void RVector3D_write(RVector3D vector, RVector3DPrintMode mode = PRINT_TAB, RVector3DUseAxis uaxis = USE_3D);
 
     void receiveCommand(); //recieve command and store it into command
+    bool isSendAutomaticlyEnabled();
+    void toggleSendAutomaticly();
 
     void waitForByte(); //wait MAXWAIT_U useconds for incoming byte
 

@@ -48,29 +48,50 @@ void Quadrocopter::processSerialTx()
 
         MSerial->bufferInit();
 
-        // writing 28 bytes
+        // writing 48 bytes
 
-        MSerial->RVector3D_write(torqueAutomaticCorrection + torqueManualCorrection, MySerial::PRINT_RAW);
-        MSerial->RVector3D_write(angle, MySerial::PRINT_RAW, MySerial::USE_2D);
+        MSerial->RVector3D_write(get_torques(), MySerial::PRINT_RAW); // +6
+        MSerial->RVector3D_write(angle, MySerial::PRINT_RAW, MySerial::USE_2D); // +4
 
-        MSerial->RVector3D_write((angularVelocity * serial_gyroscope_coefficient), MySerial::PRINT_RAW);
-        MSerial->RVector3D_write(accelData, MySerial::PRINT_RAW);
-        MSerial->RVector3D_write(angularVelocityCorrection, MySerial::PRINT_RAW);
-        MSerial->RVector3D_write(accelerationCorrection, MySerial::PRINT_RAW);
-        MSerial->RVector3D_write(angleCorrection, MySerial::PRINT_RAW);
+        MSerial->RVector3D_write((angularVelocity * serial_gyroscope_coefficient), MySerial::PRINT_RAW); // +6
+        MSerial->RVector3D_write(accelData, MySerial::PRINT_RAW); // +6
+        MSerial->RVector3D_write(angularVelocityCorrection, MySerial::PRINT_RAW); // +6
+        MSerial->RVector3D_write(accelerationCorrection, MySerial::PRINT_RAW); // +6
+        MSerial->RVector3D_write(angleCorrection, MySerial::PRINT_RAW); // +6
 
         //motors
         for (unsigned i = 0; i < 4; i++)
-            MSerial->bufferAdd(100 * MController->get_speed(torqueAutomaticCorrection + torqueManualCorrection, i));
+            MSerial->bufferAdd(100 * MController->get_speed(get_torques(), i)); // +4
 
         //dt
         for (int si = 2; si >= 0; si--)
-            MSerial->bufferAdd((((unsigned long long) (dt * 1E6)) & (0xff << 8 * si)) >> (8 * si));
+            MSerial->bufferAdd((((unsigned long long) (dt * 1E6)) & (0xff << 8 * si)) >> (8 * si)); //+3
 
         //reaction type
-        MSerial->bufferAdd(reactionType + '0');
+        MSerial->bufferAdd(reactionType + '0'); //+1
 
         MSerial->bufferWrite();
         MSerial->dropCommand();
+    }
+    else if(MSerial->getCommand() == 'a')
+    {
+        MSerial->dropCommand();
+
+        MSerial->bufferInit();
+        MSerial->bufferAdd("Quadrocopter arduino program");
+        MSerial->bufferAdd('\n');
+        MSerial->bufferWrite();
+    }
+    else if(MSerial->getCommand() == 'h')
+    {
+        MSerial->toggleSendAutomaticly();
+        MSerial->dropCommand();
+    }
+    else if(MSerial->isSendAutomaticlyEnabled())
+    {
+        MSerial->bufferInit();
+        MSerial->RVector3D_write(Accel->getRawReadings(), MySerial::PRINT_TAB);
+        MSerial->bufferAdd('\n');
+        MSerial->bufferWriteN();
     }
 }
