@@ -26,13 +26,16 @@ private:
 
     //plot
     static const int plot_size = 200 + 1;
+    static const int TIME_SCALE = 10;
     double plot_value[plot_size], plot_x[plot_size], plot_time[plot_size];
 
     //values
-    double value, value_speed;
+    double value, prev_value, value_speed;
 
     //requested value
     double x;
+
+    double friction_coefficient;
 
     QTimer timer_auto;
 
@@ -56,6 +59,8 @@ private slots:
     void on_Kd_valueChanged(double arg1);
     void on_dt_valueChanged(int arg1);
     void on_comboBox_type_currentIndexChanged(int index);
+    void on_pushButton_wind_clicked();
+    void on_doubleSpinBox_friction_valueChanged(double arg1);
 };
 
 #endif // PID_TEST_H

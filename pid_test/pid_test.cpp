@@ -1,10 +1,14 @@
 #include <QTimer>
+#include <iostream>
 #include "pid_test.h"
 #include "ui_pid_test.h"
 
 #include <qwt_plot_canvas.h>
 #include <qwt_legend.h>
 #include <qwt_plot_curve.h>
+
+using std::cerr;
+using std::endl;
 
 PID_test::PID_test(QWidget *parent) :
     QMainWindow(parent),
@@ -21,15 +25,19 @@ PID_test::PID_test(QWidget *parent) :
     value = 0;
     x = 0;
 
-    pid_angular_velocity.set_KpKiKd(0, 0, 0);
-    pid_angular_velocity.set_y_min(-1);
-    pid_angular_velocity.set_y_max(1);
+    pid_angular_velocity.set_KpKiKd(10, 0, 0);
+    pid_angular_velocity.set_y_min(-5);
+    pid_angular_velocity.set_y_max(5);
 
-    pid_angle.set_KpKiKd(0, 0, 0);
-    pid_angle.set_y_min(-1);
-    pid_angle.set_y_max(1);
+    pid_angle.set_KpKiKd(50, 0, 70);
+    pid_angle.set_y_min(-5);
+    pid_angle.set_y_max(5);
 
     timer_auto_interval = ui->dt->value();
+
+    friction_coefficient = 0;
+
+    on_comboBox_type_currentIndexChanged(0);
 }
 
 PID_test::~PID_test()
@@ -81,7 +89,7 @@ void PID_test::plot_update()
 {
     int plot_current = plot_size - 1;
 
-    long double dt_seconds = plot_mytime.get_time_difference() / 1E3;
+    long double dt_seconds = plot_mytime.get_time_difference() / 1E3 * TIME_SCALE;
 
     //shifting values
     for(int i = 0; i < plot_size - 1; i++)
@@ -114,6 +122,7 @@ void PID_test::timer_auto_update()
     //calculating value
     long double dt = plot_mytime.get_time_difference() / 1.E3;
     double correction;
+    long double value_speed_;
 
     if(!plot_mytime.is_set())
     {
@@ -121,19 +130,32 @@ void PID_test::timer_auto_update()
     }
     else if(dt)
     {
-        for(unsigned i = 0; i < 10; i++)
+        for(int i = 0; i < TIME_SCALE; i++)
         {
+            value_speed_ = (value - prev_value) / dt;
+
             if(ui->comboBox_type->currentIndex() == 0)
-                correction = pid_angular_velocity.get_y(value_speed, dt).x;
+                correction = pid_angular_velocity.get_y(value_speed_, dt).x;
             else
                 correction = pid_angle.get_y(value, dt).x;
 
+            //assuming that the acceleration (correction) is constant
             value += value_speed * dt + correction * dt * dt / 2;
 
+            //motors force
             value_speed += correction * dt;
+
+            //Fdt=dp
+            //Fdt/m=dv
+            //value_speed *= dt;
+
+            value_speed += -friction_coefficient * dt * value_speed;
+            //cerr << "velocity = " << value_speed << " deltav = " << dt * value_speed << endl;
         }
         plot_update();
     }
+
+    prev_value = value;
 }
 
 void PID_test::on_pushButton_reset_clicked()
@@ -145,7 +167,7 @@ void PID_test::on_pushButton_reset_clicked()
     if(ui->comboBox_type->currentIndex() == 0)
     {
         pid_angular_velocity.set_KpKiKd(ui->Kp->value(), ui->Ki->value(), ui->Kd->value());
-        pid_angular_velocity.set_data0(ui->x->value());
+        pid_angular_velocity.set_data0(0);
         pid_angular_velocity.reset();
     }
     else
@@ -175,9 +197,7 @@ void PID_test::on_pushButton_pause_clicked()
 void PID_test::on_x_valueChanged(double arg1)
 {
     x = arg1;
-    if(ui->comboBox_type->currentIndex() == 0)
-        pid_angular_velocity.set_data0(arg1);
-    else
+    if(ui->comboBox_type->currentIndex() == 1)
         pid_angle.set_data0(arg1);
 }
 
@@ -226,4 +246,14 @@ void PID_test::on_comboBox_type_currentIndexChanged(int index)
         ui->Kd->setValue(pid_angle.get_Kd().x);
         ui->x->setValue(pid_angle.get_data0().x);
     }
+}
+
+void PID_test::on_pushButton_wind_clicked()
+{
+    value_speed += ui->spinBox_wind->value();
+}
+
+void PID_test::on_doubleSpinBox_friction_valueChanged(double arg1)
+{
+    friction_coefficient = arg1;
 }
