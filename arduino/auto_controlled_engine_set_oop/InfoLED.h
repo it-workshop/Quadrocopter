@@ -12,7 +12,7 @@ public:
 
     void setState(bool state);
 
-    InfoLED(int n_pin);
+    InfoLED(int nPin);
     InfoLED();
 };
 

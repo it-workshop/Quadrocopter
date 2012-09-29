@@ -15,7 +15,7 @@ public:
     RVector3D operator=(double);
 
     //length squared
-    double module_sq();
+    double moduleSq();
 
     //length
     double module();
@@ -35,19 +35,19 @@ public:
     RVector3D operator*=(double);
     RVector3D operator/=(double);
 
-    double& value_by_axis_index(int index);
+    double& valueByAxisIndex(int index);
 
     RVector3D operator%(RVector3D);
 
-    void x_angle_inc(double w);
-    void y_angle_inc(double w);
-    void x_angle_dec(double w);
-    void y_angle_dec(double w);
+    void xAngleInc(double w);
+    void yAngleInc(double w);
+    void xAngleDec(double w);
+    void yAngleDec(double w);
     
-    void angle_inc(RVector3D);
+    void angleInc(RVector3D);
     
-    RVector3D angle_from_projections(); //angle in [-MPI / 2; MPI / 2]
-    RVector3D projections_from_angle(double a = 1); //angle in [-MPI; MPI]
+    RVector3D angleFromProjections(); //angle in [-MPI / 2; MPI / 2]
+    RVector3D projectionsFromAngle(double a = 1); //angle in [-MPI; MPI]
 };
 
 #endif

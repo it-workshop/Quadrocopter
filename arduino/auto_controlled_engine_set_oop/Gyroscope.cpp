@@ -56,10 +56,10 @@ RVector3D Gyroscope::getReadings()
 
     for(int i = 0; i < Axis; i++)
     {
-        result.value_by_axis_index(i) *= MPI / (180 * LsbPerDegPerSec);
+        result.valueByAxisIndex(i) *= MPI / (180 * LsbPerDegPerSec);
 
-        if(fabs(result.value_by_axis_index(i)) < Accuracy)
-            result.value_by_axis_index(i) = 0;
+        if(fabs(result.valueByAxisIndex(i)) < Accuracy)
+            result.valueByAxisIndex(i) = 0;
     }
 
     return(result);

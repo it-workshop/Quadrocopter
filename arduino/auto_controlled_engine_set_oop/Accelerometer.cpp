@@ -8,10 +8,10 @@ RVector3D Accelerometer::getVoltageReadings()
     
     for(i = 0; i < Axis; i++)
     {
-        result.value_by_axis_index(i) *= adcAref / adcMaxvalue;
+        result.valueByAxisIndex(i) *= adcAref / adcMaxvalue;
 
-        if(result.value_by_axis_index(i) == NAN || result.value_by_axis_index(i) != result.value_by_axis_index(i))
-            result.value_by_axis_index(i) = 0;
+        if(result.valueByAxisIndex(i) == NAN || result.valueByAxisIndex(i) != result.valueByAxisIndex(i))
+            result.valueByAxisIndex(i) = 0;
     }
     
     return(result);
@@ -27,10 +27,10 @@ RVector3D Accelerometer::getRawReadings()
         #ifdef DEBUG_NO_ACCELEROMETER
             result.value_by_axis_index(i) = 0;
         #else
-            result.value_by_axis_index(i) = analogRead(ports[i]);
+            result.valueByAxisIndex(i) = analogRead(ports[i]);
 
-            if(result.value_by_axis_index(i) == NAN || result.value_by_axis_index(i) != result.value_by_axis_index(i))
-                result.value_by_axis_index(i) = 0;
+            if(result.valueByAxisIndex(i) == NAN || result.valueByAxisIndex(i) != result.valueByAxisIndex(i))
+                result.valueByAxisIndex(i) = 0;
         #endif
     }
 
@@ -50,10 +50,10 @@ RVector3D Accelerometer::getReadings()
 
     for(i = 0; i < Axis; i++)
     {
-        result.value_by_axis_index(i) = (result.value_by_axis_index(i) - mapB[i]) / mapA[i];
+        result.valueByAxisIndex(i) = (result.valueByAxisIndex(i) - mapB[i]) / mapA[i];
 
-        if(fabs(result.value_by_axis_index(i)) < Accuracy)
-            result.value_by_axis_index(i) = 0;
+        if(fabs(result.valueByAxisIndex(i)) < Accuracy)
+            result.valueByAxisIndex(i) = 0;
     }
 
     return(result);

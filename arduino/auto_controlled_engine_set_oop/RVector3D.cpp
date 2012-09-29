@@ -40,50 +40,50 @@ RVector3D RVector3D::operator =(double xyz)
 
 void RVector3D::norm()
 {
-    double k = 1.0 / sqrt(module_sq());
+    double k = 1.0 / sqrt(moduleSq());
     x *= k;
     y *= k;
     z *= k;
 }
 
-void RVector3D::x_angle_inc(double w)
+void RVector3D::xAngleInc(double w)
 {
     double old_y = y;
     y =     y * cos(w) - z * sin(w);
     z = old_y * sin(w) + z * cos(w);
 }
 
-void RVector3D::x_angle_dec(double w)
+void RVector3D::xAngleDec(double w)
 {
-    x_angle_inc(-w);
+    xAngleInc(-w);
 }
 
-void RVector3D::y_angle_inc(double w)
+void RVector3D::yAngleInc(double w)
 {
     double old_x = x;
     x =      x * cos(w) + z * sin(w);
     z = -old_x * sin(w) + z * cos(w);
 }
 
-void RVector3D::y_angle_dec(double w)
+void RVector3D::yAngleDec(double w)
 {
-    y_angle_inc(-w);
+    yAngleInc(-w);
 }
 
-void RVector3D::angle_inc(RVector3D rotation)
+void RVector3D::angleInc(RVector3D rotation)
 {
-    x_angle_inc(rotation.x);
-    y_angle_inc(rotation.y);
+    xAngleInc(rotation.x);
+    yAngleInc(rotation.y);
 }
 
-double RVector3D::module_sq()
+double RVector3D::moduleSq()
 {
     return x * x + y * y + z * z;
 }
 
 double RVector3D::module()
 {
-    return sqrt(module_sq());
+    return sqrt(moduleSq());
 }
 
 RVector3D RVector3D::operator-(RVector3D c)
@@ -154,7 +154,7 @@ RVector3D RVector3D::operator+=(RVector3D b)
     return(*this);
 }
 
-double& RVector3D::value_by_axis_index(int index)
+double& RVector3D::valueByAxisIndex(int index)
 {
     switch(index)
     {
@@ -179,7 +179,7 @@ RVector3D RVector3D::operator %(RVector3D b)
     return(result);
 }
 
-RVector3D RVector3D::angle_from_projections()
+RVector3D RVector3D::angleFromProjections()
 {
     RVector3D result = RVector3D();
 
@@ -192,20 +192,20 @@ RVector3D RVector3D::angle_from_projections()
     return(result);
 }
 
-RVector3D RVector3D::projections_from_angle(double a)
+RVector3D RVector3D::projectionsFromAngle(double a)
 {
     RVector3D result = RVector3D();
 
-    if (fabs(x - MPI / 2) < double_eps || fabs(y - MPI / 2) < double_eps
-     || fabs(x + MPI / 2) < double_eps || fabs(y + MPI / 2) < double_eps)
+    if (fabs(x - MPI / 2) < doubleEps || fabs(y - MPI / 2) < doubleEps
+     || fabs(x + MPI / 2) < doubleEps || fabs(y + MPI / 2) < doubleEps)
     {
         result.z = 0;
 
-        if (fabs(y + MPI / 2) < double_eps) result.x = -1;
-        if (fabs(y - MPI / 2) < double_eps) result.x = 1;
+        if (fabs(y + MPI / 2) < doubleEps) result.x = -1;
+        if (fabs(y - MPI / 2) < doubleEps) result.x = 1;
 
-        if (fabs(x + MPI / 2) < double_eps) result.y = 1;
-        if (fabs(x - MPI / 2) < double_eps) result.y = -1;
+        if (fabs(x + MPI / 2) < doubleEps) result.y = 1;
+        if (fabs(x - MPI / 2) < doubleEps) result.y = -1;
     }
     else
     {
@@ -214,8 +214,8 @@ RVector3D RVector3D::projections_from_angle(double a)
         result.y = -result.z * tan(x);
     }
 
-    if ((fabs(y) - double_eps) >= MPI / 2 && (fabs(y) + double_eps) <= MPI) result.x *= -1;
-    if ((x + double_eps) <= -MPI / 2 || x - (double_eps) >= MPI / 2) result.y *= -1;
+    if ((fabs(y) - doubleEps) >= MPI / 2 && (fabs(y) + doubleEps) <= MPI) result.x *= -1;
+    if ((x + doubleEps) <= -MPI / 2 || x - (doubleEps) >= MPI / 2) result.y *= -1;
 
     result.x *= -1;
     result.y *= -1;

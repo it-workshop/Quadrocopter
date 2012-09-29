@@ -28,15 +28,15 @@ void MySerial::bufferWrite()
     Serial.write(buffer, bufferCount);
 }
 
-void MySerial::bufferAdd(uint8_t t_char)
+void MySerial::bufferAdd(uint8_t tChar)
 {
-    buffer[bufferCount++] = t_char;
+    buffer[bufferCount++] = tChar;
 }
 
-void MySerial::bufferAdd(char *t_arr)
+void MySerial::bufferAdd(char *tArr)
 {
-    for(unsigned i = 0; t_arr[i]; i++)
-        bufferAdd((uint8_t) t_arr[i]);
+    for(unsigned i = 0; tArr[i]; i++)
+        bufferAdd((uint8_t) tArr[i]);
 }
 
 void MySerial::bufferWriteN()
@@ -50,15 +50,15 @@ void MySerial::bufferWriteN()
     Serial.write(buffer1, bufferCount + 1);
 }
 
-void MySerial::writeDouble(double min_value, double max_value, double value, unsigned int bytes)
+void MySerial::writeDouble(double minValue, double max_value, double value, unsigned int bytes)
 {
     //cutting
     if(value > max_value) value = max_value;
-    if(value < min_value) value = min_value;
+    if(value < minValue) value = minValue;
 
     //mapping
-    value -= min_value;
-    value /= (max_value - min_value);
+    value -= minValue;
+    value /= (max_value - minValue);
 
     //scaling to bytes
     value *= pow(2, 8 * bytes);
@@ -71,7 +71,7 @@ void MySerial::writeDouble(double min_value, double max_value, double value, uns
         bufferAdd(t_int >> (8 * i));
 }
 
-void MySerial::readDouble(double min_value, double max_value, double& value, unsigned int bytes)
+void MySerial::readDouble(double minValue, double maxValue, double& value, unsigned int bytes)
 {
     unsigned long long t_int = 0;
 
@@ -96,8 +96,8 @@ void MySerial::readDouble(double min_value, double max_value, double& value, uns
     value /= pow(2, 8 * bytes);
 
     //mapping
-    value *= (max_value - min_value);
-    value += min_value;
+    value *= (maxValue - minValue);
+    value += minValue;
 }
 
 void MySerial::waitForByte()
@@ -139,12 +139,12 @@ void MySerial::RVector3D_write(RVector3D vect, RVector3DPrintMode mode, RVector3
     {
         if(mode == PRINT_TAB)
         {
-            sprintf(x, "%d", (int) vect.value_by_axis_index(i));
+            sprintf(x, "%d", (int) vect.valueByAxisIndex(i));
             bufferAdd(x);
             bufferAdd('\t');
         }
         else if(mode == PRINT_RAW)
-            writeDouble(-10, 10, vect.value_by_axis_index(i), 2);
+            writeDouble(-10, 10, vect.valueByAxisIndex(i), 2);
 
         if(uaxis == USE_2D && i == 1) return;
     }

@@ -2,29 +2,29 @@
 #include "RVector3D.h"
 
 
-RVector3D PID::get_y(RVector3D data, double dt)
+RVector3D PID::getY(RVector3D data, double dt)
 {
     //difference between requested and current data
     RVector3D e = data0 - data;
 
     //discrete derivative
-    RVector3D e_derivative = (e - e_prev) / dt;
+    RVector3D e_derivative = (e - ePrev) / dt;
 
     //discrete integral
-    e_integral += e * dt;
+    eIntegral += e * dt;
 
     //correction
-    RVector3D y = e % Kp + e_integral % Ki + e_derivative % Kd;
+    RVector3D y = e % Kp + eIntegral % Ki + e_derivative % Kd;
 
-    e_prev = e;
+    ePrev = e;
 
     for(int i = 0; i < 3; i++)
     {
-        if(y.value_by_axis_index(i) < y_min.value_by_axis_index(i))
-            y.value_by_axis_index(i) = y_min.value_by_axis_index(i);
+        if(y.valueByAxisIndex(i) < yMin.valueByAxisIndex(i))
+            y.valueByAxisIndex(i) = yMin.valueByAxisIndex(i);
 
-        if(y.value_by_axis_index(i) > y_max.value_by_axis_index(i))
-            y.value_by_axis_index(i) = y_max.value_by_axis_index(i);
+        if(y.valueByAxisIndex(i) > yMax.valueByAxisIndex(i))
+            y.valueByAxisIndex(i) = yMax.valueByAxisIndex(i);
     }
 
     return(y);
@@ -32,85 +32,85 @@ RVector3D PID::get_y(RVector3D data, double dt)
 
 PID::PID()
 {
-    e_integral = RVector3D();
+    eIntegral = RVector3D();
     data0 = RVector3D();
-    e_prev = RVector3D();
+    ePrev = RVector3D();
 }
 
-RVector3D PID::get_Kp()
+RVector3D PID::getKp()
 {
     return(Kp);
 }
 
-RVector3D PID::get_Ki()
+RVector3D PID::getKi()
 {
     return(Ki);
 }
 
-RVector3D PID::get_Kd()
+RVector3D PID::getKd()
 {
     return(Kd);
 }
 
-void PID::set_Kp(RVector3D arg)
+void PID::setKp(RVector3D arg)
 {
     Kp = arg;
 }
 
-void PID::set_Ki(RVector3D arg)
+void PID::setKi(RVector3D arg)
 {
     Ki = arg;
 }
 
-void PID::set_Kd(RVector3D arg)
+void PID::setKd(RVector3D arg)
 {
     Kd = arg;
 }
 
-void PID::set_Kp(double arg)
+void PID::setKp(double arg)
 {
     Kp = arg;
 }
 
-void PID::set_Ki(double arg)
+void PID::setKi(double arg)
 {
     Ki = arg;
 }
 
-void PID::set_KpKiKd(double nKp, double nKi, double nKd)
+void PID::setKpKiKd(double nKp, double nKi, double nKd)
 {
     Kp = nKp;
     Ki = nKi;
     Kd = nKd;
 }
 
-void PID::set_Kd(double arg)
+void PID::setKd(double arg)
 {
     Kd = arg;
 }
 
-void PID::set_y_min(RVector3D arg)
+void PID::setYMin(RVector3D arg)
 {
-    y_min = arg;
+    yMin = arg;
 }
 
-void PID::set_y_max(RVector3D arg)
+void PID::setYMax(RVector3D arg)
 {
-    y_max = arg;
+    yMax = arg;
 }
 
-void PID::set_data0(RVector3D arg)
+void PID::setData0(RVector3D arg)
 {
     data0 = arg;
 }
 
-RVector3D PID::get_data0()
+RVector3D PID::getData0()
 {
     return(data0);
 }
 
 void PID::reset()
 {
-    e_prev = data0;
-    e_integral = 0;
+    ePrev = data0;
+    eIntegral = 0;
 }

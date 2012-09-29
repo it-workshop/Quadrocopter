@@ -1,10 +1,10 @@
 #include "InfoLED.h"
 #include "Arduino.h"
 
-InfoLED::InfoLED(int n_pin)
+InfoLED::InfoLED(int nPin)
 {
-    pinMode(n_pin, OUTPUT);
-    pin = n_pin;
+    pinMode(nPin, OUTPUT);
+    pin = nPin;
 }
 
 InfoLED::InfoLED()

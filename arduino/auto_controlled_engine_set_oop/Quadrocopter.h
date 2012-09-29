@@ -45,13 +45,13 @@ private:
 
     //corrections
     RVector3D accelerometerXi;
-    static const double angle_max_correction = MPI / 4;
-    static const double angular_velocity_max_correction = MPI / 4 / 2;
+    static const double angleMaxCorrection = MPI / 4;
+    static const double angularVelocityMaxCorrection = MPI / 4 / 2;
 
-    PID pid_angle, pid_angular_velocity;
-    RVector3D get_angle_correction(RVector3D angle, double dt);
-    RVector3D get_acceleration_correction(RVector3D angle, RVector3D accel_data); // totally doesnt work
-    RVector3D get_angular_velocity_correction(RVector3D angularVelocity, double dt);
+    PID pidAngle, pidAngularVelocity;
+    RVector3D getAngleCorrection(RVector3D angle, double dt);
+    RVector3D getAccelerationCorrection(RVector3D angle, RVector3D accelData0); // totally doesnt work
+    RVector3D getAngularVelocityCorrection(RVector3D angularVelocity, double dt);
 
     double dt;
 
@@ -69,7 +69,7 @@ public:
 
     void iteration();
 
-    RVector3D get_torques();
+    RVector3D getTorques();
 };
 
 #endif // QUADROCOPTER_H

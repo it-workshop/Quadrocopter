@@ -30,13 +30,13 @@ public:
 
     void bufferInit();
     void bufferWrite();
-    void bufferAdd(uint8_t t_char);
-    void bufferAdd(char* t_arr);
+    void bufferAdd(uint8_t tChar);
+    void bufferAdd(char* tArr);
     void bufferWriteN();
 
     //read-write methods
-    void readDouble(double min_value, double max_value, double& value, unsigned int bytes);
-    void writeDouble(double min_value, double max_value, double value, unsigned int bytes);
+    void readDouble(double minValue, double maxValue, double& value, unsigned int bytes);
+    void writeDouble(double minValue, double maxValue, double value, unsigned int bytes);
 
     //read-write methods for RVector3D
     enum RVector3DPrintMode {PRINT_TAB, PRINT_RAW}; //print type: TAB (decimal) or RAW (binary)

@@ -26,25 +26,25 @@ private:
 
     Motor motors_[N_MOTORS];
 
-    bool use_motors[N_MOTORS];
+    bool useMotors[N_MOTORS];
 
-    RVector3D coordinates_of_motors[N_MOTORS];
+    RVector3D coordinatesOfMotors[N_MOTORS];
 
 public:
 
-    MotorController(const int motor_control_pins[N_MOTORS]);
+    MotorController(const int motorControlPins[N_MOTORS]);
     ~MotorController();
 
-    double get_speed(RVector3D torque_vec, int motor);
+    double getSpeed(RVector3D torqueVec, int motor);
 
     //set raw speed
-    void set_motors(double power[N_MOTORS]); // values in [0...1]
+    void setMotors(double power[N_MOTORS]); // values in [0...1]
 
     //torques and force method
-    void set_torque(RVector3D torque_vec); //torques
-    void set_force(double a); //force
+    void setTorque(RVector3D torqueVec); //torques
+    void setForce(double a); //force
 
-    double get_force();
+    double getForce();
 };
 
 #endif

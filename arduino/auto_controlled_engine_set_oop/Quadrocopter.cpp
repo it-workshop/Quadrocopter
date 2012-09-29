@@ -23,20 +23,20 @@ void Quadrocopter::reset()
     torqueAutomaticCorrection = RVector3D();
     torqueManualCorrection = RVector3D();
 
-    MController->set_force(0);
-    MController->set_torque(RVector3D());
+    MController->setForce(0);
+    MController->setTorque(RVector3D());
 
-    pid_angle.reset();
-    pid_angular_velocity.reset();
+    pidAngle.reset();
+    pidAngularVelocity.reset();
 
     accelerometerXi = RVector3D(0, 0, 0);
 
-    pid_angle.set_KpKiKd(0.2, 0, 0.1);
-    pid_angular_velocity.set_KpKiKd(0.2, 0, 0.1);
-    pid_angle.set_y_min(- MPI / 4);
-    pid_angular_velocity.set_y_min(- MPI / 4);
-    pid_angle.set_y_max(MPI / 4);
-    pid_angular_velocity.set_y_max(MPI / 4);
+    pidAngle.setKpKiKd(0.2, 0, 0.1);
+    pidAngularVelocity.setKpKiKd(0.2, 0, 0.1);
+    pidAngle.setYMin(- MPI / 4);
+    pidAngularVelocity.setYMin(- MPI / 4);
+    pidAngle.setYMax(MPI / 4);
+    pidAngularVelocity.setYMax(MPI / 4);
 }
 
 void Quadrocopter::processSensorsData()
@@ -62,7 +62,7 @@ void Quadrocopter::processSensorsData()
             accelData.z -= (angularAcceleration.x * gyroToAcc.y - angularAcceleration.y * gyroToAcc.x) / g;*/
 
 
-            RVector3D accelAngle = accelData.angle_from_projections();
+            RVector3D accelAngle = accelData.angleFromProjections();
 
             // alpha coefficient for low-pass filter
             double angleAlpha = dt / (dt + anglePeriod / (2 * MPI));
@@ -73,8 +73,8 @@ void Quadrocopter::processSensorsData()
 
             // sometimes some stuff happen
             for(unsigned i = 0; i < 2; i++)
-                if (!(angle.value_by_axis_index(i) >= -MPI && angle.value_by_axis_index(i) <= MPI))
-                    angle.value_by_axis_index(i) = 0;
+                if (!(angle.valueByAxisIndex(i) >= -MPI && angle.valueByAxisIndex(i) <= MPI))
+                    angle.valueByAxisIndex(i) = 0;
         }
 
         angularVelocityPrev = angularVelocity;
@@ -88,22 +88,22 @@ void Quadrocopter::processCorrection()
     switch(reactionType)
     {
     case ReactionAngularVelocity:
-        torqueAutomaticCorrection = get_angular_velocity_correction(angularVelocity, DeltaT.getTimeDifferenceSeconds());
+        torqueAutomaticCorrection = getAngularVelocityCorrection(angularVelocity, DeltaT.getTimeDifferenceSeconds());
         break;
 
     case ReactionAcceleration:
-        torqueAutomaticCorrection = get_acceleration_correction(angle, accelData);
+        torqueAutomaticCorrection = getAccelerationCorrection(angle, accelData);
         break;
 
     case ReactionAngle:
-        torqueAutomaticCorrection = get_angle_correction(angle, DeltaT.getTimeDifferenceSeconds());
+        torqueAutomaticCorrection = getAngleCorrection(angle, DeltaT.getTimeDifferenceSeconds());
         break;
     }
 }
 
 void Quadrocopter::processMotors()
 {
-    MController->set_torque(get_torques());
+    MController->setTorque(getTorques());
 }
 
 void Quadrocopter::iteration()
@@ -118,7 +118,7 @@ void Quadrocopter::iteration()
     processSerialTx();
 }
 
-RVector3D Quadrocopter::get_torques()
+RVector3D Quadrocopter::getTorques()
 {
     RVector3D res;
 

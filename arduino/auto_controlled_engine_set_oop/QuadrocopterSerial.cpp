@@ -19,13 +19,13 @@ void Quadrocopter::processSerialTx()
 
         // torque_manual_correction
         for(int i = 0; i < 3; i++)
-            MSerial->readDouble(-1, 1, torqueManualCorrection.value_by_axis_index(i), 2);
+            MSerial->readDouble(-1, 1, torqueManualCorrection.valueByAxisIndex(i), 2);
 
         //force
         MSerial->waitForByte();
         if(MSerial->getReadError()) return;
 
-        MController->set_force(MSerial->read() / 100.);
+        MController->setForce(MSerial->read() / 100.);
 
         //reaction_type
         MSerial->waitForByte();
@@ -35,20 +35,20 @@ void Quadrocopter::processSerialTx()
 
         double tDouble;
         //PID angle coefficients
-        MSerial->readDouble(-1.5, 1.5, tDouble, 2); pid_angle.set_Kp(tDouble);
-        MSerial->readDouble(-1.5, 1.5, tDouble, 2); pid_angle.set_Ki(tDouble);
-        MSerial->readDouble(-1.5, 1.5, tDouble, 2); pid_angle.set_Kd(tDouble);
+        MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKp(tDouble);
+        MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKi(tDouble);
+        MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKd(tDouble);
 
         //PID angular velocity coefficients
-        MSerial->readDouble(-1.5, 1.5, tDouble, 2); pid_angular_velocity.set_Kp(tDouble);
-        MSerial->readDouble(-1.5, 1.5, tDouble, 2); pid_angular_velocity.set_Ki(tDouble);
-        MSerial->readDouble(-1.5, 1.5, tDouble, 2); pid_angular_velocity.set_Kd(tDouble);
+        MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngularVelocity.setKp(tDouble);
+        MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngularVelocity.setKi(tDouble);
+        MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngularVelocity.setKd(tDouble);
 
         MSerial->bufferInit();
 
         // writing 36 bytes
 
-        MSerial->RVector3D_write(get_torques(), MySerial::PRINT_RAW); // +6
+        MSerial->RVector3D_write(getTorques(), MySerial::PRINT_RAW); // +6
         MSerial->RVector3D_write(angle, MySerial::PRINT_RAW, MySerial::USE_2D); // +4
 
         MSerial->RVector3D_write(angularVelocity, MySerial::PRINT_RAW); // +6
@@ -58,7 +58,7 @@ void Quadrocopter::processSerialTx()
 
         //motors
         for (unsigned i = 0; i < 4; i++)
-            MSerial->bufferAdd(100 * MController->get_speed(get_torques(), i)); // +4
+            MSerial->bufferAdd(100 * MController->getSpeed(getTorques(), i)); // +4
 
         //dt
         for (int si = 2; si >= 0; si--)

@@ -10,38 +10,38 @@ private:
 
     RVector3D data0;
 
-    RVector3D e_integral;
-    RVector3D e_prev;
+    RVector3D eIntegral;
+    RVector3D ePrev;
 
-    RVector3D y_min;
-    RVector3D y_max;
+    RVector3D yMin;
+    RVector3D yMax;
 
 public:
     PID();
 
-    RVector3D get_Kp();
-    RVector3D get_Ki();
-    RVector3D get_Kd();
+    RVector3D getKp();
+    RVector3D getKi();
+    RVector3D getKd();
 
-    void set_Kp(RVector3D);
-    void set_Ki(RVector3D);
-    void set_Kd(RVector3D);
+    void setKp(RVector3D);
+    void setKi(RVector3D);
+    void setKd(RVector3D);
 
-    void set_Kp(double);
-    void set_Ki(double);
-    void set_Kd(double);
+    void setKp(double);
+    void setKi(double);
+    void setKd(double);
 
-    void set_KpKiKd(double, double, double);
+    void setKpKiKd(double, double, double);
 
-    void set_y_min(RVector3D);
-    void set_y_max(RVector3D);
+    void setYMin(RVector3D);
+    void setYMax(RVector3D);
 
-    void set_data0(RVector3D); // sets needed value
-    RVector3D get_data0();
+    void setData0(RVector3D); // sets needed value
+    RVector3D getData0();
 
     void reset();
 
-    RVector3D get_y(RVector3D, double); // iteration
+    RVector3D getY(RVector3D, double); // iteration
 };
 
 #endif // PID_H
