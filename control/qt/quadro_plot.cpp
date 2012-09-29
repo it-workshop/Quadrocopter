@@ -388,13 +388,13 @@ void Quadro::plot_update()
     ui->plot_torques_and_force->replot();
 
     //corrections
-    plot_angular_velocity_correction_x[plot_current] = quadro.get_torque_gyroscope_correction().x;
-    plot_angular_velocity_correction_y[plot_current] = quadro.get_torque_gyroscope_correction().y;
-    plot_angular_velocity_correction_z[plot_current] = quadro.get_torque_gyroscope_correction().z;
+    plot_angular_velocity_correction_x[plot_current] = quadro.get_torque_angular_velocity_correction().x;
+    plot_angular_velocity_correction_y[plot_current] = quadro.get_torque_angular_velocity_correction().y;
+    plot_angular_velocity_correction_z[plot_current] = quadro.get_torque_angular_velocity_correction().z;
 
-    plot_acceleration_correction_x[plot_current] = quadro.get_torque_accelerometer_correction().x;
-    plot_acceleration_correction_y[plot_current] = quadro.get_torque_accelerometer_correction().y;
-    plot_acceleration_correction_z[plot_current] = quadro.get_torque_accelerometer_correction().z;
+    plot_acceleration_correction_x[plot_current] = quadro.get_torque_acceleration_correction().x;
+    plot_acceleration_correction_y[plot_current] = quadro.get_torque_acceleration_correction().y;
+    plot_acceleration_correction_z[plot_current] = quadro.get_torque_acceleration_correction().z;
 
     plot_angle_correction_x[plot_current] = quadro.get_torque_angle_correction().x;
     plot_angle_correction_y[plot_current] = quadro.get_torque_angle_correction().y;

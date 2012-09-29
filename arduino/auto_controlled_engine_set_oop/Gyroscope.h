@@ -23,7 +23,7 @@ private:
         GY_L  = 0x20,
         GZ_H  = 0x21,
         GZ_L  = 0x22,
-        PWR_M = 0x3E;
+        PWR_MGM = 0x3E;
     static const int GYRO_ADDRESS = 0x68;
 
     static const double Accuracy = 1E-1; // in radians / sec.

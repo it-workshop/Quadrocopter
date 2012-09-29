@@ -211,8 +211,8 @@ void Quadro::save_data()
              << quadro.get_reaction_type() << "\t"
              << quadro.get_angle().print2d_tab() << "\t"
 
-             << quadro.get_torque_gyroscope_correction().print2d_tab() << "\t"
-             << quadro.get_torque_accelerometer_correction().print_tab() << "\t"
+             << quadro.get_torque_angular_velocity_correction().print2d_tab() << "\t"
+             << quadro.get_torque_acceleration_correction().print_tab() << "\t"
              << quadro.get_torque_angle_correction().print2d_tab() << "\t"
 
              << joy.isoperational() << "\t"

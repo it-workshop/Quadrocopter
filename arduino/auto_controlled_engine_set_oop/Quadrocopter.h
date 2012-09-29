@@ -31,6 +31,7 @@ private:
     RVector3D torqueManualCorrection, torqueAutomaticCorrection;
 
     double anglePeriod = 7.5; // period for low-pass filter for accelerometer
+    double angularVelocityPeriod = 1e-5; // period for low-pass filter for gyroscope
 
     const double g = 9.80665; // gravitational acceleration
 
@@ -46,8 +47,6 @@ private:
     RVector3D accelerometerXi;
     static const double angle_max_correction = MPI / 4;
     static const double angular_velocity_max_correction = MPI / 4 / 2;
-
-    RVector3D angularVelocityCorrection, accelerationCorrection, angleCorrection;
 
     PID pid_angle, pid_angular_velocity;
     RVector3D get_angle_correction(RVector3D angle, double dt);

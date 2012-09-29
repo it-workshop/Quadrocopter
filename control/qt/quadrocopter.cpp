@@ -23,16 +23,16 @@ quadrocopter::quadrocopter()
     //connect_delay_arduino = 9000;
     connect_delay_arduino = 2000;
 
-    PID_angle_Kp = 0.37;
+    PID_angle_Kp = 0.16;
     PID_angle_Ki = 0;
-    PID_angle_Kd = 0.12;
+    PID_angle_Kd = 0.03;
 
-    PID_angular_velocity_Kp = 0.11;
+    PID_angular_velocity_Kp = 0.08;
     PID_angular_velocity_Ki = 0;
     PID_angular_velocity_Kd = 0;
 
     //see arduino code
-    read_bytes_N = 48;
+    read_bytes_N = 36;
 
     joystick_coefficient = 0.5;
 
@@ -63,8 +63,7 @@ void quadrocopter::read_data()
 {
     vect t_torque_corrected = read_vect_byte(), t_angle = read_vect_byte(2),
             t_gyroscope_readings = read_vect_byte(), t_accelerometer_readings = read_vect_byte(),
-            t_torque_gyroscope_correction = read_vect_byte(), t_torque_accelerometer_correction = read_vect_byte(),
-            t_torque_angle_correction = read_vect_byte();
+            t_torque_correction = read_vect_byte();
 
     reaction_type_ t_reaction_type;
 
@@ -84,12 +83,15 @@ void quadrocopter::read_data()
 
         torque_corrected = t_torque_corrected;
         angle = t_angle;
-        gyroscope_readings = t_gyroscope_readings / serial_gyroscope_coefficient;
+        gyroscope_readings = t_gyroscope_readings;
         accelerometer_readings = t_accelerometer_readings * g;
 
-        torque_gyroscope_correction = t_torque_gyroscope_correction;
-        torque_accelerometer_correction = t_torque_accelerometer_correction;
-        torque_angle_correction = t_torque_angle_correction;
+        if(t_reaction_type == REACTION_ANGULAR_VELOCITY)
+            torque_angular_velocity_correction = t_torque_correction;
+        else if(t_reaction_type == REACTION_ACCELERATION)
+            torque_acceleration_correction = t_torque_correction;
+        else if(t_reaction_type == REACTION_ANGLE)
+            torque_angle_correction = t_torque_correction;
 
         loop_time = t_loop_time;
         reaction_type = t_reaction_type;
@@ -128,8 +130,8 @@ void quadrocopter::defaults()
     torque_corrected = vect();
     gyroscope_readings = vect();
     accelerometer_readings = vect();
-    torque_gyroscope_correction = vect();
-    torque_accelerometer_correction = vect();
+    torque_angular_velocity_correction = vect();
+    torque_acceleration_correction = vect();
 
     angle = vect();
     power = 0;
@@ -199,9 +201,9 @@ vect quadrocopter::get_angle()
     return(angle);
 }
 
-vect quadrocopter::get_torque_gyroscope_correction()
+vect quadrocopter::get_torque_angular_velocity_correction()
 {
-    return(torque_gyroscope_correction);
+    return(torque_angular_velocity_correction);
 }
 
 number_vect_t quadrocopter::get_motor_power(int i)
@@ -301,9 +303,9 @@ number_vect_t quadrocopter::get_power()
     return(power);
 }
 
-vect quadrocopter::get_torque_accelerometer_correction()
+vect quadrocopter::get_torque_acceleration_correction()
 {
-    return(torque_accelerometer_correction);
+    return(torque_acceleration_correction);
 }
 
 vect quadrocopter::get_torque_angle_correction()

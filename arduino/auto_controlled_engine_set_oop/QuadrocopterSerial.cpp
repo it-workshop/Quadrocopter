@@ -15,8 +15,6 @@ void Quadrocopter::processSerialTx()
 {
     if(MSerial->getCommand() == 'p')
     {
-        const double serial_gyroscope_coefficient = 0.08;
-
         // reading
 
         // torque_manual_correction
@@ -48,16 +46,15 @@ void Quadrocopter::processSerialTx()
 
         MSerial->bufferInit();
 
-        // writing 48 bytes
+        // writing 36 bytes
 
         MSerial->RVector3D_write(get_torques(), MySerial::PRINT_RAW); // +6
         MSerial->RVector3D_write(angle, MySerial::PRINT_RAW, MySerial::USE_2D); // +4
 
-        MSerial->RVector3D_write((angularVelocity * serial_gyroscope_coefficient), MySerial::PRINT_RAW); // +6
+        MSerial->RVector3D_write(angularVelocity, MySerial::PRINT_RAW); // +6
         MSerial->RVector3D_write(accelData, MySerial::PRINT_RAW); // +6
-        MSerial->RVector3D_write(angularVelocityCorrection, MySerial::PRINT_RAW); // +6
-        MSerial->RVector3D_write(accelerationCorrection, MySerial::PRINT_RAW); // +6
-        MSerial->RVector3D_write(angleCorrection, MySerial::PRINT_RAW); // +6
+
+        MSerial->RVector3D_write(torqueManualCorrection, MySerial::PRINT_RAW); // +6
 
         //motors
         for (unsigned i = 0; i < 4; i++)

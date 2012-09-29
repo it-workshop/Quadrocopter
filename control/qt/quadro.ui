@@ -297,7 +297,7 @@
       <x>0</x>
       <y>124</y>
       <width>428</width>
-      <height>330</height>
+      <height>271</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_2">
@@ -422,7 +422,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Angular velocity (useless)</string>
+         <string>Angular velocity PID</string>
         </property>
        </item>
        <item>
@@ -432,7 +432,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Angle (PID)</string>
+         <string>Angle PID</string>
         </property>
        </item>
       </widget>
@@ -483,10 +483,10 @@
           <double>10.000000000000000</double>
          </property>
          <property name="singleStep">
-          <double>0.030000000000000</double>
+          <double>0.010000000000000</double>
          </property>
          <property name="value">
-          <double>0.370000000000000</double>
+          <double>0.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -524,7 +524,7 @@
           <double>10.000000000000000</double>
          </property>
          <property name="singleStep">
-          <double>0.030000000000000</double>
+          <double>0.010000000000000</double>
          </property>
         </widget>
        </item>
@@ -562,10 +562,10 @@
           <double>1.000000000000000</double>
          </property>
          <property name="singleStep">
-          <double>0.030000000000000</double>
+          <double>0.010000000000000</double>
          </property>
          <property name="value">
-          <double>0.120000000000000</double>
+          <double>0.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -617,10 +617,10 @@
           <double>10.000000000000000</double>
          </property>
          <property name="singleStep">
-          <double>0.030000000000000</double>
+          <double>0.010000000000000</double>
          </property>
          <property name="value">
-          <double>0.110000000000000</double>
+          <double>0.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -658,7 +658,7 @@
           <double>10.000000000000000</double>
          </property>
          <property name="singleStep">
-          <double>0.030000000000000</double>
+          <double>0.010000000000000</double>
          </property>
         </widget>
        </item>
@@ -696,7 +696,7 @@
           <double>1.000000000000000</double>
          </property>
          <property name="singleStep">
-          <double>0.030000000000000</double>
+          <double>0.010000000000000</double>
          </property>
         </widget>
        </item>
