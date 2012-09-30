@@ -183,9 +183,9 @@ RVector3D RVector3D::angleFromProjections()
 {
     RVector3D result = RVector3D();
 
-    result.x = atan2(y, z);
+    result.x =  atan2(y, z);
     //result.x = -(acos(y / sqrt(y*y + z*z)) - MPI / 2);
-    result.y = - atan2(x, z);
+    result.y = -atan2(x, z);
     //result.y =   acos(x / sqrt(x*x + z*z)) - MPI / 2;
     result.z = 0;
     

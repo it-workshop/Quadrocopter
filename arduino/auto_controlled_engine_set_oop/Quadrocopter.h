@@ -20,6 +20,10 @@ private:
     TimerCount DeltaT;
     MySerial* MSerial;
 
+    // pins configuration
+    int DefaultMotorPins[4] = {3, 9, 10, 11};
+    int DefaultAccelPins[3] = {A0, A1, A2};
+
     //reaction type (different types of processing sensors' data)
     enum reactionType_ {ReactionNone, ReactionAngularVelocity, ReactionAcceleration, ReactionAngle};
     reactionType_ reactionType = ReactionNone;
@@ -32,6 +36,7 @@ private:
 
     double anglePeriod = 7.5; // period for low-pass filter for accelerometer
     double angularVelocityPeriod = 1e-5; // period for low-pass filter for gyroscope
+    double angleMaxReset = 0.8 * MPI; // to avoid wrong angle values when is is near MPI
 
     const double g = 9.80665; // gravitational acceleration
 
@@ -46,7 +51,7 @@ private:
     //corrections
     RVector3D accelerometerXi;
     static const double angleMaxCorrection = MPI / 4;
-    static const double angularVelocityMaxCorrection = MPI / 4 / 2;
+    static const double angularVelocityMaxCorrection = MPI / 4;
 
     PID pidAngle, pidAngularVelocity;
     RVector3D getAngleCorrection(RVector3D angle, double dt);

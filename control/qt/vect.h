@@ -20,8 +20,6 @@ public:
 
     string print();
     string print2d();
-    string print_tab();
-    string print2d_tab();
 
     number_vect_t abs_2();
     number_vect_t abs();

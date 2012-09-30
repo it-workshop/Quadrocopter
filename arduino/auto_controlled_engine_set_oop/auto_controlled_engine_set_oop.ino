@@ -8,7 +8,6 @@ void setup()
     quadro = new Quadrocopter;
 }    
 
-
 void loop()
 {
     quadro->iteration();

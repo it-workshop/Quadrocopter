@@ -55,6 +55,7 @@ public:
     vect get_torque_angular_velocity_correction();
     vect get_torque_acceleration_correction();
     vect get_torque_angle_correction();
+    vect get_torque_automatic_correction();
 
     void set_power(number_vect_t);
     void set_torque_manual_correction(vect);

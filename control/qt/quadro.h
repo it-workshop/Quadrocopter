@@ -111,6 +111,7 @@ private:
 
     void interface_read();
     void interface_write();
+    void interface_init();
 
 private slots:
     void update_ports();

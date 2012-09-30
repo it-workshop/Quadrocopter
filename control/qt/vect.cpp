@@ -39,7 +39,7 @@ number_vect_t& vect::value_by_axis_index(int i)
     return(x);
 }
 
-string vect::print2d_tab()
+string vect::print2d()
 {
     stringstream t_stream;
     t_stream.precision(2);
@@ -49,27 +49,7 @@ string vect::print2d_tab()
     return(t_stream.str());
 }
 
-string vect::print2d()
-{
-    stringstream t_stream;
-    t_stream.precision(2);
-
-    t_stream << "(" << x << ",\t" << y << ")";
-
-    return(t_stream.str());
-}
-
 string vect::print()
-{
-    stringstream t_stream;
-    t_stream.precision(2);
-
-    t_stream << "(" << x << ",\t" << y << ",\t" << z << ")";
-
-    return(t_stream.str());
-}
-
-string vect::print_tab()
 {
     stringstream t_stream;
     t_stream.precision(2);
