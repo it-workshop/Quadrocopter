@@ -25,13 +25,13 @@ PID_test::PID_test(QWidget *parent) :
     value = 0;
     x = 0;
 
-    pid_angular_velocity.set_KpKiKd(10, 8, 0);
-    pid_angular_velocity.set_y_min(-30);
-    pid_angular_velocity.set_y_max(30);
+    pid_angular_velocity.setKpKiKd(10, 8, 0);
+    pid_angular_velocity.setYMin(-30);
+    pid_angular_velocity.setYMax(30);
 
-    pid_angle.set_KpKiKd(50, 0, 70);
-    pid_angle.set_y_min(-30);
-    pid_angle.set_y_max(30);
+    pid_angle.setKpKiKd(50, 0, 70);
+    pid_angle.setYMin(-30);
+    pid_angle.setYMax(30);
 
     timer_auto_interval = ui->dt->value();
 
@@ -135,9 +135,9 @@ void PID_test::timer_auto_update()
             value_speed_ = (value - prev_value) / dt;
 
             if(ui->comboBox_type->currentIndex() == 0)
-                correction = pid_angular_velocity.get_y(value_speed_, dt).x;
+                correction = pid_angular_velocity.getY(value_speed_, dt).x;
             else
-                correction = pid_angle.get_y(value, dt).x;
+                correction = pid_angle.getY(value, dt).x;
 
             //assuming that the acceleration (correction) is constant
             value += value_speed * dt + correction * dt * dt / 2;
@@ -167,14 +167,14 @@ void PID_test::on_pushButton_reset_clicked()
     timer_auto_interval = ui->dt->value();
     if(ui->comboBox_type->currentIndex() == 0)
     {
-        pid_angular_velocity.set_KpKiKd(ui->Kp->value(), ui->Ki->value(), ui->Kd->value());
-        pid_angular_velocity.set_data0(0);
+        pid_angular_velocity.setKpKiKd(ui->Kp->value(), ui->Ki->value(), ui->Kd->value());
+        pid_angular_velocity.setData0(0);
         pid_angular_velocity.reset();
     }
     else
     {
-        pid_angle.set_KpKiKd(ui->Kp->value(), ui->Ki->value(), ui->Kd->value());
-        pid_angle.set_data0(ui->x->value());
+        pid_angle.setKpKiKd(ui->Kp->value(), ui->Ki->value(), ui->Kd->value());
+        pid_angle.setData0(ui->x->value());
         pid_angle.reset();
     }
 }
@@ -199,31 +199,31 @@ void PID_test::on_x_valueChanged(double arg1)
 {
     x = arg1;
     if(ui->comboBox_type->currentIndex() == 1)
-        pid_angle.set_data0(arg1);
+        pid_angle.setData0(arg1);
 }
 
 void PID_test::on_Kp_valueChanged(double arg1)
 {
     if(ui->comboBox_type->currentIndex() == 0)
-        pid_angular_velocity.set_Kp(arg1);
+        pid_angular_velocity.setKp(arg1);
     else
-        pid_angle.set_Kp(arg1);
+        pid_angle.setKp(arg1);
 }
 
 void PID_test::on_Ki_valueChanged(double arg1)
 {
     if(ui->comboBox_type->currentIndex() == 0)
-        pid_angular_velocity.set_Ki(arg1);
+        pid_angular_velocity.setKi(arg1);
     else
-        pid_angle.set_Ki(arg1);
+        pid_angle.setKi(arg1);
 }
 
 void PID_test::on_Kd_valueChanged(double arg1)
 {
     if(ui->comboBox_type->currentIndex() == 0)
-        pid_angular_velocity.set_Kd(arg1);
+        pid_angular_velocity.setKd(arg1);
     else
-        pid_angle.set_Kd(arg1);
+        pid_angle.setKd(arg1);
 }
 
 void PID_test::on_dt_valueChanged(int arg1)
@@ -235,17 +235,17 @@ void PID_test::on_comboBox_type_currentIndexChanged(int index)
 {
     if(index == 0)
     {
-        ui->Kp->setValue(pid_angular_velocity.get_Kp().x);
-        ui->Ki->setValue(pid_angular_velocity.get_Ki().x);
-        ui->Kd->setValue(pid_angular_velocity.get_Kd().x);
-        ui->x->setValue(pid_angular_velocity.get_data0().x);
+        ui->Kp->setValue(pid_angular_velocity.getKp().x);
+        ui->Ki->setValue(pid_angular_velocity.getKi().x);
+        ui->Kd->setValue(pid_angular_velocity.getKd().x);
+        ui->x->setValue(pid_angular_velocity.getData0().x);
     }
     else
     {
-        ui->Kp->setValue(pid_angle.get_Kp().x);
-        ui->Ki->setValue(pid_angle.get_Ki().x);
-        ui->Kd->setValue(pid_angle.get_Kd().x);
-        ui->x->setValue(pid_angle.get_data0().x);
+        ui->Kp->setValue(pid_angle.getKp().x);
+        ui->Ki->setValue(pid_angle.getKi().x);
+        ui->Kd->setValue(pid_angle.getKd().x);
+        ui->x->setValue(pid_angle.getData0().x);
     }
 }
 
