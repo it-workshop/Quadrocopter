@@ -36,9 +36,14 @@ void Quadro::interface_init()
 
 void Quadro::interface_write()
 {
-    stringstream t_ss, t_ss1, t_ss2, t_ss3;
+    stringstream t_ss, t_ss1, t_ss2, t_ss3, t_ss4;
     if(quadro.isoperational())
     {
+        ui->voltage->setValue(quadro.get_voltage_percent());
+        t_ss.precision(2);
+        t_ss4 << quadro.get_voltage() << "V";
+        ui->voltage->setFormat(t_ss4.str().c_str());
+
         ui->torque->setText(quadro.get_torque_corrected().print().c_str());
         ui->gyro->setText(quadro.get_gyroscope_readings().print().c_str());
 

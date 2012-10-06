@@ -32,7 +32,7 @@ quadrocopter::quadrocopter()
     PID_angular_velocity_Kd = 0;
 
     //see arduino code
-    read_bytes_N = 36;
+    read_bytes_N = 38;
 
     joystick_coefficient = 0.5;
 
@@ -76,6 +76,8 @@ void quadrocopter::read_data()
 
     t_reaction_type = (reaction_type_) (sread() - '0');
 
+    number_vect_t t_voltage = read_number_vect_t(0, 20, 2);
+
     if(!read_error())
     {
         for(int i = 0; i < MOTORS_N; i++)
@@ -95,6 +97,8 @@ void quadrocopter::read_data()
 
         loop_time = t_loop_time;
         reaction_type = t_reaction_type;
+
+        voltage = t_voltage;
 
         read_time = read_timer.get_time_difference() / 1.E3;
     }
@@ -142,6 +146,8 @@ void quadrocopter::defaults()
     loop_time = 0;
 
     reaction_type = REACTION_NONE;
+
+    voltage = 0;
 
     //wait for arduino to load
     connect_delay_time = !device.substr(0, 6).compare("ttyACM") ? connect_delay_arduino : 500;
@@ -340,6 +346,18 @@ number_vect_t quadrocopter::get_write_time()
 number_vect_t quadrocopter::get_loop_time()
 {
     return(loop_time);
+}
+
+number_vect_t quadrocopter::get_voltage()
+{
+    return(voltage);
+}
+
+number_vect_t quadrocopter::get_voltage_percent()
+{
+    if(voltage <= voltage_min) return 0;
+    else if(voltage >= voltage_max) return 100;
+    else return((voltage - voltage_min) / (voltage_max - voltage_min) * 100);
 }
 
 quadrocopter::reaction_type_ quadrocopter::get_reaction_type()

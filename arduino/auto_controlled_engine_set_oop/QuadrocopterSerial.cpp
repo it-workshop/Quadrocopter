@@ -46,7 +46,7 @@ void Quadrocopter::processSerialTx()
 
         MSerial->bufferInit();
 
-        // writing 36 bytes
+        // writing 38 bytes
 
         MSerial->RVector3D_write(getTorques(), MySerial::PRINT_RAW); // +6
         MSerial->RVector3D_write(angle, MySerial::PRINT_RAW, MySerial::USE_2D); // +4
@@ -66,6 +66,8 @@ void Quadrocopter::processSerialTx()
 
         //reaction type
         MSerial->bufferAdd(reactionType + '0'); //+1
+
+        MSerial->writeDouble(0, 20, voltage, 2); //+2
 
         MSerial->bufferWrite();
         MSerial->dropCommand();

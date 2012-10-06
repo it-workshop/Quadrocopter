@@ -6,6 +6,7 @@ Quadrocopter::Quadrocopter()
     MController = new MotorController(DefaultMotorPins);
     Accel = new Accelerometer(DefaultAccelPins);
     Gyro = new Gyroscope();
+    VSensor = new VoltageSensor(DefaultVSensorPin, DefaultVSensorMaxVoltage);
 
     this->reset();
 }
@@ -25,6 +26,8 @@ void Quadrocopter::reset()
     pidAngularVelocity.reset();
 
     accelerometerXi = RVector3D(0, 0, 0);
+
+    voltage = 0;
 
     pidAngle.setKpKiKd(0, 0, 0);
     pidAngularVelocity.setKpKiKd(0, 0, 0);

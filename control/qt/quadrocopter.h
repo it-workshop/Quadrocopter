@@ -35,6 +35,10 @@ private:
 
     number_vect_t joystick_coefficient;
 
+    number_vect_t voltage;
+    static const number_vect_t voltage_min = 11.0;
+    static const number_vect_t voltage_max = 12.6;
+
     void defaults();
 
     void read_data(); // read data from device
@@ -83,6 +87,9 @@ public:
     number_vect_t get_read_time(); //last read time in sec
     number_vect_t get_write_time(); //last write time in sec
     number_vect_t get_loop_time(); //last loop time in sec
+
+    number_vect_t get_voltage();
+    number_vect_t get_voltage_percent();
 
     reaction_type_ get_reaction_type();
     void set_reaction_type(reaction_type_);

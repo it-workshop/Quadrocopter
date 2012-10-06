@@ -137,7 +137,7 @@ void Quadro::plot_init()
     force->attach(ui->plot_torques_and_force);
 
     ui->plot_torques_and_force->setAxisScale(QwtPlot::yLeft, -1, 1);
-    ui->plot_torques_and_force->setAxisScale(QwtPlot::yRight, -1, 1);
+    ui->plot_torques_and_force->setAxisScale(QwtPlot::yRight, -0.25, 0.25);
 
     // Set curve styles
     torque_x->setPen(QPen(Qt::red));

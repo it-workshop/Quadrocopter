@@ -50,4 +50,6 @@ void Quadrocopter::processSensorsData()
 
         angularVelocityPrev = angularVelocity;
     }
+
+    voltage = VSensor->getValue();
 }
