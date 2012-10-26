@@ -41,7 +41,7 @@ private:
     double angularVelocityPeriod = 1e-5; // period for low-pass filter for gyroscope
     double angleMaxReset = 0.8 * MPI; // to avoid wrong angle values when is is near MPI
 
-    double DefaultVSensorMaxVoltage = 12.6; //maximal voltage (before voltage divider)
+    double DefaultVSensorMaxVoltage = 5 / 1.02 * 2.77; //maximal voltage (before voltage divider)
 
     const double g = 9.80665; // gravitational acceleration
 
