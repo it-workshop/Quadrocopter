@@ -16,6 +16,7 @@ void Quadrocopter::reset()
     angle = RVector3D();
     angularAcceleration = RVector3D();
     accelData = RVector3D();
+    accelDataFiltered = RVector3D();
     torqueAutomaticCorrection = RVector3D();
     torqueManualCorrection = RVector3D();
 

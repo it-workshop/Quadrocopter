@@ -18,15 +18,17 @@ void Quadrocopter::processSensorsData()
     {
         if(DeltaT.getTimeIsset())
         {
+            // alpha coefficient for low-pass filter
+            double angleAlpha = dt / (dt + anglePeriod / (2 * MPI));
+            double accelAlpha = dt / (dt + accelPeriod / (2 * MPI));
+
             /*angularAcceleration = (angularVelocity - angularVelocityPrev) / dt;
             accelData.x -= (angularAcceleration.y * gyroToAcc.z - angularAcceleration.z * gyroToAcc.y) / g;
             accelData.y -= (angularAcceleration.z * gyroToAcc.x - angularAcceleration.x * gyroToAcc.z) / g;
             accelData.z -= (angularAcceleration.x * gyroToAcc.y - angularAcceleration.y * gyroToAcc.x) / g;*/
 
-            RVector3D accelAngle = accelData.angleFromProjections();
-
-            // alpha coefficient for low-pass filter
-            double angleAlpha = dt / (dt + anglePeriod / (2 * MPI));
+            accelDataFiltered = accelDataFiltered * (1 - accelAlpha) + accelData * accelAlpha;
+            RVector3D accelAngle = accelDataFiltered.angleFromProjections();
 
             // low-pass filter
             angle.x = (angle.x + angularVelocity.x * dt) * (1 - angleAlpha) + accelAngle.x * angleAlpha;
