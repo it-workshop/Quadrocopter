@@ -67,7 +67,8 @@ void Quadro::set_quadro_data()
     {
         t_correction = vect(ui->torque_manual_correction_x->value(), ui->torque_manual_correction_y->value(), 0);
 
-        t_power = ui->power->value() / 10.;
+        t_power = ui->power->value();
+        qDebug() << ui->power->value();
     }
 
     quadro.set_power(t_power);

@@ -32,6 +32,12 @@ void Quadro::interface_init()
     ui->PID_angular_velocity_Kp->setValue(quadro.get_PID_angular_velocity_Kp());
     ui->PID_angular_velocity_Ki->setValue(quadro.get_PID_angular_velocity_Ki());
     ui->PID_angular_velocity_Kd->setValue(quadro.get_PID_angular_velocity_Kd());
+
+    ui->power->setValue(0);
+    ui->power->setScalePosition(QwtSlider::TopScale);
+
+    ui->power->setScale(0, 1, 0.1);
+    ui->power->setRange(0, 1, 0.01, 0);
 }
 
 void Quadro::interface_write()

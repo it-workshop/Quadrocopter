@@ -38,7 +38,7 @@ private:
     RVector3D torqueManualCorrection, torqueAutomaticCorrection;
 
     double anglePeriod = 7.5; // period for low-pass filter for accelerometer
-    double angularVelocityPeriod = 1e-5; // period for low-pass filter for gyroscope
+    double angularVelocityPeriod = 0.1;//1e-5; // period for low-pass filter for gyroscope
     double angleMaxReset = 0.8 * MPI; // to avoid wrong angle values when is is near MPI
 
     double DefaultVSensorMaxVoltage = 5 / 1.02 * 2.77; //maximal voltage (before voltage divider)
