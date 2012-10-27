@@ -1,4 +1,5 @@
 #include "quadro.h"
+#include "QKeyEvent"
 #include "ui_quadro.h"
 
 void Quadro::on_actionQuadroConnect_triggered()
@@ -100,4 +101,12 @@ void Quadro::on_joystick_device_currentIndexChanged(const QString &arg1)
 void Quadro::on_quadro_device_currentIndexChanged(const QString &arg1)
 {
     quadro.set_device(arg1.toAscii().data());
+}
+
+void Quadro::keyPressEvent(QKeyEvent *a)
+{
+    if(a->key() == Qt::Key_0)
+    {
+        //ui->power->setValue(0);
+    }
 }

@@ -117,6 +117,7 @@ private slots:
     void update_ports();
     void on_joystick_device_currentIndexChanged(const QString &arg1);
     void on_quadro_device_currentIndexChanged(const QString &arg1);
+    void keyPressEvent(QKeyEvent*);
 };
 
 #endif // QUADRO_H
