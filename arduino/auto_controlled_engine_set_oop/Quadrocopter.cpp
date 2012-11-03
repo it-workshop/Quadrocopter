@@ -14,6 +14,7 @@ Quadrocopter::Quadrocopter()
 void Quadrocopter::reset()
 {
     angle = RVector3D();
+    directionalCosines = RVector3D();
     angularAcceleration = RVector3D();
     accelData = RVector3D();
     accelDataFiltered = RVector3D();

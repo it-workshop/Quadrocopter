@@ -23,9 +23,9 @@ quadrocopter::quadrocopter()
     //connect_delay_arduino = 9000;
     connect_delay_arduino = 2000;
 
-    PID_angle_Kp = 0.16;
-    PID_angle_Ki = 0;
-    PID_angle_Kd = 0.03;
+    PID_angle_Kp = 0.27;
+    PID_angle_Ki = 0.001;
+    PID_angle_Kd = 0.06;
 
     PID_angular_velocity_Kp = 0.08;
     PID_angular_velocity_Ki = 0;
@@ -37,8 +37,8 @@ quadrocopter::quadrocopter()
     joystick_coefficient = 0.5;
 
     gyro_period = 0;
-    accel_period = 5;
-    angle_period = 7;
+    accel_period = 2;
+    angle_period = 8.5;
 
     defaults();
 }

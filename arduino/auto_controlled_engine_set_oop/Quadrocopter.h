@@ -46,8 +46,9 @@ private:
 
     const double g = 9.80665; // gravitational acceleration
 
-    //physical quantitiesvvv
-    RVector3D angle; // angle between Earth's coordinate and ours
+    //physical quantities
+    RVector3D directionalCosines; // cosines of g vector (filtered)
+    RVector3D angle; // angle between Earth's coordinate and ours (filtered)
     RVector3D accelData; //data from accelerometer (g - a)
     RVector3D accelDataFiltered; // filtered data from accelerometer (experimental)
     RVector3D angularVelocity; // filtered angular velocity from gyroscope
