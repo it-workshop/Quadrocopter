@@ -105,6 +105,10 @@ public:
     void set_accel_period(double n_period);
     void set_angle_period(double n_period);
 
+    double get_gyro_period();
+    double get_accel_period();
+    double get_angle_period();
+
     virtual void on_rx();
 };
 

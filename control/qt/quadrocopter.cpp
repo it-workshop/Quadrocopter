@@ -36,6 +36,10 @@ quadrocopter::quadrocopter()
 
     joystick_coefficient = 0.5;
 
+    gyro_period = 0;
+    accel_period = 5;
+    angle_period = 7;
+
     defaults();
 }
 
@@ -204,6 +208,21 @@ void quadrocopter::set_accel_period(double n_period)
 void quadrocopter::set_angle_period(double n_period)
 {
     angle_period = n_period;
+}
+
+double quadrocopter::get_gyro_period()
+{
+    return(gyro_period);
+}
+
+double quadrocopter::get_accel_period()
+{
+    return(accel_period);
+}
+
+double quadrocopter::get_angle_period()
+{
+    return(angle_period);
 }
 
 vect quadrocopter::get_torque_corrected()

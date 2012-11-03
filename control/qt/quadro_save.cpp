@@ -23,7 +23,7 @@ void Quadro::save_open()
         save_file << "#seconds\tdatetime\tgyro_x\tgyro_y\tgyro_z\tacc_x\tacc_y\tacc_z\treact._t\tangle_x\tangle_y\t"
                   << "ca_x\tca_y\tca_z\tj_conn\tj_use\tj_x\tj_y\tj_power\tj_switch\tquad_conn\t"
                   << "cm_x\tcm_y\tcm_z\ttorq_x\ttorq_y\ttorq_z\tforce\tM_A\tM_B\tM_C\tM_D\t"
-                  << "read_t\twrite_t\tloop_t\tav_kp\tav_ki\tav_kd\ta_kp\ta_ki\ta_kd" << endl;
+                  << "read_t\twrite_t\tloop_t\tav_kp\tav_ki\tav_kd\ta_kp\ta_ki\ta_kd\tTgyro\tTaccel\tTangle" << endl;
     }
 }
 
@@ -72,7 +72,11 @@ void Quadro::save_data()
 
         t_ss << quadro.get_PID_angle_Kp() << "\t";
         t_ss << quadro.get_PID_angle_Ki() << "\t";
-        t_ss << quadro.get_PID_angle_Kd();
+        t_ss << quadro.get_PID_angle_Kd() << "\t";
+
+        t_ss << quadro.get_gyro_period() << "\t";
+        t_ss << quadro.get_accel_period() << "\t";
+        t_ss << quadro.get_angle_period();
 
         save_file << t_ss.str() << endl;
     }
