@@ -44,6 +44,11 @@ void Quadrocopter::processSerialTx()
         MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngularVelocity.setKi(tDouble);
         MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngularVelocity.setKd(tDouble);
 
+        //Periods for filters
+        MSerial->readDouble(0, 100, gyroPeriod, 2);
+        MSerial->readDouble(0, 100, accelPeriod, 2);
+        MSerial->readDouble(0, 100, anglePeriod, 2);
+
         MSerial->bufferInit();
 
         // writing 38 bytes
@@ -52,7 +57,7 @@ void Quadrocopter::processSerialTx()
         MSerial->RVector3D_write(angle, MySerial::PRINT_RAW, MySerial::USE_2D); // +4
 
         MSerial->RVector3D_write(angularVelocity, MySerial::PRINT_RAW); // +6
-        MSerial->RVector3D_write(accelData, MySerial::PRINT_RAW); // +6
+        MSerial->RVector3D_write(accelDataFiltered, MySerial::PRINT_RAW); // +6
 
         MSerial->RVector3D_write(torqueManualCorrection, MySerial::PRINT_RAW); // +6
 

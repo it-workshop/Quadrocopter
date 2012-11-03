@@ -37,16 +37,16 @@ private:
     // torque corrections
     RVector3D torqueManualCorrection, torqueAutomaticCorrection;
 
-    double anglePeriod = 7.5; // period for alpha-beta (angle from accelerometer and gyroscope)
-    double accelPeriod = 4;  // period for low-pass filter for accelerometer
-    double angularVelocityPeriod = 0; // period for low-pass filter for gyroscope
+    double gyroPeriod = 0; // period for low-pass filter for gyroscope
+    double accelPeriod = 1;  // period for low-pass filter for accelerometer
+    double anglePeriod = 3.5; // period for alpha-beta (angle from accelerometer and gyroscope)
     double angleMaxReset = 0.8 * MPI; // to avoid wrong angle values when is is near MPI
 
     double DefaultVSensorMaxVoltage = 5 / 1.02 * 2.77; //maximal voltage (before voltage divider)
 
     const double g = 9.80665; // gravitational acceleration
 
-    //physical quantities
+    //physical quantitiesvvv
     RVector3D angle; // angle between Earth's coordinate and ours
     RVector3D accelData; //data from accelerometer (g - a)
     RVector3D accelDataFiltered; // filtered data from accelerometer (experimental)

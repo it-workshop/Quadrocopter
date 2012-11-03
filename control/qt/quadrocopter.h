@@ -39,6 +39,8 @@ private:
     static const number_vect_t voltage_min = 11.0;
     static const number_vect_t voltage_max = 12.6;
 
+    number_vect_t gyro_period, accel_period, angle_period;
+
     void defaults();
 
     void read_data(); // read data from device
@@ -98,6 +100,10 @@ public:
     void write_data(); // write data to device
 
     void reset(); // set torque to (0, 0, 1)
+
+    void set_gyro_period(double n_period);
+    void set_accel_period(double n_period);
+    void set_angle_period(double n_period);
 
     virtual void on_rx();
 };

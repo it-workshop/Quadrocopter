@@ -8,6 +8,7 @@
 #include <qwt_plot_canvas.h>
 #include <qwt_legend.h>
 #include <qwt_plot_curve.h>
+#include <qwt_plot_marker.h>
 
 #include "qextserialenumerator.h"
 #include <QtCore/QList>
@@ -205,6 +206,36 @@ void Quadro::plot_init()
 
     ui->plot_corrections->setAxisTitle(QwtPlot::xBottom, "Time [s]");
     ui->plot_corrections->setAxisTitle(QwtPlot::yLeft, "Addition to the power");
+
+    QwtPlotMarker *angle_zero = new QwtPlotMarker();
+    angle_zero->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
+    angle_zero->setLineStyle(QwtPlotMarker::HLine);
+    angle_zero->setYValue(0.0);
+    angle_zero->attach(ui->plot_angle);
+
+    QwtPlotMarker *corrections_zero = new QwtPlotMarker();
+    corrections_zero->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
+    corrections_zero->setLineStyle(QwtPlotMarker::HLine);
+    corrections_zero->setYValue(0.0);
+    corrections_zero->attach(ui->plot_corrections);
+
+    QwtPlotMarker *torques_and_force_zero = new QwtPlotMarker();
+    torques_and_force_zero->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
+    torques_and_force_zero->setLineStyle(QwtPlotMarker::HLine);
+    torques_and_force_zero->setYValue(0.0);
+    torques_and_force_zero->attach(ui->plot_torques_and_force);
+
+    QwtPlotMarker *gyro_zero = new QwtPlotMarker();
+    gyro_zero->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
+    gyro_zero->setLineStyle(QwtPlotMarker::HLine);
+    gyro_zero->setYValue(0.0);
+    gyro_zero->attach(ui->plot_gyro);
+
+    QwtPlotMarker *acc_zero = new QwtPlotMarker();
+    acc_zero->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
+    acc_zero->setLineStyle(QwtPlotMarker::HLine);
+    acc_zero->setYValue(0.0);
+    acc_zero->attach(ui->plot_acc);
 }
 
 void Quadro::plot_reset_data()

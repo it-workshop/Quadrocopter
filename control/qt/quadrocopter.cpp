@@ -126,6 +126,10 @@ void quadrocopter::write_data()
     write_number_vect_t(-1.5, 1.5, PID_angular_velocity_Kp, 2);
     write_number_vect_t(-1.5, 1.5, PID_angular_velocity_Ki, 2);
     write_number_vect_t(-1.5, 1.5, PID_angular_velocity_Kd, 2);
+
+    write_number_vect_t(0, 100, gyro_period, 2);
+    write_number_vect_t(0, 100, accel_period, 2);
+    write_number_vect_t(0, 100, angle_period, 2);
 }
 
 void quadrocopter::defaults()
@@ -185,6 +189,21 @@ void quadrocopter::reset()
     swrite_clear();
     swrite('n');
     swrite_put();
+}
+
+void quadrocopter::set_gyro_period(double n_period)
+{
+    gyro_period = n_period;
+}
+
+void quadrocopter::set_accel_period(double n_period)
+{
+    accel_period = n_period;
+}
+
+void quadrocopter::set_angle_period(double n_period)
+{
+    angle_period = n_period;
 }
 
 vect quadrocopter::get_torque_corrected()

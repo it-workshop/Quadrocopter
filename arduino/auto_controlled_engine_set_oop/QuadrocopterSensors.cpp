@@ -1,3 +1,5 @@
+
+
 #include "Quadrocopter.h"
 
 void Quadrocopter::processSensorsData()
@@ -9,7 +11,7 @@ void Quadrocopter::processSensorsData()
     if(reactionType != ReactionNone)
     {
         //angular velocity low-pass filter
-        double angularVelocityAlpha = dt / (dt + angularVelocityPeriod / (2 * MPI));
+        double angularVelocityAlpha = dt / (dt + gyroPeriod / (2 * MPI));
         angularVelocity = angularVelocity * (1 - angularVelocityAlpha) + Gyro->getReadings() * angularVelocityAlpha;
     }
     else angularVelocity = RVector3D();
@@ -33,7 +35,6 @@ void Quadrocopter::processSensorsData()
             // low-pass filter
             angle.x = (angle.x + angularVelocity.x * dt) * (1 - angleAlpha) + accelAngle.x * angleAlpha;
             angle.y = (angle.y + angularVelocity.y * dt) * (1 - angleAlpha) + accelAngle.y * angleAlpha;
-
 
             // sometimes some stuff happen
             for(unsigned i = 0; i < 2; i++)

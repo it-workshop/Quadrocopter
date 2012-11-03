@@ -110,3 +110,24 @@ void Quadro::keyPressEvent(QKeyEvent *a)
         //ui->power->setValue(0);
     }
 }
+
+void Quadro::on_setAngle_clicked()
+{
+    ui->torque_manual_correction_x->setValue(quadro.get_angle().x);
+    ui->torque_manual_correction_y->setValue(quadro.get_angle().y);
+}
+
+void Quadro::on_gyroscope_period_valueChanged(double arg1)
+{
+    quadro.set_gyro_period(arg1);
+}
+
+void Quadro::on_accel_period_valueChanged(double arg1)
+{
+    quadro.set_accel_period(arg1);
+}
+
+void Quadro::on_angle_period_valueChanged(double arg1)
+{
+    quadro.set_angle_period(arg1);
+}
