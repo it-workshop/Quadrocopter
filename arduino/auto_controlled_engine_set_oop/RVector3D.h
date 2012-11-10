@@ -43,8 +43,10 @@ public:
     void yAngleInc(double w);
     void xAngleDec(double w);
     void yAngleDec(double w);
+    void zAngleInc(double w);
+    void zAngleDec(double w);
     
-    void angleInc(RVector3D);
+    void angleInc(RVector3D angularRotation);
     
     RVector3D angleFromProjections(); //angle in [-MPI / 2; MPI / 2]
     RVector3D projectionsFromAngle(double a = 1); //angle in [-MPI; MPI]

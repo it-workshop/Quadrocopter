@@ -70,10 +70,23 @@ void RVector3D::yAngleDec(double w)
     yAngleInc(-w);
 }
 
-void RVector3D::angleInc(RVector3D rotation)
+void RVector3D::zAngleInc(double w)
 {
-    xAngleInc(rotation.x);
-    yAngleInc(rotation.y);
+    double old_x = x;
+    x =     x * cos(w) - y * sin(w);
+    y = old_x * sin(w) + y * cos(w);
+}
+
+void RVector3D::zAngleDec(double w)
+{
+    zAngleInc(-w);
+}
+
+void RVector3D::angleInc(RVector3D angularRotation)
+{
+    xAngleInc(angularRotation.x);
+    yAngleInc(angularRotation.y);
+    zAngleInc(angularRotation.z);
 }
 
 double RVector3D::moduleSq()

@@ -34,6 +34,9 @@ void Quadrocopter::processSensorsData()
 
             RVector3D gyroCosines = (directionalCosines.angleFromProjections() + angularVelocity * dt).projectionsFromAngle();
 
+            // experimental
+            gyroCosines.zAngleInc(angularVelocity.z);
+
             // low-pass filter
             directionalCosines = gyroCosines * (1 - angleAlpha) + accelDataFiltered * (angleAlpha / accelDataFiltered.module());
 
