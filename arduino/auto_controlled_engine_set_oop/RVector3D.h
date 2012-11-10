@@ -35,6 +35,9 @@ public:
     RVector3D operator*=(double);
     RVector3D operator/=(double);
 
+    //vector product
+    RVector3D operator^(RVector3D);
+
     double& valueByAxisIndex(int index);
 
     RVector3D operator%(RVector3D);

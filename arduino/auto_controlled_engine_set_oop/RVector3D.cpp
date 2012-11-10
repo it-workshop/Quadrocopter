@@ -234,3 +234,16 @@ RVector3D RVector3D::projectionsFromAngle(double a)
     return(result);
 
 }
+
+RVector3D RVector3D::operator^(RVector3D t)
+{
+    /*
+     i  j  k
+     x  y  z
+     tx ty tz
+
+     ytz-zty;ztx-xtz;xty-ytx
+     */
+    RVector3D n(y * t.z - z * t.y, z * t.x - x * t.z, x * t.y - y * t.x);
+    return(n);
+}

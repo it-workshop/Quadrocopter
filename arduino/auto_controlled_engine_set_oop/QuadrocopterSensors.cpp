@@ -30,12 +30,11 @@ void Quadrocopter::processSensorsData()
             accelData.z -= (angularAcceleration.x * gyroToAcc.y - angularAcceleration.y * gyroToAcc.x) / g;*/
 
             accelDataFiltered = accelDataFiltered * (1 - accelAlpha) + accelData * accelAlpha;
+
             RVector3D accelAngle = accelDataFiltered.angleFromProjections();
 
-            RVector3D gyroCosines = (directionalCosines.angleFromProjections() + angularVelocity * dt).projectionsFromAngle();
-
-            // experimental
-            gyroCosines.zAngleInc(angularVelocity.z);
+            RVector3D gyroCosines = directionalCosines;
+            gyroCosines += (gyroCosines ^ angularVelocity) * dt; // v = [-w, r] = [r, w]
 
             // low-pass filter
             directionalCosines = gyroCosines * (1 - angleAlpha) + accelDataFiltered * (angleAlpha / accelDataFiltered.module());
