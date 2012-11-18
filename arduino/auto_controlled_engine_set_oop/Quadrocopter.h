@@ -42,6 +42,8 @@ private:
     double anglePeriod = 3.5; // period for alpha-beta (angle from accelerometer and gyroscope)
     double angleMaxReset = 0.8 * MPI; // to avoid wrong angle values when is is near MPI
 
+    double accelMaxError = 0.1;
+
     double DefaultVSensorMaxVoltage = 5 / 1.02 * 2.77; //maximal voltage (before voltage divider)
 
     const double g = 9.80665; // gravitational acceleration

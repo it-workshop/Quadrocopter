@@ -93,6 +93,8 @@ vect joystick::get_readings()
 
     data_formatted.y *= -1;
 
+    data_formatted *= 0.5;
+
     return(data_formatted);
 }
 

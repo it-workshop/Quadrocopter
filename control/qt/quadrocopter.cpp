@@ -138,7 +138,7 @@ void quadrocopter::write_data()
 
 void quadrocopter::defaults()
 {
-    torque_manual_correction = vect();
+    torque_manual_correction = vect(-0.48, -0.55, 0);
     torque_corrected = vect();
     gyroscope_readings = vect();
     accelerometer_readings = vect();
@@ -187,8 +187,8 @@ number_vect_t quadrocopter::get_read_time()
 
 void quadrocopter::reset()
 {
-    torque_manual_correction.x = 0;
-    torque_manual_correction.y = 0;
+//    torque_manual_correction.x = 0;
+//    torque_manual_correction.y = 0;
 
     swrite_clear();
     swrite('n');

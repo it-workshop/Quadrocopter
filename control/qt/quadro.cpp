@@ -56,17 +56,17 @@ void Quadro::set_quadro_data()
     number_vect_t t_power;
     vect t_correction;
 
+    t_correction = vect(ui->torque_manual_correction_x->value(), ui->torque_manual_correction_y->value(), 0);
+
     if(joy.isoperational() && ui->JoystickUse->isChecked())
     {
-        t_correction = joy.get_readings();
+        t_correction += joy.get_readings();
 
         t_power = joy.get_power_value();
         if(!joy.is_switched_on()) t_power = 0;
     }
     else
     {
-        t_correction = vect(ui->torque_manual_correction_x->value(), ui->torque_manual_correction_y->value(), 0);
-
         t_power = ui->power->value();
     }
 

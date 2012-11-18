@@ -37,7 +37,11 @@ void Quadrocopter::processSensorsData()
             gyroCosines += (gyroCosines ^ angularVelocity) * dt; // v = [-w, r] = [r, w]
 
             // low-pass filter
-            directionalCosines = gyroCosines * (1 - angleAlpha) + accelDataFiltered * (angleAlpha / accelDataFiltered.module());
+
+
+            if(fabs(accelDataFiltered.module() - 1) <= accelMaxError)
+                directionalCosines = gyroCosines * (1 - angleAlpha) + accelDataFiltered * (angleAlpha / accelDataFiltered.module());
+            else directionalCosines = gyroCosines;
 
             angle = directionalCosines.angleFromProjections();
 

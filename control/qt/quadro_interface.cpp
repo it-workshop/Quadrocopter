@@ -44,6 +44,9 @@ void Quadro::interface_init()
     ui->accel_period->setValue(quadro.get_accel_period());
     ui->angle_period->setValue(quadro.get_angle_period());
 
+    ui->torque_manual_correction_x->setValue(quadro.get_torque_manual_correction().x);
+    ui->torque_manual_correction_y->setValue(quadro.get_torque_manual_correction().y);
+
     setFocus();
 }
 
