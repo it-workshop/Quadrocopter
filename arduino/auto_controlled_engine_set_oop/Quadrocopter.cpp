@@ -1,4 +1,6 @@
 #include "Quadrocopter.h"
+//#include "ComplementaryFilter.cpp"
+#include "LowPassFilter.cpp"
 
 Quadrocopter::Quadrocopter()
 {
@@ -14,12 +16,12 @@ Quadrocopter::Quadrocopter()
 void Quadrocopter::reset()
 {
     angle = RVector3D();
-    directionalCosines = RVector3D();
+    directionalCosines.reset();
     angularAcceleration = RVector3D();
-    accelData = RVector3D();
-    accelDataFiltered = RVector3D();
+    accelDataRaw = RVector3D();
+    accelData.reset();
     torqueAutomaticCorrection = RVector3D();
-    torqueManualCorrection = RVector3D();
+    angleManualCorrection = RVector3D();
 
     MController->setForce(0);
     MController->setTorque(RVector3D());
@@ -50,7 +52,7 @@ void Quadrocopter::processCorrection()
         break;
 
     case ReactionAcceleration:
-        torqueAutomaticCorrection = getAccelerationCorrection(angle, accelData);
+        torqueAutomaticCorrection = getAccelerationCorrection(angle, accelDataRaw);
         break;
 
     case ReactionAngle:
@@ -78,12 +80,5 @@ void Quadrocopter::iteration()
 
 RVector3D Quadrocopter::getTorques()
 {
-    RVector3D res;
-
-    if(reactionType == ReactionAngularVelocity)
-        res += torqueManualCorrection;
-
-    res += torqueAutomaticCorrection;
-
-    return(res);
+    return(torqueAutomaticCorrection);
 }

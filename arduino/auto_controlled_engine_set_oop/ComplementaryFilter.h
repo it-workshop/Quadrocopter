@@ -3,10 +3,12 @@
 #ifndef COMPLEMENTARYFILTER_H
 #define COMPLEMENTARYFILTER_H
 
-class ComplementaryFilter : LowPassFilter
+template <typename T> class ComplementaryFilter : public LowPassFilter<T>
 {
+private:
+    //T value;
 public:
-    inline void iteration(double currentRawFastValue, double currentRawSlowValue, double dt); // update value using period and argument as dt
+    void iteration(T currentRawFastValue, T currentRawSlowValue, double dt); // update value using period and argument as dt
 };
 
 #endif // COMPLEMENTARYFILTER_H

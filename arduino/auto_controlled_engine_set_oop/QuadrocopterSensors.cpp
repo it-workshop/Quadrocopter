@@ -1,63 +1,53 @@
-
-
 #include "Quadrocopter.h"
+#include "ComplementaryFilter.cpp"
+#include "LowPassFilter.cpp"
 
 void Quadrocopter::processSensorsData()
 {
+    static RVector3D accelAngle, gyroCosines;
+
     if(reactionType == ReactionAngle || reactionType == ReactionAcceleration)
-        accelData = Accel->getReadings();
-    else accelData = RVector3D();
+        accelDataRaw = Accel->getReadings();
+    else accelDataRaw = RVector3D();
 
     if(reactionType != ReactionNone)
-    {
-        //angular velocity low-pass filter
-        double angularVelocityAlpha = dt / (dt + gyroPeriod / (2 * MPI));
-        angularVelocity = angularVelocity * (1 - angularVelocityAlpha) + Gyro->getReadings() * angularVelocityAlpha;
-    }
+        angularVelocity = Gyro->getReadings();
     else angularVelocity = RVector3D();
 
     if(reactionType == ReactionAngle)
     {
         if(DeltaT.getTimeIsset())
         {
-            // alpha coefficient for low-pass filter
-            double angleAlpha = dt / (dt + anglePeriod / (2 * MPI));
-            double accelAlpha = dt / (dt + accelPeriod / (2 * MPI));
-
             /*angularAcceleration = (angularVelocity - angularVelocityPrev) / dt;
             accelData.x -= (angularAcceleration.y * gyroToAcc.z - angularAcceleration.z * gyroToAcc.y) / g;
             accelData.y -= (angularAcceleration.z * gyroToAcc.x - angularAcceleration.x * gyroToAcc.z) / g;
             accelData.z -= (angularAcceleration.x * gyroToAcc.y - angularAcceleration.y * gyroToAcc.x) / g;*/
 
-            accelDataFiltered = accelDataFiltered * (1 - accelAlpha) + accelData * accelAlpha;
-
-            RVector3D accelAngle = accelDataFiltered.angleFromProjections();
-
-            RVector3D gyroCosines = directionalCosines;
+            // calculate fast gyro estimate
+            gyroCosines = directionalCosines.getValue();
             gyroCosines += (gyroCosines ^ angularVelocity) * dt; // v = [-w, r] = [r, w]
 
-            // low-pass filter
+            // calculate slow accel estimate
+            accelData.iteration(accelDataRaw, dt);
 
+            // complementary filter
+            directionalCosines.iteration(gyroCosines, accelData.getValue().normalize(), dt);
 
-            if(fabs(accelDataFiltered.module() - 1) <= accelMaxError)
-                directionalCosines = gyroCosines * (1 - angleAlpha) + accelDataFiltered * (angleAlpha / accelDataFiltered.module());
-            else directionalCosines = gyroCosines;
+            // converting value to 3 angles
+            angle = directionalCosines.getValue().angleFromProjections();
 
-            angle = directionalCosines.angleFromProjections();
+//            // sometimes some stuff happens
+//            for(unsigned i = 0; i < 2; i++)
+//            {
+//                if(fabs(angle.valueByAxisIndex(i)) > angleMaxReset)
+//                {
+//                    angle.valueByAxisIndex(i) = accelAngle.valueByAxisIndex(i) > 0 ?
+//                                fabs(angle.valueByAxisIndex(i)) : -fabs(angle.valueByAxisIndex(i));
+//                }
 
-            // sometimes some stuff happen
-            for(unsigned i = 0; i < 2; i++)
-            {
-                if(fabs(angle.valueByAxisIndex(i)) > angleMaxReset)
-                {
-                    angle.valueByAxisIndex(i) = accelAngle.valueByAxisIndex(i) > 0 ?
-                        fabs(angle.valueByAxisIndex(i)) : -fabs(angle.valueByAxisIndex(i));
-                }
-
-                if (!(angle.valueByAxisIndex(i) >= -MPI && angle.valueByAxisIndex(i) <= MPI))
-                    angle.valueByAxisIndex(i) = 0;
-
-            }
+//                if (!(angle.valueByAxisIndex(i) >= -MPI && angle.valueByAxisIndex(i) <= MPI))
+//                    angle.valueByAxisIndex(i) = 0;
+//            }
         }
 
         angularVelocityPrev = angularVelocity;

@@ -1,4 +1,6 @@
 #include "Definitions.h"
+#include "LowPassFilter.h"
+#include "ComplementaryFilter.h"
 #include "RVector3D.h"
 #include "TimerCount.h"
 #include "Accelerometer.h"
@@ -35,24 +37,21 @@ private:
     RVector3D gyroToAcc = RVector3D(-1.9E-2, -1.7E-2, 2.1E-2);
 
     // torque corrections
-    RVector3D torqueManualCorrection, torqueAutomaticCorrection;
+    RVector3D torqueAutomaticCorrection;
 
-    double gyroPeriod = 0; // period for low-pass filter for gyroscope
-    double accelPeriod = 1;  // period for low-pass filter for accelerometer
-    double anglePeriod = 3.5; // period for alpha-beta (angle from accelerometer and gyroscope)
+    RVector3D angleManualCorrection;
+
     double angleMaxReset = 0.8 * MPI; // to avoid wrong angle values when is is near MPI
-
-    double accelMaxError = 0.1;
 
     double DefaultVSensorMaxVoltage = 5 / 1.02 * 2.77; //maximal voltage (before voltage divider)
 
     const double g = 9.80665; // gravitational acceleration
 
     //physical quantities
-    RVector3D directionalCosines; // cosines of g vector (filtered)
+    ComplementaryFilter<RVector3D> directionalCosines; // cosines of g vector (filtered)
     RVector3D angle; // angle between Earth's coordinate and ours (filtered)
-    RVector3D accelData; //data from accelerometer (g - a)
-    RVector3D accelDataFiltered; // filtered data from accelerometer (experimental)
+    RVector3D accelDataRaw; //data from accelerometer (g - a)
+    LowPassFilter<RVector3D> accelData; // filtered data from accelerometer
     RVector3D angularVelocity; // filtered angular velocity from gyroscope
     RVector3D angularAcceleration; //discrete derivative of angular velocity
     double voltage; //accumulators voltage

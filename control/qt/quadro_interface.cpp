@@ -40,7 +40,6 @@ void Quadro::interface_init()
     ui->power->setScale(0, 1, 0.1);
     ui->power->setRange(0, 1, 0.01, 0);
 
-    ui->gyroscope_period->setValue(quadro.get_gyro_period());
     ui->accel_period->setValue(quadro.get_accel_period());
     ui->angle_period->setValue(quadro.get_angle_period());
 

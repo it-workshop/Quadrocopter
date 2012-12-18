@@ -2,7 +2,7 @@
 
 RVector3D Quadrocopter::getAngleCorrection(RVector3D angle, double dt)
 {
-    pidAngle.setData0(torqueManualCorrection);
+    pidAngle.setData0(angleManualCorrection);
     return(pidAngle.getY(angle, dt));
 }
 

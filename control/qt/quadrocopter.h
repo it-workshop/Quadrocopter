@@ -39,7 +39,7 @@ private:
     static const number_vect_t voltage_min = 11.0;
     static const number_vect_t voltage_max = 12.6;
 
-    number_vect_t gyro_period, accel_period, angle_period;
+    number_vect_t accel_period, angle_period;
 
     void defaults();
 
@@ -101,11 +101,9 @@ public:
 
     void reset(); // set torque to (0, 0, 1)
 
-    void set_gyro_period(double n_period);
     void set_accel_period(double n_period);
     void set_angle_period(double n_period);
 
-    double get_gyro_period();
     double get_accel_period();
     double get_angle_period();
 

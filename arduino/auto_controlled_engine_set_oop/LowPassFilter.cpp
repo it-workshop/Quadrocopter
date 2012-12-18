@@ -1,39 +1,44 @@
 #include "LowPassFilter.h"
 #include "Definitions.h"
 
-LowPassFilter::LowPassFilter()
+template <typename T> LowPassFilter<T>::LowPassFilter()
 {
     reset();
     period = 0;
 }
 
-LowPassFilter::LowPassFilter(double nPeriod)
+template <typename T> LowPassFilter<T>::LowPassFilter(double nPeriod)
 {
     LowPassFilter();
     setPeriod(nPeriod);
 }
 
-void LowPassFilter::setPeriod(double nPeriod)
+template <typename T> void LowPassFilter<T>::setPeriod(double nPeriod)
 {
     period = nPeriod;
 }
 
-inline double LowPassFilter::getAlpha(double dt)
+template <typename T> T LowPassFilter<T>::getValue()
+{
+    return(value);
+}
+
+template <typename T> inline void LowPassFilter<T>::iteration(T currentRawValue, double dt)
+{
+    value = (currentRawValue - value) * getAlpha(dt) + value;
+}
+
+template <typename T> double LowPassFilter<T>::getAlpha(double dt)
 {
     return(dt / (dt + period / (2 * MPI)));
 }
 
-inline void LowPassFilter::iteration(double currentRawValue, double dt)
-{
-    value = getAlpha(dt) * (currentRawValue - value) + value;
-}
-
-void LowPassFilter::reset()
+template <typename T> inline void LowPassFilter<T>::reset()
 {
     value = 0;
 }
 
-double LowPassFilter::getPeriod()
+template <typename T> double LowPassFilter<T>::getPeriod()
 {
     return(period);
 }

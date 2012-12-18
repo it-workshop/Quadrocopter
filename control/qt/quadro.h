@@ -119,7 +119,6 @@ private slots:
     void on_quadro_device_currentIndexChanged(const QString &arg1);
     void keyPressEvent(QKeyEvent*);
     void on_setAngle_clicked();
-    void on_gyroscope_period_valueChanged(double arg1);
     void on_accel_period_valueChanged(double arg1);
     void on_angle_period_valueChanged(double arg1);
 };

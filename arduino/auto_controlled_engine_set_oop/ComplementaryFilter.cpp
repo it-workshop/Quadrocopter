@@ -1,7 +1,7 @@
 #include "ComplementaryFilter.h"
 
-void ComplementaryFilter::iteration(double currentRawFastValue, double currentRawSlowValue, double dt)
+template <class T> void ComplementaryFilter<T>::iteration(T currentRawFastValue, T currentRawSlowValue, double dt)
 {
-    value = currentRawSlowValue;
-    value = getAlpha(dt) * (currentRawFastValue - value) + value;
+    //(1-alpha) * fast + alpha * slow === alpha * (slow - fast) + fast
+    this->value = (currentRawSlowValue - currentRawFastValue) * this->getAlpha(dt) + currentRawFastValue;
 }

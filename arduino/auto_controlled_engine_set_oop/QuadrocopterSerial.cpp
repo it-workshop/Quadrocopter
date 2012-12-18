@@ -1,4 +1,6 @@
 #include "Quadrocopter.h"
+#include "ComplementaryFilter.cpp"
+#include "LowPassFilter.cpp"
 
 void Quadrocopter::processSerialRx()
 {
@@ -19,7 +21,7 @@ void Quadrocopter::processSerialTx()
 
         // torque_manual_correction
         for(int i = 0; i < 3; i++)
-            MSerial->readDouble(-1, 1, torqueManualCorrection.valueByAxisIndex(i), 2);
+            MSerial->readDouble(-1, 1, angleManualCorrection.valueByAxisIndex(i), 2);
 
         //force
         MSerial->waitForByte();
@@ -45,9 +47,8 @@ void Quadrocopter::processSerialTx()
         MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngularVelocity.setKd(tDouble);
 
         //Periods for filters
-        MSerial->readDouble(0, 100, gyroPeriod, 2);
-        MSerial->readDouble(0, 100, accelPeriod, 2);
-        MSerial->readDouble(0, 100, anglePeriod, 2);
+        MSerial->readDouble(0, 100, tDouble, 2); accelData.setPeriod(tDouble);
+        MSerial->readDouble(0, 100, tDouble, 2); directionalCosines.setPeriod(tDouble);
 
         MSerial->bufferInit();
 
@@ -57,9 +58,9 @@ void Quadrocopter::processSerialTx()
         MSerial->RVector3D_write(angle, MySerial::PRINT_RAW, MySerial::USE_2D); // +4
 
         MSerial->RVector3D_write(angularVelocity, MySerial::PRINT_RAW); // +6
-        MSerial->RVector3D_write(accelDataFiltered, MySerial::PRINT_RAW); // +6
+        MSerial->RVector3D_write(accelData.getValue(), MySerial::PRINT_RAW); // +6
 
-        MSerial->RVector3D_write(torqueManualCorrection, MySerial::PRINT_RAW); // +6
+        MSerial->RVector3D_write(angleManualCorrection, MySerial::PRINT_RAW); // +6
 
         //motors
         for (unsigned i = 0; i < 4; i++)

@@ -3,9 +3,9 @@
 
 //arduino define
 #ifndef HIGH
-    #include "math.h"
+#include "math.h"
 #else
-    #include "Arduino.h"
+#include "Arduino.h"
 #endif
 
 RVector3D::RVector3D()
@@ -36,14 +36,6 @@ RVector3D RVector3D::operator =(double xyz)
     z = xyz;
 
     return(*this);
-}
-
-void RVector3D::norm()
-{
-    double k = 1.0 / sqrt(moduleSq());
-    x *= k;
-    y *= k;
-    z *= k;
 }
 
 void RVector3D::xAngleInc(double w)
@@ -97,6 +89,11 @@ double RVector3D::moduleSq()
 double RVector3D::module()
 {
     return sqrt(moduleSq());
+}
+
+RVector3D RVector3D::normalize()
+{
+    return(*this / module());
 }
 
 RVector3D RVector3D::operator-(RVector3D c)
@@ -208,7 +205,7 @@ RVector3D RVector3D::projectionsFromAngle(double a)
     RVector3D result = RVector3D();
 
     if (fabs(x - MPI / 2) < doubleEps || fabs(y - MPI / 2) < doubleEps
-     || fabs(x + MPI / 2) < doubleEps || fabs(y + MPI / 2) < doubleEps)
+            || fabs(x + MPI / 2) < doubleEps || fabs(y + MPI / 2) < doubleEps)
     {
         result.z = 0;
 

@@ -69,7 +69,7 @@ void Quadro::plot_init()
     QwtPlotCurve *acc_z = new QwtPlotCurve("(g - a)<sub>z</sub>");
     acc_z->attach(ui->plot_acc);
 
-    ui->plot_acc->setAxisScale(QwtPlot::yLeft, -10, 10);
+    ui->plot_acc->setAxisScale(QwtPlot::yLeft, -15, 15);
 
     // Set curve styles
     acc_x->setPen(QPen(Qt::red));

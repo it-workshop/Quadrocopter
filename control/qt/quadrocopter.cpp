@@ -36,7 +36,6 @@ quadrocopter::quadrocopter()
 
     joystick_coefficient = 0.5;
 
-    gyro_period = 0;
     accel_period = 2;
     angle_period = 8.5;
 
@@ -131,7 +130,6 @@ void quadrocopter::write_data()
     write_number_vect_t(-1.5, 1.5, PID_angular_velocity_Ki, 2);
     write_number_vect_t(-1.5, 1.5, PID_angular_velocity_Kd, 2);
 
-    write_number_vect_t(0, 100, gyro_period, 2);
     write_number_vect_t(0, 100, accel_period, 2);
     write_number_vect_t(0, 100, angle_period, 2);
 }
@@ -195,11 +193,6 @@ void quadrocopter::reset()
     swrite_put();
 }
 
-void quadrocopter::set_gyro_period(double n_period)
-{
-    gyro_period = n_period;
-}
-
 void quadrocopter::set_accel_period(double n_period)
 {
     accel_period = n_period;
@@ -208,11 +201,6 @@ void quadrocopter::set_accel_period(double n_period)
 void quadrocopter::set_angle_period(double n_period)
 {
     angle_period = n_period;
-}
-
-double quadrocopter::get_gyro_period()
-{
-    return(gyro_period);
 }
 
 double quadrocopter::get_accel_period()

@@ -21,7 +21,7 @@ public:
     double module();
 
     //make length equal 1
-    void norm();
+    RVector3D normalize();
 
     RVector3D operator+(RVector3D);
     RVector3D operator-(RVector3D);
