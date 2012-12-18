@@ -1,10 +1,10 @@
 const int SERIAL_SPEED = 9600;
 
 const int APINS_N = 3;
-const int APINS[APINS_N] = {A0, A1, A4};
+const int APINS[APINS_N] = {A1, A2, A3};
 
 const int DPINS_N = 1;
-const int DPINS[DPINS_N] = {10};
+const int DPINS[DPINS_N] = {8};
 
 const char C_REQUEST = 'r';
 
@@ -15,15 +15,15 @@ const char C_REQUEST = 'r';
 void setup()
 {
     //power for key
-    pinMode(8, OUTPUT);
-    digitalWrite(8, HIGH);
-    pinMode(9, OUTPUT);
-    digitalWrite(9, HIGH);
+//    pinMode(8, OUTPUT);
+//    digitalWrite(8, HIGH);
+//    pinMode(9, OUTPUT);
+//    digitalWrite(9, HIGH);
     
-    pinMode(6, OUTPUT);
-    digitalWrite(6, LOW);
-    pinMode(7, OUTPUT);
-    digitalWrite(7, LOW);
+//    pinMode(6, OUTPUT);
+//    digitalWrite(6, LOW);
+//    pinMode(7, OUTPUT);
+//    digitalWrite(7, LOW);
     
     
     for(int i = 0; i < APINS_N; i++)
@@ -60,6 +60,10 @@ void loop()
                     Serial.write(t_low);
                 #endif
             }
+            
+            Serial.write(1);
+            
+            /*
             for(i = 0; i < DPINS_N; i++)
             {
                 t_int = digitalRead(DPINS[i]);
@@ -74,6 +78,7 @@ void loop()
                     Serial.write(t_int);
                 #endif
             }
+            */
             
             #ifdef DEBUG
                 Serial.print("\n");
