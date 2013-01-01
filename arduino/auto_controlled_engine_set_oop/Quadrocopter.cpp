@@ -73,9 +73,10 @@ void Quadrocopter::iteration()
 
     processSensorsData();
     processCorrection();
-    processSerialRx();
     processMotors();
-    processSerialTx();
+    processSerialRx();
+    if(processSerialTx()) DeltaT.setTime();
+    //processSerialTx();
 }
 
 RVector3D Quadrocopter::getTorques()

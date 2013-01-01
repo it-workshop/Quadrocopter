@@ -5,8 +5,6 @@
 
 template <typename T> class ComplementaryFilter : public LowPassFilter<T>
 {
-private:
-    //T value;
 public:
     void iteration(T currentRawFastValue, T currentRawSlowValue, double dt); // update value using period and argument as dt
 };

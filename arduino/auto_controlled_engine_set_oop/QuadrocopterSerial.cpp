@@ -13,7 +13,7 @@ void Quadrocopter::processSerialRx()
     }
 }
 
-void Quadrocopter::processSerialTx()
+bool Quadrocopter::processSerialTx()
 {
     if(MSerial->getCommand() == 'p')
     {
@@ -25,13 +25,13 @@ void Quadrocopter::processSerialTx()
 
         //force
         MSerial->waitForByte();
-        if(MSerial->getReadError()) return;
+        if(MSerial->getReadError()) return(1);
 
         MController->setForce(MSerial->read() / 100.);
 
         //reaction_type
         MSerial->waitForByte();
-        if(MSerial->getReadError()) return;
+        if(MSerial->getReadError()) return(1);
 
         reactionType = (reactionType_) (MSerial->read() - '0');
 
@@ -77,6 +77,7 @@ void Quadrocopter::processSerialTx()
 
         MSerial->bufferWrite();
         MSerial->dropCommand();
+        return(1);
     }
     else if(MSerial->getCommand() == 'a')
     {
@@ -86,6 +87,7 @@ void Quadrocopter::processSerialTx()
         MSerial->bufferAdd("Quadrocopter arduino program");
         MSerial->bufferAdd('\n');
         MSerial->bufferWrite();
+        return(1);
     }
     else if(MSerial->getCommand() == 'h')
     {
@@ -98,5 +100,7 @@ void Quadrocopter::processSerialTx()
         MSerial->RVector3D_write(Accel->getRawReadings(), MySerial::PRINT_TAB);
         MSerial->bufferAdd('\n');
         MSerial->bufferWriteN();
+        return(1);
     }
+    return(0);
 }

@@ -80,7 +80,7 @@ public:
     void processMotors();
 
     void processSerialRx();
-    void processSerialTx();
+    bool processSerialTx();
 
     void iteration();
 

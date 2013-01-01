@@ -32,6 +32,7 @@ void Quadrocopter::processSensorsData()
 
             // complementary filter
             directionalCosines.iteration(gyroCosines, accelData.getValue().normalize(), dt);
+            directionalCosines.setValue(directionalCosines.getValue().normalize());
 
             // converting value to 3 angles
             angle = directionalCosines.getValue().angleFromProjections();

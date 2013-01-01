@@ -18,9 +18,9 @@ void setup()
 
 #if FASTADC
     // set prescale to 16
-    sbi(ADCSRA,ADPS2) ;
-    cbi(ADCSRA,ADPS1) ;
-    cbi(ADCSRA,ADPS0) ;
+    cbi(ADCSRA,ADPS2);
+    cbi(ADCSRA,ADPS1);
+    cbi(ADCSRA,ADPS0);
 #endif
 }
 

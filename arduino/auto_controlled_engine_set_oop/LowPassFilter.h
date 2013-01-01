@@ -19,6 +19,7 @@ public:
     inline double getAlpha(double dt); // returns alpha coefficient
     inline T getValue(); // returns current value
     inline double getPeriod(); // returns period
+    inline void setValue(T newValue); //set new value
 
     inline void reset();
 };

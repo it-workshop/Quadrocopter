@@ -42,3 +42,8 @@ template <typename T> double LowPassFilter<T>::getPeriod()
 {
     return(period);
 }
+
+template <typename T> void LowPassFilter<T>::setValue(T newValue)
+{
+    value = newValue;
+}
