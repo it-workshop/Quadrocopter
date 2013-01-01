@@ -68,7 +68,7 @@ private:
     RVector3D getAccelerationCorrection(RVector3D angle, RVector3D accelData0); // totally doesnt work
     RVector3D getAngularVelocityCorrection(RVector3D angularVelocity, double dt);
 
-    double dt;
+    double dt, dtMax;
 
     static const unsigned int serialReadN = 24; // bytes to read
 

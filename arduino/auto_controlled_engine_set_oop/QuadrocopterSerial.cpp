@@ -79,7 +79,8 @@ void Quadrocopter::processSerialCommand()
 
         //dt
         for (int si = 2; si >= 0; si--)
-            MSerial->bufferAdd((((unsigned long long) (dt * 1E6)) & (0xff << 8 * si)) >> (8 * si)); //+3
+            //MSerial->bufferAdd((((unsigned long long) (dt * 1E6)) & (0xff << 8 * si)) >> (8 * si)); //+3
+            MSerial->bufferAdd((((unsigned long long) (dtMax * 1E6)) & (0xff << 8 * si)) >> (8 * si)); //+3
 
         //reaction type
         MSerial->bufferAdd(reactionType + '0'); //+1

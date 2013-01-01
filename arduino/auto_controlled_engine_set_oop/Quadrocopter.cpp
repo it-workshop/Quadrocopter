@@ -32,6 +32,7 @@ void Quadrocopter::reset()
     accelerometerXi = RVector3D(0, 0, 0);
 
     voltage = 0;
+    dtMax = 0;
 
     pidAngle.setKpKiKd(0, 0, 0);
     pidAngularVelocity.setKpKiKd(0, 0, 0);
@@ -70,6 +71,7 @@ void Quadrocopter::iteration()
 {
     dt = DeltaT.getTimeDifferenceSeconds();
     DeltaT.setTime();
+    if(dtMax < dt) dtMax = dt;
 
     processSensorsData();
     processCorrection();
