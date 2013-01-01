@@ -14,6 +14,7 @@ private:
     static const unsigned int BufferMax = 300; //maximal buffer size
 
     bool readError = false; //read error
+    unsigned int readN;
 
     //buffers
     int bufferCount = 0;
@@ -42,20 +43,21 @@ public:
     enum RVector3DPrintMode {PRINT_TAB, PRINT_RAW}; //print type: TAB (decimal) or RAW (binary)
     enum RVector3DUseAxis {USE_2D, USE_3D}; //axis count
 
-    void RVector3D_write(RVector3D vector, RVector3DPrintMode mode = PRINT_TAB, RVector3DUseAxis uaxis = USE_3D);
+    void RVector3DWrite(RVector3D vector, RVector3DPrintMode mode = PRINT_TAB, RVector3DUseAxis uaxis = USE_3D);
 
     void receiveCommand(); //recieve command and store it into command
+    char getCommand();
+    void dropCommand();
+
     bool isSendAutomaticlyEnabled();
     void toggleSendAutomaticly();
 
     void waitForByte(); //wait MAXWAIT_U useconds for incoming byte
-
-    char getCommand();
-    void dropCommand();
-
     bool getReadError();
 
     char read();
+
+    unsigned int bytesAvailable();
 };
 
 #endif // MYSERIAL_H

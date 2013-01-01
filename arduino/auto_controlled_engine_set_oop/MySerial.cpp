@@ -131,7 +131,12 @@ char MySerial::read()
     return(Serial.read());
 }
 
-void MySerial::RVector3D_write(RVector3D vect, RVector3DPrintMode mode, RVector3DUseAxis uaxis)
+unsigned int MySerial::bytesAvailable()
+{
+    return(Serial.available());
+}
+
+void MySerial::RVector3DWrite(RVector3D vect, RVector3DPrintMode mode, RVector3DUseAxis uaxis)
 {
     unsigned int i;
     char x[BufferMax];

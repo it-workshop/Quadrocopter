@@ -70,6 +70,8 @@ private:
 
     double dt;
 
+    static const unsigned int serialReadN = 24; // bytes to read
+
 public:
     Quadrocopter();
 
@@ -79,8 +81,8 @@ public:
     void processCorrection();
     void processMotors();
 
-    void processSerialRx();
-    bool processSerialTx();
+    void processSerialCommand();
+    void processSerialInterrupt();
 
     void iteration();
 
