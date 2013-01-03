@@ -7,7 +7,7 @@
 class Accelerometer
 {
 private:
-    static const unsigned int Axis = 3, AvgN = 100;
+    static const unsigned int Axis = 3, AvgN = 1;
     static const double Accuracy = 1E-3;
     
     static const double adcAref = 5, adcMaxvalue = 1023;
