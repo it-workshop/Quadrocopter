@@ -24,9 +24,9 @@ private:
 
     bool sendAutomaticly;
 
-public:
     InfoLED led;
 
+public:
     MySerial();
 
     void bufferInit();
