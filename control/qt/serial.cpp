@@ -22,7 +22,7 @@ serial::serial()
 
     device = "";
     rate = 9600;
-    maxwait = 100;
+    maxwait = 1000;
 
     serror = false;
 

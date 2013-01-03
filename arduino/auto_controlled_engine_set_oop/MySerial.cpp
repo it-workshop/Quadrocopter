@@ -119,6 +119,7 @@ char MySerial::getCommand()
 void MySerial::dropCommand()
 {
     commandAvailable = false;
+    //led.setOff();
 }
 
 bool MySerial::getReadError()
@@ -163,12 +164,10 @@ void MySerial::receiveCommand()
         commandAvailable = true;
 
         readError = false;
-
-        led.setOn();
     }
     else
     {
-        if(!sendAutomaticly) led.setOff();
+        //if(!sendAutomaticly) led.setOff();
         commandAvailable = false;
     }
 }
@@ -181,5 +180,5 @@ bool MySerial::isSendAutomaticlyEnabled()
 void MySerial::toggleSendAutomaticly()
 {
     sendAutomaticly ^= 1;
-    led.setState(sendAutomaticly);
+    //led.setState(sendAutomaticly);
 }

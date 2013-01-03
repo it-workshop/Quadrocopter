@@ -1,3 +1,4 @@
+#include "Arduino.h"
 #include "Quadrocopter.h"
 //#include "ComplementaryFilter.cpp"
 #include "LowPassFilter.cpp"
@@ -69,13 +70,14 @@ void Quadrocopter::processMotors()
 
 void Quadrocopter::iteration()
 {
-    dt = DeltaT.getTimeDifferenceSeconds();
-    DeltaT.setTime();
-    if(dtMax < dt) dtMax = dt;
+    sei();
+//    dt = DeltaT.getTimeDifferenceSeconds();
+//    DeltaT.setTime();
+//    if(dtMax < dt) dtMax = dt;
 
-    processSensorsData();
-    processCorrection();
-    processMotors();
+//    processCorrection();
+//    processMotors();
+    processSerialInterrupt();
 }
 
 RVector3D Quadrocopter::getTorques()

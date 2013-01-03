@@ -151,7 +151,7 @@ void quadrocopter::defaults()
     write_time = 0;
     loop_time = 0;
 
-    reaction_type = REACTION_NONE;
+    reaction_type = REACTION_ANGLE;
 
     voltage = 0;
 
