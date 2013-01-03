@@ -31,7 +31,7 @@ private:
 
     //reaction type (different types of processing sensors' data)
     enum reactionType_ {ReactionNone, ReactionAngularVelocity, ReactionAcceleration, ReactionAngle};
-    reactionType_ reactionType = ReactionAngle;
+    reactionType_ reactionType = ReactionNone;
 
     // distance from gyroscope to the accelerometer in meters
     RVector3D gyroToAcc = RVector3D(-1.9E-2, -1.7E-2, 2.1E-2);
@@ -71,7 +71,6 @@ private:
     double dt, dtMax;
 
     static const unsigned int serialReadN = 24; // bytes to read
-    static const double dtSensors = 1e-3;
 
 public:
     Quadrocopter();
@@ -83,15 +82,11 @@ public:
     void processMotors();
 
     void processSerialCommand();
-
     void processSerialInterrupt();
-    void processSensorsInterrupt();
 
     void iteration();
 
     RVector3D getTorques();
 };
-
-void QuadrocopterInterruptInit();
 
 #endif // QUADROCOPTER_H

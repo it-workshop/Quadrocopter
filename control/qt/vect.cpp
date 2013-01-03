@@ -52,7 +52,7 @@ string vect::print2d()
 string vect::print()
 {
     stringstream t_stream;
-    t_stream.precision(4);
+    t_stream.precision(2);
 
     t_stream << x << "\t" << y << "\t" << z;
 

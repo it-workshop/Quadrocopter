@@ -94,12 +94,8 @@ void Quadrocopter::processSerialCommand()
 
 void Quadrocopter::processSerialInterrupt()
 {
-    if(MSerial->bytesAvailable())
-    {
-        //MSerial->led.setState(MSerial->getCommand() ? 1 : 0);
-        if(MSerial->getCommand())
-            processSerialCommand();
-        else
-            MSerial->receiveCommand();
-    }
+    if(MSerial->getCommand())
+        processSerialCommand();
+    else
+        MSerial->receiveCommand();
 }
