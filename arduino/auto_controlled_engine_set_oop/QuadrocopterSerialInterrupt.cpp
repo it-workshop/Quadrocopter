@@ -3,7 +3,7 @@
 
 extern Quadrocopter* quadro;
 
-void serialEvent()
-{
-    quadro->processSerialInterrupt();
-}
+//void serialEvent()
+//{
+//    quadro->processSerialInterrupt();
+//}

@@ -18,7 +18,7 @@ quadrocopter::quadrocopter()
     //device = "rfcomm0";
     device = "ttyACM0";
 
-    connect_delay_time = 500;
+    connect_delay_time = 1000;
 
     //connect_delay_arduino = 9000;
     connect_delay_arduino = 2000;

@@ -12,21 +12,22 @@ void Quadrocopter::processSerialCommand()
     else if(MSerial->getCommand() == 'a')
     {
         MSerial->dropCommand();
-
         MSerial->bufferInit();
-        MSerial->bufferAdd("Quadrocopter arduino program");
+        MSerial->bufferAdd("Quadrocopter arduino program\n");
+        MSerial->RVector3DWrite(angle * 180 / 3.1415, MySerial::PRINT_TAB);
         MSerial->bufferAdd('\n');
         MSerial->bufferWrite();
+        MSerial->dropCommand();
     }
     else if(MSerial->getCommand() == 'h')
     {
         MSerial->toggleSendAutomaticly();
-        MSerial->dropCommand();
+//        MSerial->dropCommand();
     }
     else if(MSerial->isSendAutomaticlyEnabled())
     {
         MSerial->bufferInit();
-        MSerial->RVector3DWrite(Accel->getRawReadings(), MySerial::PRINT_TAB);
+        MSerial->RVector3DWrite(angle * 180 / 3.1415, MySerial::PRINT_TAB);
         MSerial->bufferAdd('\n');
         MSerial->bufferWriteN();
     }
@@ -59,7 +60,7 @@ void Quadrocopter::processSerialCommand()
 
         //Periods for filters (+4)
         MSerial->readDouble(0, 100, tDouble, 2); accelData.setPeriod(tDouble);
-        MSerial->readDouble(0, 100, tDouble, 2); directionalCosines.setPeriod(tDouble);
+        MSerial->readDouble(0, 100, tDouble, 2);
 
 
         // writing 38 bytes
@@ -89,6 +90,11 @@ void Quadrocopter::processSerialCommand()
 
         MSerial->bufferWrite();
         MSerial->dropCommand();
+    }
+    else
+    {
+        MSerial->dropCommand();
+        MSerial->flush();
     }
 }
 

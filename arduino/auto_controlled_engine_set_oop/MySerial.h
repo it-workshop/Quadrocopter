@@ -57,6 +57,8 @@ public:
 
     char read();
 
+    void flush();
+
     unsigned int bytesAvailable();
 };
 

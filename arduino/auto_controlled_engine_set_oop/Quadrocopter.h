@@ -1,15 +1,13 @@
 #include "Definitions.h"
 #include "LowPassFilter.h"
-#include "ComplementaryFilter.h"
 #include "RVector3D.h"
 #include "TimerCount.h"
-#include "Accelerometer.h"
-#include "Gyroscope.h"
 #include "Motor.h"
 #include "MotorController.h"
 #include "MySerial.h"
 #include "PID.h"
 #include "VoltageSensor.h"
+#include "MPU6050DMP.h"
 
 #ifndef QUADROCOPTER_H
 #define QUADROCOPTER_H
@@ -18,11 +16,10 @@ class Quadrocopter
 {
 private:
     MotorController* MController;
-    Accelerometer* Accel;
-    Gyroscope* Gyro;
     TimerCount DeltaT;
     MySerial* MSerial;
     VoltageSensor* VSensor;
+    MPU6050DMP* MPU;
 
     // pins configuration
     int DefaultMotorPins[4] = {3, 9, 10, 11};
@@ -33,22 +30,16 @@ private:
     enum reactionType_ {ReactionNone, ReactionAngularVelocity, ReactionAcceleration, ReactionAngle};
     reactionType_ reactionType = ReactionNone;
 
-    // distance from gyroscope to the accelerometer in meters
-    RVector3D gyroToAcc = RVector3D(-1.9E-2, -1.7E-2, 2.1E-2);
-
     // torque corrections
     RVector3D torqueAutomaticCorrection;
 
     RVector3D angleManualCorrection;
-
-    double angleMaxReset = 0.8 * MPI; // to avoid wrong angle values when is is near MPI
 
     double DefaultVSensorMaxVoltage = 5 / 1.02 * 2.77; //maximal voltage (before voltage divider)
 
     const double g = 9.80665; // gravitational acceleration
 
     //physical quantities
-    ComplementaryFilter<RVector3D> directionalCosines; // cosines of g vector (filtered)
     RVector3D angle; // angle between Earth's coordinate and ours (filtered)
     RVector3D accelDataRaw; //data from accelerometer (g - a)
     LowPassFilter<RVector3D> accelData; // filtered data from accelerometer

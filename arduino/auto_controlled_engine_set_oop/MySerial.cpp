@@ -131,6 +131,12 @@ char MySerial::read()
     return(Serial.read());
 }
 
+void MySerial::flush()
+{
+    while(Serial.available())
+        Serial.read();
+}
+
 unsigned int MySerial::bytesAvailable()
 {
     return(Serial.available());

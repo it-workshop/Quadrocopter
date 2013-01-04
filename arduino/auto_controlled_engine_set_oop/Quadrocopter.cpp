@@ -6,17 +6,17 @@ Quadrocopter::Quadrocopter()
 {
     MSerial = new MySerial;
     MController = new MotorController(DefaultMotorPins);
-    Accel = new Accelerometer(DefaultAccelPins);
-    Gyro = new Gyroscope();
     VSensor = new VoltageSensor(DefaultVSensorPin, DefaultVSensorMaxVoltage);
+    MPU = new MPU6050DMP;
 
     this->reset();
+
+    MPU->initialize();
 }
 
 void Quadrocopter::reset()
 {
     angle = RVector3D();
-    directionalCosines.reset();
     angularAcceleration = RVector3D();
     accelDataRaw = RVector3D();
     accelData.reset();
@@ -69,13 +69,17 @@ void Quadrocopter::processMotors()
 
 void Quadrocopter::iteration()
 {
-    dt = DeltaT.getTimeDifferenceSeconds();
-    DeltaT.setTime();
-    if(dtMax < dt) dtMax = dt;
+    if(/*MPU->notBusy()*/true)
+    {
+        dt = DeltaT.getTimeDifferenceSeconds();
+        DeltaT.setTime();
+        if(dtMax < dt) dtMax = dt;
 
-    processSensorsData();
-    processCorrection();
-    processMotors();
+        processSensorsData();
+        processCorrection();
+        processMotors();
+        processSerialInterrupt();
+    }
 }
 
 RVector3D Quadrocopter::getTorques()
