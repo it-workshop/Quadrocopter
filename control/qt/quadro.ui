@@ -313,7 +313,7 @@
      <rect>
       <x>0</x>
       <y>124</y>
-      <width>421</width>
+      <width>428</width>
       <height>337</height>
      </rect>
     </property>
@@ -931,6 +931,21 @@
       <string>Corrections</string>
      </attribute>
      <widget class="QwtPlot" name="plot_corrections">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>617</width>
+        <height>471</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabvoltage">
+     <attribute name="title">
+      <string>Voltage</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_voltage">
       <property name="geometry">
        <rect>
         <x>0</x>

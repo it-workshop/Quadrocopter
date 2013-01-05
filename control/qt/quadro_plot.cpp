@@ -54,6 +54,24 @@ void Quadro::plot_init()
     ui->plot_gyro->setAxisTitle(QwtPlot::xBottom, "Time [s]");
     ui->plot_gyro->setAxisTitle(QwtPlot::yLeft, "Angular velocity [radians/s]");
 
+    ui->plot_gyro->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
+    ui->plot_gyro->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
+    ui->plot_gyro->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
+
+    // Insert new curves
+    plot_curve_voltage = new QwtPlotCurve("angular_velocity<sub>x</sub>");
+    plot_curve_voltage->attach(ui->plot_voltage);
+
+    ui->plot_voltage->setAxisScale(QwtPlot::yLeft, -10, 10);
+
+    // Set curve styles
+    plot_curve_voltage->setPen(QPen(Qt::red));
+
+    // Attach (don't copy) data.
+    plot_curve_voltage->setRawData(plot_time, plot_voltage, plot_size);
+
+    ui->plot_gyro->setAxisTitle(QwtPlot::xBottom, "Time [s]");
+    ui->plot_gyro->setAxisTitle(QwtPlot::yLeft, "Voltage [V]");
 
     ui->plot_acc->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
     ui->plot_acc->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
@@ -207,6 +225,7 @@ void Quadro::plot_init()
     ui->plot_corrections->setAxisTitle(QwtPlot::xBottom, "Time [s]");
     ui->plot_corrections->setAxisTitle(QwtPlot::yLeft, "Addition to the power");
 
+
     QwtPlotMarker *angle_zero = new QwtPlotMarker();
     angle_zero->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
     angle_zero->setLineStyle(QwtPlotMarker::HLine);
@@ -275,6 +294,8 @@ void Quadro::plot_reset_data()
         plot_angle_correction_x[i] = 0;
         plot_angle_correction_y[i] = 0;
         plot_angle_correction_z[i] = 0;
+
+        plot_voltage[i] = 0;
     }
 }
 
@@ -385,6 +406,8 @@ void Quadro::plot_update()
         plot_angle_correction_x[i] = plot_angle_correction_x[i + 1];
         plot_angle_correction_y[i] = plot_angle_correction_y[i + 1];
         plot_angle_correction_z[i] = plot_angle_correction_z[i + 1];
+
+        plot_voltage[i] = plot_voltage[i + 1];
     }
 
     plot_time[plot_current] = plot_time[plot_current - 1] + dt_seconds;
@@ -443,6 +466,12 @@ void Quadro::plot_update()
 
     ui->plot_angle->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
     ui->plot_angle->replot();
+
+    //voltage
+    plot_voltage[plot_current] = quadro.get_voltage();
+
+    ui->plot_voltage->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
+    ui->plot_voltage->replot();
 
     //for dt_seconds
     plot_mytime.set_time();
