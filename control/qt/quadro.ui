@@ -750,13 +750,6 @@
        </item>
       </layout>
      </item>
-     <item row="11" column="0">
-      <widget class="QLabel" name="label_filter">
-       <property name="text">
-        <string>Filter period</string>
-       </property>
-      </widget>
-     </item>
      <item row="11" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_6">
        <property name="sizeConstraint">
@@ -851,6 +844,13 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item row="11" column="0">
+      <widget class="QLabel" name="label_filter">
+       <property name="text">
+        <string>Filter period</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>

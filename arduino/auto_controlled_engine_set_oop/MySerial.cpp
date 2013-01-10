@@ -161,6 +161,13 @@ void MySerial::RVector3DWrite(RVector3D vect, RVector3DPrintMode mode, RVector3D
     }
 }
 
+void MySerial::writeNumber(double value)
+{
+    char x[BufferMax];
+    sprintf(x, "%d", (int) value);
+    bufferAdd(x);
+}
+
 void MySerial::receiveCommand()
 {
     if(Serial.available() > 0)

@@ -42,6 +42,8 @@ THE SOFTWARE.
 #include "I2Cdev.h"
 #include "MPU6050_6Axis_MotionApps20.h"
 #include "MPU6050DMP.h"
+#include "TimerCount.h"
+#include "Quadrocopter.h"
 
 bool mpuInterrupt = false;     // indicates whether MPU interrupt pin has gone high
 
@@ -49,9 +51,13 @@ bool mpuInterrupt = false;     // indicates whether MPU interrupt pin has gone h
 // ===               INTERRUPT DETECTION ROUTINE                ===
 // ================================================================
 
+extern Quadrocopter *quadro;
+
 void dmpDataReady()
 {
+    interrupts();
     mpuInterrupt = true;
+    quadro->MPUIteration();
 }
 
 float* MPU6050DMP::getYPR()
@@ -59,7 +65,23 @@ float* MPU6050DMP::getYPR()
     return(ypr);
 }
 
+void MPU6050DMP::attachFIFOInterrupt()
+{
+    // enable Arduino interrupt detection
+    attachInterrupt(0, dmpDataReady, RISING);
+    mpuIntStatus = mpu.getIntStatus();
+
+}
+
+int MPU6050DMP::bytesAvailableFIFO()
+{
+    return(mpu.getFIFOCount());
+}
+
 void MPU6050DMP::initialize() {
+    // reset YPR data
+    ypr[0] = ypr[1] = ypr[2] = 0;
+
     // join I2C bus (I2Cdev library doesn't do this automatically)
     Wire.begin();
 
@@ -74,16 +96,17 @@ void MPU6050DMP::initialize() {
         // turn on the DMP, now that it's ready
         mpu.setDMPEnabled(true);
 
-        // enable Arduino interrupt detection
-        attachInterrupt(0, dmpDataReady, RISING);
-        mpuIntStatus = mpu.getIntStatus();
+        attachFIFOInterrupt();
+
+        // get expected DMP packet size for later comparison
+        packetSize = mpu.dmpGetFIFOPacketSize();
 
         // set our DMP Ready flag so the main loop() function knows it's okay to use it
         dmpReady = true;
 
-        // get expected DMP packet size for later comparison
-        packetSize = mpu.dmpGetFIFOPacketSize();
+        //Serial.print("MPU init ok\n");
     }
+    //else Serial.print("MPU init failed\n");
 }
 
 bool MPU6050DMP::notBusy()
@@ -92,36 +115,64 @@ bool MPU6050DMP::notBusy()
 }
 
 void MPU6050DMP::iteration()
-{    
-    // wait for MPU interrupt or extra packet(s) available{
-    if(notBusy()) return;
-    
-    // if programming failed, don't try to do anything
+{
     if (!dmpReady) return;
 
-    // reset interrupt flag and get INT_STATUS byte
-    mpuInterrupt = false;
+    //Serial.print("\n#####int\n");
+    if(!mpu.dmpPacketAvailable()) return;
+    //Serial.print("\n######1\n");
+    // if programming failed, don't try to do anything
+    //return;
+
+    //Serial.print("\n######2\n");
+
     mpuIntStatus = mpu.getIntStatus();
+
+    //return;
+
+    //Serial.print("\n#######3:\n");
+    //Serial.print(mpuIntStatus);
+    //Serial.print("#####\n");
 
     // get current FIFO count
     fifoCount = mpu.getFIFOCount();
+//    Serial.print("MPU fc=");
+//    Serial.print(fifoCount);
+//    Serial.print("\t");
 
     // check for overflow (this should never happen unless our code is too inefficient)
     if ((mpuIntStatus & 0x10) || fifoCount == 1024) {
         // reset so we can continue cleanly
+        //Serial.println(F(" #OVERFLOW!# \n"));
         mpu.resetFIFO();
-    } // otherwise, check for DMP data ready interrupt (this should happen frequently)
+
+        // otherwise, check for DMP data ready interrupt (this should happen frequently)
+    }
     else if (mpuIntStatus & 0x02) {
         // wait for correct available data length, should be a VERY short wait
         while (fifoCount < packetSize) fifoCount = mpu.getFIFOCount();
+        //if(fifoCount < packetSize) return;
 
+        if(fifoCount % 42 != 0)
+        {
+            //Serial.print(" #ERROR# ");
+            mpu.getFIFOBytes(fifoBuffer, fifoCount % 42);
+        }
         // read a packet from FIFO
         mpu.getFIFOBytes(fifoBuffer, packetSize);
-        
+
         // track FIFO count here in case there is > 1 packet available
         // (this lets us immediately read more without waiting for an interrupt)
+        fifoCount -= packetSize;
         mpu.dmpGetQuaternion(&q, fifoBuffer);
         mpu.dmpGetGravity(&gravity, &q);
         mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
+//        for(int i = 0; i < 3; i++)
+//        {
+//            if(ypr[i] > 0) Serial.print("+");
+//            Serial.print(ypr[i]);
+//            Serial.print("\t");
+//        }
+//        Serial.print("\n");
     }
 }

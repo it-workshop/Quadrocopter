@@ -48,13 +48,13 @@ void Quadrocopter::processCorrection()
 
     switch(reactionType)
     {
-    case ReactionAngularVelocity:
-        torqueAutomaticCorrection = getAngularVelocityCorrection(angularVelocity, DeltaT.getTimeDifferenceSeconds());
-        break;
+//    case ReactionAngularVelocity:
+//        torqueAutomaticCorrection = getAngularVelocityCorrection(angularVelocity, DeltaT.getTimeDifferenceSeconds());
+//        break;
 
-    case ReactionAcceleration:
-        torqueAutomaticCorrection = getAccelerationCorrection(angle, accelDataRaw);
-        break;
+//    case ReactionAcceleration:
+//        torqueAutomaticCorrection = getAccelerationCorrection(angle, accelDataRaw);
+//        break;
 
     case ReactionAngle:
         torqueAutomaticCorrection = getAngleCorrection(angle, DeltaT.getTimeDifferenceSeconds());
@@ -69,17 +69,25 @@ void Quadrocopter::processMotors()
 
 void Quadrocopter::iteration()
 {
-    if(/*MPU->notBusy()*/true)
-    {
-        dt = DeltaT.getTimeDifferenceSeconds();
-        DeltaT.setTime();
-        if(dtMax < dt) dtMax = dt;
+    interrupts();
+    dt = DeltaT.getTimeDifferenceSeconds();
+    DeltaT.setTime();
+    if(dtMax < dt) dtMax = dt;
 
-        processSensorsData();
-        processCorrection();
-        processMotors();
-        processSerialInterrupt();
-    }
+    tCount.setTime();
+    processSensorsData();
+    sensorsTime = tCount.getTimeDifferenceSeconds();
+    tCount.setTime();
+    processCorrection();
+    processMotors();
+    calculationsTime = tCount.getTimeDifferenceSeconds();
+    processSerialRx();
+    processSerialTx();
+}
+
+void Quadrocopter::MPUIteration()
+{
+    MPU->iteration();
 }
 
 RVector3D Quadrocopter::getTorques()

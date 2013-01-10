@@ -45,6 +45,8 @@ public:
 
     void RVector3DWrite(RVector3D vector, RVector3DPrintMode mode = PRINT_TAB, RVector3DUseAxis uaxis = USE_3D);
 
+    void writeNumber(double value);
+
     void receiveCommand(); //recieve command and store it into command
     char getCommand();
     void dropCommand();

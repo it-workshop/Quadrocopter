@@ -44,7 +44,8 @@ quadrocopter::quadrocopter()
 
 void quadrocopter::read_data_request()
 {
-    if(!isoperational() || read_error()) return;
+    read_error_reset();
+    if(!isoperational()) return;
 
     mytime write_timer;
     write_timer.set_time();
@@ -156,7 +157,7 @@ void quadrocopter::defaults()
     voltage = 0;
 
     //wait for arduino to load
-    connect_delay_time = !device.substr(0, 6).compare("ttyACM") ? connect_delay_arduino : 500;
+    connect_delay_time = 2000;
 }
 
 void quadrocopter::do_connect()
@@ -398,11 +399,12 @@ void quadrocopter::set_reaction_type(quadrocopter::reaction_type_ n_reaction_typ
 
 void quadrocopter::on_rx()
 {
-    //qDebug() << "available: " << port->bytesAvailable();
+    qDebug() << "available: " << port->bytesAvailable();
 
     while(port->bytesAvailable() >= read_bytes_N)
     {
-        //qDebug() << "calling read_data()";
+        qDebug() << "calling read_data()";
         read_data();
+        qDebug() << "read_data() ok";
     }
 }

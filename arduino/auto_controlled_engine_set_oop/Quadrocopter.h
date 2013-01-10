@@ -59,7 +59,8 @@ private:
     RVector3D getAccelerationCorrection(RVector3D angle, RVector3D accelData0); // totally doesnt work
     RVector3D getAngularVelocityCorrection(RVector3D angularVelocity, double dt);
 
-    double dt, dtMax;
+    double dt, dtMax, sensorsTime, calculationsTime;
+    TimerCount tCount;
 
     static const unsigned int serialReadN = 24; // bytes to read
 
@@ -72,10 +73,11 @@ public:
     void processCorrection();
     void processMotors();
 
-    void processSerialCommand();
-    void processSerialInterrupt();
+    void processSerialRx();
+    void processSerialTx();
 
     void iteration();
+    void MPUIteration();
 
     RVector3D getTorques();
 };
