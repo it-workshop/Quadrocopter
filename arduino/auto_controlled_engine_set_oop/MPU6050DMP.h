@@ -58,6 +58,8 @@ extern bool mpuInterrupt; // indicates whether MPU interrupt pin has gone high
 
 class MPU6050DMP
 {
+static const unsigned int DIM = 3;
+//#define MPUDEBUG
 private:    
     // class default I2C address is 0x68
     // specific I2C addresses may be passed as a parameter here
@@ -92,6 +94,8 @@ private:
     uint16_t fifoCount;     // count of all bytes currently in FIFO
     uint8_t fifoBuffer[64]; // FIFO storage buffer
     static const double maxWait = 10e-3;
+
+    static const double gyroMulConstRad = M_PI / 180 * 16.4;
     
     // orientation/motion vars
     Quaternion q;           // [w, x, y, z]         quaternion container
@@ -99,15 +103,23 @@ private:
     VectorInt16 aaReal;     // [x, y, z]            gravity-free accel sensor measurements
     VectorInt16 aaWorld;    // [x, y, z]            world-frame accel sensor measurements
     VectorFloat gravity;    // [x, y, z]            gravity vector
-    float euler[3];         // [psi, theta, phi]    Euler angle container
-    float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+    int16_t av[DIM];        // [p, q, r]            gyro sensor measurements
+    float ypr[DIM];         // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+    float tfloat[DIM];
+    bool newData;
 public:
     void initialize();
     bool notBusy();
     void iteration();
-    float* getYPR();
+
+
+    float* getAngleXYZ();
+    float* getAngularVelocityXYZ();
+
     void attachFIFOInterrupt();
     int bytesAvailableFIFO();
+    void resetNewData();
+    bool getNewData();
 };
 
 void dmpDataReady();

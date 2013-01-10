@@ -60,9 +60,20 @@ void dmpDataReady()
     quadro->MPUIteration();
 }
 
-float* MPU6050DMP::getYPR()
+float* MPU6050DMP::getAngleXYZ()
 {
-    return(ypr);
+    tfloat[0] = -ypr[2];
+    tfloat[1] = +ypr[1];
+    tfloat[2] = +ypr[0];
+    return(tfloat);
+}
+
+float *MPU6050DMP::getAngularVelocityXYZ()
+{
+    tfloat[0] = -av[0] * gyroMulConstRad;
+    tfloat[1] = -av[1] * gyroMulConstRad;
+    tfloat[2] = -av[2] * gyroMulConstRad;
+    return(tfloat);
 }
 
 void MPU6050DMP::attachFIFOInterrupt()
@@ -78,9 +89,20 @@ int MPU6050DMP::bytesAvailableFIFO()
     return(mpu.getFIFOCount());
 }
 
+void MPU6050DMP::resetNewData()
+{
+    newData = false;
+}
+
+bool MPU6050DMP::getNewData()
+{
+    return(newData);
+}
+
 void MPU6050DMP::initialize() {
     // reset YPR data
     ypr[0] = ypr[1] = ypr[2] = 0;
+    av[0] = av[1] = av[2] = 0;
 
     // join I2C bus (I2Cdev library doesn't do this automatically)
     Wire.begin();
@@ -107,6 +129,7 @@ void MPU6050DMP::initialize() {
         //Serial.print("MPU init ok\n");
     }
     //else Serial.print("MPU init failed\n");
+    newData = false;
 }
 
 bool MPU6050DMP::notBusy()
@@ -136,14 +159,18 @@ void MPU6050DMP::iteration()
 
     // get current FIFO count
     fifoCount = mpu.getFIFOCount();
-//    Serial.print("MPU fc=");
-//    Serial.print(fifoCount);
-//    Serial.print("\t");
+    #ifdef MPUDEBUG
+        Serial.print("MPU fc=");
+        Serial.print(fifoCount);
+        Serial.print("\t");
+    #endif
 
     // check for overflow (this should never happen unless our code is too inefficient)
     if ((mpuIntStatus & 0x10) || fifoCount == 1024) {
         // reset so we can continue cleanly
-        //Serial.println(F(" #OVERFLOW!# \n"));
+        #ifdef MPUDEBUG
+            Serial.println(F(" #OVERFLOW!# \n"));
+        #endif
         mpu.resetFIFO();
 
         // otherwise, check for DMP data ready interrupt (this should happen frequently)
@@ -155,7 +182,9 @@ void MPU6050DMP::iteration()
 
         if(fifoCount % 42 != 0)
         {
-            //Serial.print(" #ERROR# ");
+            #ifdef MPUDEBUG
+                Serial.print(" #ERROR# ");
+            #endif
             mpu.getFIFOBytes(fifoBuffer, fifoCount % 42);
         }
         // read a packet from FIFO
@@ -165,14 +194,26 @@ void MPU6050DMP::iteration()
         // (this lets us immediately read more without waiting for an interrupt)
         fifoCount -= packetSize;
         mpu.dmpGetQuaternion(&q, fifoBuffer);
+        mpu.dmpGetGyro(av, fifoBuffer);
         mpu.dmpGetGravity(&gravity, &q);
         mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-//        for(int i = 0; i < 3; i++)
-//        {
-//            if(ypr[i] > 0) Serial.print("+");
-//            Serial.print(ypr[i]);
-//            Serial.print("\t");
-//        }
-//        Serial.print("\n");
+        #ifdef MPUDEBUG
+            getAngleXYZ();
+            for(int i = 0; i < 3; i++)
+            {
+                if(tfloat[i] > 0) Serial.print("+");
+                Serial.print(tfloat[i]);
+                Serial.print("\t");
+            }
+            getAngularVelocityXYZ();
+            for(int i = 0; i < 3; i++)
+            {
+                if(tfloat[i] > 0) Serial.print("+");
+                Serial.print(tfloat[i]);
+                Serial.print("\t");
+            }
+            Serial.print("\n");
+        #endif
+        newData = true;
     }
 }

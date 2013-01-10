@@ -38,6 +38,13 @@ RVector3D RVector3D::operator =(double xyz)
     return(*this);
 }
 
+void RVector3D::parseFloat(float * a)
+{
+    x = a[0];
+    y = a[1];
+    z = a[2];
+}
+
 void RVector3D::xAngleInc(double w)
 {
     double old_y = y;

@@ -1,4 +1,5 @@
 #include "Definitions.h"
+#include "MPU6050DMP.h"
 #include "LowPassFilter.h"
 #include "RVector3D.h"
 #include "TimerCount.h"
@@ -7,7 +8,6 @@
 #include "MySerial.h"
 #include "PID.h"
 #include "VoltageSensor.h"
-#include "MPU6050DMP.h"
 
 #ifndef QUADROCOPTER_H
 #define QUADROCOPTER_H
@@ -43,7 +43,7 @@ private:
     RVector3D angle; // angle between Earth's coordinate and ours (filtered)
     RVector3D accelDataRaw; //data from accelerometer (g - a)
     LowPassFilter<RVector3D> accelData; // filtered data from accelerometer
-    RVector3D angularVelocity; // filtered angular velocity from gyroscope
+    RVector3D angularVelocity; // angular velocity from gyroscope
     RVector3D angularAcceleration; //discrete derivative of angular velocity
     double voltage; //accumulators voltage
 
@@ -54,7 +54,7 @@ private:
     static const double angleMaxCorrection = MPI / 4;
     static const double angularVelocityMaxCorrection = MPI / 4;
 
-    PID pidAngle, pidAngularVelocity;
+    PID<RVector3D> pidAngle, pidAngularVelocity;
     RVector3D getAngleCorrection(RVector3D angle, double dt);
     RVector3D getAccelerationCorrection(RVector3D angle, RVector3D accelData0); // totally doesnt work
     RVector3D getAngularVelocityCorrection(RVector3D angularVelocity, double dt);

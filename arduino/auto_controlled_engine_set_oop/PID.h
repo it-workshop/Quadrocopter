@@ -3,29 +3,36 @@
 
 #include "RVector3D.h"
 
-class PID
+template <typename T> class PID
 {
 private:
-    RVector3D Kp, Ki, Kd;
+    T Kp, Ki, Kd;
 
-    RVector3D data0;
+    T data0;
 
-    RVector3D eIntegral;
-    RVector3D ePrev;
+    T eIntegral;
+    T ePrev;
 
-    RVector3D yMin;
-    RVector3D yMax;
+    T yMin;
+    T yMax;
+
+    //temp
+    T e, eDerivative; //error
+    T y; //correction
+
+    void prepare(T, double);
+    void iteration();
 
 public:
     PID();
 
-    RVector3D getKp();
-    RVector3D getKi();
-    RVector3D getKd();
+    T getKp();
+    T getKi();
+    T getKd();
 
-    void setKp(RVector3D);
-    void setKi(RVector3D);
-    void setKd(RVector3D);
+//    void setKp(T);
+//    void setKi(T);
+//    void setKd(T);
 
     void setKp(double);
     void setKi(double);
@@ -33,15 +40,15 @@ public:
 
     void setKpKiKd(double, double, double);
 
-    void setYMin(RVector3D);
-    void setYMax(RVector3D);
+    void setYMin(T);
+    void setYMax(T);
 
-    void setData0(RVector3D); // sets needed value
-    RVector3D getData0();
+    void setData0(T); // sets needed value
+    T getData0();
 
     void reset();
-
-    RVector3D getY(RVector3D, double); // iteration
+    T getY(T, double); // iteration
+    T getY(T, double, T); // iteration
 };
 
 #endif // PID_H

@@ -1,6 +1,7 @@
 #include "Quadrocopter.h"
 //#include "ComplementaryFilter.cpp"
 #include "LowPassFilter.cpp"
+#include "PID.cpp"
 
 Quadrocopter::Quadrocopter()
 {
@@ -70,15 +71,19 @@ void Quadrocopter::processMotors()
 void Quadrocopter::iteration()
 {
     interrupts();
-    dt = DeltaT.getTimeDifferenceSeconds();
-    DeltaT.setTime();
     if(dtMax < dt) dtMax = dt;
 
     tCount.setTime();
     processSensorsData();
     sensorsTime = tCount.getTimeDifferenceSeconds();
     tCount.setTime();
-    processCorrection();
+    if(MPU->getNewData())
+    {
+        dt = DeltaT.getTimeDifferenceSeconds();
+        processCorrection();
+        MPU->resetNewData();
+        DeltaT.setTime();
+    }
     processMotors();
     calculationsTime = tCount.getTimeDifferenceSeconds();
     processSerialRx();

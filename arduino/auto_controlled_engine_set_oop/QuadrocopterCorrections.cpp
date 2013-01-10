@@ -1,9 +1,10 @@
 #include "Quadrocopter.h"
+#include "PID.cpp"
 
 RVector3D Quadrocopter::getAngleCorrection(RVector3D angle, double dt)
 {
     pidAngle.setData0(angleManualCorrection);
-    RVector3D res = pidAngle.getY(angle, dt);
+    RVector3D res = pidAngle.getY(angle, dt, angularVelocity);
     res.z = 0;
     return(res);
 }

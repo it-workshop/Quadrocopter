@@ -1,6 +1,7 @@
 #include "Quadrocopter.h"
 #include "ComplementaryFilter.cpp"
 #include "LowPassFilter.cpp"
+#include "PID.cpp"
 
 void Quadrocopter::processSerialRx()
 {

@@ -1,20 +1,37 @@
 #include "PID.h"
-#include "RVector3D.h"
+
+template <typename T> T PID<T>::getY(T data, double dt)
+{
+    prepare(data, dt);
+    iteration();
+    return(y);
+}
+
+template <typename T> T PID<T>::getY(T data, double dt, T derivative)
+{
+    prepare(data, dt);
+    eDerivative = derivative;
+    iteration();
+    return(y);
+}
 
 
-RVector3D PID::getY(RVector3D data, double dt)
+template <typename T> void PID<T>::prepare(T data, double dt)
 {
     //difference between requested and current data
-    RVector3D e = data0 - data;
+    e = data0 - data;
 
     //discrete derivative
-    RVector3D e_derivative = (e - ePrev) / dt;
+    eDerivative = (e - ePrev) / dt;
 
     //discrete integral
     eIntegral += e * dt;
+}
 
+template <typename T> void PID<T>::iteration()
+{
     //correction
-    RVector3D y = e % Kp + eIntegral % Ki + e_derivative % Kd;
+    y = e % Kp /*+ eIntegral % Ki*/ + eDerivative % Kd;
 
     ePrev = e;
 
@@ -27,89 +44,90 @@ RVector3D PID::getY(RVector3D data, double dt)
             y.valueByAxisIndex(i) = yMax.valueByAxisIndex(i);
     }
 
-    return(y);
 }
 
-PID::PID()
+template <typename T> PID<T>::PID()
 {
-    eIntegral = RVector3D();
-    data0 = RVector3D();
-    ePrev = RVector3D();
+    eIntegral = T();
+    data0 = T();
+    ePrev = T();
+    Kp = Ki = Kd = T();
+    eDerivative = T();
 }
 
-RVector3D PID::getKp()
+template <typename T> T PID<T>::getKp()
 {
     return(Kp);
 }
 
-RVector3D PID::getKi()
+template <typename T> T PID<T>::getKi()
 {
     return(Ki);
 }
 
-RVector3D PID::getKd()
+template <typename T> T PID<T>::getKd()
 {
     return(Kd);
 }
 
-void PID::setKp(RVector3D arg)
+//template <typename T> void PID<T>::setKp(T arg)
+//{
+//    Kp = arg;
+//}
+
+//template <typename T> void PID<T>::setKi(T arg)
+//{
+//    Ki = arg;
+//}
+
+//template <typename T> void PID<T>::setKd(T arg)
+//{
+//    Kd = arg;
+//}
+
+template <typename T> void PID<T>::setKp(double arg)
 {
     Kp = arg;
 }
 
-void PID::setKi(RVector3D arg)
+template <typename T> void PID<T>::setKi(double arg)
 {
     Ki = arg;
 }
 
-void PID::setKd(RVector3D arg)
+template <typename T> void PID<T>::setKd(double arg)
 {
     Kd = arg;
 }
 
-void PID::setKp(double arg)
-{
-    Kp = arg;
-}
-
-void PID::setKi(double arg)
-{
-    Ki = arg;
-}
-
-void PID::setKpKiKd(double nKp, double nKi, double nKd)
+template <typename T> void PID<T>::setKpKiKd(double nKp, double nKi, double nKd)
 {
     Kp = nKp;
     Ki = nKi;
     Kd = nKd;
 }
 
-void PID::setKd(double arg)
-{
-    Kd = arg;
-}
-
-void PID::setYMin(RVector3D arg)
+template <typename T> void PID<T>::setYMin(T arg)
 {
     yMin = arg;
 }
 
-void PID::setYMax(RVector3D arg)
+template <typename T> void PID<T>::setYMax(T arg)
 {
     yMax = arg;
 }
 
-void PID::setData0(RVector3D arg)
+template <typename T> void PID<T>::setData0(T arg)
 {
     data0 = arg;
 }
 
-RVector3D PID::getData0()
+template <typename T> T PID<T>::getData0()
 {
     return(data0);
 }
 
-void PID::reset()
+template <typename T> void PID<T>::reset()
 {
     ePrev = data0;
     eIntegral = 0;
