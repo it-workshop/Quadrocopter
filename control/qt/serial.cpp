@@ -14,9 +14,9 @@ using std::map;
 
 serial::serial()
 {
-    rate_map[9600] = BAUD9600;
-    rate_map[57600] = BAUD57600;
-    rate_map[115200] = BAUD115200;
+    rateMap[9600] = BAUD9600;
+    rateMap[57600] = BAUD57600;
+    rateMap[115200] = BAUD115200;
 
     port = new QextSerialPort;
 
@@ -26,7 +26,7 @@ serial::serial()
 
     serror = false;
 
-    connect_delay_time = 0;
+    connectDelayTime = 0;
 }
 
 vect serial::read_vect_byte(unsigned int axis)
@@ -34,7 +34,7 @@ vect serial::read_vect_byte(unsigned int axis)
     vect result;
     for(unsigned int i = 0; i < axis; i++)
         result.value_by_axis_index(i) = read_number_vect_t(-10, 10, 2);
-    if(read_error()) result = vect();
+    if(readError()) result = vect();
 
     return(result);
 }
@@ -109,7 +109,7 @@ void serial::sopen()
     port->setPortName(device.c_str());
     port->setQueryMode(port->EventDriven);
 
-    port->setBaudRate(rate_map[rate]);
+    port->setBaudRate(rateMap[rate]);
 
     port->setFlowControl(FLOW_OFF);
     port->setParity(PAR_NONE);
@@ -119,7 +119,7 @@ void serial::sopen()
     if(port->open(QIODevice::ReadWrite) == true)
     {
         connect(port, SIGNAL(readyRead()), this, SLOT(on_rx()));
-        connect_delay.set_time();
+        connectDelay.setTime();
         flush();
         serror = false;
 
@@ -142,12 +142,12 @@ void serial::sclose()
     {
         port->close();
         disconnect(port, SIGNAL(readyRead()), this, SLOT(on_rx()));
-        read_error_reset();
+        readErrorReset();
         port->reset();
     }
 }
 
-bool serial::read_error()
+bool serial::readError()
 {
     return(serror);
 }
@@ -158,27 +158,27 @@ void serial::reopen()
     sopen();
 }
 
-void serial::read_error_reset()
+void serial::readErrorReset()
 {
     serror = false;
 }
 
-void serial::set_rate(unsigned int newrate)
+void serial::setRate(unsigned int newrate)
 {
     rate = newrate;
 }
 
-void serial::set_device(string newdevice)
+void serial::setDevice(string newdevice)
 {
     device = newdevice;
 }
 
-string serial::get_device()
+string serial::getDevice()
 {
     return(device);
 }
 
-void serial::swrite_clear()
+void serial::swriteClear()
 {
     buffer.clear();
 }
@@ -188,7 +188,7 @@ void serial::swrite(serial_t buf)
     buffer.push_back(buf);
 }
 
-void serial::swrite_put()
+void serial::swritePut()
 {
     char* c = new char[buffer.size()];
 
@@ -222,7 +222,7 @@ serial_t serial::sread()
 
 bool serial::isoperational()
 {
-    return(isconnected() && connect_delay.get_time_difference() >= connect_delay_time);
+    return(isconnected() && connectDelay.getTimeDifference() >= connectDelayTime);
 }
 
 bool serial::iswriteable()
@@ -235,12 +235,12 @@ bool serial::isconnected()
     //if(port->lastError() != 0)
     //    sclose();
 
-    return(port->isOpen() && !read_error());
+    return(port->isOpen() && !readError());
 }
 
 bool serial::iswaiting()
 {
-    return(isconnected() && connect_delay.get_time_difference() < connect_delay_time);
+    return(isconnected() && connectDelay.getTimeDifference() < connectDelayTime);
 }
 
 void serial::on_rx()

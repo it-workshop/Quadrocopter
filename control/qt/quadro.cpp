@@ -93,7 +93,7 @@ void Quadro::joy_disconnect()
 
 void Quadro::joy_connect()
 {
-    joy.read_error_reset();
+    joy.readErrorReset();
     joy.do_connect();
 
     if(joy.isoperational())
@@ -110,7 +110,7 @@ void Quadro::quadro_connect()
     plot_reset_data();
     plot_mytime.reset();
 
-    quadro.read_error_reset();
+    quadro.readErrorReset();
     quadro.do_connect();
 
     interface_write();
@@ -126,13 +126,13 @@ void Quadro::timer_reconnect_update()
         allowed = false;
         if(!quadro.isoperational() && ui->quadro_reconnect->isChecked())
         {
-            quadro.read_error_reset();
+            quadro.readErrorReset();
             quadro_connect();
             interface_write();
         }
         if(!joy.isoperational() && ui->joy_reconnect->isChecked())
         {
-            joy.read_error_reset();
+            joy.readErrorReset();
             joy_connect();
             interface_write();
         }
@@ -148,15 +148,15 @@ void Quadro::timer_auto_update()
     {
         allowed = false;
 
-        if(quadro.read_error())
+        if(quadro.readError())
         {
             quadro_disconnect();
-            quadro.read_error_reset();
+            quadro.readErrorReset();
         }
-        if(joy.read_error())
+        if(joy.readError())
         {
             joy_disconnect();
-            joy.read_error_reset();
+            joy.readErrorReset();
         }
 
         save_data();
@@ -173,7 +173,7 @@ void Quadro::timer_auto_update()
 
         if(quadro.isoperational())
         {
-            if(!plot_mytime.is_set()) plot_mytime.set_time();
+            if(!plot_mytime.isSet()) plot_mytime.setTime();
             else plot_update();
         }
 

@@ -7,17 +7,17 @@ using std::string;
 
 mytime::mytime()
 {
-    old = get_time_ms();
+    old = getTimeMs();
     reset();
 }
 
-void mytime::set_time()
+void mytime::setTime()
 {
-    old = get_time_ms();
+    old = getTimeMs();
     isset = true;
 }
 
-unsigned long long int mytime::get_time_ms()
+unsigned long long int mytime::getTimeMs()
 {
     timeb* tp = new timeb;
     ftime(tp);
@@ -30,21 +30,21 @@ void mytime::reset()
     isset = false;
 }
 
-bool mytime::is_set()
+bool mytime::isSet()
 {
     return(isset);
 }
 
-unsigned long long int mytime::get_time_difference()
+unsigned long long int mytime::getTimeDifference()
 {
-    return(get_time_ms() - old);
+    return(getTimeMs() - old);
 }
 
-string mytime::get_time()
+string mytime::getTime()
 {
     string result;
 
-    time_t seconds = mytime::get_seconds();
+    time_t seconds = mytime::getSeconds();
     tm* timeinfo = localtime(&seconds);
 
     char time_buf[80];
@@ -56,7 +56,7 @@ string mytime::get_time()
     return(result);
 }
 
-time_t mytime::get_seconds()
+time_t mytime::getSeconds()
 {
     time_t seconds = time(NULL);
 

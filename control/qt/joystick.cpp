@@ -8,9 +8,9 @@ joystick::joystick()
 
     device = "ttyUSB0";
 
-    connect_delay_time = 500;
+    connectDelayTime = 500;
 
-    read_bytes_N = 7;
+    readBytesN = 7;
 
     defaults();
 }
@@ -27,13 +27,13 @@ void joystick::defaults()
 
 void joystick::read_data_request()
 {
-    if(!isoperational() || read_error()) return;
+    if(!isoperational() || readError()) return;
 
     flush();
 
-    swrite_clear();
+    swriteClear();
     swrite('r');
-    swrite_put();
+    swritePut();
 }
 
 void joystick::read_data()
@@ -56,7 +56,7 @@ void joystick::read_data()
 
     bool t_bool = sread();
 
-    if(!read_error())
+    if(!readError())
     {
         data = t_vect;
         power_value = ((t_low & 0xff) + (t_high << 8));
@@ -126,7 +126,7 @@ void joystick::on_rx()
 {
     //qDebug() << "available: " << port->bytesAvailable();
 
-    while(port->bytesAvailable() >= read_bytes_N)
+    while(port->bytesAvailable() >= readBytesN)
     {
         //qDebug() << "calling read_data()";
         read_data();

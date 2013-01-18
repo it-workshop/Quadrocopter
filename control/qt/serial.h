@@ -34,14 +34,16 @@ protected:
     unsigned int maxwait;
     bool serror;
 
-    map<int, BaudRateType> rate_map;
+    map<int, BaudRateType> rateMap;
 
-    mytime connect_delay, read_timer;
-    number_vect_t connect_delay_time;
+    mytime connectDelay, readTimer;
+    number_vect_t connectDelayTime;
 
     vector<serial_t> buffer;
 
-    unsigned int read_bytes_N;
+    unsigned int readBytesN;
+
+    bool busyBit;
 
     void sopen();
     void sclose();
@@ -53,21 +55,21 @@ public:
     //virtual void do_connect();
     //virtual void do_disconnect();
 
-    void set_maxwait(unsigned int);
-    void set_rate(unsigned int);
-    void set_device(string);
+    void setMaxwait(unsigned int);
+    void setRate(unsigned int);
+    void setDevice(string);
 
-    string get_device();
+    string getDevice();
 
     void swrite(serial_t);
-    void swrite_put();
-    void swrite_clear();
+    void swritePut();
+    void swriteClear();
 
     serial_t sread();
     void flush();
 
-    bool read_error();
-    void read_error_reset();
+    bool readError();
+    void readErrorReset();
 
     bool isconnected();
     bool iswaiting();

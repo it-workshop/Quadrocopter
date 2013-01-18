@@ -18,7 +18,7 @@ quadrocopter::quadrocopter()
     //device = "rfcomm0";
     device = "ttyACM0";
 
-    connect_delay_time = 1000;
+    connectDelayTime = 1000;
 
     //connect_delay_arduino = 9000;
     connect_delay_arduino = 2000;
@@ -32,35 +32,38 @@ quadrocopter::quadrocopter()
     PID_angular_velocity_Kd = 0;
 
     //see arduino code
-    read_bytes_N = 38;
+    readBytesN = 38;
 
     joystick_coefficient = 0.5;
 
     accel_period = 2;
     angle_period = 8.5;
 
+    busyBit = false;
+
     defaults();
 }
 
 void quadrocopter::read_data_request()
 {
-    read_error_reset();
+    //busyBit = true;
+    readErrorReset();
     if(!isoperational()) return;
 
     mytime write_timer;
-    write_timer.set_time();
+    write_timer.setTime();
 
     flush();
-    swrite_clear();
+    swriteClear();
 
     swrite('p');
     write_data();
 
-    swrite_put();
+    swritePut();
 
-    write_time = write_timer.get_time_difference() / 1.E3;
+    write_time = write_timer.getTimeDifference() / 1.E3;
 
-    read_timer.set_time();
+    readTimer.setTime();
 }
 
 void quadrocopter::read_data()
@@ -82,7 +85,7 @@ void quadrocopter::read_data()
 
     number_vect_t t_voltage = read_number_vect_t(0, 20, 2);
 
-    if(!read_error())
+    if(!readError())
     {
         for(int i = 0; i < MOTORS_N; i++)
             MOTORS[i] = t_motors[i];
@@ -104,7 +107,7 @@ void quadrocopter::read_data()
 
         voltage = t_voltage;
 
-        read_time = read_timer.get_time_difference() / 1.E3;
+        read_time = readTimer.getTimeDifference() / 1.E3;
     }
 }
 
@@ -157,7 +160,7 @@ void quadrocopter::defaults()
     voltage = 0;
 
     //wait for arduino to load
-    connect_delay_time = 2000;
+    connectDelayTime = 2000;
 }
 
 void quadrocopter::do_connect()
@@ -176,7 +179,7 @@ void quadrocopter::do_disconnect()
 
     sclose();
 
-    read_error_reset();
+    readErrorReset();
 }
 
 number_vect_t quadrocopter::get_read_time()
@@ -189,9 +192,9 @@ void quadrocopter::reset()
 //    torque_manual_correction.x = 0;
 //    torque_manual_correction.y = 0;
 
-    swrite_clear();
+    swriteClear();
     swrite('n');
-    swrite_put();
+    swritePut();
 }
 
 void quadrocopter::set_accel_period(double n_period)
@@ -401,7 +404,7 @@ void quadrocopter::on_rx()
 {
     qDebug() << "available: " << port->bytesAvailable();
 
-    while(port->bytesAvailable() >= read_bytes_N)
+    while(port->bytesAvailable() >= readBytesN)
     {
         qDebug() << "calling read_data()";
         read_data();

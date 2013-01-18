@@ -40,12 +40,12 @@ void Quadro::on_actionJoystickCalibrate_zero_triggered()
 
 void Quadro::on_quadro_device_textChanged(const QString &arg1)
 {
-    quadro.set_device(arg1.toAscii().data());
+    quadro.setDevice(arg1.toAscii().data());
 }
 
 void Quadro::on_joystick_device_textChanged(const QString &arg1)
 {
-    joy.set_device(arg1.toAscii().data());
+    joy.setDevice(arg1.toAscii().data());
 }
 
 void Quadro::on_reaction_type_currentIndexChanged(int index)
@@ -95,12 +95,12 @@ void Quadro::on_PID_angular_velocity_Kd_valueChanged(double arg1)
 
 void Quadro::on_joystick_device_currentIndexChanged(const QString &arg1)
 {
-    joy.set_device(arg1.toAscii().data());
+    joy.setDevice(arg1.toAscii().data());
 }
 
 void Quadro::on_quadro_device_currentIndexChanged(const QString &arg1)
 {
-    quadro.set_device(arg1.toAscii().data());
+    quadro.setDevice(arg1.toAscii().data());
 }
 
 void Quadro::keyPressEvent(QKeyEvent *a)

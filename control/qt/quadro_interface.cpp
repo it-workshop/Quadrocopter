@@ -13,14 +13,14 @@ void Quadro::interface_init()
 
     ui->LogSave_data->setChecked(true);
     save_filename = "../log/quadro_";
-    save_filename.append(t_time.get_time());
+    save_filename.append(t_time.getTime());
     save_filename.append(".txt");
 
     ui->quadro_reconnect->setChecked(false);
     ui->joy_reconnect->setChecked(false);
 
-    ui->joystick_device->setEditText(joy.get_device().c_str());
-    ui->quadro_device->setEditText(quadro.get_device().c_str());
+    ui->joystick_device->setEditText(joy.getDevice().c_str());
+    ui->quadro_device->setEditText(quadro.getDevice().c_str());
 
     ui->quadro_device->setAutoFillBackground(true);
     ui->joystick_device->setAutoFillBackground(true);

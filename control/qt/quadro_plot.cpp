@@ -369,7 +369,7 @@ void Quadro::plot_update()
         usleep(1000);
     }*/
 
-    number_vect_t dt_seconds = plot_mytime.get_time_difference() / 1E3;
+    number_vect_t dt_seconds = plot_mytime.getTimeDifference() / 1E3;
 
     //shifting values
     for(int i = 0; i < plot_size - 1; i++)
@@ -474,5 +474,5 @@ void Quadro::plot_update()
     ui->plot_voltage->replot();
 
     //for dt_seconds
-    plot_mytime.set_time();
+    plot_mytime.setTime();
 }

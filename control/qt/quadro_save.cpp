@@ -37,7 +37,7 @@ void Quadro::save_data()
 
         t_ss.precision(2);
 
-        t_ss << t_time.get_seconds() << "\t" << t_time.get_time() << "\t"
+        t_ss << t_time.getSeconds() << "\t" << t_time.getTime() << "\t"
              << quadro.get_gyroscope_readings().print() << "\t"
              << quadro.get_accelerometer_readings().print() << "\t"
              << quadro.get_reaction_type() << "\t"
