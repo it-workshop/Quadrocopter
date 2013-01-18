@@ -7,6 +7,7 @@
 #include "MotorController.h"
 #include "MySerial.h"
 #include "PID.h"
+#include "InfoLED.h"
 #include "VoltageSensor.h"
 
 #ifndef QUADROCOPTER_H
@@ -61,6 +62,8 @@ private:
 
     double dt, dtMax, sensorsTime, calculationsTime;
     TimerCount tCount;
+
+    InfoLED myLed;
 
     static const unsigned int serialReadN = 24; // bytes to read
 
