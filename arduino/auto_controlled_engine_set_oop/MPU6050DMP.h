@@ -46,6 +46,7 @@ THE SOFTWARE.
 // is used in I2Cdev.h
 #include <Arduino.h>
 #include "Wire.h"
+#include "/home/seriy/Documents/p/git/Quadrocopter/arduino/auto_controlled_engine_set_oop/InfoLED.h"
 
 // I2Cdev and MPU6050 must be installed as libraries, or else the .cpp/.h files
 // for both classes must be in the include path of your project
@@ -107,11 +108,14 @@ private:
     float ypr[DIM];         // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
     float tfloat[DIM];
     bool newData;
+
+
+    InfoLED myLed;
 public:
     void initialize();
     bool notBusy();
     void iteration();
-
+    void processInterrupt();
 
     float* getAngleXYZ();
     float* getAngularVelocityXYZ();

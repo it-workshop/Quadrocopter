@@ -57,7 +57,7 @@ void dmpDataReady()
 {
     interrupts();
     mpuInterrupt = true;
-    quadro->MPUIteration();
+    quadro->MPUInterrupt();
 }
 
 float* MPU6050DMP::getAngleXYZ()
@@ -100,6 +100,8 @@ bool MPU6050DMP::getNewData()
 }
 
 void MPU6050DMP::initialize() {
+    myLed = InfoLED(A0, InfoLED::DAC);
+
     // reset YPR data
     ypr[0] = ypr[1] = ypr[2] = 0;
     av[0] = av[1] = av[2] = 0;
@@ -137,33 +139,23 @@ bool MPU6050DMP::notBusy()
     return(!mpuInterrupt && fifoCount < packetSize);
 }
 
+void MPU6050DMP::processInterrupt()
+{
+    newData = true;
+}
+
 void MPU6050DMP::iteration()
 {
-    if (!dmpReady) return;
+    if(!dmpReady) return;
 
-    //Serial.print("\n#####int\n");
     if(!mpu.dmpPacketAvailable()) return;
-    //Serial.print("\n######1\n");
-    // if programming failed, don't try to do anything
-    //return;
-
-    //Serial.print("\n######2\n");
+    myLed.setState(0);
 
     mpuIntStatus = mpu.getIntStatus();
-
-    //return;
-
-    //Serial.print("\n#######3:\n");
-    //Serial.print(mpuIntStatus);
-    //Serial.print("#####\n");
+    myLed.setState(10);
 
     // get current FIFO count
     fifoCount = mpu.getFIFOCount();
-    #ifdef MPUDEBUG
-        Serial.print("MPU fc=");
-        Serial.print(fifoCount);
-        Serial.print("\t");
-    #endif
 
     // check for overflow (this should never happen unless our code is too inefficient)
     if ((mpuIntStatus & 0x10) || fifoCount == 1024) {
@@ -171,15 +163,19 @@ void MPU6050DMP::iteration()
         #ifdef MPUDEBUG
             Serial.println(F(" #OVERFLOW!# \n"));
         #endif
+        myLed.setState(100);
         mpu.resetFIFO();
 
         // otherwise, check for DMP data ready interrupt (this should happen frequently)
     }
     else if (mpuIntStatus & 0x02) {
         // wait for correct available data length, should be a VERY short wait
+        myLed.setState(20);
         while (fifoCount < packetSize) fifoCount = mpu.getFIFOCount();
+        myLed.setState(30);
         //if(fifoCount < packetSize) return;
 
+        // removing leftovers
         if(fifoCount % 42 != 0)
         {
             #ifdef MPUDEBUG
@@ -187,8 +183,11 @@ void MPU6050DMP::iteration()
             #endif
             mpu.getFIFOBytes(fifoBuffer, fifoCount % 42);
         }
+        myLed.setState(40);
+
         // read a packet from FIFO
         mpu.getFIFOBytes(fifoBuffer, packetSize);
+        myLed.setState(50);
 
         // track FIFO count here in case there is > 1 packet available
         // (this lets us immediately read more without waiting for an interrupt)
@@ -215,5 +214,7 @@ void MPU6050DMP::iteration()
             Serial.print("\n");
         #endif
         newData = true;
+        myLed.setState(100);
     }
+    myLed.setState(100);
 }

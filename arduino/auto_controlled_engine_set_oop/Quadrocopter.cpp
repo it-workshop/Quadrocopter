@@ -1,7 +1,7 @@
 #include "Quadrocopter.h"
-//#include "ComplementaryFilter.cpp"
 #include "LowPassFilter.cpp"
 #include "PID.cpp"
+#include <avr/delay.h>
 
 Quadrocopter::Quadrocopter()
 {
@@ -10,7 +10,8 @@ Quadrocopter::Quadrocopter()
     VSensor = new VoltageSensor(DefaultVSensorPin, DefaultVSensorMaxVoltage);
     MPU = new MPU6050DMP;
 
-    myLed = InfoLED(4);
+    //myLed = InfoLED(A0, InfoLED::);
+    //myLed.setState(0);
 
     this->reset();
 
@@ -51,13 +52,13 @@ void Quadrocopter::processCorrection()
 
     switch(reactionType)
     {
-//    case ReactionAngularVelocity:
-//        torqueAutomaticCorrection = getAngularVelocityCorrection(angularVelocity, DeltaT.getTimeDifferenceSeconds());
-//        break;
+    //    case ReactionAngularVelocity:
+    //        torqueAutomaticCorrection = getAngularVelocityCorrection(angularVelocity, DeltaT.getTimeDifferenceSeconds());
+    //        break;
 
-//    case ReactionAcceleration:
-//        torqueAutomaticCorrection = getAccelerationCorrection(angle, accelDataRaw);
-//        break;
+    //    case ReactionAcceleration:
+    //        torqueAutomaticCorrection = getAccelerationCorrection(angle, accelDataRaw);
+    //        break;
 
     case ReactionAngle:
         torqueAutomaticCorrection = getAngleCorrection(angle, DeltaT.getTimeDifferenceSeconds());
@@ -75,29 +76,55 @@ void Quadrocopter::iteration()
     interrupts();
     if(dtMax < dt) dtMax = dt;
 
-    tCount.setTime();
-    processSensorsData();
-    sensorsTime = tCount.getTimeDifferenceSeconds();
-    tCount.setTime();
-    if(MPU->getNewData())
+    if(MPU->getNewData()) // on each MPU data packetf
     {
-        static bool ledState = false;
-        myLed.setState(ledState);
-        ledState = ledState ? 0 : 1;
-        dt = DeltaT.getTimeDifferenceSeconds();
-        processCorrection();
+        _delay_us(15000);
+//        myLed.setState(0);
+//        myLed.setState(100);
+//        myLed.setState(0);
+//        myLed.setState(100);
+//        myLed.setState(0);
+//        myLed.setState(100);
+//        myLed.setState(0);
+//        myLed.setState(100);
+//        myLed.setState(0);
+//        { // Serial
+//            processSerialRx();
+//            processSerialTx();
+//        }
+//        myLed.setState(30);
+
+
+        //tCount.setTime();
+//        { // Corrections, Motors
+//            dt = DeltaT.getTimeDifferenceSeconds();
+
+//            processCorrection();
+//            DeltaT.setTime();
+//            processMotors();
+//        }
+//        calculationsTime = tCount.getTimeDifferenceSeconds();
+
+        //myLed.setState(80);
+
+        //tCount.setTime();
+        { // Sensors
+            MPU->iteration();
+            processSensorsData();
+        }
+
+        //sensorsTime = tCount.getTimeDifferenceSeconds();
+
+        //myLed.setState(100);
+        //myLed.setState(100);
+
         MPU->resetNewData();
-        DeltaT.setTime();
-        processMotors();
     }
-    calculationsTime = tCount.getTimeDifferenceSeconds();
-    processSerialRx();
-    processSerialTx();
 }
 
-void Quadrocopter::MPUIteration()
+void Quadrocopter::MPUInterrupt()
 {
-    MPU->iteration();
+    MPU->processInterrupt();
 }
 
 RVector3D Quadrocopter::getTorques()

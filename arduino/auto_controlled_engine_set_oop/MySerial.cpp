@@ -7,7 +7,7 @@ MySerial::MySerial()
 {
     Serial.begin(115200);
 
-    led = InfoLED(13);
+    led = InfoLED(5);
     commandAvailable = false;
     readError = false;
 

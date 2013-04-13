@@ -23,8 +23,7 @@ private:
     MPU6050DMP* MPU;
 
     // pins configuration
-    int DefaultMotorPins[4] = {3, 9, 10, 11};
-    int DefaultAccelPins[3] = {A0, A1, A2};
+    int DefaultMotorPins[4] = {3, 5, 6, 9};
     int DefaultVSensorPin = A3;
 
     //reaction type (different types of processing sensors' data)
@@ -80,7 +79,9 @@ public:
     void processSerialTx();
 
     void iteration();
-    void MPUIteration();
+    void MPUInterrupt();
+
+    void blinkLed();
 
     RVector3D getTorques();
 };
