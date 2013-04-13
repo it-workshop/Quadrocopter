@@ -1,5 +1,5 @@
 #include "Quadrocopter.h"
-#include "PID.cpp"
+#include "PID.h"
 
 RVector3D Quadrocopter::getAngleCorrection(RVector3D angle, double dt)
 {

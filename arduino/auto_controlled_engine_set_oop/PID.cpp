@@ -1,5 +1,8 @@
 #include "PID.h"
 
+#ifndef PID_CPP
+#define PID_CPP
+
 template <typename T> T PID<T>::getY(T data, double dt)
 {
     prepare(data, dt);
@@ -132,3 +135,5 @@ template <typename T> void PID<T>::reset()
     ePrev = data0;
     eIntegral = 0;
 }
+
+#endif

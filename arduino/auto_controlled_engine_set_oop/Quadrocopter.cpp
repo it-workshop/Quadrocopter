@@ -1,6 +1,6 @@
+#include "LowPassFilter.h"
 #include "Quadrocopter.h"
-#include "LowPassFilter.cpp"
-#include "PID.cpp"
+#include "PID.h"
 #include <avr/delay.h>
 
 Quadrocopter::Quadrocopter()

@@ -1,5 +1,9 @@
+#include <Arduino.h>
 #include "LowPassFilter.h"
 #include "Definitions.h"
+
+#ifndef LOWPASSFILTER_CPP
+#define LOWPASSFILTER_CPP
 
 template <typename T> LowPassFilter<T>::LowPassFilter()
 {
@@ -47,3 +51,5 @@ template <typename T> void LowPassFilter<T>::setValue(T newValue)
 {
     value = newValue;
 }
+
+#endif

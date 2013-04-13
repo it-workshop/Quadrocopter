@@ -51,4 +51,6 @@ public:
     T getY(T, double, T); // iteration
 };
 
+#include "PID.cpp"
+
 #endif // PID_H

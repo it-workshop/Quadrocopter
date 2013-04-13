@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #ifndef LOWPASSFILTER_H
 #define LOWPASSFILTER_H
 
@@ -23,5 +25,7 @@ public:
 
     inline void reset();
 };
+
+#include "LowPassFilter.cpp"
 
 #endif // LOWPASSFILTER_H
