@@ -21,3 +21,6 @@ accel_test/201211
 
 arduino/auto_controlled_engine_set_oop/KalmanFilter.cpp
 arduino/auto_controlled_engine_set_oop/KalmanFilter.h
+
+*.autosave
+*~
