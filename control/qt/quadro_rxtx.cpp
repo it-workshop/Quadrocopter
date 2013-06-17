@@ -61,7 +61,7 @@ void quadrocopter::initiate_transmission()
 void quadrocopter::read_data()
 {
     qDebug() << "=== TRANSMISSION: READ_ACTUAL ===";
-    /*vect t_torque_corrected = read_vect_byte(), t_angle = read_vect_byte(2),
+    vect t_torque_corrected = read_vect_byte(), t_angle = read_vect_byte(2),
             t_gyroscope_readings = read_vect_byte(), t_accelerometer_readings = read_vect_byte(),
             t_torque_correction = read_vect_byte();
 
@@ -101,25 +101,24 @@ void quadrocopter::read_data()
         voltage = t_voltage;
 
         read_time = readTimer.getTimeDifference() / 1.E3;
-    }*/
-
-    char x[BN + 1];
-    x[BN] = 0;
-    int ef = 0;
-    for(int i = 0; i < BN; i++)
-    {
-        x[i] = sread();
-        if(x[i] != 33 + i)
-        {
-            qDebug() << "ef at i=" << i;
-            ef = 1;
-        }
     }
+//    char x[BN + 1];
+//    x[BN] = 0;
+//    int ef = 0;
+//    for(int i = 0; i < BN; i++)
+//    {
+//        x[i] = sread();
+//        if(x[i] != 33 + i)
+//        {
+//            qDebug() << "ef at i=" << i;
+//            ef = 1;
+//        }
+//    }
 
-    qDebug() << "read" << endl << x;
+//    qDebug() << "read" << endl << x;
     if(readError()) qDebug() << " !!! READ_ERROR !!!";
-    if(ef) qDebug() << " !!! CMP_ERROR !!!";
-    if(!(ef || readError()))
+    //if(ef) qDebug() << " !!! CMP_ERROR !!!";
+    if(!(/*ef || */readError()))
         busyBit = false;
 
     qDebug() << "=== END OF TRANSMISSION ===" << endl;
@@ -127,11 +126,11 @@ void quadrocopter::read_data()
 
 void quadrocopter::write_data()
 {
-    for(int i = 0; i < BN; i++)
-    {
-        swrite(i + 33);
-    }
-    /*if(power > 1) power = 1;
+//    for(int i = 0; i < BN; i++)
+//    {
+//        swrite(i + 33);
+//    }
+    if(power > 1) power = 1;
     else if(power < 0) power = 0;
 
     //send torque_manual_correction
@@ -153,5 +152,5 @@ void quadrocopter::write_data()
     write_number_vect_t(-1.5, 1.5, PID_angular_velocity_Kd, 2);
 
     write_number_vect_t(0, 100, accel_period, 2);
-    write_number_vect_t(0, 100, angle_period, 2);*/
+    write_number_vect_t(0, 100, angle_period, 2);
 }

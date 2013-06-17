@@ -23,17 +23,16 @@ void Quadrocopter::processSerialTx()
 {
     if(MSerial->getCommand() == 'p')
     {
-        if(MSerial->bytesAvailable() >= BN)
+        if(MSerial->bytesAvailable() >= serialReadN)
         {
-            x[BN] = 0;
             // reading
 
-            myLed.setState(70);
-            for(int i = 0; i < BN; i++)
-                x[i] = MSerial->read();
+            //myLed.setState(70);
+//            for(int i = 0; i < BN; i++)
+//                x[i] = MSerial->read();
             myLed.setState(80);
 
-            /*{
+            {
                 // torque_manual_correction
                 for(int i = 0; i < 3; i++)
                     MSerial->readDouble(-1, 1, angleManualCorrection.valueByAxisIndex(i), 2);
@@ -64,14 +63,14 @@ void Quadrocopter::processSerialTx()
                 //Periods for filters
                 MSerial->readDouble(0, 100, tDouble, 2); accelData.setPeriod(tDouble);
                 MSerial->readDouble(0, 100, tDouble, 2);
-            }*/
+            }
 
             MSerial->bufferInit();
 
-            for(int i = 0; i < BN; i++)
-                MSerial->bufferAdd(x[i]);
+//            for(int i = 0; i < BN; i++)
+//                MSerial->bufferAdd(x[i]);
             // writing 38 bytes
-            /*{
+            {
                 MSerial->RVector3DWrite(getTorques(), MySerial::PRINT_RAW); // +6
                 MSerial->RVector3DWrite(angle, MySerial::PRINT_RAW, MySerial::USE_2D); // +4
 
@@ -92,7 +91,7 @@ void Quadrocopter::processSerialTx()
                 MSerial->bufferAdd(reactionType + '0'); //+1
 
                 MSerial->writeDouble(0, 20, voltage, 2); //+2
-            }*/
+            }
 
             MSerial->bufferWrite();
             myLed.setState(90);

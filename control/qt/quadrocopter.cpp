@@ -32,8 +32,8 @@ quadrocopter::quadrocopter()
     PID_angular_velocity_Kd = 0;
 
     //see arduino code
-    //readBytesN = 38;
-    readBytesN = BN;
+    readBytesN = 38;
+    //readBytesN = BN;
 
     joystick_coefficient = 0.5;
 
