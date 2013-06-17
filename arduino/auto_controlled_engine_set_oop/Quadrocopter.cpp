@@ -1,3 +1,4 @@
+#include "Arduino.h"
 #include "LowPassFilter.h"
 #include "Quadrocopter.h"
 #include "PID.h"
@@ -12,10 +13,12 @@ Quadrocopter::Quadrocopter()
 
     //myLed = InfoLED(A0, InfoLED::);
     //myLed.setState(0);
+    myLed = MPU->myLed;
 
     this->reset();
 
     MPU->initialize();
+    interrupts();
 }
 
 void Quadrocopter::reset()
@@ -73,50 +76,38 @@ void Quadrocopter::processMotors()
 
 void Quadrocopter::iteration()
 {
-    interrupts();
     if(dtMax < dt) dtMax = dt;
 
-    if(MPU->getNewData()) // on each MPU data packetf
+    if(MPU->getNewData()) // on each MPU data packet
     {
-        _delay_us(15000);
-//        myLed.setState(0);
-//        myLed.setState(100);
-//        myLed.setState(0);
-//        myLed.setState(100);
-//        myLed.setState(0);
-//        myLed.setState(100);
-//        myLed.setState(0);
-//        myLed.setState(100);
-//        myLed.setState(0);
-//        { // Serial
-//            processSerialRx();
-//            processSerialTx();
-//        }
-//        myLed.setState(30);
+        myLed.setState(0);
 
+        { // Serial
+            processSerialRx();
+            myLed.setState(10);
+            processSerialTx();
+        }
 
-        //tCount.setTime();
-//        { // Corrections, Motors
-//            dt = DeltaT.getTimeDifferenceSeconds();
+        myLed.setState(20);
 
-//            processCorrection();
-//            DeltaT.setTime();
-//            processMotors();
-//        }
-//        calculationsTime = tCount.getTimeDifferenceSeconds();
+        tCount.setTime();
+        { // Corrections, Motors
+            dt = DeltaT.getTimeDifferenceSeconds();
 
-        //myLed.setState(80);
+            processCorrection();
+            DeltaT.setTime();
+            processMotors();
+        }
+        calculationsTime = tCount.getTimeDifferenceSeconds();
+        myLed.setState(30);
 
-        //tCount.setTime();
+        tCount.setTime();
         { // Sensors
             MPU->iteration();
             processSensorsData();
         }
-
-        //sensorsTime = tCount.getTimeDifferenceSeconds();
-
-        //myLed.setState(100);
-        //myLed.setState(100);
+        sensorsTime = tCount.getTimeDifferenceSeconds();
+        myLed.setState(100);
 
         MPU->resetNewData();
     }

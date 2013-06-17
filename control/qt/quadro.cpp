@@ -98,7 +98,7 @@ void Quadro::joy_connect()
 
     if(joy.isoperational())
     {
-        joy.read_data_request();
+        joy.initiate_transmission();
         joy.set_data_default();
 
         interface_write();
@@ -164,10 +164,10 @@ void Quadro::timer_auto_update()
         set_quadro_data();
 
         if(quadro.iswriteable())
-            quadro.read_data_request();
+            quadro.initiate_transmission();
 
         if(joy.isoperational())
-            joy.read_data_request();
+            joy.initiate_transmission();
 
         interface_write();
 

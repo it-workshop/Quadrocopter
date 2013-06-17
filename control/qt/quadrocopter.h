@@ -5,6 +5,8 @@
 #include <vect.h>
 #include <vector>
 
+#define BN 60
+
 using std::vector;
 
 class quadrocopter: public serial
@@ -96,7 +98,7 @@ public:
     reaction_type_ get_reaction_type();
     void set_reaction_type(reaction_type_);
 
-    void read_data_request(); // request read data from device
+    void initiate_transmission(); // initiate transmission
     void write_data(); // write data to device
 
     void reset(); // set torque to (0, 0, 1)

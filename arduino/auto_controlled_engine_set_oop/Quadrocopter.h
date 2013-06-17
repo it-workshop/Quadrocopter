@@ -13,6 +13,8 @@
 #ifndef QUADROCOPTER_H
 #define QUADROCOPTER_H
 
+#define BN 60
+
 class Quadrocopter
 {
 private:

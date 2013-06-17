@@ -21,7 +21,7 @@ quadrocopter::quadrocopter()
     connectDelayTime = 1000;
 
     //connect_delay_arduino = 9000;
-    connect_delay_arduino = 2000;
+    connect_delay_arduino = 5000;
 
     PID_angle_Kp = 0.27;
     PID_angle_Ki = 0.001;
@@ -32,7 +32,8 @@ quadrocopter::quadrocopter()
     PID_angular_velocity_Kd = 0;
 
     //see arduino code
-    readBytesN = 38;
+    //readBytesN = 38;
+    readBytesN = BN;
 
     joystick_coefficient = 0.5;
 
@@ -44,102 +45,11 @@ quadrocopter::quadrocopter()
     defaults();
 }
 
-void quadrocopter::read_data_request()
-{
-    //busyBit = true;
-    readErrorReset();
-    if(!isoperational()) return;
 
-    mytime write_timer;
-    write_timer.setTime();
-
-    flush();
-    swriteClear();
-
-    swrite('p');
-    write_data();
-
-    swritePut();
-
-    write_time = write_timer.getTimeDifference() / 1.E3;
-
-    readTimer.setTime();
-}
-
-void quadrocopter::read_data()
-{
-    vect t_torque_corrected = read_vect_byte(), t_angle = read_vect_byte(2),
-            t_gyroscope_readings = read_vect_byte(), t_accelerometer_readings = read_vect_byte(),
-            t_torque_correction = read_vect_byte();
-
-    reaction_type_ t_reaction_type;
-
-    number_vect_t t_motors[MOTORS_N], t_loop_time;
-
-    for(int i = 0; i < MOTORS_N; i++)
-        t_motors[i] = sread();
-
-    t_loop_time = read_unsigned_int_3byte() / 1.E6;
-
-    t_reaction_type = (reaction_type_) (sread() - '0');
-
-    number_vect_t t_voltage = read_number_vect_t(0, 20, 2);
-
-    if(!readError())
-    {
-        for(int i = 0; i < MOTORS_N; i++)
-            MOTORS[i] = t_motors[i];
-
-        torque_corrected = t_torque_corrected;
-        angle = t_angle;
-        gyroscope_readings = t_gyroscope_readings;
-        accelerometer_readings = t_accelerometer_readings * g;
-
-        if(t_reaction_type == REACTION_ANGULAR_VELOCITY)
-            torque_angular_velocity_correction = t_torque_correction;
-        else if(t_reaction_type == REACTION_ACCELERATION)
-            torque_acceleration_correction = t_torque_correction;
-        else if(t_reaction_type == REACTION_ANGLE)
-            torque_angle_correction = t_torque_correction;
-
-        loop_time = t_loop_time;
-        reaction_type = t_reaction_type;
-
-        voltage = t_voltage;
-
-        read_time = readTimer.getTimeDifference() / 1.E3;
-    }
-}
-
-void quadrocopter::write_data()
-{
-    if(power > 1) power = 1;
-    else if(power < 0) power = 0;
-
-    //send torque_manual_correction
-    for(int i = 0; i < 3; i++) // 2 - axis count
-        write_number_vect_t(-1, 1, torque_manual_correction.value_by_axis_index(i), 2);
-
-    //send power
-    swrite(power * 100); // in percents
-
-    //send reaction type
-    swrite('0' + reaction_type);
-
-    write_number_vect_t(-1.5, 1.5, PID_angle_Kp, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angle_Ki, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angle_Kd, 2);
-
-    write_number_vect_t(-1.5, 1.5, PID_angular_velocity_Kp, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angular_velocity_Ki, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angular_velocity_Kd, 2);
-
-    write_number_vect_t(0, 100, accel_period, 2);
-    write_number_vect_t(0, 100, angle_period, 2);
-}
 
 void quadrocopter::defaults()
 {
+    busyBit = false;
     torque_manual_correction = vect(-0.48, -0.55, 0);
     torque_corrected = vect();
     gyroscope_readings = vect();
@@ -185,16 +95,6 @@ void quadrocopter::do_disconnect()
 number_vect_t quadrocopter::get_read_time()
 {
     return(read_time);
-}
-
-void quadrocopter::reset()
-{
-//    torque_manual_correction.x = 0;
-//    torque_manual_correction.y = 0;
-
-    swriteClear();
-    swrite('n');
-    swritePut();
 }
 
 void quadrocopter::set_accel_period(double n_period)
@@ -398,16 +298,4 @@ quadrocopter::reaction_type_ quadrocopter::get_reaction_type()
 void quadrocopter::set_reaction_type(quadrocopter::reaction_type_ n_reaction_type)
 {
     reaction_type = n_reaction_type;
-}
-
-void quadrocopter::on_rx()
-{
-    qDebug() << "available: " << port->bytesAvailable();
-
-    while(port->bytesAvailable() >= readBytesN)
-    {
-        qDebug() << "calling read_data()";
-        read_data();
-        qDebug() << "read_data() ok";
-    }
 }

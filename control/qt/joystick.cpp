@@ -25,7 +25,7 @@ void joystick::defaults()
     power_value = 0;
 }
 
-void joystick::read_data_request()
+void joystick::initiate_transmission()
 {
     if(!isoperational() || readError()) return;
 

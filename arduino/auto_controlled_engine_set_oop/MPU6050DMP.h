@@ -109,8 +109,6 @@ private:
     float tfloat[DIM];
     bool newData;
 
-
-    InfoLED myLed;
 public:
     void initialize();
     bool notBusy();
@@ -124,6 +122,7 @@ public:
     int bytesAvailableFIFO();
     void resetNewData();
     bool getNewData();
+    InfoLED myLed;
 };
 
 void dmpDataReady();

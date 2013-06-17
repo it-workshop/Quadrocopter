@@ -192,11 +192,11 @@ void serial::swritePut()
 {
     char* c = new char[buffer.size()];
 
-    //cerr << "writing [" << buffer.size() << "] = ";
+    cerr << "writing [" << buffer.size() << "] = ";
 
     for(unsigned int i = 0; i < buffer.size(); i++)
     {
-        //cerr << buffer[i] << " ";
+        cerr << buffer[i] << " ";
         c[i] = buffer[i];
 
     }
@@ -205,7 +205,7 @@ void serial::swritePut()
 
     delete c;
 
-    //cerr << endl;
+    cerr << endl;
 }
 
 void serial::flush()

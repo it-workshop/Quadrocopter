@@ -30,7 +30,7 @@ public:
     void do_disconnect();
 
     void set_data_default(); // set zero position
-    void read_data_request(); // read data from device
+    void initiate_transmission(); // initiate transmission
 
     vect get_readings(); // 2D vect, values [0...1]
     bool is_switched_on();

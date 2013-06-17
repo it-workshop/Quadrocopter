@@ -33,7 +33,7 @@ void Quadro::on_actionJoystickCalibrate_zero_triggered()
 {
     if(joy.isoperational())
     {
-        joy.read_data_request();
+        joy.initiate_transmission();
         joy.set_data_default();
     }
 }

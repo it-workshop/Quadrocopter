@@ -146,13 +146,15 @@ void MySerial::RVector3DWrite(RVector3D vect, RVector3DPrintMode mode, RVector3D
 {
     unsigned int i;
     char x[BufferMax];
-    for(i = 0; i < 3; i++)
+    const unsigned int DIM = 3;
+    for(i = 0; i < DIM; i++)
     {
         if(mode == PRINT_TAB)
         {
             sprintf(x, "%d", (int) vect.valueByAxisIndex(i));
             bufferAdd(x);
-            bufferAdd('\t');
+            if(i != DIM - 1)
+                bufferAdd('\t');
         }
         else if(mode == PRINT_RAW)
             writeDouble(-10, 10, vect.valueByAxisIndex(i), 2);
