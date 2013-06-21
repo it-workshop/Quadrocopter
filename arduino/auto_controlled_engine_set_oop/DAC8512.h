@@ -1,6 +1,10 @@
 #ifndef DAC8512_H
 #define DAC8512_H
 
+#include "Definitions.h"
+
+#ifdef DEBUG_DAC
+
 class DAC8512
 {
 private:
@@ -22,5 +26,7 @@ public:
     void init();
     void send(unsigned int data);
 };
+
+#endif
 
 #endif // DAC8512_H

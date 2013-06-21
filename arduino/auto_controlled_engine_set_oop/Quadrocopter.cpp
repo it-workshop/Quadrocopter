@@ -11,10 +11,12 @@ Quadrocopter::Quadrocopter()
     VSensor = new VoltageSensor(DefaultVSensorPin, DefaultVSensorMaxVoltage);
     MPU = new MPU6050DMP;
 
-    //myLed = InfoLED(A0, InfoLED::);
-    //myLed.setState(0);
+#ifdef DEBUG_DAC
     myLed = MPU->myLed;
-
+#else
+    myLed = InfoLED(13, InfoLED::PWM);
+    myLed.setState(0);
+#endif
     this->reset();
 
     MPU->initialize();
@@ -80,7 +82,9 @@ void Quadrocopter::iteration()
 
     if(MPU->getNewData()) // on each MPU data packet
     {
+#ifdef DEBUG_DAC
         myLed.setState(0);
+#endif
 
         { // Serial
             processSerialRx();
@@ -88,7 +92,9 @@ void Quadrocopter::iteration()
             processSerialTx();
         }
 
+#ifdef DEBUG_DAC
         myLed.setState(20);
+#endif
 
         tCount.setTime();
         { // Corrections, Motors
@@ -99,7 +105,9 @@ void Quadrocopter::iteration()
             processMotors();
         }
         calculationsTime = tCount.getTimeDifferenceSeconds();
+#ifdef DEBUG_DAC
         myLed.setState(30);
+#endif
 
         tCount.setTime();
         { // Sensors
@@ -107,7 +115,9 @@ void Quadrocopter::iteration()
             processSensorsData();
         }
         sensorsTime = tCount.getTimeDifferenceSeconds();
+#ifdef DEBUG_DAC
         myLed.setState(100);
+#endif
 
         MPU->resetNewData();
     }

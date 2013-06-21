@@ -2,6 +2,8 @@
 #include <avr/io.h>
 #include <avr/delay.h>
 
+#ifdef DEBUG_DAC
+
 DAC8512::DAC8512()
 {
     CMDDDR = &DDRB;
@@ -52,3 +54,5 @@ void DAC8512::send(unsigned int data)
     *CMDPORT |= LD;
     dac_delay();
 }
+
+#endif

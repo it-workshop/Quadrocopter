@@ -30,7 +30,9 @@ void Quadrocopter::processSerialTx()
             //myLed.setState(70);
 //            for(int i = 0; i < BN; i++)
 //                x[i] = MSerial->read();
+#ifdef DEBUG_DAC
             myLed.setState(80);
+#endif
 
             {
                 // torque_manual_correction
@@ -94,7 +96,9 @@ void Quadrocopter::processSerialTx()
             }
 
             MSerial->bufferWrite();
+#ifdef DEBUG_DAC
             myLed.setState(90);
+#endif
             MSerial->dropCommand();
         }
     }

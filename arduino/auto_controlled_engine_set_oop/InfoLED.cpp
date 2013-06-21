@@ -3,9 +3,11 @@
 
 InfoLED::InfoLED(int nPin, typeT nType)
 {
+#ifdef DEBUG_DAC
     if(nType == DAC)
         DACDev.init();
     else
+#endif
         pinMode(nPin, OUTPUT);
     pin = nPin;
     type = nType;
@@ -31,5 +33,7 @@ void InfoLED::setState(int state)
         digitalWrite(pin, state ? HIGH : LOW);
     else if(type == PWM)
         analogWrite(pin, state * 255 / 100);
+#ifdef DEBUG_DAC
     else DACDev.send(((1 << 12) - 1) * ((long int) state) / 100);
+#endif
 }

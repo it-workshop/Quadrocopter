@@ -76,6 +76,14 @@ float *MPU6050DMP::getAngularVelocityXYZ()
     return(tfloat);
 }
 
+//float *MPU6050DMP::getAccelXYZ()
+//{
+//    tfloat[0] = acc[0];
+//    tfloat[1] = acc[1];
+//    tfloat[2] = acc[2];
+//    return(tfloat);
+//}
+
 void MPU6050DMP::attachFIFOInterrupt()
 {
     // enable Arduino interrupt detection
@@ -100,7 +108,9 @@ bool MPU6050DMP::getNewData()
 }
 
 void MPU6050DMP::initialize() {
+#ifdef DEBUG_DAC
     myLed = InfoLED(A0, InfoLED::DAC);
+#endif
 
     // reset YPR data
     ypr[0] = ypr[1] = ypr[2] = 0;
@@ -149,10 +159,14 @@ void MPU6050DMP::iteration()
     if(!dmpReady) return;
 
     if(!mpu.dmpPacketAvailable()) return;
+#ifdef DEBUG_DAC
     myLed.setState(40);
+#endif
 
     mpuIntStatus = mpu.getIntStatus();
+#ifdef DEBUG_DAC
     myLed.setState(50);
+#endif
 
     // get current FIFO count
     fifoCount = mpu.getFIFOCount();
@@ -160,34 +174,44 @@ void MPU6050DMP::iteration()
     // check for overflow (this should never happen unless our code is too inefficient)
     if ((mpuIntStatus & 0x10) || fifoCount == 1024) {
         // reset so we can continue cleanly
-        #ifdef MPUDEBUG
-            Serial.println(F(" #OVERFLOW!# \n"));
-        #endif
+#ifdef MPUDEBUG
+        Serial.println(F(" #OVERFLOW!# \n"));
+#endif
+#ifdef DEBUG_DAC
         myLed.setState(90);
+#endif
         mpu.resetFIFO();
 
         // otherwise, check for DMP data ready interrupt (this should happen frequently)
     }
     else if (mpuIntStatus & 0x02) {
         // wait for correct available data length, should be a VERY short wait
+#ifdef DEBUG_DAC
         myLed.setState(60);
+#endif
         while (fifoCount < packetSize) fifoCount = mpu.getFIFOCount();
+#ifdef DEBUG_DAC
         myLed.setState(70);
+#endif
         //if(fifoCount < packetSize) return;
 
         // removing leftovers
         if(fifoCount % 42 != 0)
         {
-            #ifdef MPUDEBUG
-                Serial.print(" #ERROR# ");
-            #endif
+#ifdef MPUDEBUG
+            Serial.print(" #ERROR# ");
+#endif
             mpu.getFIFOBytes(fifoBuffer, fifoCount % 42);
         }
+#ifdef DEBUG_DAC
         myLed.setState(80);
+#endif
 
         // read a packet from FIFO
         mpu.getFIFOBytes(fifoBuffer, packetSize);
+#ifdef DEBUG_DAC
         myLed.setState(90);
+#endif
 
         // track FIFO count here in case there is > 1 packet available
         // (this lets us immediately read more without waiting for an interrupt)
@@ -196,25 +220,28 @@ void MPU6050DMP::iteration()
         mpu.dmpGetGyro(av, fifoBuffer);
         mpu.dmpGetGravity(&gravity, &q);
         mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-        #ifdef MPUDEBUG
-            getAngleXYZ();
-            for(int i = 0; i < 3; i++)
-            {
-                if(tfloat[i] > 0) Serial.print("+");
-                Serial.print(tfloat[i]);
-                Serial.print("\t");
-            }
-            getAngularVelocityXYZ();
-            for(int i = 0; i < 3; i++)
-            {
-                if(tfloat[i] > 0) Serial.print("+");
-                Serial.print(tfloat[i]);
-                Serial.print("\t");
-            }
-            Serial.print("\n");
-        #endif
+        //mpu.dmpGetAccelFloat(acc, fifoBuffer);
+#ifdef MPUDEBUG
+        getAngleXYZ();
+        for(int i = 0; i < 3; i++)
+        {
+            if(tfloat[i] > 0) Serial.print("+");
+            Serial.print(tfloat[i]);
+            Serial.print("\t");
+        }
+        getAngularVelocityXYZ();
+        for(int i = 0; i < 3; i++)
+        {
+            if(tfloat[i] > 0) Serial.print("+");
+            Serial.print(tfloat[i]);
+            Serial.print("\t");
+        }
+        Serial.print("\n");
+#endif
         newData = true;
 
     }
+#ifdef DEBUG_DAC
     myLed.setState(90);
+#endif
 }

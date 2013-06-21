@@ -47,6 +47,7 @@ THE SOFTWARE.
 #include <Arduino.h>
 #include "Wire.h"
 #include "InfoLED.h"
+#include "Definitions.h"
 
 // I2Cdev and MPU6050 must be installed as libraries, or else the .cpp/.h files
 // for both classes must be in the include path of your project
@@ -107,6 +108,7 @@ private:
     int16_t av[DIM];        // [p, q, r]            gyro sensor measurements
     float ypr[DIM];         // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
     float tfloat[DIM];
+    //float acc[DIM];         // [x, y, z]            accel sensor measurements (float)
     bool newData;
 
 public:
@@ -117,12 +119,15 @@ public:
 
     float* getAngleXYZ();
     float* getAngularVelocityXYZ();
+    //float* getAccelXYZ();
 
     void attachFIFOInterrupt();
     int bytesAvailableFIFO();
     void resetNewData();
     bool getNewData();
+#ifdef DEBUG_DAC
     InfoLED myLed;
+#endif
 };
 
 void dmpDataReady();

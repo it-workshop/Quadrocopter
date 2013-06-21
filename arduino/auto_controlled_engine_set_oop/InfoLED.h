@@ -1,16 +1,26 @@
 #ifndef INFOLED_H
 #define INFOLED_H
 
+#include "Definitions.h"
+
+#ifdef DEBUG_DAC
 #include "DAC8512.h"
+#endif
 
 class InfoLED
 {
 private:
     int pin;
+#ifdef DEBUG_DAC
     DAC8512 DACDev;
+#endif
 
 public:
-    enum typeT{DIGITAL, PWM, DAC} type;
+    enum typeT{DIGITAL, PWM,
+#ifdef DEBUG_DAC
+               DAC
+#endif
+    } type;
     void setOn();
     void setOff();
 
