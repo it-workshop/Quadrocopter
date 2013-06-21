@@ -9,6 +9,6 @@
 //#define DEBUG_NO_GYROSCOPE
 //#define DEBUG_NO_ACCELEROMETER
 //#define DEBUG_NO_SERIAL
-//#define DEBUG_DAC
+#define DEBUG_DAC
 
 #endif

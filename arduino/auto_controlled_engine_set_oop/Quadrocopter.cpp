@@ -88,7 +88,7 @@ void Quadrocopter::iteration()
 
         { // Serial
             processSerialRx();
-            myLed.setState(10);
+            myLed.setState(5);
             processSerialTx();
         }
 

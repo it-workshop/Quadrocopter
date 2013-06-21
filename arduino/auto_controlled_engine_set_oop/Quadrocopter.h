@@ -25,7 +25,11 @@ private:
     MPU6050DMP* MPU;
 
     // pins configuration
+#ifdef DEBUG_DAC
+    int DefaultMotorPins[4] = {3, 5, 6, 9};
+#else
     int DefaultMotorPins[4] = {3, 9, 10, 11};
+#endif
     int DefaultVSensorPin = A3;
 
     //reaction type (different types of processing sensors' data)

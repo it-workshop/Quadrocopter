@@ -31,7 +31,7 @@ void Quadrocopter::processSerialTx()
 //            for(int i = 0; i < BN; i++)
 //                x[i] = MSerial->read();
 #ifdef DEBUG_DAC
-            myLed.setState(80);
+            myLed.setState(10);
 #endif
 
             {
@@ -69,6 +69,10 @@ void Quadrocopter::processSerialTx()
 
             MSerial->bufferInit();
 
+#ifdef DEBUG_DAC
+            myLed.setState(15);
+#endif
+
 //            for(int i = 0; i < BN; i++)
 //                MSerial->bufferAdd(x[i]);
             // writing 38 bytes
@@ -96,9 +100,6 @@ void Quadrocopter::processSerialTx()
             }
 
             MSerial->bufferWrite();
-#ifdef DEBUG_DAC
-            myLed.setState(90);
-#endif
             MSerial->dropCommand();
         }
     }
