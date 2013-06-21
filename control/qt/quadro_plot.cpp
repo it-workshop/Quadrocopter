@@ -59,10 +59,10 @@ void Quadro::plot_init()
     ui->plot_gyro->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
 
     // Insert new curves
-    plot_curve_voltage = new QwtPlotCurve("angular_velocity<sub>x</sub>");
+    plot_curve_voltage = new QwtPlotCurve("voltage");
     plot_curve_voltage->attach(ui->plot_voltage);
 
-    ui->plot_voltage->setAxisScale(QwtPlot::yLeft, -10, 10);
+    ui->plot_voltage->setAxisScale(QwtPlot::yLeft, 0, 15);
 
     // Set curve styles
     plot_curve_voltage->setPen(QPen(Qt::red));
@@ -70,8 +70,8 @@ void Quadro::plot_init()
     // Attach (don't copy) data.
     plot_curve_voltage->setRawData(plot_time, plot_voltage, plot_size);
 
-    ui->plot_gyro->setAxisTitle(QwtPlot::xBottom, "Time [s]");
-    ui->plot_gyro->setAxisTitle(QwtPlot::yLeft, "Voltage [V]");
+    ui->plot_voltage->setAxisTitle(QwtPlot::xBottom, "Time [s]");
+    ui->plot_voltage->setAxisTitle(QwtPlot::yLeft, "Voltage [V]");
 
     ui->plot_acc->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
     ui->plot_acc->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
@@ -119,7 +119,7 @@ void Quadro::plot_init()
     QwtPlotCurve *angle_accy = new QwtPlotCurve("acc_data_angle<sub>y</sub>");
     angle_accy->attach(ui->plot_angle);
 
-    ui->plot_angle->setAxisScale(QwtPlot::yLeft, -M_PI, M_PI);
+    ui->plot_angle->setAxisScale(QwtPlot::yLeft, -M_PI / 2 * 1.1, M_PI / 2 * 1.1);
 
     // Set curve styles
     angle_x->setPen(QPen(Qt::red));

@@ -126,3 +126,9 @@ void Quadro::on_angle_period_valueChanged(double arg1)
 {
     quadro.set_angle_period(arg1);
 }
+
+void Quadro::on_torque_manual_reset_clicked()
+{
+    ui->torque_manual_correction_x->setValue(0);
+    ui->torque_manual_correction_y->setValue(0);
+}

@@ -236,6 +236,13 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QPushButton" name="torque_manual_reset">
+           <property name="text">
+            <string>Reset</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
@@ -522,16 +529,16 @@
           <string/>
          </property>
          <property name="decimals">
-          <number>4</number>
+          <number>5</number>
          </property>
          <property name="minimum">
-          <double>-10.000000000000000</double>
+          <double>-1.000000000000000</double>
          </property>
          <property name="maximum">
-          <double>10.000000000000000</double>
+          <double>1.000000000000000</double>
          </property>
          <property name="singleStep">
-          <double>0.010000000000000</double>
+          <double>0.001000000000000</double>
          </property>
          <property name="value">
           <double>0.000000000000000</double>
@@ -563,16 +570,16 @@
           <string/>
          </property>
          <property name="decimals">
-          <number>4</number>
+          <number>5</number>
          </property>
          <property name="minimum">
-          <double>-10.000000000000000</double>
+          <double>-1.000000000000000</double>
          </property>
          <property name="maximum">
-          <double>10.000000000000000</double>
+          <double>1.000000000000000</double>
          </property>
          <property name="singleStep">
-          <double>0.010000000000000</double>
+          <double>0.001000000000000</double>
          </property>
         </widget>
        </item>
@@ -601,7 +608,7 @@
           <string/>
          </property>
          <property name="decimals">
-          <number>4</number>
+          <number>5</number>
          </property>
          <property name="minimum">
           <double>-1.000000000000000</double>
@@ -610,7 +617,7 @@
           <double>1.000000000000000</double>
          </property>
          <property name="singleStep">
-          <double>0.010000000000000</double>
+          <double>0.001000000000000</double>
          </property>
          <property name="value">
           <double>0.000000000000000</double>
@@ -795,7 +802,7 @@
           <double>0.500000000000000</double>
          </property>
          <property name="value">
-          <double>5.000000000000000</double>
+          <double>0.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -839,7 +846,7 @@
           <double>0.500000000000000</double>
          </property>
          <property name="value">
-          <double>7.500000000000000</double>
+          <double>0.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -964,7 +971,7 @@
      <x>0</x>
      <y>0</y>
      <width>1054</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuQuadro">

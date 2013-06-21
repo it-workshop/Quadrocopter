@@ -50,7 +50,7 @@ quadrocopter::quadrocopter()
 void quadrocopter::defaults()
 {
     busyBit = false;
-    torque_manual_correction = vect(-0.48, -0.55, 0);
+    torque_manual_correction = vect();
     torque_corrected = vect();
     gyroscope_readings = vect();
     accelerometer_readings = vect();

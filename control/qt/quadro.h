@@ -122,6 +122,7 @@ private slots:
     void on_setAngle_clicked();
     void on_accel_period_valueChanged(double arg1);
     void on_angle_period_valueChanged(double arg1);
+    void on_torque_manual_reset_clicked();
 };
 
 #endif // QUADRO_H
