@@ -66,13 +66,17 @@ void Quadrocopter::processSerialTx()
                 MSerial->readDouble(0, 100, tDouble, 2); accelData.setPeriod(tDouble);
                 MSerial->readDouble(0, 100, tDouble, 2);
             }
-
+#ifdef DEBUG_NO_TX_ARDUINO
+            Serial.write('x');
+#else
             MSerial->bufferInit();
+#endif
 
 #ifdef DEBUG_DAC
             myLed.setState(15);
 #endif
 
+#ifndef DEBUG_NO_TX_ARDUINO
 //            for(int i = 0; i < BN; i++)
 //                MSerial->bufferAdd(x[i]);
             // writing 38 bytes
@@ -100,6 +104,7 @@ void Quadrocopter::processSerialTx()
             }
 
             MSerial->bufferWrite();
+#endif
             MSerial->dropCommand();
         }
     }

@@ -4,6 +4,7 @@
 #include <serial.h>
 #include <vect.h>
 #include <vector>
+#include "Definitions.h"
 
 #define BN 60
 

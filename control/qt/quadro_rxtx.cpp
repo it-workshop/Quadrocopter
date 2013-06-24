@@ -61,6 +61,7 @@ void quadrocopter::initiate_transmission()
 void quadrocopter::read_data()
 {
     qDebug() << "=== TRANSMISSION: READ_ACTUAL ===";
+#ifndef DEBUG_NO_TX_ARDUINO
     vect t_torque_corrected = read_vect_byte(), t_angle = read_vect_byte(2),
             t_gyroscope_readings = read_vect_byte(), t_accelerometer_readings = read_vect_byte(),
             t_torque_correction = read_vect_byte();
@@ -99,8 +100,6 @@ void quadrocopter::read_data()
         reaction_type = t_reaction_type;
 
         voltage = t_voltage;
-
-        read_time = readTimer.getTimeDifference() / 1.E3;
     }
 //    char x[BN + 1];
 //    x[BN] = 0;
@@ -116,6 +115,12 @@ void quadrocopter::read_data()
 //    }
 
 //    qDebug() << "read" << endl << x;
+#else
+    sread();
+#endif
+
+    read_time = readTimer.getTimeDifference() / 1.E3;
+
     if(readError()) qDebug() << " !!! READ_ERROR !!!";
     //if(ef) qDebug() << " !!! CMP_ERROR !!!";
     if(!(/*ef || */readError()))
