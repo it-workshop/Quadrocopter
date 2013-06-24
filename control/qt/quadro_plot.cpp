@@ -54,9 +54,9 @@ void Quadro::plot_init()
     ui->plot_gyro->setAxisTitle(QwtPlot::xBottom, "Time [s]");
     ui->plot_gyro->setAxisTitle(QwtPlot::yLeft, "Angular velocity [radians/s]");
 
-    ui->plot_gyro->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
-    ui->plot_gyro->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
-    ui->plot_gyro->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
+    ui->plot_voltage->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
+    ui->plot_voltage->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
+    ui->plot_voltage->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
 
     // Insert new curves
     plot_curve_voltage = new QwtPlotCurve("voltage");
