@@ -121,6 +121,21 @@ double quadrocopter::get_angle_period()
     return(angle_period);
 }
 
+number_vect_t quadrocopter::get_PID_P()
+{
+    return(PID_P);
+}
+
+number_vect_t quadrocopter::get_PID_I()
+{
+    return(PID_I);
+}
+
+number_vect_t quadrocopter::get_PID_D()
+{
+    return(PID_D);
+}
+
 vect quadrocopter::get_torque_corrected()
 {
     return(torque_corrected);

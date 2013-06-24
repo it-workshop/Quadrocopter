@@ -44,6 +44,8 @@ private:
 
     number_vect_t accel_period, angle_period;
 
+    number_vect_t PID_P, PID_I, PID_D;
+
     void defaults();
 
     void read_data(); // read data from device
@@ -109,6 +111,10 @@ public:
 
     double get_accel_period();
     double get_angle_period();
+
+    number_vect_t get_PID_P();
+    number_vect_t get_PID_I();
+    number_vect_t get_PID_D();
 
     virtual void on_rx();
 };

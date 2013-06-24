@@ -18,6 +18,14 @@ template <typename T> T PID<T>::getY(T data, double dt, T derivative)
     return(y);
 }
 
+template <typename T> T* PID<T>::getLastPID()
+{
+    PID_C[0] = P;
+    PID_C[1] = I;
+    PID_C[2] = D;
+    return(PID_C);
+}
+
 
 template <typename T> void PID<T>::prepare(T data, double dt)
 {
@@ -34,7 +42,10 @@ template <typename T> void PID<T>::prepare(T data, double dt)
 template <typename T> void PID<T>::iteration()
 {
     //correction
-    y = e % Kp + eIntegral % Ki + eDerivative % Kd;
+    P = e % Kp;
+    I = eIntegral % Ki;
+    D = eDerivative % Kd;
+    y = P + I + D;
 
     ePrev = e;
 

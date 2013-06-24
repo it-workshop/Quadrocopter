@@ -85,7 +85,13 @@ void Quadrocopter::processSerialTx()
                 MSerial->RVector3DWrite(angle, MySerial::PRINT_RAW, MySerial::USE_2D); // +4
 
                 MSerial->RVector3DWrite(angularVelocity, MySerial::PRINT_RAW); // +6
-                MSerial->RVector3DWrite(accelData.getValue(), MySerial::PRINT_RAW); // +6
+
+                //MSerial->RVector3DWrite(accelData.getValue(), MySerial::PRINT_RAW); // +6
+
+                MSerial->RVector3DWrite(RVector3D(pidAngle.getLastPID()[0].x,
+                                                  pidAngle.getLastPID()[1].x,
+                                                  pidAngle.getLastPID()[2].x),
+                                        MySerial::PRINT_RAW); // +6
 
                 MSerial->RVector3DWrite(angleManualCorrection, MySerial::PRINT_RAW); // +6
 

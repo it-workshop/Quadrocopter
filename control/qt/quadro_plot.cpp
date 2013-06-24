@@ -225,6 +225,35 @@ void Quadro::plot_init()
     ui->plot_corrections->setAxisTitle(QwtPlot::xBottom, "Time [s]");
     ui->plot_corrections->setAxisTitle(QwtPlot::yLeft, "Addition to the power");
 
+    ui->plot_PID->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
+    ui->plot_PID->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
+    ui->plot_PID->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
+
+    // Insert new curves
+    QwtPlotCurve *PID_P = new QwtPlotCurve("P");
+    PID_P->attach(ui->plot_PID);
+
+    QwtPlotCurve *PID_I = new QwtPlotCurve("I");
+    PID_I->attach(ui->plot_PID);
+
+    QwtPlotCurve *PID_D = new QwtPlotCurve("D");
+    PID_D->attach(ui->plot_PID);
+
+    ui->plot_PID->setAxisScale(QwtPlot::yLeft, -10, 10);
+
+    // Set curve styles
+    PID_P->setPen(QPen(Qt::green));
+    PID_I->setPen(QPen(Qt::blue));
+    PID_D->setPen(QPen(Qt::red));
+
+    // Attach (don't copy) data.
+    PID_P->setRawData(plot_time, plot_PID_P, plot_size);
+    PID_I->setRawData(plot_time, plot_PID_I, plot_size);
+    PID_D->setRawData(plot_time, plot_PID_D, plot_size);
+
+    ui->plot_PID->setAxisTitle(QwtPlot::xBottom, "Time [s]");
+    ui->plot_PID->setAxisTitle(QwtPlot::yLeft, "Correction");
+
 
     QwtPlotMarker *angle_zero = new QwtPlotMarker();
     angle_zero->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
@@ -255,6 +284,12 @@ void Quadro::plot_init()
     acc_zero->setLineStyle(QwtPlotMarker::HLine);
     acc_zero->setYValue(0.0);
     acc_zero->attach(ui->plot_acc);
+
+    QwtPlotMarker *PID_zero = new QwtPlotMarker();
+    PID_zero->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
+    PID_zero->setLineStyle(QwtPlotMarker::HLine);
+    PID_zero->setYValue(0.0);
+    PID_zero->attach(ui->plot_PID);
 }
 
 void Quadro::plot_reset_data()
@@ -296,6 +331,10 @@ void Quadro::plot_reset_data()
         plot_angle_correction_z[i] = 0;
 
         plot_voltage[i] = 0;
+
+        plot_PID_P[i] = 0;
+        plot_PID_I[i] = 0;
+        plot_PID_D[i] = 0;
     }
 }
 
@@ -408,6 +447,10 @@ void Quadro::plot_update()
         plot_angle_correction_z[i] = plot_angle_correction_z[i + 1];
 
         plot_voltage[i] = plot_voltage[i + 1];
+
+        plot_PID_P[i] = plot_PID_P[i + 1];
+        plot_PID_I[i] = plot_PID_I[i + 1];
+        plot_PID_D[i] = plot_PID_D[i + 1];
     }
 
     plot_time[plot_current] = plot_time[plot_current - 1] + dt_seconds;
@@ -472,6 +515,14 @@ void Quadro::plot_update()
 
     ui->plot_voltage->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
     ui->plot_voltage->replot();
+
+    //PID
+    plot_PID_P[plot_current] = quadro.get_PID_P();
+    plot_PID_I[plot_current] = quadro.get_PID_I();
+    plot_PID_D[plot_current] = quadro.get_PID_D();
+
+    ui->plot_PID->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
+    ui->plot_PID->replot();
 
     //for dt_seconds
     plot_mytime.setTime();

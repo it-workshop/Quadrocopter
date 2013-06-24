@@ -79,7 +79,8 @@ private:
         plot_torque_x[plot_size], plot_torque_y[plot_size], plot_torque_z[plot_size], plot_force[plot_size],
         plot_acceleration_correction_x[plot_size], plot_acceleration_correction_y[plot_size], plot_acceleration_correction_z[plot_size],
         plot_angular_velocity_correction_x[plot_size], plot_angular_velocity_correction_y[plot_size], plot_angular_velocity_correction_z[plot_size],
-        plot_angle_correction_x[plot_size], plot_angle_correction_y[plot_size], plot_angle_correction_z[plot_size], plot_voltage[plot_size];
+        plot_angle_correction_x[plot_size], plot_angle_correction_y[plot_size], plot_angle_correction_z[plot_size], plot_voltage[plot_size],
+        plot_PID_P[plot_size], plot_PID_I[plot_size], plot_PID_D[plot_size];
 
     QwtPlotCurve *plot_curve_angular_velocity_correction_x, *plot_curve_angular_velocity_correction_y, *plot_curve_angular_velocity_correction_z;
     QwtPlotCurve *plot_curve_acceleration_correction_x, *plot_curve_acceleration_correction_y, *plot_curve_acceleration_correction_z;

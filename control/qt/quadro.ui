@@ -963,6 +963,21 @@
       </property>
      </widget>
     </widget>
+    <widget class="QWidget" name="tabPID">
+     <attribute name="title">
+      <string>PID Components</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_PID">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>617</width>
+        <height>471</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
