@@ -97,6 +97,17 @@ void Quadrocopter::iteration()
 #endif
 
         tCount.setTime();
+        { // Sensors
+            MPU->iteration();
+            processSensorsData();
+        }
+        sensorsTime = tCount.getTimeDifferenceSeconds();
+
+#ifdef DEBUG_DAC
+        myLed.setState(80);
+#endif
+
+        tCount.setTime();
         { // Corrections, Motors
             dt = DeltaT.getTimeDifferenceSeconds();
 
@@ -105,16 +116,8 @@ void Quadrocopter::iteration()
             processMotors();
         }
         calculationsTime = tCount.getTimeDifferenceSeconds();
-#ifdef DEBUG_DAC
-        myLed.setState(30);
-#endif
 
-        tCount.setTime();
-        { // Sensors
-            MPU->iteration();
-            processSensorsData();
-        }
-        sensorsTime = tCount.getTimeDifferenceSeconds();
+
 #ifdef DEBUG_DAC
         myLed.setState(100);
 #endif
