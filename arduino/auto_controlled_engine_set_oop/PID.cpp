@@ -34,7 +34,7 @@ template <typename T> void PID<T>::prepare(T data, double dt)
 template <typename T> void PID<T>::iteration()
 {
     //correction
-    y = e % Kp /*+ eIntegral % Ki*/ + eDerivative % Kd;
+    y = e % Kp + eIntegral % Ki + eDerivative % Kd;
 
     ePrev = e;
 
