@@ -171,10 +171,11 @@ void Quadro::timer_auto_update()
 
         interface_write();
 
-        if(quadro.isoperational())
+        if(quadro.isoperational() && quadro.getNewDataAvailable())
         {
             if(!plot_mytime.isSet()) plot_mytime.setTime();
             else plot_update();
+            quadro.resetNewDataAvailable();
         }
 
         allowed = true;

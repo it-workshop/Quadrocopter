@@ -118,6 +118,7 @@ void quadrocopter::read_data()
 //    }
 
 //    qDebug() << "read" << endl << x;
+    if(!readError()) newDataAvailable = true;
 #else
     sread();
 #endif

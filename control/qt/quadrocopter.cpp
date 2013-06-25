@@ -136,6 +136,16 @@ number_vect_t quadrocopter::get_PID_D()
     return(PID_D);
 }
 
+bool quadrocopter::getNewDataAvailable()
+{
+    return(newDataAvailable);
+}
+
+void quadrocopter::resetNewDataAvailable()
+{
+    newDataAvailable = false;
+}
+
 vect quadrocopter::get_torque_corrected()
 {
     return(torque_corrected);

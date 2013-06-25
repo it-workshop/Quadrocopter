@@ -48,6 +48,8 @@ private:
 
     number_vect_t PID_P, PID_I, PID_D;
 
+    bool newDataAvailable;
+
     void defaults();
 
     void read_data(); // read data from device
@@ -125,6 +127,9 @@ public:
     number_vect_t get_PID_P();
     number_vect_t get_PID_I();
     number_vect_t get_PID_D();
+
+    bool getNewDataAvailable();
+    void resetNewDataAvailable();
 
     virtual void on_rx();
 };
