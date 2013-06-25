@@ -12,4 +12,6 @@
 //#define DEBUG_DAC
 //#define DEBUG_NO_TX_ARDUINO
 
+#define SERIAL_PID_COEFF 100
+
 #endif

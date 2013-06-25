@@ -90,7 +90,8 @@ void Quadrocopter::processSerialTx()
 
                 MSerial->RVector3DWrite(RVector3D(pidAngle.getLastPID()[0].x,
                                                   pidAngle.getLastPID()[1].x,
-                                                  pidAngle.getLastPID()[2].x),
+                                                  pidAngle.getLastPID()[2].x) *
+                                        SERIAL_PID_COEFF,
                                         MySerial::PRINT_RAW); // +6
 
                 MSerial->RVector3DWrite(angleManualCorrection, MySerial::PRINT_RAW); // +6

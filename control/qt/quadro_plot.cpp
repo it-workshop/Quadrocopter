@@ -239,7 +239,7 @@ void Quadro::plot_init()
     QwtPlotCurve *PID_D = new QwtPlotCurve("D");
     PID_D->attach(ui->plot_PID);
 
-    ui->plot_PID->setAxisScale(QwtPlot::yLeft, -10, 10);
+    ui->plot_PID->setAxisScale(QwtPlot::yLeft, -0.1, 0.1);
 
     // Set curve styles
     PID_P->setPen(QPen(Qt::green));
