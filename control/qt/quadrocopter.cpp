@@ -46,6 +46,8 @@ quadrocopter::quadrocopter()
 
     busyBit = false;
 
+    newDataAvailable = false;
+
     defaults();
 }
 

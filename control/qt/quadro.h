@@ -123,6 +123,7 @@ private slots:
     void on_PID_angle_MAXp_valueChanged(double arg1);
     void on_PID_angle_MAXi_valueChanged(double arg1);
     void on_PID_angle_MAXd_valueChanged(double arg1);
+    void on_quadro_update_clicked();
 };
 
 #endif // QUADRO_H

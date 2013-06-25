@@ -132,3 +132,9 @@ void Quadro::on_PID_angle_MAXd_valueChanged(double arg1)
 {
     quadro.set_PID_angle_MAXd(arg1);
 }
+
+void Quadro::on_quadro_update_clicked()
+{
+    if(quadro.iswriteable())
+        quadro.initiate_transmission();
+}

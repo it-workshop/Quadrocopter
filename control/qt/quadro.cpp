@@ -163,7 +163,7 @@ void Quadro::timer_auto_update()
 
         set_quadro_data();
 
-        if(quadro.iswriteable())
+        if(quadro.iswriteable() && ui->quadro_autoupdate->isChecked())
             quadro.initiate_transmission();
 
         if(joy.isoperational())
@@ -171,7 +171,7 @@ void Quadro::timer_auto_update()
 
         interface_write();
 
-        if(quadro.isoperational() && quadro.getNewDataAvailable())
+        if(quadro.getNewDataAvailable())
         {
             if(!plot_mytime.isSet()) plot_mytime.setTime();
             else plot_update();
