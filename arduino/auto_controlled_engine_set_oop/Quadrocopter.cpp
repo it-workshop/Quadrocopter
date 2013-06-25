@@ -49,6 +49,15 @@ void Quadrocopter::reset()
     pidAngularVelocity.setYMin(-angularVelocityMaxCorrection);
     pidAngle.setYMax(angleMaxCorrection);
     pidAngularVelocity.setYMax(angularVelocityMaxCorrection);
+
+    pidAngle.setPMin(-angleMaxCorrection * 5);
+    pidAngle.setPMax( angleMaxCorrection * 5);
+
+    pidAngle.setIMin(-angleMaxCorrection);
+    pidAngle.setIMax( angleMaxCorrection);
+
+    pidAngle.setDMin(-angleMaxCorrection * 1.5);
+    pidAngle.setDMax( angleMaxCorrection * 1.5);
 }
 
 void Quadrocopter::processCorrection()

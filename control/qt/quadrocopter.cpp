@@ -203,6 +203,21 @@ void quadrocopter::set_PID_angle_Kd(number_vect_t t_Kd)
     PID_angle_Kd = t_Kd;
 }
 
+void quadrocopter::set_PID_angle_MAXp(number_vect_t arg)
+{
+    PID_angle_MAXp = arg;
+}
+
+void quadrocopter::set_PID_angle_MAXi(number_vect_t arg)
+{
+    PID_angle_MAXi = arg;
+}
+
+void quadrocopter::set_PID_angle_MAXd(number_vect_t arg)
+{
+    PID_angle_MAXd = arg;
+}
+
 void quadrocopter::set_PID_angular_velocity_Kp(number_vect_t t_Kp)
 {
     PID_angular_velocity_Kp = t_Kp;
@@ -231,6 +246,21 @@ number_vect_t quadrocopter::get_PID_angle_Ki()
 number_vect_t quadrocopter::get_PID_angle_Kd()
 {
     return(PID_angle_Kd);
+}
+
+number_vect_t quadrocopter::get_PID_angle_MAXp()
+{
+    return(PID_angle_MAXp);
+}
+
+number_vect_t quadrocopter::get_PID_angle_MAXi()
+{
+    return(PID_angle_MAXi);
+}
+
+number_vect_t quadrocopter::get_PID_angle_MAXd()
+{
+    return(PID_angle_MAXd);
 }
 
 number_vect_t quadrocopter::get_PID_angular_velocity_Kp()

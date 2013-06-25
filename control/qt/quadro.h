@@ -52,10 +52,6 @@ private slots:
     void on_PID_angle_Ki_valueChanged(double arg1);
     void on_PID_angle_Kd_valueChanged(double arg1);
 
-    void on_PID_angular_velocity_Kp_valueChanged(double arg1);
-    void on_PID_angular_velocity_Ki_valueChanged(double arg1);
-    void on_PID_angular_velocity_Kd_valueChanged(double arg1);
-
 private:
     Ui::Quadro *ui;
 
@@ -124,6 +120,9 @@ private slots:
     void on_accel_period_valueChanged(double arg1);
     void on_angle_period_valueChanged(double arg1);
     void on_torque_manual_reset_clicked();
+    void on_PID_angle_MAXp_valueChanged(double arg1);
+    void on_PID_angle_MAXi_valueChanged(double arg1);
+    void on_PID_angle_MAXd_valueChanged(double arg1);
 };
 
 #endif // QUADRO_H

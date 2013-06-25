@@ -18,6 +18,15 @@ private:
     T yMin;
     T yMax;
 
+    T PMin;
+    T PMax;
+
+    T IMin;
+    T IMax;
+
+    T DMin;
+    T DMax;
+
     //temp
     T e, eDerivative; //error
     T y; //correction
@@ -47,6 +56,15 @@ public:
 
     void setYMin(T);
     void setYMax(T);
+
+    void setPMin(T);
+    void setPMax(T);
+
+    void setIMin(T);
+    void setIMax(T);
+
+    void setDMin(T);
+    void setDMax(T);
 
     void setData0(T); // sets needed value
     T getData0();

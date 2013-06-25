@@ -58,9 +58,15 @@ void Quadrocopter::processSerialTx()
                 MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKd(tDouble);
 
                 //PID angular velocity coefficients
-                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngularVelocity.setKp(tDouble);
-                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngularVelocity.setKi(tDouble);
-                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngularVelocity.setKd(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2);
+                pidAngle.setPMin(-tDouble);
+                pidAngle.setPMax(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2);
+                pidAngle.setIMin(-tDouble);
+                pidAngle.setIMax(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2);
+                pidAngle.setDMin(-tDouble);
+                pidAngle.setDMax(tDouble);
 
                 //Periods for filters
                 MSerial->readDouble(0, 100, tDouble, 2); accelData.setPeriod(tDouble);

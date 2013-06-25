@@ -29,9 +29,9 @@ void Quadro::interface_init()
     ui->PID_angle_Ki->setValue(quadro.get_PID_angle_Ki());
     ui->PID_angle_Kd->setValue(quadro.get_PID_angle_Kd());
 
-    ui->PID_angular_velocity_Kp->setValue(quadro.get_PID_angular_velocity_Kp());
-    ui->PID_angular_velocity_Ki->setValue(quadro.get_PID_angular_velocity_Ki());
-    ui->PID_angular_velocity_Kd->setValue(quadro.get_PID_angular_velocity_Kd());
+    ui->PID_angle_MAXp->setValue(quadro.get_PID_angle_MAXp());
+    ui->PID_angle_MAXi->setValue(quadro.get_PID_angle_MAXi());
+    ui->PID_angle_MAXd->setValue(quadro.get_PID_angle_MAXd());
 
     ui->power->setValue(0);
     ui->power->setScalePosition(QwtSlider::TopScale);

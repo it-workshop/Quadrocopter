@@ -155,9 +155,9 @@ void quadrocopter::write_data()
     write_number_vect_t(-1.5, 1.5, PID_angle_Ki, 2);
     write_number_vect_t(-1.5, 1.5, PID_angle_Kd, 2);
 
-    write_number_vect_t(-1.5, 1.5, PID_angular_velocity_Kp, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angular_velocity_Ki, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angular_velocity_Kd, 2);
+    write_number_vect_t(0, 5, PID_angle_MAXp, 2);
+    write_number_vect_t(0, 5, PID_angle_MAXi, 2);
+    write_number_vect_t(0, 5, PID_angle_MAXd, 2);
 
     write_number_vect_t(0, 100, accel_period, 2);
     write_number_vect_t(0, 100, angle_period, 2);

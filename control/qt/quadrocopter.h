@@ -36,6 +36,8 @@ private:
     number_vect_t PID_angle_Kp, PID_angle_Ki, PID_angle_Kd;
     number_vect_t PID_angular_velocity_Kp, PID_angular_velocity_Ki, PID_angular_velocity_Kd;
 
+    number_vect_t PID_angle_MAXp, PID_angle_MAXi, PID_angle_MAXd;
+
     number_vect_t joystick_coefficient;
 
     number_vect_t voltage;
@@ -76,6 +78,10 @@ public:
     void set_PID_angle_Ki(number_vect_t);
     void set_PID_angle_Kd(number_vect_t);
 
+    void set_PID_angle_MAXp(number_vect_t);
+    void set_PID_angle_MAXi(number_vect_t);
+    void set_PID_angle_MAXd(number_vect_t);
+
     void set_PID_angular_velocity_Kp(number_vect_t);
     void set_PID_angular_velocity_Ki(number_vect_t);
     void set_PID_angular_velocity_Kd(number_vect_t);
@@ -83,6 +89,10 @@ public:
     number_vect_t get_PID_angle_Kp();
     number_vect_t get_PID_angle_Ki();
     number_vect_t get_PID_angle_Kd();
+
+    number_vect_t get_PID_angle_MAXp();
+    number_vect_t get_PID_angle_MAXi();
+    number_vect_t get_PID_angle_MAXd();
 
     number_vect_t get_PID_angular_velocity_Kp();
     number_vect_t get_PID_angular_velocity_Ki();

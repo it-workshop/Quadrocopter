@@ -41,13 +41,35 @@ template <typename T> void PID<T>::prepare(T data, double dt)
 
 template <typename T> void PID<T>::iteration()
 {
+    ePrev = e;
+
+    for(int i = 0; i < 3; i++)
+    {
+        if(e.valueByAxisIndex(i) < PMin.valueByAxisIndex(i))
+            e.valueByAxisIndex(i) = PMin.valueByAxisIndex(i);
+
+        if(e.valueByAxisIndex(i) > PMax.valueByAxisIndex(i))
+            e.valueByAxisIndex(i) = PMax.valueByAxisIndex(i);
+
+        if(eIntegral.valueByAxisIndex(i) < IMin.valueByAxisIndex(i))
+            eIntegral.valueByAxisIndex(i) = IMin.valueByAxisIndex(i);
+
+        if(eIntegral.valueByAxisIndex(i) > IMax.valueByAxisIndex(i))
+            eIntegral.valueByAxisIndex(i) = IMax.valueByAxisIndex(i);
+
+        if(eDerivative.valueByAxisIndex(i) < DMin.valueByAxisIndex(i))
+            eDerivative.valueByAxisIndex(i) = DMin.valueByAxisIndex(i);
+
+        if(eDerivative.valueByAxisIndex(i) > DMax.valueByAxisIndex(i))
+            eDerivative.valueByAxisIndex(i) = DMax.valueByAxisIndex(i);
+    }
+
     //correction
     P = e % Kp;
     I = eIntegral % Ki;
     D = eDerivative % Kd;
-    y = P + I + D;
 
-    ePrev = e;
+    y = P + I + D;
 
     for(int i = 0; i < 3; i++)
     {
@@ -129,6 +151,36 @@ template <typename T> void PID<T>::setYMin(T arg)
 template <typename T> void PID<T>::setYMax(T arg)
 {
     yMax = arg;
+}
+
+template <typename T> void PID<T>::setPMin(T arg)
+{
+    PMin = arg;
+}
+
+template <typename T> void PID<T>::setPMax(T arg)
+{
+    PMax = arg;
+}
+
+template <typename T> void PID<T>::setIMin(T arg)
+{
+    IMin = arg;
+}
+
+template <typename T> void PID<T>::setIMax(T arg)
+{
+    IMax = arg;
+}
+
+template <typename T> void PID<T>::setDMin(T arg)
+{
+    DMin = arg;
+}
+
+template <typename T> void PID<T>::setDMax(T arg)
+{
+    DMax = arg;
 }
 
 template <typename T> void PID<T>::setData0(T arg)

@@ -78,21 +78,6 @@ void Quadro::on_PID_angle_Kd_valueChanged(double arg1)
     quadro.set_PID_angle_Kd(arg1);
 }
 
-void Quadro::on_PID_angular_velocity_Kp_valueChanged(double arg1)
-{
-    quadro.set_PID_angular_velocity_Kp(arg1);
-}
-
-void Quadro::on_PID_angular_velocity_Ki_valueChanged(double arg1)
-{
-    quadro.set_PID_angular_velocity_Ki(arg1);
-}
-
-void Quadro::on_PID_angular_velocity_Kd_valueChanged(double arg1)
-{
-    quadro.set_PID_angular_velocity_Kd(arg1);
-}
-
 void Quadro::on_joystick_device_currentIndexChanged(const QString &arg1)
 {
     joy.setDevice(arg1.toAscii().data());
@@ -131,4 +116,19 @@ void Quadro::on_torque_manual_reset_clicked()
 {
     ui->torque_manual_correction_x->setValue(0);
     ui->torque_manual_correction_y->setValue(0);
+}
+
+void Quadro::on_PID_angle_MAXp_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_MAXp(arg1);
+}
+
+void Quadro::on_PID_angle_MAXi_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_MAXi(arg1);
+}
+
+void Quadro::on_PID_angle_MAXd_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_MAXd(arg1);
 }
