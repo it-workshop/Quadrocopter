@@ -2,16 +2,16 @@
 
 На данный момент мы используем Arduino Uno и датчик InvenSense MPU-6050.
 
-Дополнительную информацию можно найти на [/it-workshop/Quadrocopter/wiki вики], а также на [http://copter.technoworks.ru сайте technoworks.ru].
+Управление квадрокоптером осуществляется с использованием [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/control/qt программы на Qt]&nbsp;(джойстик подключается к компьютеру по USB, квадрокоптер&nbsp;&mdash; через Bluetooth).
 
-== Описание скетчей для arduino ==
-* Основная разработка ведется над [[/it-workshop/Quadrocopter/tree/master/arduino/auto_controlled_engine_set_oop|версией с использованием ООП]].
+'''Некоторые скетчи для arduino:'''
 
-* [[/it-workshop/Quadrocopter/tree/master/arduino/joystick|joystick]]&nbsp;&mdash; программа для джойстика на arduino, который подключается к компьютеру.
+* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/auto_controlled_engine_set_oop Программа для квадрокоптера]
 
-* Скетч [[/it-workshop/Quadrocopter/tree/master/arduino/pot_controlled_engine|pot_controlled_engine]]&nbsp;позволяет управлять ESC при помощи переменного резистора.
+* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/joystick/serial_joystick/serial_joystick.ino joystick]&nbsp;&mdash; программа для джойстика на arduino, который подключается к компьютеру.
 
-* [[/it-workshop/Quadrocopter/tree/master/arduino/bee_programmer|bee_programmer]]&nbsp;использует UART arduino для изменения режима работы Bluetooth Bee, который используется в проекте.
+* Скетч [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/pot_controlled_engine/pot_controlled_engine.ino pot_controlled_engine]&nbsp;позволяет управлять ESC при помощи переменного резистора.
 
-== Описание программы для компьютера ==
-Управление квадрокоптером осуществляется с использованием [[/it-workshop/Quadrocopter/tree/master/control/qt|программы на Qt]]&nbsp;(джойстик подключается к компьютеру по USB, квадрокоптер&nbsp;&mdash; через Bluetooth).
+* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/bee_programmer/bee_programmer.ino bee_programmer]&nbsp;использует UART arduino для изменения режима работы Bluetooth Bee, который используется в проекте.
+
+Дополнительную информацию можно найти на [https://github.com/it-workshop/Quadrocopter/wiki вики] проекта, а также на сайте [http://technoworks.ru/qcopter/ technoworks.ru].
