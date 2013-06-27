@@ -4,7 +4,10 @@
 RVector3D Quadrocopter::getAngleCorrection(RVector3D angle, double dt)
 {
     pidAngle.setData0(angleManualCorrection);
-    RVector3D res = pidAngle.getY(angle, dt/*, angularVelocity * -1*/);
+    RVector3D avPID = angularVelocity * -1;
+    if(fabs(avPID.x) < PID_AV_MIN) avPID.x = 0;
+    avPID /= 10;
+    RVector3D res = pidAngle.getY(angle, dt, avPID);
     res.z = 0;
     return(res);
 }

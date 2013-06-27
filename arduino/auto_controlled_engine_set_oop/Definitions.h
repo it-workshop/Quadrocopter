@@ -13,5 +13,7 @@
 //#define DEBUG_NO_TX_ARDUINO
 
 #define SERIAL_PID_COEFF 100
+#define SERIAL_GYRO_COEFF 8
+#define PID_AV_MIN 3
 
 #endif
