@@ -278,7 +278,7 @@
       <x>0</x>
       <y>124</y>
       <width>428</width>
-      <height>321</height>
+      <height>331</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_2">
@@ -702,10 +702,10 @@
           <number>4</number>
          </property>
          <property name="minimum">
-          <double>-1.000000000000000</double>
+          <double>0.000000000000000</double>
          </property>
          <property name="maximum">
-          <double>1.000000000000000</double>
+          <double>5.000000000000000</double>
          </property>
          <property name="singleStep">
           <double>0.010000000000000</double>
