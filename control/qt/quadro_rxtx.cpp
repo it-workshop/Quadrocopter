@@ -63,7 +63,8 @@ void quadrocopter::read_data()
     qDebug() << "=== TRANSMISSION: READ_ACTUAL ===";
 #ifndef DEBUG_NO_TX_ARDUINO
     vect t_torque_corrected = read_vect_byte(), t_angle = read_vect_byte(2),
-            t_gyroscope_readings = read_vect_byte(), t_PID = read_vect_byte() / SERIAL_PID_COEFF,
+            t_gyroscope_readings = read_vect_byte() * SERIAL_GYRO_COEFF,
+            t_PID = read_vect_byte() / SERIAL_PID_COEFF,
             t_torque_correction = read_vect_byte();
 
     reaction_type_ t_reaction_type;

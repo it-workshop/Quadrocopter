@@ -90,7 +90,7 @@ void Quadrocopter::processSerialTx()
                 MSerial->RVector3DWrite(getTorques(), MySerial::PRINT_RAW); // +6
                 MSerial->RVector3DWrite(angle, MySerial::PRINT_RAW, MySerial::USE_2D); // +4
 
-                MSerial->RVector3DWrite(angularVelocity, MySerial::PRINT_RAW); // +6
+                MSerial->RVector3DWrite(angularVelocity * 1. / SERIAL_GYRO_COEFF, MySerial::PRINT_RAW); // +6
 
                 //MSerial->RVector3DWrite(accelData.getValue(), MySerial::PRINT_RAW); // +6
 

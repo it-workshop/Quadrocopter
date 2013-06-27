@@ -39,7 +39,7 @@ void Quadro::plot_init()
     QwtPlotCurve *gyro_z = new QwtPlotCurve("angular_velocity<sub>z</sub>");
     gyro_z->attach(ui->plot_gyro);
 
-    ui->plot_gyro->setAxisScale(QwtPlot::yLeft, -10, 10);
+    ui->plot_gyro->setAxisScale(QwtPlot::yLeft, -100, 100);
 
     // Set curve styles
     gyro_x->setPen(QPen(Qt::red));
