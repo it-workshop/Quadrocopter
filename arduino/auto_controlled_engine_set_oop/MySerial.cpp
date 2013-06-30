@@ -14,6 +14,9 @@ MySerial::MySerial()
     Accuracy = "%f";
 
     sendAutomaticly = false;
+
+    readError = false;
+    bufferCount = 0;
 }
 
 void MySerial::bufferInit()

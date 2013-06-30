@@ -25,25 +25,23 @@ private:
     MPU6050DMP* MPU;
 
     // pins configuration
-#ifdef DEBUG_DAC
-    int DefaultMotorPins[4] = {3, 5, 6, 9};
-#else
-    int DefaultMotorPins[4] = {3, 9, 10, 11};
-#endif
-    int DefaultVSensorPin = A3;
+
+    int DefaultMotorPins[4];
+
+    int DefaultVSensorPin;
 
     //reaction type (different types of processing sensors' data)
     enum reactionType_ {ReactionNone, ReactionAngularVelocity, ReactionAcceleration, ReactionAngle};
-    reactionType_ reactionType = ReactionNone;
+    reactionType_ reactionType;
 
     // torque corrections
     RVector3D torqueAutomaticCorrection;
 
     RVector3D angleManualCorrection;
 
-    double DefaultVSensorMaxVoltage = 5 / 1.02 * 2.77; //maximal voltage (before voltage divider)
+    static const double DefaultVSensorMaxVoltage = 5 / 1.02 * 2.77; //maximal voltage (before voltage divider)
 
-    const double g = 9.80665; // gravitational acceleration
+    static const double g = 9.80665; // gravitational acceleration
 
     //physical quantities
     RVector3D angle; // angle between Earth's coordinate and ours (filtered)
@@ -53,7 +51,7 @@ private:
     RVector3D angularAcceleration; //discrete derivative of angular velocity
     double voltage; //accumulators voltage
 
-    RVector3D angularVelocityPrev = RVector3D(); // for angular acceleration
+    RVector3D angularVelocityPrev; // for angular acceleration
 
     //corrections
     RVector3D accelerometerXi;

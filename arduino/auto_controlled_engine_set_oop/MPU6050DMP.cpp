@@ -107,6 +107,11 @@ bool MPU6050DMP::getNewData()
     return(newData);
 }
 
+MPU6050DMP::MPU6050DMP()
+{
+     dmpReady = false;
+}
+
 void MPU6050DMP::initialize() {
 #ifdef DEBUG_DAC
     myLed = InfoLED(A0, InfoLED::DAC);

@@ -6,6 +6,21 @@
 
 Quadrocopter::Quadrocopter()
 {
+    DefaultVSensorPin = A3;
+    reactionType = ReactionNone;
+
+#ifdef DEBUG_DAC
+    DefaultMotorPins[0] = 3;
+    DefaultMotorPins[1] = 5;
+    DefaultMotorPins[2] = 6;
+    DefaultMotorPins[3] = 9;
+#else
+    DefaultMotorPins[0] = 3;
+    DefaultMotorPins[1] = 9;
+    DefaultMotorPins[2] = 10;
+    DefaultMotorPins[3] = 11;
+#endif
+
     MSerial = new MySerial;
     MController = new MotorController(DefaultMotorPins);
     VSensor = new VoltageSensor(DefaultVSensorPin, DefaultVSensorMaxVoltage);

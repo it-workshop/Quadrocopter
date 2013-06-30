@@ -13,11 +13,11 @@ private:
     static const unsigned int MaxwaitU = 100000; //maximal wait time in useconds
     static const unsigned int BufferMax = 70; //maximal buffer size
 
-    bool readError = false; //read error
+    bool readError; //read error
     unsigned int readN;
 
     //buffers
-    int bufferCount = 0;
+    int bufferCount;
     uint8_t buffer[BufferMax];
     char command;
     bool commandAvailable;
