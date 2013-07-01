@@ -16,6 +16,10 @@ void Quadro::interface_init()
     save_filename.append(t_time.getTime());
     save_filename.append(".txt");
 
+    settings_filename = "settings.txt";
+
+    settings_read();
+
     ui->quadro_reconnect->setChecked(false);
     ui->joy_reconnect->setChecked(false);
 
@@ -45,6 +49,8 @@ void Quadro::interface_init()
 
     ui->torque_manual_correction_x->setValue(quadro.get_torque_manual_correction().x);
     ui->torque_manual_correction_y->setValue(quadro.get_torque_manual_correction().y);
+
+    ui->reaction_type->setCurrentIndex(quadro.get_reaction_type());
 
     setFocus();
 }

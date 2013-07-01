@@ -60,7 +60,7 @@ void Quadro::set_quadro_data()
 
     if(joy.isoperational() && ui->JoystickUse->isChecked())
     {
-        t_correction += joy.get_readings();
+        t_correction += joy.get_readings() * quadro.get_joystick_coefficient();
 
         t_power = joy.get_power_value();
         if(!joy.is_switched_on()) t_power = 0;
@@ -72,7 +72,7 @@ void Quadro::set_quadro_data()
 
     quadro.set_power(t_power);
     quadro.set_reaction_type((quadrocopter::reaction_type_) ui->reaction_type->currentIndex());
-    quadro.set_joystick_correction(t_correction);
+    quadro.set_torque_manual_correction(t_correction);
 }
 
 void Quadro::quadro_disconnect()

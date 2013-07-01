@@ -131,6 +131,8 @@ public:
     bool getNewDataAvailable();
     void resetNewDataAvailable();
 
+    number_vect_t get_joystick_coefficient();
+
     virtual void on_rx();
 };
 

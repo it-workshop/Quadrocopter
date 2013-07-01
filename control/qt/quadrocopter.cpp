@@ -51,8 +51,6 @@ quadrocopter::quadrocopter()
     defaults();
 }
 
-
-
 void quadrocopter::defaults()
 {
     busyBit = false;
@@ -146,6 +144,11 @@ bool quadrocopter::getNewDataAvailable()
 void quadrocopter::resetNewDataAvailable()
 {
     newDataAvailable = false;
+}
+
+number_vect_t quadrocopter::get_joystick_coefficient()
+{
+    return(joystick_coefficient);
 }
 
 vect quadrocopter::get_torque_corrected()

@@ -35,22 +35,26 @@ void Quadro::on_actionJoystickCalibrate_zero_triggered()
     {
         joy.initiate_transmission();
         joy.set_data_default();
+        settings_data();
     }
 }
 
 void Quadro::on_quadro_device_textChanged(const QString &arg1)
 {
     quadro.setDevice(arg1.toAscii().data());
+    settings_data();
 }
 
 void Quadro::on_joystick_device_textChanged(const QString &arg1)
 {
     joy.setDevice(arg1.toAscii().data());
+    settings_data();
 }
 
 void Quadro::on_reaction_type_currentIndexChanged(int index)
 {
     quadro.set_reaction_type((quadrocopter::reaction_type_) index);
+    settings_data();
 }
 
 void Quadro::on_JoystickUse_toggled()
@@ -66,26 +70,31 @@ void Quadro::on_JoystickUse_toggled()
 void Quadro::on_PID_angle_Kp_valueChanged(double arg1)
 {
     quadro.set_PID_angle_Kp(arg1);
+    settings_data();
 }
 
 void Quadro::on_PID_angle_Ki_valueChanged(double arg1)
 {
     quadro.set_PID_angle_Ki(arg1);
+    settings_data();
 }
 
 void Quadro::on_PID_angle_Kd_valueChanged(double arg1)
 {
     quadro.set_PID_angle_Kd(arg1);
+    settings_data();
 }
 
 void Quadro::on_joystick_device_currentIndexChanged(const QString &arg1)
 {
     joy.setDevice(arg1.toAscii().data());
+    settings_data();
 }
 
 void Quadro::on_quadro_device_currentIndexChanged(const QString &arg1)
 {
     quadro.setDevice(arg1.toAscii().data());
+    settings_data();
 }
 
 void Quadro::keyPressEvent(QKeyEvent *a)
@@ -100,6 +109,7 @@ void Quadro::on_setAngle_clicked()
 {
     ui->torque_manual_correction_x->setValue(quadro.get_angle().x);
     ui->torque_manual_correction_y->setValue(quadro.get_angle().y);
+    settings_data();
 }
 
 void Quadro::on_accel_period_valueChanged(double arg1)
@@ -116,25 +126,44 @@ void Quadro::on_torque_manual_reset_clicked()
 {
     ui->torque_manual_correction_x->setValue(0);
     ui->torque_manual_correction_y->setValue(0);
+    settings_data();
 }
 
 void Quadro::on_PID_angle_MAXp_valueChanged(double arg1)
 {
     quadro.set_PID_angle_MAXp(arg1);
+    settings_data();
 }
 
 void Quadro::on_PID_angle_MAXi_valueChanged(double arg1)
 {
     quadro.set_PID_angle_MAXi(arg1);
+    settings_data();
 }
 
 void Quadro::on_PID_angle_MAXd_valueChanged(double arg1)
 {
     quadro.set_PID_angle_MAXd(arg1);
+    settings_data();
 }
 
 void Quadro::on_quadro_update_clicked()
 {
     if(quadro.iswriteable())
         quadro.initiate_transmission();
+}
+
+void Quadro::on_quadro_autoupdate_stateChanged(int arg1)
+{
+    settings_data();
+}
+
+void Quadro::on_torque_manual_correction_x_valueChanged(double arg1)
+{
+    settings_data();
+}
+
+void Quadro::on_torque_manual_correction_y_valueChanged(double arg1)
+{
+    settings_data();
 }

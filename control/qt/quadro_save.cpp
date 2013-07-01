@@ -9,10 +9,74 @@ using std::endl;
 
 using std::stringstream;
 using std::string;
+using std::ifstream;
 
 void Quadro::save_close()
 {
     save_file.close();
+}
+
+void Quadro::settings_data()
+{
+    stringstream ss;
+
+    ss << quadro.get_PID_angle_Kp() << " ";
+    ss << quadro.get_PID_angle_Ki() << " ";
+    ss << quadro.get_PID_angle_Kd() << " ";
+    ss << quadro.get_PID_angle_MAXp() << " ";
+    ss << quadro.get_PID_angle_MAXi() << " ";
+    ss << quadro.get_PID_angle_MAXd() << " ";
+    //ss << quadro.getDevice() << " ";
+    ss << quadro.get_torque_manual_correction().x << " ";
+    ss << quadro.get_torque_manual_correction().y << " ";
+    ss << quadro.get_reaction_type() << " ";
+    ss << ui->quadro_autoupdate->isChecked() << " ";
+
+    //ss << joy.getDevice() << " ";
+
+    settings_open();
+
+    settings_file << ss.str();
+
+    settings_close();
+}
+
+void Quadro::settings_read()
+{
+    ifstream settings_file(settings_filename.c_str());
+
+    double t_double;
+    settings_file >> t_double; quadro.set_PID_angle_Kp(t_double);
+    settings_file >> t_double; quadro.set_PID_angle_Ki(t_double);
+    settings_file >> t_double; quadro.set_PID_angle_Kd(t_double);
+
+    settings_file >> t_double; quadro.set_PID_angle_MAXp(t_double);
+    settings_file >> t_double; quadro.set_PID_angle_MAXi(t_double);
+    settings_file >> t_double; quadro.set_PID_angle_MAXd(t_double);
+
+//    string t_string;
+//    settings_file >> t_string; quadro.setDevice(t_string);
+
+    double t_double1;
+    settings_file >> t_double;
+    settings_file >> t_double1;
+    quadro.set_torque_manual_correction(vect(t_double, t_double1, 0));
+
+    int t_int;
+    settings_file >> t_int; quadro.set_reaction_type((quadrocopter::reaction_type_) t_int);
+    settings_file >> t_int; ui->quadro_autoupdate->setChecked(t_int);
+
+    settings_file.close();
+}
+
+void Quadro::settings_open()
+{
+    settings_file.open(settings_filename.c_str());
+}
+
+void Quadro::settings_close()
+{
+    settings_file.close();
 }
 
 void Quadro::save_open()

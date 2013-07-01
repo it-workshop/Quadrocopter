@@ -90,6 +90,9 @@ private:
     string save_filename;
     ofstream save_file;
 
+    string settings_filename;
+    ofstream settings_file;
+
     void quadro_connect();
     void quadro_disconnect();
     void joy_disconnect();
@@ -101,6 +104,11 @@ private:
     void save_data();
     void save_open();
     void save_close();
+
+    void settings_data();
+    void settings_open();
+    void settings_close();
+    void settings_read();
 
     void plot_update();
     void plot_init();
@@ -124,6 +132,9 @@ private slots:
     void on_PID_angle_MAXi_valueChanged(double arg1);
     void on_PID_angle_MAXd_valueChanged(double arg1);
     void on_quadro_update_clicked();
+    void on_quadro_autoupdate_stateChanged(int arg1);
+    void on_torque_manual_correction_x_valueChanged(double arg1);
+    void on_torque_manual_correction_y_valueChanged(double arg1);
 };
 
 #endif // QUADRO_H
