@@ -24,3 +24,5 @@ arduino/auto_controlled_engine_set_oop/KalmanFilter.h
 
 *.autosave
 *~
+
+control/qt/settings.txt
