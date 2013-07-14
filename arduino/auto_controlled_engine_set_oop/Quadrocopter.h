@@ -68,7 +68,7 @@ private:
 
     InfoLED myLed;
 
-    static const unsigned int serialReadN = 24; // bytes to read
+    static const unsigned int serialReadN = 30; // bytes to read
 
 public:
     Quadrocopter();

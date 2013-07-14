@@ -29,13 +29,21 @@ void Quadro::interface_init()
     ui->quadro_device->setAutoFillBackground(true);
     ui->joystick_device->setAutoFillBackground(true);
 
-    ui->PID_angle_Kp->setValue(quadro.get_PID_angle_Kp());
-    ui->PID_angle_Ki->setValue(quadro.get_PID_angle_Ki());
-    ui->PID_angle_Kd->setValue(quadro.get_PID_angle_Kd());
+    ui->PID_angle_Kp_x->setValue(quadro.get_PID_angle_Kp().x);
+    ui->PID_angle_Ki_x->setValue(quadro.get_PID_angle_Ki().x);
+    ui->PID_angle_Kd_x->setValue(quadro.get_PID_angle_Kd().x);
 
-    ui->PID_angle_MAXp->setValue(quadro.get_PID_angle_MAXp());
-    ui->PID_angle_MAXi->setValue(quadro.get_PID_angle_MAXi());
-    ui->PID_angle_MAXd->setValue(quadro.get_PID_angle_MAXd());
+    ui->PID_angle_Kp_y->setValue(quadro.get_PID_angle_Kp().y);
+    ui->PID_angle_Ki_y->setValue(quadro.get_PID_angle_Ki().y);
+    ui->PID_angle_Kd_y->setValue(quadro.get_PID_angle_Kd().y);
+
+    ui->PID_angle_MAXp_x->setValue(quadro.get_PID_angle_MAXp().x);
+    ui->PID_angle_MAXi_x->setValue(quadro.get_PID_angle_MAXi().x);
+    ui->PID_angle_MAXd_x->setValue(quadro.get_PID_angle_MAXd().x);
+
+    ui->PID_angle_MAXp_y->setValue(quadro.get_PID_angle_MAXp().y);
+    ui->PID_angle_MAXi_y->setValue(quadro.get_PID_angle_MAXi().y);
+    ui->PID_angle_MAXd_y->setValue(quadro.get_PID_angle_MAXd().y);
 
     ui->power->setValue(0);
     ui->power->setScalePosition(QwtSlider::TopScale);
@@ -43,9 +51,6 @@ void Quadro::interface_init()
 
     ui->power->setScale(0, 1, 0.1);
     ui->power->setRange(0, 1, 0.01, 0);
-
-    ui->accel_period->setValue(quadro.get_accel_period());
-    ui->angle_period->setValue(quadro.get_angle_period());
 
     ui->torque_manual_correction_x->setValue(quadro.get_torque_manual_correction().x);
     ui->torque_manual_correction_y->setValue(quadro.get_torque_manual_correction().y);
@@ -68,9 +73,9 @@ void Quadro::interface_write()
         ui->torque->setText(quadro.get_torque_corrected().print().c_str());
         ui->gyro->setText(quadro.get_gyroscope_readings().print().c_str());
 
-        t_ss3 << quadro.get_accelerometer_readings().print().c_str() << "\t"
-              << "[" << quadro.get_accelerometer_readings().abs() << "]";
-        ui->accel->setText(t_ss3.str().c_str());
+        //t_ss3 << quadro.get_accelerometer_readings().print().c_str() << "\t"
+        //      << "[" << quadro.get_accelerometer_readings().abs() << "]";
+        //ui->accel->setText(t_ss3.str().c_str());
 
         ui->angle->setText(quadro.get_angle().print2d().c_str());
 

@@ -48,10 +48,6 @@ private slots:
     void on_joystick_device_textChanged(const QString &arg1);
     void on_JoystickUse_toggled();
 
-    void on_PID_angle_Kp_valueChanged(double arg1);
-    void on_PID_angle_Ki_valueChanged(double arg1);
-    void on_PID_angle_Kd_valueChanged(double arg1);
-
 private:
     Ui::Quadro *ui;
 
@@ -76,7 +72,8 @@ private:
         plot_acceleration_correction_x[plot_size], plot_acceleration_correction_y[plot_size], plot_acceleration_correction_z[plot_size],
         plot_angular_velocity_correction_x[plot_size], plot_angular_velocity_correction_y[plot_size], plot_angular_velocity_correction_z[plot_size],
         plot_angle_correction_x[plot_size], plot_angle_correction_y[plot_size], plot_angle_correction_z[plot_size], plot_voltage[plot_size],
-        plot_PID_P[plot_size], plot_PID_I[plot_size], plot_PID_D[plot_size];
+        plot_PID_P_x[plot_size], plot_PID_I_x[plot_size], plot_PID_D_x[plot_size],
+        plot_PID_P_y[plot_size], plot_PID_I_y[plot_size], plot_PID_D_y[plot_size];
 
     QwtPlotCurve *plot_curve_angular_velocity_correction_x, *plot_curve_angular_velocity_correction_y, *plot_curve_angular_velocity_correction_z;
     QwtPlotCurve *plot_curve_acceleration_correction_x, *plot_curve_acceleration_correction_y, *plot_curve_acceleration_correction_z;
@@ -125,16 +122,23 @@ private slots:
     void on_quadro_device_currentIndexChanged(const QString &arg1);
     void keyPressEvent(QKeyEvent*);
     void on_setAngle_clicked();
-    void on_accel_period_valueChanged(double arg1);
-    void on_angle_period_valueChanged(double arg1);
     void on_torque_manual_reset_clicked();
-    void on_PID_angle_MAXp_valueChanged(double arg1);
-    void on_PID_angle_MAXi_valueChanged(double arg1);
-    void on_PID_angle_MAXd_valueChanged(double arg1);
     void on_quadro_update_clicked();
     void on_quadro_autoupdate_stateChanged(int arg1);
     void on_torque_manual_correction_x_valueChanged(double arg1);
     void on_torque_manual_correction_y_valueChanged(double arg1);
+    void on_PID_angle_Kp_x_valueChanged(double arg1);
+    void on_PID_angle_Ki_x_valueChanged(double arg1);
+    void on_PID_angle_Kd_x_valueChanged(double arg1);
+    void on_PID_angle_Kp_y_valueChanged(double arg1);
+    void on_PID_angle_Ki_y_valueChanged(double arg1);
+    void on_PID_angle_Kd_y_valueChanged(double arg1);
+    void on_PID_angle_MAXp_x_valueChanged(double arg1);
+    void on_PID_angle_MAXi_x_valueChanged(double arg1);
+    void on_PID_angle_MAXd_x_valueChanged(double arg1);
+    void on_PID_angle_MAXp_y_valueChanged(double arg1);
+    void on_PID_angle_MAXi_y_valueChanged(double arg1);
+    void on_PID_angle_MAXd_y_valueChanged(double arg1);
 };
 
 #endif // QUADRO_H

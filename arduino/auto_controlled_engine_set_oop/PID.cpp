@@ -106,20 +106,71 @@ template <typename T> T PID<T>::getKd()
     return(Kd);
 }
 
-//template <typename T> void PID<T>::setKp(T arg)
-//{
-//    Kp = arg;
-//}
+template <typename T> void PID<T>::setKp_x(double arg)
+{
+    Kp.x = arg;
+}
 
-//template <typename T> void PID<T>::setKi(T arg)
-//{
-//    Ki = arg;
-//}
+template <typename T> void PID<T>::setKi_x(double arg)
+{
+    Ki.x = arg;
+}
 
-//template <typename T> void PID<T>::setKd(T arg)
-//{
-//    Kd = arg;
-//}
+template <typename T> void PID<T>::setKd_x(double arg)
+{
+    Kd.x = arg;
+}
+
+template <typename T> void PID<T>::setKp_y(double arg)
+{
+    Kp.y = arg;
+}
+
+template <typename T> void PID<T>::setKi_y(double arg)
+{
+    Ki.y = arg;
+}
+
+template <typename T> void PID<T>::setKd_y(double arg)
+{
+    Kd.y = arg;
+}
+
+template <typename T> void PID<T>::setPMinMax_x(double arg)
+{
+    PMin.x = -arg;
+    PMax.x =  arg;
+}
+
+template <typename T> void PID<T>::setIMinMax_x(double arg)
+{
+    IMin.x = -arg;
+    IMax.x =  arg;
+}
+
+template <typename T> void PID<T>::setDMinMax_x(double arg)
+{
+    DMin.x = -arg;
+    DMax.x =  arg;
+}
+
+template <typename T> void PID<T>::setPMinMax_y(double arg)
+{
+    PMin.y = -arg;
+    PMax.y =  arg;
+}
+
+template <typename T> void PID<T>::setIMinMax_y(double arg)
+{
+    IMin.y = -arg;
+    IMax.y =  arg;
+}
+
+template <typename T> void PID<T>::setDMinMax_y(double arg)
+{
+    DMin.y = -arg;
+    DMax.y =  arg;
+}
 
 template <typename T> void PID<T>::setKp(double arg)
 {

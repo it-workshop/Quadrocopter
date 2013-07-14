@@ -225,35 +225,62 @@ void Quadro::plot_init()
     ui->plot_corrections->setAxisTitle(QwtPlot::xBottom, "Time [s]");
     ui->plot_corrections->setAxisTitle(QwtPlot::yLeft, "Addition to the power");
 
-    ui->plot_PID->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
-    ui->plot_PID->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
-    ui->plot_PID->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
+    ui->plot_PID_x->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
+    ui->plot_PID_x->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
+    ui->plot_PID_x->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
+
+    ui->plot_PID_y->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
+    ui->plot_PID_y->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
+    ui->plot_PID_y->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
 
     // Insert new curves
-    QwtPlotCurve *PID_P = new QwtPlotCurve("P");
-    PID_P->attach(ui->plot_PID);
+    QwtPlotCurve *PID_P_x = new QwtPlotCurve("P");
+    PID_P_x->attach(ui->plot_PID_x);
 
-    QwtPlotCurve *PID_I = new QwtPlotCurve("I");
-    PID_I->attach(ui->plot_PID);
+    QwtPlotCurve *PID_I_x = new QwtPlotCurve("I");
+    PID_I_x->attach(ui->plot_PID_x);
 
-    QwtPlotCurve *PID_D = new QwtPlotCurve("D");
-    PID_D->attach(ui->plot_PID);
+    QwtPlotCurve *PID_D_x = new QwtPlotCurve("D");
+    PID_D_x->attach(ui->plot_PID_x);
 
-    ui->plot_PID->setAxisScale(QwtPlot::yLeft, -0.1, 0.1);
+    // Insert new curves
+    QwtPlotCurve *PID_P_y = new QwtPlotCurve("P");
+    PID_P_y->attach(ui->plot_PID_y);
+
+    QwtPlotCurve *PID_I_y = new QwtPlotCurve("I");
+    PID_I_y->attach(ui->plot_PID_y);
+
+    QwtPlotCurve *PID_D_y = new QwtPlotCurve("D");
+    PID_D_y->attach(ui->plot_PID_y);
+
+    ui->plot_PID_x->setAxisScale(QwtPlot::yLeft, -0.1, 0.1);
+    ui->plot_PID_y->setAxisScale(QwtPlot::yLeft, -0.1, 0.1);
 
     // Set curve styles
-    PID_P->setPen(QPen(Qt::green));
-    PID_I->setPen(QPen(Qt::blue));
-    PID_D->setPen(QPen(Qt::red));
+    PID_P_x->setPen(QPen(Qt::green));
+    PID_I_x->setPen(QPen(Qt::blue));
+    PID_D_x->setPen(QPen(Qt::red));
+
+    // Set curve styles
+    PID_P_y->setPen(QPen(Qt::green));
+    PID_I_y->setPen(QPen(Qt::blue));
+    PID_D_y->setPen(QPen(Qt::red));
 
     // Attach (don't copy) data.
-    PID_P->setRawData(plot_time, plot_PID_P, plot_size);
-    PID_I->setRawData(plot_time, plot_PID_I, plot_size);
-    PID_D->setRawData(plot_time, plot_PID_D, plot_size);
+    PID_P_x->setRawData(plot_time, plot_PID_P_x, plot_size);
+    PID_I_x->setRawData(plot_time, plot_PID_I_x, plot_size);
+    PID_D_x->setRawData(plot_time, plot_PID_D_x, plot_size);
 
-    ui->plot_PID->setAxisTitle(QwtPlot::xBottom, "Time [s]");
-    ui->plot_PID->setAxisTitle(QwtPlot::yLeft, "Correction");
+    // Attach (don't copy) data.
+    PID_P_y->setRawData(plot_time, plot_PID_P_y, plot_size);
+    PID_I_y->setRawData(plot_time, plot_PID_I_y, plot_size);
+    PID_D_y->setRawData(plot_time, plot_PID_D_y, plot_size);
 
+    ui->plot_PID_x->setAxisTitle(QwtPlot::xBottom, "Time [s]");
+    ui->plot_PID_x->setAxisTitle(QwtPlot::yLeft, "Correction");
+
+    ui->plot_PID_y->setAxisTitle(QwtPlot::xBottom, "Time [s]");
+    ui->plot_PID_y->setAxisTitle(QwtPlot::yLeft, "Correction");
 
     QwtPlotMarker *angle_zero = new QwtPlotMarker();
     angle_zero->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
@@ -285,11 +312,17 @@ void Quadro::plot_init()
     acc_zero->setYValue(0.0);
     acc_zero->attach(ui->plot_acc);
 
-    QwtPlotMarker *PID_zero = new QwtPlotMarker();
-    PID_zero->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
-    PID_zero->setLineStyle(QwtPlotMarker::HLine);
-    PID_zero->setYValue(0.0);
-    PID_zero->attach(ui->plot_PID);
+    QwtPlotMarker *PID_zero_x = new QwtPlotMarker();
+    PID_zero_x->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
+    PID_zero_x->setLineStyle(QwtPlotMarker::HLine);
+    PID_zero_x->setYValue(0.0);
+    PID_zero_x->attach(ui->plot_PID_x);
+
+    QwtPlotMarker *PID_zero_y = new QwtPlotMarker();
+    PID_zero_y->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
+    PID_zero_y->setLineStyle(QwtPlotMarker::HLine);
+    PID_zero_y->setYValue(0.0);
+    PID_zero_y->attach(ui->plot_PID_y);
 }
 
 void Quadro::plot_reset_data()
@@ -332,9 +365,13 @@ void Quadro::plot_reset_data()
 
         plot_voltage[i] = 0;
 
-        plot_PID_P[i] = 0;
-        plot_PID_I[i] = 0;
-        plot_PID_D[i] = 0;
+        plot_PID_P_x[i] = 0;
+        plot_PID_I_x[i] = 0;
+        plot_PID_D_x[i] = 0;
+
+        plot_PID_P_y[i] = 0;
+        plot_PID_I_y[i] = 0;
+        plot_PID_D_y[i] = 0;
     }
 }
 
@@ -448,9 +485,13 @@ void Quadro::plot_update()
 
         plot_voltage[i] = plot_voltage[i + 1];
 
-        plot_PID_P[i] = plot_PID_P[i + 1];
-        plot_PID_I[i] = plot_PID_I[i + 1];
-        plot_PID_D[i] = plot_PID_D[i + 1];
+        plot_PID_P_x[i] = plot_PID_P_x[i + 1];
+        plot_PID_I_x[i] = plot_PID_I_x[i + 1];
+        plot_PID_D_x[i] = plot_PID_D_x[i + 1];
+
+        plot_PID_P_y[i] = plot_PID_P_y[i + 1];
+        plot_PID_I_y[i] = plot_PID_I_y[i + 1];
+        plot_PID_D_y[i] = plot_PID_D_y[i + 1];
     }
 
     plot_time[plot_current] = plot_time[plot_current - 1] + dt_seconds;
@@ -517,12 +558,19 @@ void Quadro::plot_update()
     ui->plot_voltage->replot();
 
     //PID
-    plot_PID_P[plot_current] = quadro.get_PID_P();
-    plot_PID_I[plot_current] = quadro.get_PID_I();
-    plot_PID_D[plot_current] = quadro.get_PID_D();
+    plot_PID_P_x[plot_current] = quadro.get_PID_P().x;
+    plot_PID_I_x[plot_current] = quadro.get_PID_I().x;
+    plot_PID_D_x[plot_current] = quadro.get_PID_D().x;
 
-    ui->plot_PID->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
-    ui->plot_PID->replot();
+    plot_PID_P_y[plot_current] = quadro.get_PID_P().y;
+    plot_PID_I_y[plot_current] = quadro.get_PID_I().y;
+    plot_PID_D_y[plot_current] = quadro.get_PID_D().y;
+
+    ui->plot_PID_x->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
+    ui->plot_PID_x->replot();
+
+    ui->plot_PID_y->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
+    ui->plot_PID_y->replot();
 
     //for dt_seconds
     plot_mytime.setTime();

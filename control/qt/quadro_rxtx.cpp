@@ -62,21 +62,17 @@ void quadrocopter::read_data()
 {
     qDebug() << "=== TRANSMISSION: READ_ACTUAL ===";
 #ifndef DEBUG_NO_TX_ARDUINO
-    vect t_torque_corrected = read_vect_byte(), t_angle = read_vect_byte(2),
-            t_gyroscope_readings = read_vect_byte() * SERIAL_GYRO_COEFF,
-            t_PID = read_vect_byte() / SERIAL_PID_COEFF,
-            t_torque_correction = read_vect_byte();
+    vect t_torque_corrected = read_vect_byte();
+    number_vect_t t_angle_x = read_number_vect_t(-10, 10, 2),
+            t_angle_y = read_number_vect_t(-10, 10, 2);
+    vect t_gyroscope_readings = read_vect_byte() * SERIAL_GYRO_COEFF,
+            t_PID_x = read_vect_byte() / SERIAL_PID_COEFF,
+            t_PID_y = read_vect_byte() / SERIAL_PID_COEFF;
 
-    reaction_type_ t_reaction_type;
-
-    number_vect_t t_motors[MOTORS_N], t_loop_time;
+    number_vect_t t_motors[MOTORS_N];
 
     for(int i = 0; i < MOTORS_N; i++)
         t_motors[i] = sread();
-
-    t_loop_time = read_unsigned_int_3byte() / 1.E6;
-
-    t_reaction_type = (reaction_type_) (sread() - '0');
 
     number_vect_t t_voltage = read_number_vect_t(0, 20, 2);
 
@@ -86,22 +82,17 @@ void quadrocopter::read_data()
             MOTORS[i] = t_motors[i];
 
         torque_corrected = t_torque_corrected;
-        angle = t_angle;
+        angle.x = t_angle_x;
+        angle.y = t_angle_y;
         gyroscope_readings = t_gyroscope_readings;
         //accelerometer_readings = t_accelerometer_readings * g;
-        PID_P = t_PID.x;
-        PID_I = t_PID.y;
-        PID_D = t_PID.z;
+        PID_P.x = t_PID_x.x;
+        PID_I.x = t_PID_x.y;
+        PID_D.x = t_PID_x.z;
 
-        if(t_reaction_type == REACTION_ANGULAR_VELOCITY)
-            torque_angular_velocity_correction = t_torque_correction;
-        else if(t_reaction_type == REACTION_ACCELERATION)
-            torque_acceleration_correction = t_torque_correction;
-        else if(t_reaction_type == REACTION_ANGLE)
-            torque_angle_correction = t_torque_correction;
-
-        loop_time = t_loop_time;
-        reaction_type = t_reaction_type;
+        PID_P.y = t_PID_y.x;
+        PID_I.y = t_PID_y.y;
+        PID_D.y = t_PID_y.z;
 
         voltage = t_voltage;
     }
@@ -144,7 +135,7 @@ void quadrocopter::write_data()
     else if(power < 0) power = 0;
 
     //send torque_manual_correction
-    for(int i = 0; i < 3; i++) // 2 - axis count
+    for(int i = 0; i < 2; i++) // 2 - axis count
         write_number_vect_t(-1, 1, torque_manual_correction.value_by_axis_index(i), 2);
 
     //send power
@@ -153,14 +144,19 @@ void quadrocopter::write_data()
     //send reaction type
     swrite('0' + reaction_type);
 
-    write_number_vect_t(-1.5, 1.5, PID_angle_Kp, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angle_Ki, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angle_Kd, 2);
+    write_number_vect_t(-1.5, 1.5, PID_angle_Kp.x, 2);
+    write_number_vect_t(-1.5, 1.5, PID_angle_Ki.x, 2);
+    write_number_vect_t(-1.5, 1.5, PID_angle_Kd.x, 2);
 
-    write_number_vect_t(0, 5, PID_angle_MAXp, 2);
-    write_number_vect_t(0, 5, PID_angle_MAXi, 2);
-    write_number_vect_t(0, 5, PID_angle_MAXd, 2);
+    write_number_vect_t(0, 5, PID_angle_MAXp.x, 2);
+    write_number_vect_t(0, 5, PID_angle_MAXi.x, 2);
+    write_number_vect_t(0, 5, PID_angle_MAXd.x, 2);
 
-    write_number_vect_t(0, 100, accel_period, 2);
-    write_number_vect_t(0, 100, angle_period, 2);
+    write_number_vect_t(-1.5, 1.5, PID_angle_Kp.y, 2);
+    write_number_vect_t(-1.5, 1.5, PID_angle_Ki.y, 2);
+    write_number_vect_t(-1.5, 1.5, PID_angle_Kd.y, 2);
+
+    write_number_vect_t(0, 5, PID_angle_MAXp.y, 2);
+    write_number_vect_t(0, 5, PID_angle_MAXi.y, 2);
+    write_number_vect_t(0, 5, PID_angle_MAXd.y, 2);
 }

@@ -67,24 +67,6 @@ void Quadro::on_JoystickUse_toggled()
     }
 }
 
-void Quadro::on_PID_angle_Kp_valueChanged(double arg1)
-{
-    quadro.set_PID_angle_Kp(arg1);
-    settings_data();
-}
-
-void Quadro::on_PID_angle_Ki_valueChanged(double arg1)
-{
-    quadro.set_PID_angle_Ki(arg1);
-    settings_data();
-}
-
-void Quadro::on_PID_angle_Kd_valueChanged(double arg1)
-{
-    quadro.set_PID_angle_Kd(arg1);
-    settings_data();
-}
-
 void Quadro::on_joystick_device_currentIndexChanged(const QString &arg1)
 {
     joy.setDevice(arg1.toAscii().data());
@@ -112,38 +94,10 @@ void Quadro::on_setAngle_clicked()
     settings_data();
 }
 
-void Quadro::on_accel_period_valueChanged(double arg1)
-{
-    quadro.set_accel_period(arg1);
-}
-
-void Quadro::on_angle_period_valueChanged(double arg1)
-{
-    quadro.set_angle_period(arg1);
-}
-
 void Quadro::on_torque_manual_reset_clicked()
 {
     ui->torque_manual_correction_x->setValue(0);
     ui->torque_manual_correction_y->setValue(0);
-    settings_data();
-}
-
-void Quadro::on_PID_angle_MAXp_valueChanged(double arg1)
-{
-    quadro.set_PID_angle_MAXp(arg1);
-    settings_data();
-}
-
-void Quadro::on_PID_angle_MAXi_valueChanged(double arg1)
-{
-    quadro.set_PID_angle_MAXi(arg1);
-    settings_data();
-}
-
-void Quadro::on_PID_angle_MAXd_valueChanged(double arg1)
-{
-    quadro.set_PID_angle_MAXd(arg1);
     settings_data();
 }
 
@@ -160,10 +114,84 @@ void Quadro::on_quadro_autoupdate_stateChanged(int arg1)
 
 void Quadro::on_torque_manual_correction_x_valueChanged(double arg1)
 {
+    quadro.set_torque_manual_correction(vect(arg1, quadro.get_torque_manual_correction().y, 0));
     settings_data();
 }
 
 void Quadro::on_torque_manual_correction_y_valueChanged(double arg1)
 {
+    quadro.set_torque_manual_correction(vect(quadro.get_torque_manual_correction().x, arg1, 0));
+    settings_data();
+}
+
+void Quadro::on_PID_angle_Kp_x_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_Kp_x(arg1);
+    settings_data();
+}
+
+void Quadro::on_PID_angle_Ki_x_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_Ki_x(arg1);
+    settings_data();
+}
+
+void Quadro::on_PID_angle_Kd_x_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_Kd_x(arg1);
+    settings_data();
+}
+
+void Quadro::on_PID_angle_Kp_y_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_Kp_y(arg1);
+    settings_data();
+}
+
+void Quadro::on_PID_angle_Ki_y_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_Ki_y(arg1);
+    settings_data();
+}
+
+void Quadro::on_PID_angle_Kd_y_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_Kd_y(arg1);
+    settings_data();
+}
+
+void Quadro::on_PID_angle_MAXp_x_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_MAXp_x(arg1);
+    settings_data();
+}
+
+void Quadro::on_PID_angle_MAXi_x_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_MAXi_x(arg1);
+    settings_data();
+}
+
+void Quadro::on_PID_angle_MAXd_x_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_MAXd_x(arg1);
+    settings_data();
+}
+
+void Quadro::on_PID_angle_MAXp_y_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_MAXp_y(arg1);
+    settings_data();
+}
+
+void Quadro::on_PID_angle_MAXi_y_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_MAXi_y(arg1);
+    settings_data();
+}
+
+void Quadro::on_PID_angle_MAXd_y_valueChanged(double arg1)
+{
+    quadro.set_PID_angle_MAXd_y(arg1);
     settings_data();
 }

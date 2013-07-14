@@ -35,42 +35,36 @@ void Quadrocopter::processSerialTx()
 #endif
 
             {
-                // torque_manual_correction
-                for(int i = 0; i < 3; i++)
+                // torque_manual_correction +4
+                for(int i = 0; i < 2; i++)
                     MSerial->readDouble(-1, 1, angleManualCorrection.valueByAxisIndex(i), 2);
 
-                //force
-                MSerial->waitForByte();
-                if(MSerial->getReadError()) return;
-
+                //force +1
                 MController->setForce(MSerial->read() / 100.);
 
-                //reaction_type
-                MSerial->waitForByte();
-                if(MSerial->getReadError()) return;
-
+                //reaction_type +1
                 reactionType = (reactionType_) (MSerial->read() - '0');
 
                 double tDouble;
-                //PID angle coefficients
-                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKp(tDouble);
-                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKi(tDouble);
-                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKd(tDouble);
+                //PID angle coefficients X +6
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKp_x(tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKi_x(tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKd_x(tDouble);
 
-                //PID angle minmax
-                MSerial->readDouble(0, 5, tDouble, 2);
-                pidAngle.setPMin(-tDouble);
-                pidAngle.setPMax(tDouble);
-                MSerial->readDouble(0, 5, tDouble, 2);
-                pidAngle.setIMin(-tDouble);
-                pidAngle.setIMax(tDouble);
-                MSerial->readDouble(0, 5, tDouble, 2);
-                pidAngle.setDMin(-tDouble);
-                pidAngle.setDMax(tDouble);
+                //PID angle minmax X +6
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setPMinMax_x(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setIMinMax_x(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setDMinMax_x(tDouble);
 
-                //Periods for filters
-                MSerial->readDouble(0, 100, tDouble, 2); accelData.setPeriod(tDouble);
-                MSerial->readDouble(0, 100, tDouble, 2);
+                //PID angle coefficients Y +6
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKp_y(tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKi_y(tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKd_y(tDouble);
+
+                //PID angle minmax Y +6
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setPMinMax_y(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setIMinMax_y(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setDMinMax_y(tDouble);
             }
 #ifdef DEBUG_NO_TX_ARDUINO
             Serial.write('x');
@@ -85,14 +79,18 @@ void Quadrocopter::processSerialTx()
 #ifndef DEBUG_NO_TX_ARDUINO
 //            for(int i = 0; i < BN; i++)
 //                MSerial->bufferAdd(x[i]);
-            // writing 38 bytes
+            // writing 32 bytes
             {
-                MSerial->RVector3DWrite(getTorques(), MySerial::PRINT_RAW); // +6
+                MSerial->RVector3DWrite(getTorques(), MySerial::PRINT_RAW, MySerial::USE_2D); // +4
                 MSerial->RVector3DWrite(angle, MySerial::PRINT_RAW, MySerial::USE_2D); // +4
 
                 MSerial->RVector3DWrite(angularVelocity * 1. / SERIAL_GYRO_COEFF, MySerial::PRINT_RAW); // +6
 
-                //MSerial->RVector3DWrite(accelData.getValue(), MySerial::PRINT_RAW); // +6
+                MSerial->RVector3DWrite(RVector3D(pidAngle.getLastPID()[0].x,
+                                                  pidAngle.getLastPID()[1].x,
+                                                  pidAngle.getLastPID()[2].x) *
+                                        SERIAL_PID_COEFF,
+                                        MySerial::PRINT_RAW); // +6
 
                 MSerial->RVector3DWrite(RVector3D(pidAngle.getLastPID()[0].y,
                                                   pidAngle.getLastPID()[1].y,
@@ -100,18 +98,9 @@ void Quadrocopter::processSerialTx()
                                         SERIAL_PID_COEFF,
                                         MySerial::PRINT_RAW); // +6
 
-                MSerial->RVector3DWrite(angleManualCorrection, MySerial::PRINT_RAW); // +6
-
                 //motors
                 for (unsigned i = 0; i < 4; i++)
                     MSerial->bufferAdd(100 * MController->getSpeed(getTorques(), i)); // +4
-
-                //dt
-                for (int si = 2; si >= 0; si--)
-                    MSerial->bufferAdd((((unsigned long long) ((calculationsTime + sensorsTime) * 1E6)) & (0xff << 8 * si)) >> (8 * si)); //+3
-
-                //reaction type
-                MSerial->bufferAdd(reactionType + '0'); //+1
 
                 MSerial->writeDouble(0, 20, voltage, 2); //+2
             }

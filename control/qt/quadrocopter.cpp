@@ -27,22 +27,15 @@ quadrocopter::quadrocopter()
     PID_angle_Ki = 0;
     PID_angle_Kd = 0;
 
-    PID_angular_velocity_Kp = 0;
-    PID_angular_velocity_Ki = 0;
-    PID_angular_velocity_Kd = 0;
-
     //see arduino code
 #ifdef DEBUG_NO_TX_ARDUINO
     readBytesN = 1;
 #else
-    readBytesN = 38;
+    readBytesN = 32;
 #endif
     //readBytesN = BN;
 
     joystick_coefficient = 0.5;
-
-    accel_period = 0;
-    angle_period = 0;
 
     busyBit = false;
 
@@ -101,37 +94,17 @@ number_vect_t quadrocopter::get_read_time()
     return(read_time);
 }
 
-void quadrocopter::set_accel_period(double n_period)
-{
-    accel_period = n_period;
-}
-
-void quadrocopter::set_angle_period(double n_period)
-{
-    angle_period = n_period;
-}
-
-double quadrocopter::get_accel_period()
-{
-    return(accel_period);
-}
-
-double quadrocopter::get_angle_period()
-{
-    return(angle_period);
-}
-
-number_vect_t quadrocopter::get_PID_P()
+vect quadrocopter::get_PID_P()
 {
     return(PID_P);
 }
 
-number_vect_t quadrocopter::get_PID_I()
+vect quadrocopter::get_PID_I()
 {
     return(PID_I);
 }
 
-number_vect_t quadrocopter::get_PID_D()
+vect quadrocopter::get_PID_D()
 {
     return(PID_D);
 }
@@ -198,99 +171,84 @@ void quadrocopter::set_joystick_correction(vect n_joystick_correction)
     set_torque_manual_correction(n_joystick_correction * joystick_coefficient);
 }
 
-void quadrocopter::set_torque_manual_correction(vect n_torque_manual_correction)
+void quadrocopter::set_PID_angle_Kp_x(number_vect_t t)
 {
-    torque_manual_correction = n_torque_manual_correction;
+    PID_angle_Kp.x = t;
 }
 
-void quadrocopter::set_PID_angle_Kp(number_vect_t t_Kp)
+void quadrocopter::set_PID_angle_Ki_x(number_vect_t t)
 {
-    PID_angle_Kp = t_Kp;
+    PID_angle_Ki.x = t;
 }
 
-void quadrocopter::set_PID_angle_Ki(number_vect_t t_Ki)
+void quadrocopter::set_PID_angle_Kd_x(number_vect_t t)
 {
-    PID_angle_Ki = t_Ki;
+    PID_angle_Kd.x = t;
 }
 
-void quadrocopter::set_PID_angle_Kd(number_vect_t t_Kd)
+void quadrocopter::set_PID_angle_Kp_y(number_vect_t t)
 {
-    PID_angle_Kd = t_Kd;
+    PID_angle_Kp.y = t;
 }
 
-void quadrocopter::set_PID_angle_MAXp(number_vect_t arg)
+void quadrocopter::set_PID_angle_Ki_y(number_vect_t t)
 {
-    PID_angle_MAXp = arg;
+    PID_angle_Ki.y = t;
 }
 
-void quadrocopter::set_PID_angle_MAXi(number_vect_t arg)
+void quadrocopter::set_PID_angle_Kd_y(number_vect_t t)
 {
-    PID_angle_MAXi = arg;
+    PID_angle_Kd.y = t;
 }
 
-void quadrocopter::set_PID_angle_MAXd(number_vect_t arg)
+void quadrocopter::set_PID_angle_MAXp_x(number_vect_t t)
 {
-    PID_angle_MAXd = arg;
+    PID_angle_MAXp.x = t;
 }
 
-void quadrocopter::set_PID_angular_velocity_Kp(number_vect_t t_Kp)
+void quadrocopter::set_PID_angle_MAXi_x(number_vect_t t)
 {
-    PID_angular_velocity_Kp = t_Kp;
+    PID_angle_MAXi.x = t;
 }
 
-void quadrocopter::set_PID_angular_velocity_Ki(number_vect_t t_Ki)
+void quadrocopter::set_PID_angle_MAXd_x(number_vect_t t)
 {
-    PID_angular_velocity_Ki = t_Ki;
+    PID_angle_MAXd.x = t;
 }
 
-void quadrocopter::set_PID_angular_velocity_Kd(number_vect_t t_Kd)
+void quadrocopter::set_PID_angle_MAXp_y(number_vect_t t)
 {
-    PID_angular_velocity_Kd = t_Kd;
+    PID_angle_MAXp.y = t;
 }
 
-number_vect_t quadrocopter::get_PID_angle_Kp()
+void quadrocopter::set_PID_angle_MAXi_y(number_vect_t t)
+{
+    PID_angle_MAXi.y = t;
+}
+
+void quadrocopter::set_PID_angle_MAXd_y(number_vect_t t)
+{
+    PID_angle_MAXd.y = t;
+}
+
+vect quadrocopter::get_PID_angle_Kp()
 {
     return(PID_angle_Kp);
 }
 
-number_vect_t quadrocopter::get_PID_angle_Ki()
+vect quadrocopter::get_PID_angle_Ki()
 {
     return(PID_angle_Ki);
 }
 
-number_vect_t quadrocopter::get_PID_angle_Kd()
+vect quadrocopter::get_PID_angle_Kd()
 {
     return(PID_angle_Kd);
 }
 
-number_vect_t quadrocopter::get_PID_angle_MAXp()
+void quadrocopter::set_torque_manual_correction(vect n_torque_manual_correction)
 {
-    return(PID_angle_MAXp);
-}
-
-number_vect_t quadrocopter::get_PID_angle_MAXi()
-{
-    return(PID_angle_MAXi);
-}
-
-number_vect_t quadrocopter::get_PID_angle_MAXd()
-{
-    return(PID_angle_MAXd);
-}
-
-number_vect_t quadrocopter::get_PID_angular_velocity_Kp()
-{
-    return(PID_angular_velocity_Kp);
-}
-
-number_vect_t quadrocopter::get_PID_angular_velocity_Ki()
-{
-    return(PID_angular_velocity_Ki);
-}
-
-number_vect_t quadrocopter::get_PID_angular_velocity_Kd()
-{
-    return(PID_angular_velocity_Kd);
+    torque_manual_correction = n_torque_manual_correction;
 }
 
 vect quadrocopter::get_torque_manual_correction()
@@ -362,4 +320,20 @@ quadrocopter::reaction_type_ quadrocopter::get_reaction_type()
 void quadrocopter::set_reaction_type(quadrocopter::reaction_type_ n_reaction_type)
 {
     reaction_type = n_reaction_type;
+}
+
+
+vect quadrocopter::get_PID_angle_MAXp()
+{
+    return(PID_angle_MAXp);
+}
+
+vect quadrocopter::get_PID_angle_MAXi()
+{
+    return(PID_angle_MAXi);
+}
+
+vect quadrocopter::get_PID_angle_MAXd()
+{
+    return(PID_angle_MAXd);
 }

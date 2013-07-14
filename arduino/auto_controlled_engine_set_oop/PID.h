@@ -44,9 +44,13 @@ public:
     T getKi();
     T getKd();
 
-//    void setKp(T);
-//    void setKi(T);
-//    void setKd(T);
+    void setKp_x(double);
+    void setKi_x(double);
+    void setKd_x(double);
+
+    void setKp_y(double);
+    void setKi_y(double);
+    void setKd_y(double);
 
     void setKp(double);
     void setKi(double);
@@ -65,6 +69,14 @@ public:
 
     void setDMin(T);
     void setDMax(T);
+
+    void setPMinMax_x(double);
+    void setIMinMax_x(double);
+    void setDMinMax_x(double);
+
+    void setPMinMax_y(double);
+    void setIMinMax_y(double);
+    void setDMinMax_y(double);
 
     void setData0(T); // sets needed value
     T getData0();

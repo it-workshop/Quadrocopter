@@ -12,7 +12,7 @@ private:
 #ifdef DEBUG_NO_MOTORS
     static const int INIT_TIMEOUT = 0; // ms
 #else
-    static const int INIT_TIMEOUT = 8000; // ms
+    static const int INIT_TIMEOUT = 1000; // ms
 #endif
 
     double force;
