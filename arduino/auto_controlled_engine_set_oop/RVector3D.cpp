@@ -45,49 +45,6 @@ void RVector3D::parseFloat(float * a)
     z = a[2];
 }
 
-void RVector3D::xAngleInc(double w)
-{
-    double old_y = y;
-    y =     y * cos(w) - z * sin(w);
-    z = old_y * sin(w) + z * cos(w);
-}
-
-void RVector3D::xAngleDec(double w)
-{
-    xAngleInc(-w);
-}
-
-void RVector3D::yAngleInc(double w)
-{
-    double old_x = x;
-    x =      x * cos(w) + z * sin(w);
-    z = -old_x * sin(w) + z * cos(w);
-}
-
-void RVector3D::yAngleDec(double w)
-{
-    yAngleInc(-w);
-}
-
-void RVector3D::zAngleInc(double w)
-{
-    double old_x = x;
-    x =     x * cos(w) - y * sin(w);
-    y = old_x * sin(w) + y * cos(w);
-}
-
-void RVector3D::zAngleDec(double w)
-{
-    zAngleInc(-w);
-}
-
-void RVector3D::angleInc(RVector3D angularRotation)
-{
-    xAngleInc(angularRotation.x);
-    yAngleInc(angularRotation.y);
-    zAngleInc(angularRotation.z);
-}
-
 double RVector3D::moduleSq()
 {
     return x * x + y * y + z * z;
@@ -194,49 +151,6 @@ RVector3D RVector3D::operator %(RVector3D b)
     result.z *= b.z;
 
     return(result);
-}
-
-RVector3D RVector3D::angleFromProjections()
-{
-    RVector3D result = RVector3D();
-
-    result.x =  atan2(y, z);
-    result.y = -atan2(x, z);
-    result.z = 0;
-    
-    return(result);
-}
-
-RVector3D RVector3D::projectionsFromAngle(double a)
-{
-    RVector3D result = RVector3D();
-
-    if (fabs(x - MPI / 2) < doubleEps || fabs(y - MPI / 2) < doubleEps
-            || fabs(x + MPI / 2) < doubleEps || fabs(y + MPI / 2) < doubleEps)
-    {
-        result.z = 0;
-
-        if (fabs(y + MPI / 2) < doubleEps) result.x = -1;
-        if (fabs(y - MPI / 2) < doubleEps) result.x = 1;
-
-        if (fabs(x + MPI / 2) < doubleEps) result.y = 1;
-        if (fabs(x - MPI / 2) < doubleEps) result.y = -1;
-    }
-    else
-    {
-        result.z = +a / sqrt(1 + pow(tan(x), 2) + pow(tan(y), 2));
-        result.x = +result.z * tan(y);
-        result.y = -result.z * tan(x);
-    }
-
-    if ((fabs(y) - doubleEps) >= MPI / 2 && (fabs(y) + doubleEps) <= MPI) result.x *= -1;
-    if ((x + doubleEps) <= -MPI / 2 || x - (doubleEps) >= MPI / 2) result.y *= -1;
-
-    result.x *= -1;
-    result.y *= -1;
-
-    return(result);
-
 }
 
 RVector3D RVector3D::operator^(RVector3D t)

@@ -57,7 +57,7 @@ void Quadrocopter::processSerialTx()
                 MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKi(tDouble);
                 MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKd(tDouble);
 
-                //PID angular velocity coefficients
+                //PID angle minmax
                 MSerial->readDouble(0, 5, tDouble, 2);
                 pidAngle.setPMin(-tDouble);
                 pidAngle.setPMax(tDouble);
@@ -94,9 +94,9 @@ void Quadrocopter::processSerialTx()
 
                 //MSerial->RVector3DWrite(accelData.getValue(), MySerial::PRINT_RAW); // +6
 
-                MSerial->RVector3DWrite(RVector3D(pidAngle.getLastPID()[0].x,
-                                                  pidAngle.getLastPID()[1].x,
-                                                  pidAngle.getLastPID()[2].x) *
+                MSerial->RVector3DWrite(RVector3D(pidAngle.getLastPID()[0].y,
+                                                  pidAngle.getLastPID()[1].y,
+                                                  pidAngle.getLastPID()[2].y) *
                                         SERIAL_PID_COEFF,
                                         MySerial::PRINT_RAW); // +6
 
