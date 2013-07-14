@@ -62,7 +62,7 @@ void dmpDataReady()
 
 float* MPU6050DMP::getAngleXYZ()
 {
-    tfloat[0] = -ypr[2];
+    tfloat[0] = +ypr[2];
     tfloat[1] = +ypr[1];
     tfloat[2] = +ypr[0];
     return(tfloat);
@@ -70,9 +70,9 @@ float* MPU6050DMP::getAngleXYZ()
 
 float *MPU6050DMP::getAngularVelocityXYZ()
 {
-    tfloat[0] = -av[0] * gyroMulConstRad;
-    tfloat[1] = -av[1] * gyroMulConstRad;
-    tfloat[2] = -av[2] * gyroMulConstRad;
+    tfloat[0] = av[0] * gyroMulConstRad;
+    tfloat[1] = av[1] * gyroMulConstRad;
+    tfloat[2] = av[2] * gyroMulConstRad;
     return(tfloat);
 }
 
