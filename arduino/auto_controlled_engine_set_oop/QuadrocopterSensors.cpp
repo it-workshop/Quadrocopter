@@ -1,5 +1,4 @@
 #include "Quadrocopter.h"
-#include "ComplementaryFilter.h"
 
 void Quadrocopter::processSensorsData()
 {

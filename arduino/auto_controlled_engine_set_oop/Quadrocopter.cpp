@@ -1,5 +1,4 @@
 #include "Arduino.h"
-#include "LowPassFilter.h"
 #include "Quadrocopter.h"
 #include "PID.h"
 #include <avr/delay.h>
@@ -41,9 +40,6 @@ Quadrocopter::Quadrocopter()
 void Quadrocopter::reset()
 {
     angle = RVector3D();
-    angularAcceleration = RVector3D();
-    accelDataRaw = RVector3D();
-    accelData.reset();
     torqueAutomaticCorrection = RVector3D();
     angleManualCorrection = RVector3D();
 
@@ -51,19 +47,13 @@ void Quadrocopter::reset()
     MController->setTorque(RVector3D());
 
     pidAngle.reset();
-    pidAngularVelocity.reset();
-
-    accelerometerXi = RVector3D(0, 0, 0);
 
     voltage = 0;
     dtMax = 0;
 
     pidAngle.setKpKiKd(0, 0, 0);
-    pidAngularVelocity.setKpKiKd(0, 0, 0);
     pidAngle.setYMin(-angleMaxCorrection);
-    pidAngularVelocity.setYMin(-angularVelocityMaxCorrection);
     pidAngle.setYMax(angleMaxCorrection);
-    pidAngularVelocity.setYMax(angularVelocityMaxCorrection);
 
     pidAngle.setPMin(-angleMaxCorrection * 5);
     pidAngle.setPMax( angleMaxCorrection * 5);

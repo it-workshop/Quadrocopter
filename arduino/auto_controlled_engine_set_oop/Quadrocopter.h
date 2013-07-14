@@ -1,6 +1,5 @@
 #include "Definitions.h"
 #include "MPU6050DMP.h"
-#include "LowPassFilter.h"
 #include "RVector3D.h"
 #include "TimerCount.h"
 #include "Motor.h"
@@ -45,23 +44,14 @@ private:
 
     //physical quantities
     RVector3D angle; // angle between Earth's coordinate and ours (filtered)
-    RVector3D accelDataRaw; //data from accelerometer (g - a)
-    LowPassFilter<RVector3D> accelData; // filtered data from accelerometer
     RVector3D angularVelocity; // angular velocity from gyroscope
-    RVector3D angularAcceleration; //discrete derivative of angular velocity
     double voltage; //accumulators voltage
 
-    RVector3D angularVelocityPrev; // for angular acceleration
-
     //corrections
-    RVector3D accelerometerXi;
     static const double angleMaxCorrection = MPI / 4;
-    static const double angularVelocityMaxCorrection = MPI / 4;
 
-    PID<RVector3D> pidAngle, pidAngularVelocity;
+    PID<RVector3D> pidAngle;
     RVector3D getAngleCorrection(RVector3D angle, double dt);
-    RVector3D getAccelerationCorrection(RVector3D angle, RVector3D accelData0); // totally doesnt work
-    RVector3D getAngularVelocityCorrection(RVector3D angularVelocity, double dt);
 
     double dt, dtMax, sensorsTime, calculationsTime;
     TimerCount tCount;
@@ -84,8 +74,6 @@ public:
 
     void iteration();
     void MPUInterrupt();
-
-    void blinkLed();
 
     RVector3D getTorques();
 };
