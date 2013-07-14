@@ -90,10 +90,6 @@ void Quadro::interface_write()
         }
 
         ui->motors->setText(t_ss.str().c_str());
-
-        plot_torque_and_force_update_legend();
-
-        //ui->reaction_type->setCurrentIndex(quadro.get_reaction_type());
     }
 
     if(joy.isoperational())

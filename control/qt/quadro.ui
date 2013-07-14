@@ -506,11 +506,6 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="tabcorrections">
-     <attribute name="title">
-      <string>Corrections</string>
-     </attribute>
-    </widget>
     <widget class="QWidget" name="tabvoltage">
      <attribute name="title">
       <string>Voltage</string>

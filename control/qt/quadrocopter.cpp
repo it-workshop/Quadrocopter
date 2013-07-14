@@ -51,8 +51,6 @@ void quadrocopter::defaults()
     torque_corrected = vect();
     gyroscope_readings = vect();
     accelerometer_readings = vect();
-    torque_angular_velocity_correction = vect();
-    torque_acceleration_correction = vect();
 
     angle = vect();
     power = 0;
@@ -142,11 +140,6 @@ vect quadrocopter::get_accelerometer_readings()
 vect quadrocopter::get_angle()
 {
     return(angle);
-}
-
-vect quadrocopter::get_torque_angular_velocity_correction()
-{
-    return(torque_angular_velocity_correction);
 }
 
 number_vect_t quadrocopter::get_motor_power(int i)
@@ -259,35 +252,6 @@ vect quadrocopter::get_torque_manual_correction()
 number_vect_t quadrocopter::get_power()
 {
     return(power);
-}
-
-vect quadrocopter::get_torque_acceleration_correction()
-{
-    return(torque_acceleration_correction);
-}
-
-vect quadrocopter::get_torque_angle_correction()
-{
-    return(torque_angle_correction);
-}
-
-vect quadrocopter::get_torque_automatic_correction()
-{
-    switch(reaction_type)
-    {
-        case REACTION_ANGULAR_VELOCITY:
-            return(get_torque_angular_velocity_correction());
-            break;
-        case REACTION_ACCELERATION:
-            return(get_torque_acceleration_correction());
-            break;
-        case REACTION_ANGLE:
-            return(get_torque_angle_correction());
-            break;
-        default:
-            return(vect());
-            break;
-    }
 }
 
 number_vect_t quadrocopter::get_write_time()

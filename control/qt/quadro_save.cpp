@@ -123,8 +123,6 @@ void Quadro::save_data()
              << quadro.get_reaction_type() << "\t"
              << quadro.get_angle().print2d() << "\t"
 
-             << quadro.get_torque_automatic_correction().print() << "\t"
-
              << joy.isoperational() << "\t"
              << ui->JoystickUse->isChecked() << "\t"
              << joy.get_readings().print2d() << "\t"

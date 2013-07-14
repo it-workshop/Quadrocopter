@@ -177,54 +177,6 @@ void Quadro::plot_init()
     ui->plot_torques_and_force->setAxisTitle(QwtPlot::yRight, "Torque [c1 * kg * m ^ 2 / s ^ 2]");
     ui->plot_torques_and_force->enableAxis(QwtPlot::yRight);
 
-    ui->plot_corrections->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
-    ui->plot_corrections->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
-    ui->plot_corrections->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
-
-    // Insert new curves
-    plot_curve_angular_velocity_correction_x = new QwtPlotCurve("angular_velocity<sub>x</sub>");
-    plot_curve_angular_velocity_correction_y = new QwtPlotCurve("angular_velocity<sub>y</sub>");
-    plot_curve_angular_velocity_correction_z = new QwtPlotCurve("angular_velocity<sub>z</sub>");
-
-    plot_curve_acceleration_correction_x = new QwtPlotCurve("acceleration<sub>x</sub>");
-    plot_curve_acceleration_correction_y = new QwtPlotCurve("acceleration<sub>y</sub>");
-    plot_curve_acceleration_correction_z = new QwtPlotCurve("acceleration<sub>z</sub>");
-
-    plot_curve_angle_correction_x = new QwtPlotCurve("angle<sub>x</sub>");
-    plot_curve_angle_correction_y = new QwtPlotCurve("angle<sub>y</sub>");
-    plot_curve_angle_correction_z = new QwtPlotCurve("angle<sub>z</sub>");
-
-    ui->plot_corrections->setAxisScale(QwtPlot::yLeft, -1, 1);
-
-    // Set curve styles
-    plot_curve_angular_velocity_correction_x->setPen(QPen(Qt::red));
-    plot_curve_angular_velocity_correction_y->setPen(QPen(Qt::green));
-    plot_curve_angular_velocity_correction_z->setPen(QPen(Qt::blue));
-
-    plot_curve_acceleration_correction_x->setPen(QPen(Qt::red));
-    plot_curve_acceleration_correction_y->setPen(QPen(Qt::green));
-    plot_curve_acceleration_correction_z->setPen(QPen(Qt::blue));
-
-    plot_curve_angle_correction_x->setPen(QPen(Qt::red));
-    plot_curve_angle_correction_y->setPen(QPen(Qt::green));
-    plot_curve_angle_correction_z->setPen(QPen(Qt::blue));
-
-    // Attach (don't copy) data.
-    plot_curve_angular_velocity_correction_x->setRawData(plot_time, plot_angular_velocity_correction_x, plot_size);
-    plot_curve_angular_velocity_correction_y->setRawData(plot_time, plot_angular_velocity_correction_y, plot_size);
-    plot_curve_angular_velocity_correction_z->setRawData(plot_time, plot_angular_velocity_correction_z, plot_size);
-
-    plot_curve_acceleration_correction_x->setRawData(plot_time, plot_acceleration_correction_x, plot_size);
-    plot_curve_acceleration_correction_y->setRawData(plot_time, plot_acceleration_correction_y, plot_size);
-    plot_curve_acceleration_correction_z->setRawData(plot_time, plot_acceleration_correction_z, plot_size);
-
-    plot_curve_angle_correction_x->setRawData(plot_time, plot_angle_correction_x, plot_size);
-    plot_curve_angle_correction_y->setRawData(plot_time, plot_angle_correction_y, plot_size);
-    plot_curve_angle_correction_z->setRawData(plot_time, plot_angle_correction_z, plot_size);
-
-    ui->plot_corrections->setAxisTitle(QwtPlot::xBottom, "Time [s]");
-    ui->plot_corrections->setAxisTitle(QwtPlot::yLeft, "Addition to the power");
-
     ui->plot_PID_x->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
     ui->plot_PID_x->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
     ui->plot_PID_x->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
@@ -287,12 +239,6 @@ void Quadro::plot_init()
     angle_zero->setLineStyle(QwtPlotMarker::HLine);
     angle_zero->setYValue(0.0);
     angle_zero->attach(ui->plot_angle);
-
-    QwtPlotMarker *corrections_zero = new QwtPlotMarker();
-    corrections_zero->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
-    corrections_zero->setLineStyle(QwtPlotMarker::HLine);
-    corrections_zero->setYValue(0.0);
-    corrections_zero->attach(ui->plot_corrections);
 
     QwtPlotMarker *torques_and_force_zero = new QwtPlotMarker();
     torques_and_force_zero->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
@@ -375,66 +321,6 @@ void Quadro::plot_reset_data()
     }
 }
 
-void Quadro::plot_torque_and_force_update_legend()
-{
-    if(quadro.get_reaction_type() == quadrocopter::REACTION_ANGULAR_VELOCITY)
-    {
-        plot_curve_angular_velocity_correction_x->attach(ui->plot_corrections);
-        plot_curve_angular_velocity_correction_y->attach(ui->plot_corrections);
-        plot_curve_angular_velocity_correction_z->attach(ui->plot_corrections);
-
-        plot_curve_acceleration_correction_x->detach();
-        plot_curve_acceleration_correction_y->detach();
-        plot_curve_acceleration_correction_z->detach();
-
-        plot_curve_angle_correction_x->detach();
-        plot_curve_angle_correction_y->detach();
-        plot_curve_angle_correction_z->detach();
-    }
-    else if(quadro.get_reaction_type() == quadrocopter::REACTION_ACCELERATION)
-    {
-        plot_curve_acceleration_correction_x->attach(ui->plot_corrections);
-        plot_curve_acceleration_correction_y->attach(ui->plot_corrections);
-        plot_curve_acceleration_correction_z->attach(ui->plot_corrections);
-
-        plot_curve_angular_velocity_correction_x->detach();
-        plot_curve_angular_velocity_correction_y->detach();
-        plot_curve_angular_velocity_correction_z->detach();
-
-        plot_curve_angle_correction_x->detach();
-        plot_curve_angle_correction_y->detach();
-        plot_curve_angle_correction_z->detach();
-    }
-    else if(quadro.get_reaction_type() == quadrocopter::REACTION_ANGLE)
-    {
-        plot_curve_angle_correction_x->attach(ui->plot_corrections);
-        plot_curve_angle_correction_y->attach(ui->plot_corrections);
-        plot_curve_angle_correction_z->attach(ui->plot_corrections);
-
-        plot_curve_angular_velocity_correction_x->detach();
-        plot_curve_angular_velocity_correction_y->detach();
-        plot_curve_angular_velocity_correction_z->detach();
-
-        plot_curve_acceleration_correction_x->detach();
-        plot_curve_acceleration_correction_y->detach();
-        plot_curve_acceleration_correction_z->detach();
-    }
-    else
-    {
-        plot_curve_angle_correction_x->detach();
-        plot_curve_angle_correction_y->detach();
-        plot_curve_angle_correction_z->detach();
-
-        plot_curve_angular_velocity_correction_x->detach();
-        plot_curve_angular_velocity_correction_y->detach();
-        plot_curve_angular_velocity_correction_z->detach();
-
-        plot_curve_acceleration_correction_x->detach();
-        plot_curve_acceleration_correction_y->detach();
-        plot_curve_acceleration_correction_z->detach();
-    }
-}
-
 void Quadro::plot_update()
 {
     int plot_current = plot_size - 1;
@@ -470,18 +356,6 @@ void Quadro::plot_update()
         plot_torque_y[i] = plot_torque_y[i + 1];
         plot_torque_z[i] = plot_torque_z[i + 1];
         plot_force[i] = plot_force[i + 1];
-
-        plot_angular_velocity_correction_x[i] = plot_angular_velocity_correction_x[i + 1];
-        plot_angular_velocity_correction_y[i] = plot_angular_velocity_correction_y[i + 1];
-        plot_angular_velocity_correction_z[i] = plot_angular_velocity_correction_z[i + 1];
-
-        plot_acceleration_correction_x[i] = plot_acceleration_correction_x[i + 1];
-        plot_acceleration_correction_y[i] = plot_acceleration_correction_y[i + 1];
-        plot_acceleration_correction_z[i] = plot_acceleration_correction_z[i + 1];
-
-        plot_angle_correction_x[i] = plot_angle_correction_x[i + 1];
-        plot_angle_correction_y[i] = plot_angle_correction_y[i + 1];
-        plot_angle_correction_z[i] = plot_angle_correction_z[i + 1];
 
         plot_voltage[i] = plot_voltage[i + 1];
 
@@ -524,22 +398,6 @@ void Quadro::plot_update()
 
     ui->plot_torques_and_force->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
     ui->plot_torques_and_force->replot();
-
-    //corrections
-    plot_angular_velocity_correction_x[plot_current] = quadro.get_torque_angular_velocity_correction().x;
-    plot_angular_velocity_correction_y[plot_current] = quadro.get_torque_angular_velocity_correction().y;
-    plot_angular_velocity_correction_z[plot_current] = quadro.get_torque_angular_velocity_correction().z;
-
-    plot_acceleration_correction_x[plot_current] = quadro.get_torque_acceleration_correction().x;
-    plot_acceleration_correction_y[plot_current] = quadro.get_torque_acceleration_correction().y;
-    plot_acceleration_correction_z[plot_current] = quadro.get_torque_acceleration_correction().z;
-
-    plot_angle_correction_x[plot_current] = quadro.get_torque_angle_correction().x;
-    plot_angle_correction_y[plot_current] = quadro.get_torque_angle_correction().y;
-    plot_angle_correction_z[plot_current] = quadro.get_torque_angle_correction().z;
-
-    ui->plot_corrections->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
-    ui->plot_corrections->replot();
 
     //angle
     plot_angle_x[plot_current] = quadro.get_angle().x;
