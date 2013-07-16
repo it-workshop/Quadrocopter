@@ -34,9 +34,9 @@ void MotorController::setMotors(double power[N_MOTORS])
 
 MotorController::MotorController(const int motorControlPins[N_MOTORS])
 {
-    useMotors[A] = 0;
+    useMotors[A] = 1;
     useMotors[B] = 1;
-    useMotors[C] = 0;
+    useMotors[C] = 1;
     useMotors[D] = 1;
     
     for (int i = 0; i < N_MOTORS; i++)

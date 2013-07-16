@@ -9,7 +9,7 @@
 //#define DEBUG_NO_MOTORS
 
 // Add DAC8512 support and use it as InfoLED
-#define DEBUG_DAC
+//#define DEBUG_DAC
 
 // Turn off tx to PC (used both in Arduino and Qt apps)
 //#define DEBUG_NO_TX_ARDUINO
