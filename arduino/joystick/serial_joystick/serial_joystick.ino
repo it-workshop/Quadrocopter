@@ -1,10 +1,10 @@
 const int SERIAL_SPEED = 9600;
 
 const int APINS_N = 3;
-const int APINS[APINS_N] = {A1, A2, A3};
+const int APINS[APINS_N] = {A4, A5, A3};
 
 const int DPINS_N = 1;
-const int DPINS[DPINS_N] = {8};
+const int DPINS[DPINS_N] = {A2};
 
 const char C_REQUEST = 'r';
 
@@ -30,7 +30,7 @@ void setup()
         pinMode(APINS[i], INPUT);
         
     for(int i = 0; i < DPINS_N; i++)
-        pinMode(DPINS[i], INPUT);
+        pinMode(DPINS[i], INPUT_PULLUP);
         
     Serial.begin(SERIAL_SPEED);
 }
@@ -40,11 +40,14 @@ void loop()
     static int i, t_int;
     char t_high, t_low, c;
     
+#ifndef DEBUG
     if(Serial.available() > 0)
     {
         c = Serial.read();
         
-        if(c == C_REQUEST)
+        
+		if(c == C_REQUEST)
+#endif
         {
             for(i = 0; i < APINS_N; i++)
             {
@@ -61,12 +64,11 @@ void loop()
                 #endif
             }
             
-            Serial.write(1);
+            //Serial.write(1);
             
-            /*
             for(i = 0; i < DPINS_N; i++)
             {
-                t_int = digitalRead(DPINS[i]);
+                t_int = !digitalRead(DPINS[i]);
                 
                 //info led
                 digitalWrite(infoLedPin, t_int ? HIGH: LOW);
@@ -78,11 +80,15 @@ void loop()
                     Serial.write(t_int);
                 #endif
             }
-            */
             
             #ifdef DEBUG
                 Serial.print("\n");
             #endif
         }
+        #ifdef DEBUG
+		    delay(50);
+		#endif
+#ifndef DEBUG
     }
+#endif
 }
