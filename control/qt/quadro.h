@@ -46,7 +46,6 @@ private slots:
     void on_actionJoystickDisconnect_triggered();
     void on_actionJoystickCalibrate_zero_triggered();
     void on_joystick_device_textChanged(const QString &arg1);
-    void on_JoystickUse_toggled();
 
 private:
     Ui::Quadro *ui;
@@ -124,7 +123,6 @@ private slots:
     void on_setAngle_clicked();
     void on_torque_manual_reset_clicked();
     void on_quadro_update_clicked();
-    void on_quadro_autoupdate_stateChanged(int arg1);
     void on_torque_manual_correction_x_valueChanged(double arg1);
     void on_torque_manual_correction_y_valueChanged(double arg1);
     void on_PID_angle_Kp_x_valueChanged(double arg1);
@@ -139,6 +137,11 @@ private slots:
     void on_PID_angle_MAXp_y_valueChanged(double arg1);
     void on_PID_angle_MAXi_y_valueChanged(double arg1);
     void on_PID_angle_MAXd_y_valueChanged(double arg1);
+    void on_joystick_connect_clicked();
+    void on_joystick_use_clicked();
+    void on_joystick_calibrate_clicked();
+    void on_quadro_autoupdate_triggered();
+    void on_quadro_connect_clicked();
 };
 
 #endif // QUADRO_H

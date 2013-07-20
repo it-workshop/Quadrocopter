@@ -96,11 +96,11 @@ void Quadro::interface_write()
     {
         ui->joystick_power->setValue(joy.get_power_value() * 100);
         if(joy.is_switched_on())
-            ui->joystick_power->setStyleSheet("background-color: rgb(100, 255, 100);");
+            ui->label_joystick_power->setStyleSheet("background-color: rgb(100, 255, 100);");
         else
-            ui->joystick_power->setStyleSheet("background-color: rgb(255, 100, 100);");
+            ui->label_joystick_power->setStyleSheet("background-color: rgb(255, 100, 100);");
 
-        t_ss1 << (joy.is_switched_on() ? "online" : "offline") << "\t";
+        //t_ss1 << (joy.is_switched_on() ? "online" : "offline") << "\t";
         //t_ss1 << "p=" << joy.get_power_value() << "\t";
         t_ss1 << joy.get_readings().print2d();
 
@@ -139,6 +139,16 @@ void Quadro::interface_write()
         //ui->quadro_device->setEditable(1);
         ui->quadro_device->setStyleSheet("background-color: rgb(255, 100, 100);");
     }
+
+    if(joy.isconnected())
+        ui->joystick_connect->setText("Disconnect");
+    else
+        ui->joystick_connect->setText("Connect");
+
+    if(quadro.isconnected())
+        ui->quadro_connect->setText("Disconnect");
+    else
+        ui->quadro_connect->setText("Connect");
 }
 
 void Quadro::update_ports()

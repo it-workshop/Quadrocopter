@@ -57,7 +57,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab_manual">
      <attribute name="title">
@@ -215,17 +215,17 @@
         <x>0</x>
         <y>0</y>
         <width>411</width>
-        <height>91</height>
+        <height>61</height>
        </rect>
       </property>
-      <layout class="QFormLayout" name="formLayout_4">
+      <layout class="QFormLayout" name="joystick_form">
        <property name="fieldGrowthPolicy">
         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
        </property>
        <item row="0" column="0">
         <widget class="QLabel" name="label_joystick_data">
          <property name="text">
-          <string>J Data</string>
+          <string>Joystick XY</string>
          </property>
         </widget>
        </item>
@@ -239,34 +239,51 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0" colspan="2">
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
-          <widget class="QDial" name="joystick_power">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="maximum">
-            <number>100</number>
-           </property>
-           <property name="singleStep">
-            <number>0</number>
-           </property>
-           <property name="tracking">
-            <bool>false</bool>
-           </property>
-           <property name="wrapping">
-            <bool>false</bool>
-           </property>
-           <property name="notchTarget">
-            <double>29.000000000000000</double>
-           </property>
-           <property name="notchesVisible">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_joystick_power">
+         <property name="text">
+          <string>Joystick Power</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QProgressBar" name="joystick_power">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+         <property name="textVisible">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="horizontalLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>60</y>
+        <width>411</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QPushButton" name="joystick_calibrate">
+         <property name="text">
+          <string>Calibrate</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="joystick_use">
+         <property name="text">
+          <string>Use</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -1153,7 +1170,7 @@
       <x>0</x>
       <y>440</y>
       <width>431</width>
-      <height>61</height>
+      <height>62</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="ports">
@@ -1161,13 +1178,6 @@
       <widget class="QComboBox" name="joystick_device">
        <property name="editable">
         <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QCheckBox" name="quadro_autoupdate">
-       <property name="text">
-        <string>Autoupdate</string>
        </property>
       </widget>
      </item>
@@ -1199,6 +1209,20 @@
        </property>
       </widget>
      </item>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="quadro_connect">
+       <property name="text">
+        <string>Connect</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QPushButton" name="joystick_connect">
+       <property name="text">
+        <string>Connect</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>
@@ -1219,6 +1243,7 @@
     <addaction name="actionQuadroDisconnect"/>
     <addaction name="actionQuadroReset"/>
     <addaction name="quadro_reconnect"/>
+    <addaction name="quadro_autoupdate"/>
    </widget>
    <widget class="QMenu" name="menuJoystick">
     <property name="title">
@@ -1228,7 +1253,6 @@
     <addaction name="actionJoystickDisconnect"/>
     <addaction name="actionJoystickCalibrate_zero"/>
     <addaction name="joy_reconnect"/>
-    <addaction name="JoystickUse"/>
    </widget>
    <widget class="QMenu" name="menuProgram">
     <property name="title">
@@ -1315,6 +1339,28 @@
    </property>
    <property name="text">
     <string>Use</string>
+   </property>
+  </action>
+  <action name="actionSdf">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>sdf</string>
+   </property>
+  </action>
+  <action name="quadro_autoupdate">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Autoupdate</string>
    </property>
   </action>
  </widget>

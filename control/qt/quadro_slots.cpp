@@ -57,16 +57,6 @@ void Quadro::on_reaction_type_currentIndexChanged(int index)
     settings_data();
 }
 
-void Quadro::on_JoystickUse_toggled()
-{
-    if(joy.isoperational())
-    {
-        joy.set_data_default();
-
-        ui->power->setValue(0);
-    }
-}
-
 void Quadro::on_joystick_device_currentIndexChanged(const QString &arg1)
 {
     joy.setDevice(arg1.toAscii().data());
@@ -105,11 +95,6 @@ void Quadro::on_quadro_update_clicked()
 {
     if(quadro.iswriteable())
         quadro.initiate_transmission();
-}
-
-void Quadro::on_quadro_autoupdate_stateChanged(int arg1)
-{
-    settings_data();
 }
 
 void Quadro::on_torque_manual_correction_x_valueChanged(double arg1)
@@ -194,4 +179,53 @@ void Quadro::on_PID_angle_MAXd_y_valueChanged(double arg1)
 {
     quadro.set_PID_angle_MAXd_y(arg1);
     settings_data();
+}
+
+void Quadro::on_joystick_connect_clicked()
+{
+    if(joy.isconnected())
+    {
+        ui->joy_reconnect->setChecked(false);
+        joy_disconnect();
+    }
+    else
+    {
+        joy_connect();
+    }
+}
+
+void Quadro::on_joystick_use_clicked()
+{
+    if(joy.isoperational())
+    {
+        joy.set_data_default();
+
+        ui->power->setValue(0);
+    }
+}
+
+void Quadro::on_joystick_calibrate_clicked()
+{
+    if(joy.isoperational())
+    {
+        joy.initiate_transmission();
+        joy.set_data_default();
+        settings_data();
+    }
+}
+
+void Quadro::on_quadro_autoupdate_triggered()
+{
+    settings_data();
+}
+
+void Quadro::on_quadro_connect_clicked()
+{
+    if(quadro.isconnected())
+    {
+        ui->quadro_reconnect->setChecked(false);
+        quadro_disconnect();
+    }
+    else
+        quadro_connect();
 }
