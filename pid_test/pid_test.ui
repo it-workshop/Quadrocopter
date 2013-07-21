@@ -20,7 +20,7 @@
       <x>48</x>
       <y>480</y>
       <width>313</width>
-      <height>81</height>
+      <height>93</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -437,6 +437,44 @@
     </property>
     <property name="format">
      <string>%v</string>
+    </property>
+   </widget>
+   <widget class="QSlider" name="payload">
+    <property name="geometry">
+     <rect>
+      <x>588</x>
+      <y>482</y>
+      <width>201</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>-10</number>
+    </property>
+    <property name="maximum">
+     <number>10</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+    <property name="tickPosition">
+     <enum>QSlider::TicksAbove</enum>
+    </property>
+    <property name="tickInterval">
+     <number>5</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>543</x>
+      <y>483</y>
+      <width>47</width>
+      <height>14</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Payload</string>
     </property>
    </widget>
   </widget>

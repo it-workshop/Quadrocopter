@@ -77,6 +77,7 @@ private slots:
     void on_spinBox_wind_valueChanged(int arg1);
     void on_scale_valueChanged(int arg1);
     void on_x_valueChanged(int value);
+    void on_payload_valueChanged(int value);
 };
 
 #endif // PID_TEST_H

@@ -214,6 +214,9 @@ void PID_test::timer_auto_update()
             if(fabs(correction) < MIN_CORRECTION)
                 correction = 0;
 
+            //payload is an additional force
+            correction += ui->payload->value();
+
             //cerr << "corr=" << correction << endl;
 
             //assuming that the acceleration (correction) is constant
@@ -416,6 +419,7 @@ void PID_test::settings_write()
     ss << ui->doubleSpinBox_friction->value() << "\t";
 
     ss << ui->scale->value() << "\t";
+    ss << ui->payload->value() << "\t";
 
     settings_file << ss.str();
 
@@ -478,6 +482,7 @@ void PID_test::settings_read()
     settings_file >> t_int; ui->spinBox_wind->setValue(t_int);
     settings_file >> t_double; ui->doubleSpinBox_friction->setValue(t_double);
     settings_file >> t_int; ui->scale->setValue(t_int);
+    settings_file >> t_int; ui->payload->setValue(t_int);
 
     settings_file.close();
 }
@@ -488,6 +493,11 @@ void PID_test::on_spinBox_wind_valueChanged(int arg1)
 }
 
 void PID_test::on_scale_valueChanged(int arg1)
+{
+    settings_write();
+}
+
+void PID_test::on_payload_valueChanged(int value)
 {
     settings_write();
 }
