@@ -7,7 +7,11 @@
 
 #define DESKTOP
 
+#include <string>
 #include "PID.h"
+#include "RVector3D.h"
+
+using std::string;
 
 namespace Ui {
 class PID_test;
@@ -26,8 +30,8 @@ private:
 
     //plot
     static const int plot_size = 200 + 1;
-    static const int TIME_SCALE = 10;
-    double plot_value[plot_size], plot_x[plot_size], plot_time[plot_size];
+    double plot_value[plot_size], plot_x[plot_size], plot_time[plot_size],
+    plot_P[plot_size], plot_I[plot_size], plot_D[plot_size];
 
     //values
     double value, prev_value, value_speed;
@@ -46,7 +50,12 @@ private:
     void plot_reset_data();
     void plot_update();
 
-    PID pid_angular_velocity, pid_angle;
+    PID<RVector3D> pid_angular_velocity, pid_angle;
+
+    void settings_read();
+    void settings_write();
+
+    string settings_filename;
 
 private slots:
     void timer_auto_update();
@@ -61,6 +70,11 @@ private slots:
     void on_comboBox_type_currentIndexChanged(int index);
     void on_pushButton_wind_clicked();
     void on_doubleSpinBox_friction_valueChanged(double arg1);
+    void on_Kp_2_valueChanged(double arg1);
+    void on_Ki_2_valueChanged(double arg1);
+    void on_Kd_2_valueChanged(double arg1);
+    void on_spinBox_wind_valueChanged(int arg1);
+    void on_scale_valueChanged(int arg1);
 };
 
 #endif // PID_TEST_H

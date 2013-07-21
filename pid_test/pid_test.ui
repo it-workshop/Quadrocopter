@@ -6,31 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>779</width>
-    <height>505</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>PID_test</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QwtPlot" name="plot">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>10</y>
-      <width>761</width>
-      <height>351</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>380</y>
-      <width>301</width>
-      <height>62</height>
+      <x>60</x>
+      <y>490</y>
+      <width>291</width>
+      <height>71</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -108,6 +98,79 @@
       </layout>
      </item>
      <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="label_Kp_2">
+         <property name="text">
+          <string>maxP</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="Kp_2">
+         <property name="decimals">
+          <number>3</number>
+         </property>
+         <property name="minimum">
+          <double>-100.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>100.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_Ki_2">
+         <property name="text">
+          <string>maxI</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="Ki_2">
+         <property name="decimals">
+          <number>3</number>
+         </property>
+         <property name="minimum">
+          <double>-100.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>100.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_Kd_2">
+         <property name="text">
+          <string>maxD</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="Kd_2">
+         <property name="decimals">
+          <number>3</number>
+         </property>
+         <property name="minimum">
+          <double>-100.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>100.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QLabel" name="label_x">
@@ -142,8 +205,8 @@
    <widget class="QPushButton" name="pushButton_reset">
     <property name="geometry">
      <rect>
-      <x>680</x>
-      <y>380</y>
+      <x>704</x>
+      <y>500</y>
       <width>92</width>
       <height>27</height>
      </rect>
@@ -155,8 +218,8 @@
    <widget class="QPushButton" name="pushButton_pause">
     <property name="geometry">
      <rect>
-      <x>680</x>
-      <y>410</y>
+      <x>704</x>
+      <y>534</y>
       <width>92</width>
       <height>27</height>
      </rect>
@@ -168,13 +231,16 @@
    <widget class="QWidget" name="formLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>380</y>
+      <x>360</x>
+      <y>500</y>
       <width>171</width>
       <height>61</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
      <item row="0" column="0">
       <widget class="QLabel" name="label_dt">
        <property name="text">
@@ -195,15 +261,18 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
+     <item row="2" column="0">
       <widget class="QLabel" name="label_type">
        <property name="text">
         <string>type</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="2" column="1">
       <widget class="QComboBox" name="comboBox_type">
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
        <item>
         <property name="text">
          <string>angular velocity</string>
@@ -216,13 +285,33 @@
        </item>
       </widget>
      </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_dt_3">
+       <property name="text">
+        <string>sc</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="scale">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
    <widget class="QWidget" name="formLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>380</y>
+      <x>540</x>
+      <y>499</y>
       <width>161</width>
       <height>61</height>
      </rect>
@@ -248,13 +337,6 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_friction">
-       <property name="text">
-        <string>Friction</string>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="1">
       <widget class="QDoubleSpinBox" name="doubleSpinBox_friction">
        <property name="minimum">
@@ -268,6 +350,31 @@
        </property>
       </widget>
      </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_friction">
+       <property name="text">
+        <string>Friction</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>791</width>
+      <height>491</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QwtPlot" name="plot"/>
+     </item>
+     <item>
+      <widget class="QwtPlot" name="plot_val"/>
+     </item>
     </layout>
    </widget>
   </widget>
@@ -276,8 +383,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>779</width>
-     <height>23</height>
+     <width>800</width>
+     <height>24</height>
     </rect>
    </property>
   </widget>
