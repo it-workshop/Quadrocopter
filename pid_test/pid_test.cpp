@@ -138,9 +138,6 @@ void PID_test::plot_reset_data()
 
 void PID_test::plot_update()
 {
-    ui->value->setValue(value * 100);
-    ui->diff->setValue(-(ui->x->value() / 100 - value) * 1000);
-
     int plot_current = plot_size - 1;
 
     long double dt_seconds = plot_mytime.getTimeDifference() / 1E3 * ui->scale->value();
@@ -187,6 +184,9 @@ void PID_test::plot_update()
 
     //for dt_seconds
     plot_mytime.setTime();
+
+    ui->value->setValue(value * 100);
+    ui->diff->setValue(-(ui->x->value() / 100 - value) * 1000);
 }
 
 void PID_test::timer_auto_update()
