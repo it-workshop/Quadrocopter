@@ -138,15 +138,8 @@ void PID_test::plot_reset_data()
 
 void PID_test::plot_update()
 {
-    static unsigned int C = 0;
-    static const unsigned int CM = 1;
-
-//    if(C >= CM)
-//    {
-//        C = 0;
-        ui->value->setValue(value * 100);
-//    }
-//    else C++;
+    ui->value->setValue(value * 100);
+    ui->diff->setValue(-(ui->x->value() / 100 - value) * 1000);
 
     int plot_current = plot_size - 1;
 
@@ -217,6 +210,9 @@ void PID_test::timer_auto_update()
                 correction = pid_angular_velocity.getY(value_speed_, dt).x;
             else
                 correction = pid_angle.getY(value, dt).x;
+
+            if(fabs(correction) < MIN_CORRECTION)
+                correction = 0;
 
             //cerr << "corr=" << correction << endl;
 

@@ -57,6 +57,8 @@ private:
 
     string settings_filename;
 
+    static const double MIN_CORRECTION = 0.9;
+
 private slots:
     void timer_auto_update();
 
