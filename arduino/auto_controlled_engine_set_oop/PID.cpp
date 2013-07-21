@@ -172,6 +172,21 @@ template <typename T> void PID<T>::setDMinMax_y(double arg)
     DMax.y =  arg;
 }
 
+template <typename T> double PID<T>::getPMax_x()
+{
+    return(PMax.x);
+}
+
+template <typename T> double PID<T>::getIMax_x()
+{
+    return(IMax.x);
+}
+
+template <typename T> double PID<T>::getDMax_x()
+{
+    return(DMax.x);
+}
+
 template <typename T> void PID<T>::setKp(double arg)
 {
     Kp = arg;

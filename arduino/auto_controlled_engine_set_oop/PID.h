@@ -78,6 +78,10 @@ public:
     void setIMinMax_y(double);
     void setDMinMax_y(double);
 
+    double getPMax_x();
+    double getIMax_x();
+    double getDMax_x();
+
     void setData0(T); // sets needed value
     T getData0();
 
