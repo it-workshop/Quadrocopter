@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>850</width>
     <height>600</height>
    </rect>
   </property>
@@ -20,7 +20,7 @@
       <x>46</x>
       <y>481</y>
       <width>313</width>
-      <height>81</height>
+      <height>93</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -246,7 +246,7 @@
       <x>364</x>
       <y>481</y>
       <width>171</width>
-      <height>81</height>
+      <height>86</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
@@ -389,13 +389,38 @@
      </item>
     </layout>
    </widget>
+   <widget class="QProgressBar" name="value">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>0</y>
+      <width>51</width>
+      <height>561</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>-1000</number>
+    </property>
+    <property name="maximum">
+     <number>1000</number>
+    </property>
+    <property name="value">
+     <number>0</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+    <property name="format">
+     <string>%v</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>850</width>
      <height>24</height>
     </rect>
    </property>

@@ -138,6 +138,16 @@ void PID_test::plot_reset_data()
 
 void PID_test::plot_update()
 {
+    static unsigned int C = 0;
+    static const unsigned int CM = 1;
+
+//    if(C >= CM)
+//    {
+//        C = 0;
+        ui->value->setValue(value * 100);
+//    }
+//    else C++;
+
     int plot_current = plot_size - 1;
 
     long double dt_seconds = plot_mytime.getTimeDifference() / 1E3 * ui->scale->value();
