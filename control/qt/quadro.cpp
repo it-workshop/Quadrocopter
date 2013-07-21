@@ -58,7 +58,7 @@ void Quadro::set_quadro_data()
 
     t_correction = vect(ui->torque_manual_correction_x->value(), ui->torque_manual_correction_y->value(), 0);
 
-    if(joy.isoperational() && ui->JoystickUse->isChecked())
+    if(joy.isoperational() && ui->joystick_use->isChecked())
     {
         t_correction += joy.get_readings() * quadro.get_joystick_coefficient();
 
