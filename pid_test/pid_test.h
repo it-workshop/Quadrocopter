@@ -62,7 +62,6 @@ private slots:
 
     void on_pushButton_reset_clicked();
     void on_pushButton_pause_clicked();
-    void on_x_valueChanged(double arg1);
     void on_Kp_valueChanged(double arg1);
     void on_Ki_valueChanged(double arg1);
     void on_Kd_valueChanged(double arg1);
@@ -75,6 +74,7 @@ private slots:
     void on_Kd_2_valueChanged(double arg1);
     void on_spinBox_wind_valueChanged(int arg1);
     void on_scale_valueChanged(int arg1);
+    void on_x_valueChanged(int value);
 };
 
 #endif // PID_TEST_H

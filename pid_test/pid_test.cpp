@@ -245,7 +245,7 @@ void PID_test::on_pushButton_reset_clicked()
     else
     {
         pid_angle.setKpKiKd(ui->Kp->value(), ui->Ki->value(), ui->Kd->value());
-        pid_angle.setData0(ui->x->value());
+        pid_angle.setData0(ui->x->value() / 100.);
         pid_angle.reset();
     }
 }
@@ -266,11 +266,12 @@ void PID_test::on_pushButton_pause_clicked()
     }
 }
 
-void PID_test::on_x_valueChanged(double arg1)
+void PID_test::on_x_valueChanged(int value)
 {
-    x = arg1;
+    x = value;
+    x /= 100;
     if(ui->comboBox_type->currentIndex() == 1)
-        pid_angle.setData0(arg1);
+        pid_angle.setData0(x);
     settings_write();
 }
 
@@ -314,7 +315,7 @@ void PID_test::on_comboBox_type_currentIndexChanged(int index)
         ui->Kp->setValue(pid_angular_velocity.getKp().x);
         ui->Ki->setValue(pid_angular_velocity.getKi().x);
         ui->Kd->setValue(pid_angular_velocity.getKd().x);
-        ui->x->setValue(pid_angular_velocity.getData0().x);
+        ui->x->setValue(pid_angular_velocity.getData0().x * 100.);
 
         ui->Kp_2->setValue(pid_angular_velocity.getPMax_x());
         ui->Ki_2->setValue(pid_angular_velocity.getIMax_x());
@@ -325,7 +326,7 @@ void PID_test::on_comboBox_type_currentIndexChanged(int index)
         ui->Kp->setValue(pid_angle.getKp().x);
         ui->Ki->setValue(pid_angle.getKi().x);
         ui->Kd->setValue(pid_angle.getKd().x);
-        ui->x->setValue(pid_angle.getData0().x);
+        ui->x->setValue(pid_angle.getData0().x * 100.);
         ui->Kp_2->setValue(pid_angle.getPMax_x());
         ui->Ki_2->setValue(pid_angle.getIMax_x());
         ui->Kd_2->setValue(pid_angle.getDMax_x());
@@ -452,7 +453,7 @@ void PID_test::settings_read()
         ui->Ki_2->setValue(mi1);
         ui->Kd_2->setValue(md1);
 
-        ui->x->setValue(x1);
+        ui->x->setValue(x1 * 100.);
     }
     else
     {
@@ -464,7 +465,7 @@ void PID_test::settings_read()
         ui->Ki_2->setValue(mi2);
         ui->Kd_2->setValue(md2);
 
-        ui->x->setValue(x2);
+        ui->x->setValue(x2 * 100.);
     }
 
     settings_file >> t_int; ui->dt->setValue(t_int);
@@ -482,5 +483,5 @@ void PID_test::on_spinBox_wind_valueChanged(int arg1)
 
 void PID_test::on_scale_valueChanged(int arg1)
 {
-
+    settings_write();
 }

@@ -17,10 +17,10 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>490</y>
-      <width>291</width>
-      <height>71</height>
+      <x>46</x>
+      <y>481</y>
+      <width>313</width>
+      <height>81</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -180,21 +180,33 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="x">
-         <property name="decimals">
-          <number>3</number>
-         </property>
+        <widget class="QSlider" name="x">
          <property name="minimum">
-          <double>-10.000000000000000</double>
+          <number>-1000</number>
          </property>
          <property name="maximum">
-          <double>10.000000000000000</double>
+          <number>1000</number>
          </property>
          <property name="singleStep">
-          <double>1.000000000000000</double>
+          <number>1</number>
          </property>
-         <property name="value">
-          <double>0.000000000000000</double>
+         <property name="pageStep">
+          <number>100</number>
+         </property>
+         <property name="tracking">
+          <bool>true</bool>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="invertedAppearance">
+          <bool>false</bool>
+         </property>
+         <property name="tickPosition">
+          <enum>QSlider::TicksBelow</enum>
+         </property>
+         <property name="tickInterval">
+          <number>100</number>
          </property>
         </widget>
        </item>
@@ -231,10 +243,10 @@
    <widget class="QWidget" name="formLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>360</x>
-      <y>500</y>
+      <x>364</x>
+      <y>481</y>
       <width>171</width>
-      <height>61</height>
+      <height>81</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
@@ -311,7 +323,7 @@
     <property name="geometry">
      <rect>
       <x>540</x>
-      <y>499</y>
+      <y>500</y>
       <width>161</width>
       <height>61</height>
      </rect>
@@ -365,7 +377,7 @@
       <x>10</x>
       <y>0</y>
       <width>791</width>
-      <height>491</height>
+      <height>481</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
