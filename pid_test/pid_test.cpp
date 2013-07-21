@@ -186,7 +186,7 @@ void PID_test::plot_update()
     plot_mytime.setTime();
 
     ui->value->setValue(value * 100);
-    ui->diff->setValue(-(ui->x->value() / 100 - value) * 1000);
+    ui->diff->setValue(-(ui->x->value() / 100. - value) * 1000);
 }
 
 void PID_test::timer_auto_update()
@@ -211,7 +211,7 @@ void PID_test::timer_auto_update()
             else
                 correction = pid_angle.getY(value, dt).x;
 
-            if(fabs(correction) < MIN_CORRECTION)
+            if(fabs(correction) < ui->mincorr->value())
                 correction = 0;
 
             //payload is an additional force
@@ -420,6 +420,7 @@ void PID_test::settings_write()
 
     ss << ui->scale->value() << "\t";
     ss << ui->payload->value() << "\t";
+    ss << ui->mincorr->value() << "\t";
 
     settings_file << ss.str();
 
@@ -483,6 +484,7 @@ void PID_test::settings_read()
     settings_file >> t_double; ui->doubleSpinBox_friction->setValue(t_double);
     settings_file >> t_int; ui->scale->setValue(t_int);
     settings_file >> t_int; ui->payload->setValue(t_int);
+    settings_file >> t_int; ui->mincorr->setValue(t_int);
 
     settings_file.close();
 }
@@ -498,6 +500,11 @@ void PID_test::on_scale_valueChanged(int arg1)
 }
 
 void PID_test::on_payload_valueChanged(int value)
+{
+    settings_write();
+}
+
+void PID_test::on_mincorr_valueChanged(int value)
 {
     settings_write();
 }

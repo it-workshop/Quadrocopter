@@ -57,8 +57,6 @@ private:
 
     string settings_filename;
 
-    static const double MIN_CORRECTION = 0.9;
-
 private slots:
     void timer_auto_update();
 
@@ -78,6 +76,7 @@ private slots:
     void on_scale_valueChanged(int arg1);
     void on_x_valueChanged(int value);
     void on_payload_valueChanged(int value);
+    void on_mincorr_valueChanged(int value);
 };
 
 #endif // PID_TEST_H
