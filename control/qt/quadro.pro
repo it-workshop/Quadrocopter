@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-INCLUDEPATH += /usr/include /usr/local/include /usr/include/qwt-qt4 /usr/include/qt4/QtExtSerialPort ../../arduino/auto_controlled_engine_set_oop/
+INCLUDEPATH += /usr/include /usr/local/include /usr/include/qwt-qt4 /usr/include/qt4/QtExtSerialPort ../../arduino/quadrocopter_oop/
 
 LIBS += -L/usr/local/lib -lqwt-qt4
 LIBS += -L/usr/local/lib -lQtSvg
