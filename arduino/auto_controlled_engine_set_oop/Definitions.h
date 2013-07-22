@@ -21,6 +21,6 @@
 #define SERIAL_GYRO_COEFF 8
 
 // Cut AV that is lower than this value (used in PID)
-#define PID_AV_MIN 3
+#define PID_AV_MIN 1
 
 #endif
