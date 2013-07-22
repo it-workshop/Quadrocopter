@@ -6,17 +6,17 @@ control/qt/quadro
 control/qt/quadro.pro.user
 control/qt/ui*
 
-pid_test/*.o
-pid_test/moc*
-pid_test/Makefile
-pid_test/pid_test
-pid_test/pid_test.pro.user
-pid_test/ui*
+debug/pid_test/*.o
+debug/pid_test/moc*
+debug/pid_test/Makefile
+debug/pid_test/pid_test
+debug/pid_test/pid_test.pro.user
+debug/pid_test/ui*
 
 arduino/quadrocopter_oop/quadrocopter_oop.pro.user
 arduino/quadrocopter_oop/quadrocopter_oop.pro
 
-accel_test/201211
+debug/accel_test/201211
 
 arduino/quadrocopter_oop_ino/
 
