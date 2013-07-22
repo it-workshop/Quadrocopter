@@ -4,15 +4,17 @@
 
 Управление квадрокоптером осуществляется с использованием [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/control/qt программы на Qt]&nbsp;(джойстик подключается к компьютеру по USB, квадрокоптер&nbsp;&mdash; через Bluetooth).
 
-'''Некоторые скетчи для arduino:'''
+'''Описание содержимого репозитория:'''
 
 * [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/quadrocopter_oop Программа для квадрокоптера]
 
 * [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/joystick/serial_joystick/serial_joystick.ino joystick]&nbsp;&mdash; программа для джойстика на arduino, который подключается к компьютеру.
 
-* Скетч [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/pot_controlled_engine/pot_controlled_engine.ino pot_controlled_engine]&nbsp;позволяет управлять ESC при помощи переменного резистора.
-
 * [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/xbee xbee]&nbsp;&mdash; профили двух модулей XBee для программы X-CTU.
+
+* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/debug/pid_test pid_test]&nbsp;&mdash; симуляция работы ПИД на квадрокоптере.
+
+* Скетч [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/pot_controlled_engine/pot_controlled_engine.ino pot_controlled_engine]&nbsp;позволяет управлять ESC при помощи переменного резистора.
 
 * [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/bee_programmer/bee_programmer.ino bee_programmer]&nbsp;использует UART arduino для изменения режима работы Bluetooth Bee, который используется в проекте.
 
