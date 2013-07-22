@@ -12,6 +12,8 @@
 
 * Скетч [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/pot_controlled_engine/pot_controlled_engine.ino pot_controlled_engine]&nbsp;позволяет управлять ESC при помощи переменного резистора.
 
+* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/xbee xbee]&nbsp;&mdash; профили двух модулей XBee для программы X-CTU.
+
 * [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/bee_programmer/bee_programmer.ino bee_programmer]&nbsp;использует UART arduino для изменения режима работы Bluetooth Bee, который используется в проекте.
 
 Дополнительную информацию можно найти на [https://github.com/it-workshop/Quadrocopter/wiki вики] проекта, а также на сайте [http://technoworks.ru/qcopter/ technoworks.ru].
