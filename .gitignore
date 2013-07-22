@@ -13,14 +13,13 @@ pid_test/pid_test
 pid_test/pid_test.pro.user
 pid_test/ui*
 
-arduino/auto_controlled_engine_set_oop/auto_controlled_engine_set_oop.pro.user
-arduino/auto_controlled_engine_set_oop/auto_controlled_engine_set_oop.pro
-arduino/basic_auto_controlled_engine_set
+arduino/quadrocopter_oop/auto_controlled_engine_set_oop.pro.user
+arduino/quadrocopter_oop/auto_controlled_engine_set_oop.pro
 
 accel_test/201211
 
-arduino/auto_controlled_engine_set_oop/KalmanFilter.cpp
-arduino/auto_controlled_engine_set_oop/KalmanFilter.h
+arduino/quadrocopter_oop/KalmanFilter.cpp
+arduino/quadrocopter_oop/KalmanFilter.h
 
 *.autosave
 *~

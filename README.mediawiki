@@ -6,7 +6,7 @@
 
 '''Некоторые скетчи для arduino:'''
 
-* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/auto_controlled_engine_set_oop Программа для квадрокоптера]
+* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/quadrocopter_oop Программа для квадрокоптера]
 
 * [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/joystick/serial_joystick/serial_joystick.ino joystick]&nbsp;&mdash; программа для джойстика на arduino, который подключается к компьютеру.
 
