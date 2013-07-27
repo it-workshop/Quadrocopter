@@ -91,7 +91,7 @@ vect joystick::get_readings()
             data_formatted.value_by_axis_index(i) /= (data_default.value_by_axis_index(i) - MIN_VALUE);
     }
 
-    data_formatted.y *= -1;
+    //data_formatted.y *= -1;
 
     data_formatted *= 0.5;
 
