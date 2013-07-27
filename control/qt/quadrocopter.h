@@ -38,7 +38,7 @@ private:
     number_vect_t joystick_coefficient;
 
     number_vect_t voltage;
-    static const number_vect_t voltage_min = 11.0;
+    static const number_vect_t voltage_min = 8.0;
     static const number_vect_t voltage_max = 12.6;
 
     vect PID_P, PID_I, PID_D;
