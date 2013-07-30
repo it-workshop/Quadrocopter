@@ -31,7 +31,7 @@ void InfoLED::setState(int state)
 {
     if(type == DIGITAL)
         digitalWrite(pin, state ? HIGH : LOW);
-    else if(type == PWM)
+    else if(type == PW)
         analogWrite(pin, state * 255 / 100);
 #ifdef DEBUG_DAC
     else DACDev.send(((1 << 12) - 1) * ((long int) state) / 100);

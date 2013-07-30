@@ -3,8 +3,8 @@
 void Quadrocopter::processSensorsData()
 {
     //MPU->iteration();
-    angle.parseFloat(MPU->getAngleXYZ());
-    angularVelocity.parseFloat(MPU->getAngularVelocityXYZ());
+    angle.parseFloat(MyMPU->getAngleXYZ());
+    angularVelocity.parseFloat(MyMPU->getAngularVelocityXYZ());
 
     voltage = VSensor->getValue();
 }

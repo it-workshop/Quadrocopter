@@ -1,7 +1,9 @@
-#include "Arduino.h"
 #include "Quadrocopter.h"
+#include "Arduino.h"
 #include "PID.h"
-#include <avr/delay.h>
+#ifndef __arm__
+    #include <avr/delay.h>
+#endif
 
 Quadrocopter::Quadrocopter()
 {
@@ -23,17 +25,17 @@ Quadrocopter::Quadrocopter()
     MSerial = new MySerial;
     MController = new MotorController(DefaultMotorPins);
     VSensor = new VoltageSensor(DefaultVSensorPin, DefaultVSensorMaxVoltage);
-    MPU = new MPU6050DMP;
+    MyMPU = new MPU6050DMP;
 
 #ifdef DEBUG_DAC
     myLed = MPU->myLed;
 #else
-    myLed = InfoLED(13, InfoLED::PWM);
+    myLed = InfoLED(13, InfoLED::PW);
     myLed.setState(0);
 #endif
     this->reset();
 
-    MPU->initialize();
+    MyMPU->initialize();
     interrupts();
 }
 
@@ -94,7 +96,7 @@ void Quadrocopter::iteration()
 {
     if(dtMax < dt) dtMax = dt;
 
-    if(MPU->getNewData()) // on each MPU data packet
+    if(MyMPU->getNewData()) // on each MPU data packet
     {
 #ifdef DEBUG_DAC
         myLed.setState(0);
@@ -112,7 +114,7 @@ void Quadrocopter::iteration()
 
         tCount.setTime();
         { // Sensors
-            MPU->iteration();
+            MyMPU->iteration();
             processSensorsData();
         }
         sensorsTime = tCount.getTimeDifferenceSeconds();
@@ -136,13 +138,13 @@ void Quadrocopter::iteration()
         myLed.setState(100);
 #endif
 
-        MPU->resetNewData();
+        MyMPU->resetNewData();
     }
 }
 
 void Quadrocopter::MPUInterrupt()
 {
-    MPU->processInterrupt();
+    MyMPU->processInterrupt();
 }
 
 RVector3D Quadrocopter::getTorques()

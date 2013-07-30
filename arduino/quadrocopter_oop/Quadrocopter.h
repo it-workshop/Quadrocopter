@@ -21,7 +21,7 @@ private:
     TimerCount DeltaT;
     MySerial* MSerial;
     VoltageSensor* VSensor;
-    MPU6050DMP* MPU;
+    MPU6050DMP* MyMPU;
 
     // pins configuration
 

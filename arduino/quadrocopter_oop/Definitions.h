@@ -5,6 +5,13 @@
 
 #define doubleEps 1E-2
 
+// Architecture
+#ifdef __arm__
+  #define _arch_arm_
+#else
+  #define _arch_avr
+#endif
+
 // Do not wait for motors
 //#define DEBUG_NO_MOTORS
 

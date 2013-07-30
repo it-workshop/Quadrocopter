@@ -1,6 +1,8 @@
 #include "DAC8512.h"
-#include <avr/io.h>
-#include <avr/delay.h>
+#ifdef __arch_avr__
+  #include <avr/io.h>
+  #include <avr/delay.h>
+#endif
 
 #ifdef DEBUG_DAC
 

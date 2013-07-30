@@ -16,7 +16,7 @@ private:
 #endif
 
 public:
-    enum typeT{DIGITAL, PWM,
+    enum typeT{DIGITAL, PW,
 #ifdef DEBUG_DAC
                DAC
 #endif
@@ -26,7 +26,7 @@ public:
 
     // set new state
     // 0 or 1 for DIGITAL type or
-    // 0...100 for PWM type
+    // 0...100 for PW type
     void setState(int state);
 
     InfoLED(int nPin, typeT nType = DIGITAL);
