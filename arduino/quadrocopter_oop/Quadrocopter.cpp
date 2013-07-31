@@ -31,6 +31,11 @@ Quadrocopter::Quadrocopter()
     myLed = InfoLED(13, InfoLED::PWM);
     myLed.setState(0);
 #endif
+
+#ifdef DEBUG_FREQ_PIN
+    freqLed = InfoLED(DEBUG_FREQ_PIN, InfoLED::DIGITAL);
+#endif
+
     this->reset();
 
     MPU->initialize();
@@ -96,8 +101,12 @@ void Quadrocopter::iteration()
 
     if(MPU->getNewData()) // on each MPU data packet
     {
+#ifdef DEBUG_FREQ_PIN
+    freqLed.changeDigitalState();
+#endif
+
 #ifdef DEBUG_DAC
-        myLed.setState(0);
+    myLed.setState(0);
 #endif
 
         { // Serial

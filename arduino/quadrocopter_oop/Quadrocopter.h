@@ -58,6 +58,10 @@ private:
 
     InfoLED myLed;
 
+#ifdef DEBUG_FREQ_PIN
+    InfoLED freqLed;
+#endif
+
     static const unsigned int serialReadN = 30; // bytes to read
 
 public:
