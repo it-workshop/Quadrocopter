@@ -127,6 +127,9 @@ public:
     int bytesAvailableFIFO();
     void resetNewData();
     bool getNewData();
+
+    void resetFIFO();
+
 #ifdef DEBUG_DAC
     InfoLED myLed;
 #endif

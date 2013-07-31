@@ -107,6 +107,12 @@ bool MPU6050DMP::getNewData()
     return(newData);
 }
 
+void MPU6050DMP::resetFIFO()
+{
+    if(dmpReady)
+        mpu.flushFIFOBytes(mpu.getFIFOCount());
+}
+
 MPU6050DMP::MPU6050DMP()
 {
      dmpReady = false;

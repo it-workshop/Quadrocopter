@@ -115,8 +115,8 @@ void Quadrocopter::processSerialTx()
         MSerial->RVector3DWrite(angle * 180 / M_PI, MySerial::PRINT_TAB);
         MSerial->bufferAdd("; S=");
         MSerial->writeNumber(sensorsTime * 1000);
-        MSerial->bufferAdd("; C = ");
-        MSerial->writeNumber(calculationsTime * 1000);
+        MSerial->bufferAdd("; B = ");
+        MSerial->writeNumber(MPU->bytesAvailableFIFO());
         MSerial->bufferAdd('\n');
         MSerial->bufferWrite();
         MSerial->dropCommand();

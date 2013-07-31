@@ -72,6 +72,8 @@ void Quadrocopter::reset()
 
     pidAngle.setDMin(-angleMaxCorrection * 1.5);
     pidAngle.setDMax( angleMaxCorrection * 1.5);
+
+    MPU->resetFIFO();
 }
 
 void Quadrocopter::processCorrection()
