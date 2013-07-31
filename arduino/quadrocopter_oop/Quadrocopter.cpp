@@ -36,6 +36,10 @@ Quadrocopter::Quadrocopter()
     freqLed = InfoLED(DEBUG_FREQ_PIN, InfoLED::DIGITAL);
 #endif
 
+#ifdef DEBUG_MPUBYTES_PIN
+    mpuBytesLed = InfoLED(DEBUG_MPUBYTES_PIN, InfoLED::DIGITAL);
+#endif
+
     this->reset();
 
     MPU->initialize();
@@ -101,8 +105,13 @@ void Quadrocopter::iteration()
 
     if(MPU->getNewData()) // on each MPU data packet
     {
+
 #ifdef DEBUG_FREQ_PIN
     freqLed.changeDigitalState();
+#endif
+
+#ifdef DEBUG_MPUBYTES_PIN
+    mpuBytesLed.setState(MPU->bytesAvailableFIFO() > 42);
 #endif
 
 #ifdef DEBUG_DAC
