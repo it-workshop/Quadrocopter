@@ -31,7 +31,11 @@ quadrocopter::quadrocopter()
 #ifdef DEBUG_NO_TX_ARDUINO
     readBytesN = 1;
 #else
-    readBytesN = 21;
+    #ifdef PID_USE_YAW
+        readBytesN = 24;
+    #else
+        readBytesN = 21;
+    #endif
 #endif
     //readBytesN = BN;
 

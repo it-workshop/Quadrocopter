@@ -109,6 +109,12 @@ void Quadrocopter::processSerialTx()
                 MSerial->writeDouble(-0.1, 0.1, pidAngle.I.y, 1); // +1
                 MSerial->writeDouble(-0.1, 0.1, pidAngle.D.y, 1); // +1
 
+#ifdef PID_USE_YAW
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.P.z, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.I.z, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.D.z, 1); // +1
+#endif
+
                 //motors
                 for (unsigned i = 0; i < 4; i++)
                     MSerial->bufferAdd(100 * MController->getSpeed(getTorques(), i)); // +4

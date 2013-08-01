@@ -9,13 +9,13 @@
 //#define DEBUG_NO_MOTORS
 
 // Add DAC8512 support and use it as InfoLED
-#define DEBUG_DAC
+//#define DEBUG_DAC
 
 // Oscilloscope freq at pin
-//#define DEBUG_FREQ_PIN 4
+#define DEBUG_FREQ_PIN 4
 
 // Oscilloscope MPU bytes pin
-#define DEBUG_MPUBYTES_PIN 4
+//#define DEBUG_MPUBYTES_PIN 4
 
 // Turn off tx to PC (used both in Arduino and Qt apps)
 //#define DEBUG_NO_TX_ARDUINO
