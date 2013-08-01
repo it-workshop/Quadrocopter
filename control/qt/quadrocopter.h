@@ -35,6 +35,9 @@ private:
     vect PID_angle_Kp, PID_angle_Ki, PID_angle_Kd;
     vect PID_angle_MAXp, PID_angle_MAXi, PID_angle_MAXd;
 
+    vect PID_angularVelocity_Kp, PID_angularVelocity_Ki, PID_angularVelocity_Kd;
+    vect PID_angularVelocity_MAXp, PID_angularVelocity_MAXi, PID_angularVelocity_MAXd;
+
     number_vect_t joystick_coefficient;
 
     number_vect_t voltage;
@@ -74,9 +77,9 @@ public:
     void set_PID_angle_Ki_y(number_vect_t);
     void set_PID_angle_Kd_y(number_vect_t);
 
-    void set_PID_angle_Kp_z(number_vect_t);
-    void set_PID_angle_Ki_z(number_vect_t);
-    void set_PID_angle_Kd_z(number_vect_t);
+    void set_PID_angularVelocity_Kp_z(number_vect_t);
+    void set_PID_angularVelocity_Ki_z(number_vect_t);
+    void set_PID_angularVelocity_Kd_z(number_vect_t);
 
     void set_PID_angle_MAXp_x(number_vect_t);
     void set_PID_angle_MAXi_x(number_vect_t);
@@ -86,9 +89,9 @@ public:
     void set_PID_angle_MAXi_y(number_vect_t);
     void set_PID_angle_MAXd_y(number_vect_t);
 
-    void set_PID_angle_MAXp_z(number_vect_t);
-    void set_PID_angle_MAXi_z(number_vect_t);
-    void set_PID_angle_MAXd_z(number_vect_t);
+    void set_PID_angularVelocity_MAXp_z(number_vect_t);
+    void set_PID_angularVelocity_MAXi_z(number_vect_t);
+    void set_PID_angularVelocity_MAXd_z(number_vect_t);
 
     vect get_PID_angle_Kp();
     vect get_PID_angle_Ki();
@@ -97,6 +100,14 @@ public:
     vect get_PID_angle_MAXp();
     vect get_PID_angle_MAXi();
     vect get_PID_angle_MAXd();
+
+    vect get_PID_angularVelocity_Kp();
+    vect get_PID_angularVelocity_Ki();
+    vect get_PID_angularVelocity_Kd();
+
+    vect get_PID_angularVelocity_MAXp();
+    vect get_PID_angularVelocity_MAXi();
+    vect get_PID_angularVelocity_MAXd();
 
     // Live PID values from Arduino
     vect get_PID_P();
