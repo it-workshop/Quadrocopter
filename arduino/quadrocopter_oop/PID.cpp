@@ -18,15 +18,6 @@ template <typename T> T PID<T>::getY(T data, double dt, T derivative)
     return(y);
 }
 
-template <typename T> T* PID<T>::getLastPID()
-{
-    PID_C[0] = P;
-    PID_C[1] = I;
-    PID_C[2] = D;
-    return(PID_C);
-}
-
-
 template <typename T> void PID<T>::prepare(T data, double dt)
 {
     //difference between requested and current data

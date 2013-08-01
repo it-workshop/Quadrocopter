@@ -89,30 +89,31 @@ void Quadrocopter::processSerialTx()
 #ifndef DEBUG_NO_TX_ARDUINO
 //            for(int i = 0; i < BN; i++)
 //                MSerial->bufferAdd(x[i]);
-            // writing 32 bytes
+            // writing bytes
             {
-                MSerial->RVector3DWrite(getTorques(), MySerial::PRINT_RAW, MySerial::USE_2D); // +4
+                MSerial->writeDouble(-0.5, 0.5, getTorques().x, 1); // +1
+                MSerial->writeDouble(-0.5, 0.5, getTorques().y, 1); // +1
+                MSerial->writeDouble(-0.5, 0.5, getTorques().z, 1); // +1
+
                 MSerial->RVector3DWrite(angle, MySerial::PRINT_RAW, MySerial::USE_2D); // +4
 
-                MSerial->RVector3DWrite(angularVelocity * 1. / SERIAL_GYRO_COEFF, MySerial::PRINT_RAW); // +6
+                MSerial->writeDouble(-100, 100, angularVelocity.x, 1); // +1
+                MSerial->writeDouble(-100, 100, angularVelocity.y, 1); // +1
+                MSerial->writeDouble(-100, 100, angularVelocity.z, 1); // +1
 
-                MSerial->RVector3DWrite(RVector3D(pidAngle.getLastPID()[0].x,
-                                                  pidAngle.getLastPID()[1].x,
-                                                  pidAngle.getLastPID()[2].x) *
-                                        SERIAL_PID_COEFF,
-                                        MySerial::PRINT_RAW); // +6
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.P.x, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.I.x, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.D.x, 1); // +1
 
-                MSerial->RVector3DWrite(RVector3D(pidAngle.getLastPID()[0].y,
-                                                  pidAngle.getLastPID()[1].y,
-                                                  pidAngle.getLastPID()[2].y) *
-                                        SERIAL_PID_COEFF,
-                                        MySerial::PRINT_RAW); // +6
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.P.y, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.I.y, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.D.y, 1); // +1
 
                 //motors
                 for (unsigned i = 0; i < 4; i++)
                     MSerial->bufferAdd(100 * MController->getSpeed(getTorques(), i)); // +4
 
-                MSerial->writeDouble(0, 20, voltage, 2); //+2
+                MSerial->writeDouble(0, 20, voltage, 1); //+1
             }
 
             MSerial->bufferWrite();

@@ -31,7 +31,7 @@ quadrocopter::quadrocopter()
 #ifdef DEBUG_NO_TX_ARDUINO
     readBytesN = 1;
 #else
-    readBytesN = 32;
+    readBytesN = 21;
 #endif
     //readBytesN = BN;
 

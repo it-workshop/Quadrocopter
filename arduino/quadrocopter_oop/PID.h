@@ -4,8 +4,6 @@
 #include "RVector3D.h"
 #include "Definitions.h"
 
-#define PID_COMPONENTS_N 3
-
 template <typename T> class PID
 {
 private:
@@ -31,9 +29,6 @@ private:
     //temp
     T e, eDerivative; //error
     T y; //correction
-
-    T PID_C[PID_COMPONENTS_N]; //last corrections (debug info)
-    T P, I, D;
 
     void prepare(T, double);
     void iteration();
@@ -100,7 +95,7 @@ public:
     T getY(T, double); // iteration
     T getY(T, double, T); // iteration
 
-    T* getLastPID();
+    T P, I, D;
 };
 
 #include "PID.cpp"

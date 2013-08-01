@@ -62,19 +62,34 @@ void quadrocopter::read_data()
 {
     qDebug() << "=== TRANSMISSION: READ_ACTUAL ===";
 #ifndef DEBUG_NO_TX_ARDUINO
-    vect t_torque_corrected = read_vect_byte(2);
-    number_vect_t t_angle_x = read_number_vect_t(-10, 10, 2),
-            t_angle_y = read_number_vect_t(-10, 10, 2);
-    vect t_gyroscope_readings = read_vect_byte() * SERIAL_GYRO_COEFF,
-            t_PID_x = read_vect_byte() / SERIAL_PID_COEFF,
-            t_PID_y = read_vect_byte() / SERIAL_PID_COEFF;
+    vect t_torque_corrected, t_gyroscope_readings;
+    number_vect_t t_angle_x, t_angle_y, t_motors[MOTORS_N];
+    number_vect_t t_voltage;
+    vect t_PID_x, t_PID_y;
 
-    number_vect_t t_motors[MOTORS_N];
+    t_torque_corrected.x = read_number_vect_t(-0.5, 0.5, 1);
+    t_torque_corrected.y = read_number_vect_t(-0.5, 0.5, 1);
+    t_torque_corrected.z = read_number_vect_t(-0.5, 0.5, 1);
+
+    t_angle_x = read_number_vect_t(-10, 10, 2);
+    t_angle_y = read_number_vect_t(-10, 10, 2);
+
+    t_gyroscope_readings.x = read_number_vect_t(-100, 100, 1);
+    t_gyroscope_readings.y = read_number_vect_t(-100, 100, 1);
+    t_gyroscope_readings.z = read_number_vect_t(-100, 100, 1);
+
+    t_PID_x.x = read_number_vect_t(-0.1, 0.1, 1);
+    t_PID_x.y = read_number_vect_t(-0.1, 0.1, 1);
+    t_PID_x.z = read_number_vect_t(-0.1, 0.1, 1);
+
+    t_PID_y.x = read_number_vect_t(-0.1, 0.1, 1);
+    t_PID_y.y = read_number_vect_t(-0.1, 0.1, 1);
+    t_PID_y.z = read_number_vect_t(-0.1, 0.1, 1);
 
     for(int i = 0; i < MOTORS_N; i++)
         t_motors[i] = sread();
 
-    number_vect_t t_voltage = read_number_vect_t(0, 20, 2);
+    t_voltage = read_number_vect_t(0, 20, 1);
 
     if(!readError())
     {
