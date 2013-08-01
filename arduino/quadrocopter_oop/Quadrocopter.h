@@ -49,8 +49,14 @@ private:
 
     //corrections
     static const double angleMaxCorrection = MPI / 4;
+    static const double angularVelocityMaxCorrection = MPI / 4. / 5;
 
     PID<RVector3D> pidAngle;
+
+#ifdef PID_USE_YAW
+    PID<RVector3D> pidAngularVelocity;
+#endif
+
     RVector3D getAngleCorrection(RVector3D angle, double dt);
 
     double dt, dtMax, sensorsTime, calculationsTime;

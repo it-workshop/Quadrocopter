@@ -57,6 +57,10 @@ void Quadrocopter::reset()
 
     pidAngle.reset();
 
+#ifdef PID_USE_YAW
+    pidAngularVelocity.reset();
+#endif
+
     voltage = 0;
     dtMax = 0;
 
@@ -72,6 +76,21 @@ void Quadrocopter::reset()
 
     pidAngle.setDMin(-angleMaxCorrection * 1.5);
     pidAngle.setDMax( angleMaxCorrection * 1.5);
+
+#ifdef PID_USE_YAW
+    pidAngularVelocity.setKpKiKd(0, 0, 0);
+    pidAngularVelocity.setYMin(-angularVelocityMaxCorrection);
+    pidAngularVelocity.setYMax(angularVelocityMaxCorrection);
+
+    pidAngularVelocity.setPMin(-angularVelocityMaxCorrection * 5);
+    pidAngularVelocity.setPMax( angularVelocityMaxCorrection * 5);
+
+    pidAngularVelocity.setIMin(-angularVelocityMaxCorrection);
+    pidAngularVelocity.setIMax( angularVelocityMaxCorrection);
+
+    pidAngularVelocity.setDMin(-angularVelocityMaxCorrection * 1.5);
+    pidAngularVelocity.setDMax( angularVelocityMaxCorrection * 1.5);
+#endif
 
     MPU->resetFIFO();
 }
