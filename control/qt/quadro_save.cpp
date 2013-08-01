@@ -35,8 +35,10 @@ void Quadro::settings_data()
     ss << quadro.get_PID_angle_MAXd().y << " ";
 
     //ss << quadro.getDevice() << " ";
-    ss << quadro.get_torque_manual_correction().x << " ";
-    ss << quadro.get_torque_manual_correction().y << " ";
+    //ss << quadro.get_torque_manual_correction().x << " ";
+    //ss << quadro.get_torque_manual_correction().y << " ";
+    ss << ui->torque_manual_correction_x->value() << " ";
+    ss << ui->torque_manual_correction_y->value() << " ";
     ss << quadro.get_reaction_type() << " ";
     ss << ui->quadro_autoupdate->isChecked() << " ";
 
