@@ -2,6 +2,7 @@
 #define PID_H
 
 #include "RVector3D.h"
+#include "Definitions.h"
 
 #define PID_COMPONENTS_N 3
 
@@ -52,6 +53,10 @@ public:
     void setKi_y(double);
     void setKd_y(double);
 
+    void setKp_z(double);
+    void setKi_z(double);
+    void setKd_z(double);
+
     void setKp(double);
     void setKi(double);
     void setKd(double);
@@ -77,6 +82,12 @@ public:
     void setPMinMax_y(double);
     void setIMinMax_y(double);
     void setDMinMax_y(double);
+
+#ifdef PID_USE_YAW
+    void setPMinMax_z(double);
+    void setIMinMax_z(double);
+    void setDMinMax_z(double);
+#endif
 
     double getPMax_x();
     double getIMax_x();

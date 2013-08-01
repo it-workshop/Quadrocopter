@@ -136,6 +136,21 @@ template <typename T> void PID<T>::setKd_y(double arg)
     Kd.y = arg;
 }
 
+template <typename T> void PID<T>::setKp_z(double arg)
+{
+    Kp.z = arg;
+}
+
+template <typename T> void PID<T>::setKi_z(double arg)
+{
+    Ki.z = arg;
+}
+
+template <typename T> void PID<T>::setKd_z(double arg)
+{
+    Kd.z = arg;
+}
+
 template <typename T> void PID<T>::setPMinMax_x(double arg)
 {
     PMin.x = -arg;
@@ -170,6 +185,24 @@ template <typename T> void PID<T>::setDMinMax_y(double arg)
 {
     DMin.y = -arg;
     DMax.y =  arg;
+}
+
+template <typename T> void PID<T>::setPMinMax_z(double arg)
+{
+    PMin.z = -arg;
+    PMax.z =  arg;
+}
+
+template <typename T> void PID<T>::setIMinMax_z(double arg)
+{
+    IMin.z = -arg;
+    IMax.z =  arg;
+}
+
+template <typename T> void PID<T>::setDMinMax_z(double arg)
+{
+    DMin.z = -arg;
+    DMax.z =  arg;
 }
 
 template <typename T> double PID<T>::getPMax_x()

@@ -12,6 +12,8 @@ RVector3D Quadrocopter::getAngleCorrection(RVector3D angle, double dt)
     if(fabs(avPID.y) < PID_AV_MIN) avPID.y = 0;
     avPID /= 10;
     RVector3D res = pidAngle.getY(angle, dt, avPID);
+#ifndef PID_USE_YAW
     res.z = 0;
+#endif
     return(res);
 }

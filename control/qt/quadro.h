@@ -131,12 +131,18 @@ private slots:
     void on_PID_angle_Kp_y_valueChanged(double arg1);
     void on_PID_angle_Ki_y_valueChanged(double arg1);
     void on_PID_angle_Kd_y_valueChanged(double arg1);
+    void on_PID_angle_Kp_z_valueChanged(double arg1);
+    void on_PID_angle_Ki_z_valueChanged(double arg1);
+    void on_PID_angle_Kd_z_valueChanged(double arg1);
     void on_PID_angle_MAXp_x_valueChanged(double arg1);
     void on_PID_angle_MAXi_x_valueChanged(double arg1);
     void on_PID_angle_MAXd_x_valueChanged(double arg1);
     void on_PID_angle_MAXp_y_valueChanged(double arg1);
     void on_PID_angle_MAXi_y_valueChanged(double arg1);
     void on_PID_angle_MAXd_y_valueChanged(double arg1);
+    void on_PID_angle_MAXp_z_valueChanged(double arg1);
+    void on_PID_angle_MAXi_z_valueChanged(double arg1);
+    void on_PID_angle_MAXd_z_valueChanged(double arg1);
     void on_joystick_connect_clicked();
     void on_joystick_use_clicked();
     void on_joystick_calibrate_clicked();

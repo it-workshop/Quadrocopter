@@ -63,6 +63,18 @@ void Quadrocopter::processSerialTx()
                 MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setPMinMax_y(tDouble);
                 MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setIMinMax_y(tDouble);
                 MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setDMinMax_y(tDouble);
+
+#ifdef PID_USE_YAW
+                //PID angle coefficients Z +6
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKp_z(tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKi_z(tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKd_z(tDouble);
+
+                //PID angle minmax Z +6
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setPMinMax_z(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setIMinMax_z(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setDMinMax_z(tDouble);
+#endif
             }
 #ifdef DEBUG_NO_TX_ARDUINO
             Serial.write('x');
