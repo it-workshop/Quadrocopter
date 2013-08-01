@@ -72,7 +72,8 @@ private:
         plot_angular_velocity_correction_x[plot_size], plot_angular_velocity_correction_y[plot_size], plot_angular_velocity_correction_z[plot_size],
         plot_angle_correction_x[plot_size], plot_angle_correction_y[plot_size], plot_angle_correction_z[plot_size], plot_voltage[plot_size],
         plot_PID_P_x[plot_size], plot_PID_I_x[plot_size], plot_PID_D_x[plot_size],
-        plot_PID_P_y[plot_size], plot_PID_I_y[plot_size], plot_PID_D_y[plot_size];
+        plot_PID_P_y[plot_size], plot_PID_I_y[plot_size], plot_PID_D_y[plot_size],
+        plot_PID_P_z[plot_size], plot_PID_I_z[plot_size], plot_PID_D_z[plot_size];
 
     QwtPlotCurve *plot_curve_angular_velocity_correction_x, *plot_curve_angular_velocity_correction_y, *plot_curve_angular_velocity_correction_z;
     QwtPlotCurve *plot_curve_acceleration_correction_x, *plot_curve_acceleration_correction_y, *plot_curve_acceleration_correction_z;
@@ -131,18 +132,18 @@ private slots:
     void on_PID_angle_Kp_y_valueChanged(double arg1);
     void on_PID_angle_Ki_y_valueChanged(double arg1);
     void on_PID_angle_Kd_y_valueChanged(double arg1);
-    void on_PID_angle_Kp_z_valueChanged(double arg1);
-    void on_PID_angle_Ki_z_valueChanged(double arg1);
-    void on_PID_angle_Kd_z_valueChanged(double arg1);
+    void on_PID_angularVelocity_Kp_z_valueChanged(double arg1);
+    void on_PID_angularVelocity_Ki_z_valueChanged(double arg1);
+    void on_PID_angularVelocity_Kd_z_valueChanged(double arg1);
     void on_PID_angle_MAXp_x_valueChanged(double arg1);
     void on_PID_angle_MAXi_x_valueChanged(double arg1);
     void on_PID_angle_MAXd_x_valueChanged(double arg1);
     void on_PID_angle_MAXp_y_valueChanged(double arg1);
     void on_PID_angle_MAXi_y_valueChanged(double arg1);
     void on_PID_angle_MAXd_y_valueChanged(double arg1);
-    void on_PID_angle_MAXp_z_valueChanged(double arg1);
-    void on_PID_angle_MAXi_z_valueChanged(double arg1);
-    void on_PID_angle_MAXd_z_valueChanged(double arg1);
+    void on_PID_angularVelocity_MAXp_z_valueChanged(double arg1);
+    void on_PID_angularVelocity_MAXi_z_valueChanged(double arg1);
+    void on_PID_angularVelocity_MAXd_z_valueChanged(double arg1);
     void on_joystick_connect_clicked();
     void on_joystick_use_clicked();
     void on_joystick_calibrate_clicked();

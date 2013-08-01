@@ -1,5 +1,6 @@
 #include "Quadrocopter.h"
 #include "PID.h"
+#include "Definitions.h"
 
 void Quadrocopter::processSerialRx()
 {
@@ -66,14 +67,14 @@ void Quadrocopter::processSerialTx()
 
 #ifdef PID_USE_YAW
                 //PID angle coefficients Z +6
-                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKp_z(tDouble);
-                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKi_z(tDouble);
-                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKd_z(tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngularVelocity.setKp_z(tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngularVelocity.setKi_z(tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngularVelocity.setKd_z(tDouble);
 
                 //PID angle minmax Z +6
-                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setPMinMax_z(tDouble);
-                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setIMinMax_z(tDouble);
-                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setDMinMax_z(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocity.setPMinMax_z(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocity.setIMinMax_z(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocity.setDMinMax_z(tDouble);
 #endif
             }
 #ifdef DEBUG_NO_TX_ARDUINO
@@ -89,24 +90,31 @@ void Quadrocopter::processSerialTx()
 #ifndef DEBUG_NO_TX_ARDUINO
 //            for(int i = 0; i < BN; i++)
 //                MSerial->bufferAdd(x[i]);
-            // writing 32 bytes
+            // writing bytes
             {
-                MSerial->RVector3DWrite(getTorques(), MySerial::PRINT_RAW, MySerial::USE_2D); // +4
-                MSerial->RVector3DWrite(angle, MySerial::PRINT_RAW, MySerial::USE_2D); // +4
+                MSerial->writeDouble(-1, 1, getTorques().x, 1); // +1
+                MSerial->writeDouble(-1, 1, getTorques().y, 1); // +1
+                MSerial->writeDouble(-1, 1, getTorques().z, 1); // +1
 
-                MSerial->RVector3DWrite(angularVelocity * 1. / SERIAL_GYRO_COEFF, MySerial::PRINT_RAW); // +6
+                MSerial->writeDouble(-4, 4, angle.x, 1); // +1
+                MSerial->writeDouble(-4, 4, angle.y, 1); // +1
 
-                MSerial->RVector3DWrite(RVector3D(pidAngle.getLastPID()[0].x,
-                                                  pidAngle.getLastPID()[1].x,
-                                                  pidAngle.getLastPID()[2].x) *
-                                        SERIAL_PID_COEFF,
-                                        MySerial::PRINT_RAW); // +6
+                MSerial->writeDouble(-100, 100, angularVelocity.x, 1); // +1
+                MSerial->writeDouble(-100, 100, angularVelocity.y, 1); // +1
+                MSerial->writeDouble(-100, 100, angularVelocity.z, 1); // +1
 
-                MSerial->RVector3DWrite(RVector3D(pidAngle.getLastPID()[0].y,
-                                                  pidAngle.getLastPID()[1].y,
-                                                  pidAngle.getLastPID()[2].y) *
-                                        SERIAL_PID_COEFF,
-                                        MySerial::PRINT_RAW); // +6
+                MSerial->writeDouble(-1, 1, pidAngle.PID_C[0].x, 2); // +1
+                MSerial->writeDouble(-1, 1, pidAngle.PID_C[1].x, 2); // +1
+                MSerial->writeDouble(-1, 1, pidAngle.PID_C[2].x, 2); // +1
+
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.PID_C[0].y, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.PID_C[1].y, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.PID_C[2].y, 1); // +1
+#ifdef PID_USE_YAW
+                MSerial->writeDouble(-0.1, 0.1, pidAngularVelocity.PID_C[0].z, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngularVelocity.PID_C[1].z, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngularVelocity.PID_C[2].z, 1); // +1
+#endif
 
                 //motors
                 for (unsigned i = 0; i < 4; i++)

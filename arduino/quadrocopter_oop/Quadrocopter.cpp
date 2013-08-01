@@ -56,6 +56,9 @@ void Quadrocopter::reset()
     MController->setTorque(RVector3D());
 
     pidAngle.reset();
+#ifdef PID_USE_YAW
+    pidAngularVelocity.reset();
+#endif
 
     voltage = 0;
     dtMax = 0;
@@ -72,6 +75,12 @@ void Quadrocopter::reset()
 
     pidAngle.setDMin(-angleMaxCorrection * 1.5);
     pidAngle.setDMax( angleMaxCorrection * 1.5);
+
+#ifdef PID_USE_YAW
+    pidAngularVelocity.setKpKiKd(0, 0, 0);
+    pidAngularVelocity.setYMin(-angularVelocityMaxCorrection);
+    pidAngularVelocity.setYMax(angularVelocityMaxCorrection);
+#endif
 
     MPU->resetFIFO();
 }
@@ -91,7 +100,7 @@ void Quadrocopter::processCorrection()
     //        break;
 
     case ReactionAngle:
-        torqueAutomaticCorrection = getAngleCorrection(angle, DeltaT.getTimeDifferenceSeconds());
+        torqueAutomaticCorrection = getAngleAVCorrection(angle, DeltaT.getTimeDifferenceSeconds());
         break;
     }
 }

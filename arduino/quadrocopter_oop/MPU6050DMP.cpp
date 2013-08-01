@@ -171,7 +171,7 @@ void MPU6050DMP::iteration()
     if(!dmpReady) return;
 
 #ifdef DEBUG_DAC
-    myLed.setState(20);
+    //myLed.setState(20);
 #endif
 
     // get current FIFO count
@@ -183,15 +183,15 @@ void MPU6050DMP::iteration()
 #ifdef MPUDEBUG
         Serial.println(F(" #OVERFLOW!# \n"));
 #endif
-#ifdef DEBUG_DAC
-        myLed.setState(70);
-#endif
         mpu.resetFIFO();
 
         // otherwise, check for DMP data ready interrupt (this should happen frequently)
     }
     else
     {
+#ifdef DEBUG_DAC
+        //myLed.setState(30);
+#endif
         // wait for correct available data length, should be a VERY short wait
 
         while(fifoCount > 0)
@@ -201,7 +201,7 @@ void MPU6050DMP::iteration()
             fifoCount -= packetSize;
         }
 #ifdef DEBUG_DAC
-        myLed.setState(70);
+        //myLed.setState(40);
 #endif
 
         // track FIFO count here in case there is > 1 packet available
@@ -232,6 +232,6 @@ void MPU6050DMP::iteration()
 
     }
 #ifdef DEBUG_DAC
-    myLed.setState(70);
+    //myLed.setState(50);
 #endif
 }

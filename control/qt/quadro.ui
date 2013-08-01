@@ -451,7 +451,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QTabWidget" name="tabwidgetplot">
+   <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
       <x>430</x>
@@ -558,6 +558,21 @@
       <string>PID: Y</string>
      </attribute>
      <widget class="QwtPlot" name="plot_PID_y">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>617</width>
+        <height>471</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabPIDz">
+     <attribute name="title">
+      <string>PID: Z</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_PID_z">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -1165,7 +1180,7 @@
     </widget>
     <widget class="QWidget" name="z">
      <attribute name="title">
-      <string>Z axis</string>
+      <string>Z axis AV</string>
      </attribute>
      <widget class="QWidget" name="formLayoutWidget_6">
       <property name="geometry">
@@ -1181,7 +1196,7 @@
         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
        </property>
        <item row="0" column="0">
-        <widget class="QLabel" name="label_PID_angle_z">
+        <widget class="QLabel" name="label_PID_angularVelocity_z">
          <property name="text">
           <string>PID</string>
          </property>
@@ -1193,7 +1208,7 @@
           <enum>QLayout::SetMinimumSize</enum>
          </property>
          <item>
-          <widget class="QLabel" name="PID_angle_Kp_z_label">
+          <widget class="QLabel" name="PID_angularVelocity_Kp_z_label">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -1206,7 +1221,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="PID_angle_Kp_z">
+          <widget class="QDoubleSpinBox" name="PID_angularVelocity_Kp_z">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1234,7 +1249,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="PID_angle_Ki_z_label">
+          <widget class="QLabel" name="PID_angularVelocity_Ki_z_label">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -1247,7 +1262,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="PID_angle_Ki_z">
+          <widget class="QDoubleSpinBox" name="PID_angularVelocity_Ki_z">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1272,7 +1287,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="PID_angle_Kd_z_label">
+          <widget class="QLabel" name="PID_angularVelocity_Kd_z_label">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -1285,7 +1300,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="PID_angle_Kd_z">
+          <widget class="QDoubleSpinBox" name="PID_angularVelocity_Kd_z">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1327,7 +1342,7 @@
           <enum>QLayout::SetMinimumSize</enum>
          </property>
          <item>
-          <widget class="QLabel" name="PID_angle_MAXp_z_label">
+          <widget class="QLabel" name="PID_angularVelocity_MAXp_z_label">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -1340,7 +1355,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="PID_angle_MAXp_z">
+          <widget class="QDoubleSpinBox" name="PID_angularVelocity_MAXp_z">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1368,7 +1383,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="PID_angle_MAXi_z_label">
+          <widget class="QLabel" name="PID_angularVelocity_MAXi_z_label">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -1381,7 +1396,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="PID_angle_MAXi_z">
+          <widget class="QDoubleSpinBox" name="PID_angularVelocity_MAXi_z">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1406,7 +1421,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="PID_angle_MAXd_z_label">
+          <widget class="QLabel" name="PID_angularVelocity_MAXd_z_label">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -1419,7 +1434,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="PID_angle_MAXd_z">
+          <widget class="QDoubleSpinBox" name="PID_angularVelocity_MAXd_z">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>

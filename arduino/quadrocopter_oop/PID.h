@@ -32,7 +32,6 @@ private:
     T e, eDerivative; //error
     T y; //correction
 
-    T PID_C[PID_COMPONENTS_N]; //last corrections (debug info)
     T P, I, D;
 
     void prepare(T, double);
@@ -53,9 +52,11 @@ public:
     void setKi_y(double);
     void setKd_y(double);
 
+#ifdef PID_USE_YAW
     void setKp_z(double);
     void setKi_z(double);
     void setKd_z(double);
+#endif
 
     void setKp(double);
     void setKi(double);
@@ -101,6 +102,8 @@ public:
     T getY(T, double, T); // iteration
 
     T* getLastPID();
+
+    T PID_C[PID_COMPONENTS_N]; //last corrections (debug info)
 };
 
 #include "PID.cpp"

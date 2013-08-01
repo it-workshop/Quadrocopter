@@ -18,15 +18,6 @@ template <typename T> T PID<T>::getY(T data, double dt, T derivative)
     return(y);
 }
 
-template <typename T> T* PID<T>::getLastPID()
-{
-    PID_C[0] = P;
-    PID_C[1] = I;
-    PID_C[2] = D;
-    return(PID_C);
-}
-
-
 template <typename T> void PID<T>::prepare(T data, double dt)
 {
     //difference between requested and current data
@@ -136,6 +127,7 @@ template <typename T> void PID<T>::setKd_y(double arg)
     Kd.y = arg;
 }
 
+#ifdef PID_USE_YAW
 template <typename T> void PID<T>::setKp_z(double arg)
 {
     Kp.z = arg;
@@ -150,6 +142,7 @@ template <typename T> void PID<T>::setKd_z(double arg)
 {
     Kd.z = arg;
 }
+#endif
 
 template <typename T> void PID<T>::setPMinMax_x(double arg)
 {
@@ -187,6 +180,7 @@ template <typename T> void PID<T>::setDMinMax_y(double arg)
     DMax.y =  arg;
 }
 
+#ifdef PID_USE_YAW
 template <typename T> void PID<T>::setPMinMax_z(double arg)
 {
     PMin.z = -arg;
@@ -204,6 +198,7 @@ template <typename T> void PID<T>::setDMinMax_z(double arg)
     DMin.z = -arg;
     DMax.z =  arg;
 }
+#endif
 
 template <typename T> double PID<T>::getPMax_x()
 {

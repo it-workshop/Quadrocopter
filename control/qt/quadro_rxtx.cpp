@@ -1,4 +1,5 @@
 #include "quadrocopter.h"
+#include "Definitions.h"
 #include <math.h>
 #include <iostream>
 #include <mytime.h>
@@ -62,12 +63,38 @@ void quadrocopter::read_data()
 {
     qDebug() << "=== TRANSMISSION: READ_ACTUAL ===";
 #ifndef DEBUG_NO_TX_ARDUINO
-    vect t_torque_corrected = read_vect_byte(2);
-    number_vect_t t_angle_x = read_number_vect_t(-10, 10, 2),
-            t_angle_y = read_number_vect_t(-10, 10, 2);
-    vect t_gyroscope_readings = read_vect_byte() * SERIAL_GYRO_COEFF,
-            t_PID_x = read_vect_byte() / SERIAL_PID_COEFF,
-            t_PID_y = read_vect_byte() / SERIAL_PID_COEFF;
+    vect t_torque_corrected, t_gyroscope_readings, t_PID_x, t_PID_y;
+#ifdef PID_USE_YAW
+    vect t_PID_z;
+#endif
+
+    number_vect_t t_angle_x, t_angle_y;
+
+    t_torque_corrected.x = read_number_vect_t(-1, 1, 1);
+    t_torque_corrected.y = read_number_vect_t(-1, 1, 1);
+    t_torque_corrected.z = read_number_vect_t(-1, 1, 1);
+
+    t_angle_x = read_number_vect_t(-4, 4, 1);
+    t_angle_y = read_number_vect_t(-4, 4, 1);
+
+    t_gyroscope_readings.x = read_number_vect_t(-100, 100, 1);
+    t_gyroscope_readings.y = read_number_vect_t(-100, 100, 1);
+    t_gyroscope_readings.z = read_number_vect_t(-100, 100, 1);
+
+    t_PID_x.x = read_number_vect_t(-1, 1, 2);
+    t_PID_x.y = read_number_vect_t(-1, 1, 2);
+    t_PID_x.z = read_number_vect_t(-1, 1, 2);
+
+    t_PID_y.x = read_number_vect_t(-0.1, 0.1, 1);
+    t_PID_y.y = read_number_vect_t(-0.1, 0.1, 1);
+    t_PID_y.z = read_number_vect_t(-0.1, 0.1, 1);
+
+#ifdef PID_USE_YAW
+    qDebug() << "sdfsdf";
+    t_PID_z.x = read_number_vect_t(-0.1, 0.1, 1);
+    t_PID_z.y = read_number_vect_t(-0.1, 0.1, 1);
+    t_PID_z.z = read_number_vect_t(-0.1, 0.1, 1);
+#endif
 
     number_vect_t t_motors[MOTORS_N];
 
@@ -93,6 +120,12 @@ void quadrocopter::read_data()
         PID_P.y = t_PID_y.x;
         PID_I.y = t_PID_y.y;
         PID_D.y = t_PID_y.z;
+
+#ifdef PID_USE_YAW
+        PID_P.z = t_PID_z.x;
+        PID_I.z = t_PID_z.y;
+        PID_D.z = t_PID_z.z;
+#endif
 
         voltage = t_voltage;
     }
