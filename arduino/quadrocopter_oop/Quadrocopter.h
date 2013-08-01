@@ -49,7 +49,7 @@ private:
 
     //corrections
     static const double angleMaxCorrection = MPI / 4;
-    static const double angularVelocityMaxCorrection = MPI / 4. / 5;
+    static const double angularVelocityMaxCorrection = MPI / 4;
 
     PID<RVector3D> pidAngle;
 
@@ -72,7 +72,12 @@ private:
     InfoLED mpuBytesLed;
 #endif
 
-    static const unsigned int serialReadN = 30; // bytes to read
+    // bytes to read
+#ifdef PID_USE_YAW
+    static const unsigned int serialReadN = 42;
+#else
+    static const unsigned int serialReadN = 30;
+#endif
 
 public:
     Quadrocopter();
