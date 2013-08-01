@@ -1,5 +1,9 @@
 #include "joystick.h"
 #include <QDebug>
+#include <iostream>
+
+using std::cerr;
+using std::endl;
 
 joystick::joystick()
 {
@@ -118,6 +122,29 @@ bool joystick::is_switched_on()
 }
 
 number_vect_t joystick::get_power_value()
+{
+    number_vect_t x = get_power_value_raw(), y;
+    if(x >= 0 && x <= 0.2)
+    {
+        y = x * 40 / 0.2;
+    }
+    else if(x >= 0.2 && x <= 0.8)
+    {
+        y = 40 + (x - 0.2) * 35 / 0.6;
+    }
+    else
+    {
+        y = 75 + (x - 0.8) * 25 / 0.2;
+    }
+
+    y /= 100;
+
+    cerr << x << "\t" << y << endl;
+
+    return(y);
+}
+
+number_vect_t joystick::get_power_value_raw()
 {
     return(power_value / (MAX_POWER_VALUE * 1.0));
 }

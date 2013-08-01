@@ -33,8 +33,10 @@ public:
     void initiate_transmission(); // initiate transmission
 
     vect get_readings(); // 2D vect, values [0...1]
+
     bool is_switched_on();
     number_vect_t get_power_value();
+    number_vect_t get_power_value_raw();
 };
 
 #endif // JOYSTICK_H
