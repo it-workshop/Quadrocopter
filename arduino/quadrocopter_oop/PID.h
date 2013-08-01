@@ -78,11 +78,9 @@ public:
     void setIMinMax_y(double);
     void setDMinMax_y(double);
 
-#ifdef PID_USE_YAW
     void setPMinMax_z(double);
     void setIMinMax_z(double);
     void setDMinMax_z(double);
-#endif
 
     double getPMax_x();
     double getIMax_x();

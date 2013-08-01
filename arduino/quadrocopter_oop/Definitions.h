@@ -23,6 +23,9 @@
 // Cut AV that is lower than this value (used in PID)
 #define PID_AV_MIN 1
 
+// Cut AV that is lower than this value (used in PID)
+#define PID_AV_MIN_Z 1
+
 // Enable 3rd angle PID (used both in Arduino and Qt apps)
 #define PID_USE_YAW
 

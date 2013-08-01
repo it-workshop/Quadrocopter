@@ -8,6 +8,13 @@ double MotorController::getSpeed(RVector3D torqueVec, int motor)
     double res = getForce();
     res += torqueVec.x * coordinatesOfMotors[motor].y - torqueVec.y * coordinatesOfMotors[motor].x;
 
+#ifdef PID_USE_YAW
+    if(direction[motor] == 1)
+        res -= torqueVec.z;
+    else
+        res += torqueVec.z;
+#endif
+
     // it is necessary because the motor controller starts a motor with greater speed than needed
     if (res <= MIN_SPEED && getForce() != 0) res = MIN_SPEED;
 
@@ -38,6 +45,11 @@ MotorController::MotorController(const int motorControlPins[N_MOTORS])
     useMotors[B] = 1;
     useMotors[C] = 1;
     useMotors[D] = 1;
+
+    direction[A] = 1;
+    direction[B] = 0;
+    direction[C] = 1;
+    direction[D] = 0;
     
     for (int i = 0; i < N_MOTORS; i++)
     {
