@@ -107,6 +107,13 @@ bool MPU6050DMP::getNewData()
     return(newData);
 }
 
+void MPU6050DMP::resetFIFO()
+{
+    if(dmpReady)
+        //mpu.flushFIFOBytes(mpu.getFIFOCount());
+        mpu.resetFIFO();
+}
+
 MPU6050DMP::MPU6050DMP()
 {
      dmpReady = false;
@@ -163,21 +170,15 @@ void MPU6050DMP::iteration()
 {
     if(!dmpReady) return;
 
-    if(!mpu.dmpPacketAvailable()) return;
 #ifdef DEBUG_DAC
     myLed.setState(20);
-#endif
-
-    mpuIntStatus = mpu.getIntStatus();
-#ifdef DEBUG_DAC
-    myLed.setState(30);
 #endif
 
     // get current FIFO count
     fifoCount = mpu.getFIFOCount();
 
     // check for overflow (this should never happen unless our code is too inefficient)
-    if ((mpuIntStatus & 0x10) || fifoCount == 1024) {
+    if(fifoCount % packetSize != 0) {
         // reset so we can continue cleanly
 #ifdef MPUDEBUG
         Serial.println(F(" #OVERFLOW!# \n"));
@@ -189,38 +190,22 @@ void MPU6050DMP::iteration()
 
         // otherwise, check for DMP data ready interrupt (this should happen frequently)
     }
-    else if (mpuIntStatus & 0x02) {
+    else
+    {
         // wait for correct available data length, should be a VERY short wait
-#ifdef DEBUG_DAC
-        myLed.setState(40);
-#endif
-        while (fifoCount < packetSize) fifoCount = mpu.getFIFOCount();
-#ifdef DEBUG_DAC
-        myLed.setState(50);
-#endif
-        //if(fifoCount < packetSize) return;
 
-        // removing leftovers
-        if(fifoCount % 42 != 0)
+        while(fifoCount > 0)
         {
-#ifdef MPUDEBUG
-            Serial.print(" #ERROR# ");
-#endif
-            mpu.getFIFOBytes(fifoBuffer, fifoCount % 42);
+            // read a packet from FIFO
+            mpu.getFIFOBytes(fifoBuffer, packetSize);
+            fifoCount -= packetSize;
         }
-#ifdef DEBUG_DAC
-        myLed.setState(60);
-#endif
-
-        // read a packet from FIFO
-        mpu.getFIFOBytes(fifoBuffer, packetSize);
 #ifdef DEBUG_DAC
         myLed.setState(70);
 #endif
 
         // track FIFO count here in case there is > 1 packet available
         // (this lets us immediately read more without waiting for an interrupt)
-        fifoCount -= packetSize;
         mpu.dmpGetQuaternion(&q, fifoBuffer);
         mpu.dmpGetGyro(av, fifoBuffer);
         mpu.dmpGetGravity(&gravity, &q);

@@ -34,9 +34,18 @@ void Quadro::settings_data()
     ss << quadro.get_PID_angle_MAXi().y << " ";
     ss << quadro.get_PID_angle_MAXd().y << " ";
 
+    ss << quadro.get_PID_angularVelocity_Kp().z << " ";
+    ss << quadro.get_PID_angularVelocity_Ki().z << " ";
+    ss << quadro.get_PID_angularVelocity_Kd().z << " ";
+    ss << quadro.get_PID_angularVelocity_MAXp().z << " ";
+    ss << quadro.get_PID_angularVelocity_MAXi().z << " ";
+    ss << quadro.get_PID_angularVelocity_MAXd().z << " ";
+
     //ss << quadro.getDevice() << " ";
-    ss << quadro.get_torque_manual_correction().x << " ";
-    ss << quadro.get_torque_manual_correction().y << " ";
+    //ss << quadro.get_torque_manual_correction().x << " ";
+    //ss << quadro.get_torque_manual_correction().y << " ";
+    ss << ui->torque_manual_correction_x->value() << " ";
+    ss << ui->torque_manual_correction_y->value() << " ";
     ss << quadro.get_reaction_type() << " ";
     ss << ui->quadro_autoupdate->isChecked() << " ";
 
@@ -69,6 +78,14 @@ void Quadro::settings_read()
     settings_file >> t_double; quadro.set_PID_angle_MAXp_y(t_double);
     settings_file >> t_double; quadro.set_PID_angle_MAXi_y(t_double);
     settings_file >> t_double; quadro.set_PID_angle_MAXd_y(t_double);
+
+    settings_file >> t_double; quadro.set_PID_angularVelocity_Kp_z(t_double);
+    settings_file >> t_double; quadro.set_PID_angularVelocity_Ki_z(t_double);
+    settings_file >> t_double; quadro.set_PID_angularVelocity_Kd_z(t_double);
+
+    settings_file >> t_double; quadro.set_PID_angularVelocity_MAXp_z(t_double);
+    settings_file >> t_double; quadro.set_PID_angularVelocity_MAXi_z(t_double);
+    settings_file >> t_double; quadro.set_PID_angularVelocity_MAXd_z(t_double);
 
 //    string t_string;
 //    settings_file >> t_string; quadro.setDevice(t_string);

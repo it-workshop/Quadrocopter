@@ -63,6 +63,18 @@ void Quadrocopter::processSerialTx()
                 MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setPMinMax_y(tDouble);
                 MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setIMinMax_y(tDouble);
                 MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setDMinMax_y(tDouble);
+
+#ifdef PID_USE_YAW
+                //PID AngularVelocity coefficients Z +6
+                MSerial->readDouble(-0.5, 0.5, tDouble, 2); pidAngularVelocity.setKp_z(tDouble);
+                MSerial->readDouble(-0.5, 0.5, tDouble, 2); pidAngularVelocity.setKi_z(tDouble);
+                MSerial->readDouble(-0.5, 0.5, tDouble, 2); pidAngularVelocity.setKd_z(tDouble);
+
+                //PID AngularVelocity minmax Z +6
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocity.setPMinMax_z(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocity.setIMinMax_z(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocity.setDMinMax_z(tDouble);
+#endif
             }
 #ifdef DEBUG_NO_TX_ARDUINO
             Serial.write('x');
@@ -77,30 +89,37 @@ void Quadrocopter::processSerialTx()
 #ifndef DEBUG_NO_TX_ARDUINO
 //            for(int i = 0; i < BN; i++)
 //                MSerial->bufferAdd(x[i]);
-            // writing 32 bytes
+            // writing bytes
             {
-                MSerial->RVector3DWrite(getTorques(), MySerial::PRINT_RAW, MySerial::USE_2D); // +4
+                MSerial->writeDouble(-0.5, 0.5, getTorques().x, 1); // +1
+                MSerial->writeDouble(-0.5, 0.5, getTorques().y, 1); // +1
+                MSerial->writeDouble(-0.5, 0.5, getTorques().z, 1); // +1
+
                 MSerial->RVector3DWrite(angle, MySerial::PRINT_RAW, MySerial::USE_2D); // +4
 
-                MSerial->RVector3DWrite(angularVelocity * 1. / SERIAL_GYRO_COEFF, MySerial::PRINT_RAW); // +6
+                MSerial->writeDouble(-100, 100, angularVelocity.x, 1); // +1
+                MSerial->writeDouble(-100, 100, angularVelocity.y, 1); // +1
+                MSerial->writeDouble(-100, 100, angularVelocity.z, 1); // +1
 
-                MSerial->RVector3DWrite(RVector3D(pidAngle.getLastPID()[0].x,
-                                                  pidAngle.getLastPID()[1].x,
-                                                  pidAngle.getLastPID()[2].x) *
-                                        SERIAL_PID_COEFF,
-                                        MySerial::PRINT_RAW); // +6
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.P.x, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.I.x, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.D.x, 1); // +1
 
-                MSerial->RVector3DWrite(RVector3D(pidAngle.getLastPID()[0].y,
-                                                  pidAngle.getLastPID()[1].y,
-                                                  pidAngle.getLastPID()[2].y) *
-                                        SERIAL_PID_COEFF,
-                                        MySerial::PRINT_RAW); // +6
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.P.y, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.I.y, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngle.D.y, 1); // +1
+
+#ifdef PID_USE_YAW
+                MSerial->writeDouble(-0.1, 0.1, pidAngularVelocity.P.z, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngularVelocity.I.z, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngularVelocity.D.z, 1); // +1
+#endif
 
                 //motors
                 for (unsigned i = 0; i < 4; i++)
                     MSerial->bufferAdd(100 * MController->getSpeed(getTorques(), i)); // +4
 
-                MSerial->writeDouble(0, 20, voltage, 2); //+2
+                MSerial->writeDouble(0, 20, voltage, 1); //+1
             }
 
             MSerial->bufferWrite();
@@ -115,8 +134,8 @@ void Quadrocopter::processSerialTx()
         MSerial->RVector3DWrite(angle * 180 / M_PI, MySerial::PRINT_TAB);
         MSerial->bufferAdd("; S=");
         MSerial->writeNumber(sensorsTime * 1000);
-        MSerial->bufferAdd("; C = ");
-        MSerial->writeNumber(calculationsTime * 1000);
+        MSerial->bufferAdd("; B = ");
+        MSerial->writeNumber(MPU->bytesAvailableFIFO());
         MSerial->bufferAdd('\n');
         MSerial->bufferWrite();
         MSerial->dropCommand();

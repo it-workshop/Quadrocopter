@@ -229,3 +229,40 @@ void Quadro::on_quadro_connect_clicked()
     else
         quadro_connect();
 }
+
+
+void Quadro::on_PID_angularVelocity_Kp_z_valueChanged(double arg1)
+{
+    quadro.set_PID_angularVelocity_Kp_z(arg1);
+    settings_data();
+}
+
+void Quadro::on_PID_angularVelocity_Ki_z_valueChanged(double arg1)
+{
+    quadro.set_PID_angularVelocity_Ki_z(arg1);
+    settings_data();
+}
+
+void Quadro::on_PID_angularVelocity_Kd_z_valueChanged(double arg1)
+{
+    quadro.set_PID_angularVelocity_Kd_z(arg1);
+    settings_data();
+}
+
+void Quadro::on_PID_angularVelocity_MAXp_z_valueChanged(double arg1)
+{
+    quadro.set_PID_angularVelocity_MAXp_z(arg1);
+    settings_data();
+}
+
+void Quadro::on_PID_angularVelocity_MAXi_z_valueChanged(double arg1)
+{
+    quadro.set_PID_angularVelocity_MAXi_z(arg1);
+    settings_data();
+}
+
+void Quadro::on_PID_angularVelocity_MAXd_z_valueChanged(double arg1)
+{
+    quadro.set_PID_angularVelocity_MAXd_z(arg1);
+    settings_data();
+}

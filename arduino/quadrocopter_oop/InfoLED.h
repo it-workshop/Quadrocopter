@@ -11,6 +11,7 @@ class InfoLED
 {
 private:
     int pin;
+    int digitalState;
 #ifdef DEBUG_DAC
     DAC8512 DACDev;
 #endif
@@ -23,6 +24,7 @@ public:
     } type;
     void setOn();
     void setOff();
+    void changeDigitalState();
 
     // set new state
     // 0 or 1 for DIGITAL type or

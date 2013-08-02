@@ -33,6 +33,15 @@ Quadrocopter::Quadrocopter()
     myLed = InfoLED(13, InfoLED::PW);
     myLed.setState(0);
 #endif
+
+#ifdef DEBUG_FREQ_PIN
+    freqLed = InfoLED(DEBUG_FREQ_PIN, InfoLED::DIGITAL);
+#endif
+
+#ifdef DEBUG_MPUBYTES_PIN
+    mpuBytesLed = InfoLED(DEBUG_MPUBYTES_PIN, InfoLED::DIGITAL);
+#endif
+
     this->reset();
 
     MyMPU->initialize();
@@ -50,6 +59,10 @@ void Quadrocopter::reset()
 
     pidAngle.reset();
 
+#ifdef PID_USE_YAW
+    pidAngularVelocity.reset();
+#endif
+
     voltage = 0;
     dtMax = 0;
 
@@ -65,6 +78,23 @@ void Quadrocopter::reset()
 
     pidAngle.setDMin(-angleMaxCorrection * 1.5);
     pidAngle.setDMax( angleMaxCorrection * 1.5);
+
+#ifdef PID_USE_YAW
+    pidAngularVelocity.setKpKiKd(0, 0, 0);
+    pidAngularVelocity.setYMin(-angularVelocityMaxCorrection);
+    pidAngularVelocity.setYMax(angularVelocityMaxCorrection);
+
+    pidAngularVelocity.setPMin(-angularVelocityMaxCorrection * 5);
+    pidAngularVelocity.setPMax( angularVelocityMaxCorrection * 5);
+
+    pidAngularVelocity.setIMin(-angularVelocityMaxCorrection);
+    pidAngularVelocity.setIMax( angularVelocityMaxCorrection);
+
+    pidAngularVelocity.setDMin(-angularVelocityMaxCorrection * 1.5);
+    pidAngularVelocity.setDMax( angularVelocityMaxCorrection * 1.5);
+#endif
+
+    MPU->resetFIFO();
 }
 
 void Quadrocopter::processCorrection()
@@ -98,8 +128,17 @@ void Quadrocopter::iteration()
 
     if(MyMPU->getNewData()) // on each MPU data packet
     {
+
+#ifdef DEBUG_FREQ_PIN
+    freqLed.changeDigitalState();
+#endif
+
+#ifdef DEBUG_MPUBYTES_PIN
+    mpuBytesLed.setState(MPU->bytesAvailableFIFO() > 42);
+#endif
+
 #ifdef DEBUG_DAC
-        myLed.setState(0);
+    myLed.setState(0);
 #endif
 
         { // Serial

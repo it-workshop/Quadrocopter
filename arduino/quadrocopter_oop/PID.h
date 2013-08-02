@@ -2,8 +2,7 @@
 #define PID_H
 
 #include "RVector3D.h"
-
-#define PID_COMPONENTS_N 3
+#include "Definitions.h"
 
 template <typename T> class PID
 {
@@ -31,9 +30,6 @@ private:
     T e, eDerivative; //error
     T y; //correction
 
-    T PID_C[PID_COMPONENTS_N]; //last corrections (debug info)
-    T P, I, D;
-
     void prepare(T, double);
     void iteration();
 
@@ -51,6 +47,10 @@ public:
     void setKp_y(double);
     void setKi_y(double);
     void setKd_y(double);
+
+    void setKp_z(double);
+    void setKi_z(double);
+    void setKd_z(double);
 
     void setKp(double);
     void setKi(double);
@@ -78,6 +78,10 @@ public:
     void setIMinMax_y(double);
     void setDMinMax_y(double);
 
+    void setPMinMax_z(double);
+    void setIMinMax_z(double);
+    void setDMinMax_z(double);
+
     double getPMax_x();
     double getIMax_x();
     double getDMax_x();
@@ -89,7 +93,7 @@ public:
     T getY(T, double); // iteration
     T getY(T, double, T); // iteration
 
-    T* getLastPID();
+    T P, I, D;
 };
 
 #include "PID.cpp"

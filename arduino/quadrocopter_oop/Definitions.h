@@ -18,16 +18,22 @@
 // Add DAC8512 support and use it as InfoLED
 //#define DEBUG_DAC
 
+// Oscilloscope freq at pin
+//#define DEBUG_FREQ_PIN 6
+
+// Oscilloscope MPU bytes pin
+//#define DEBUG_MPUBYTES_PIN 4
+
 // Turn off tx to PC (used both in Arduino and Qt apps)
 //#define DEBUG_NO_TX_ARDUINO
 
-// Scale PID values (used both in Arduino and Qt apps)
-#define SERIAL_PID_COEFF 100
-
-// Scale AV values (used both in Arduino and Qt apps)
-#define SERIAL_GYRO_COEFF 8
-
 // Cut AV that is lower than this value (used in PID)
 #define PID_AV_MIN 1
+
+// Cut AV that is lower than this value (used in PID)
+#define PID_AV_MIN_Z 1
+
+// Enable 3rd angle PID (used both in Arduino and Qt apps)
+#define PID_USE_YAW
 
 #endif
