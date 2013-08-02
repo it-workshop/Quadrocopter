@@ -12,7 +12,7 @@
 //#define DEBUG_DAC
 
 // Oscilloscope freq at pin
-#define DEBUG_FREQ_PIN 4
+//#define DEBUG_FREQ_PIN 6
 
 // Oscilloscope MPU bytes pin
 //#define DEBUG_MPUBYTES_PIN 4
