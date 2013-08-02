@@ -30,7 +30,7 @@ Quadrocopter::Quadrocopter()
 #ifdef DEBUG_DAC
     myLed = MyMPU->myLed;
 #else
-    myLed = InfoLED(13, InfoLED::PW);
+    myLed = InfoLED(13, InfoLED::PulseWide);
     myLed.setState(0);
 #endif
 

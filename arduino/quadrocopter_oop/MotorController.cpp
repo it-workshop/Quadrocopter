@@ -46,10 +46,12 @@ MotorController::MotorController(const int motorControlPins[N_MOTORS])
     useMotors[C] = 1;
     useMotors[D] = 1;
 
+#ifdef PID_USE_YAW
     direction[A] = 1;
     direction[B] = 0;
     direction[C] = 1;
     direction[D] = 0;
+#endif
     
     for (int i = 0; i < N_MOTORS; i++)
     {
