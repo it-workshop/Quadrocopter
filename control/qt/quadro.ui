@@ -68,7 +68,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>414</width>
+        <width>416</width>
         <height>90</height>
        </rect>
       </property>
@@ -603,7 +603,7 @@
         <x>0</x>
         <y>0</y>
         <width>411</width>
-        <height>61</height>
+        <height>62</height>
        </rect>
       </property>
       <layout class="QFormLayout" name="xform">
@@ -888,7 +888,7 @@
         <x>0</x>
         <y>0</y>
         <width>411</width>
-        <height>61</height>
+        <height>62</height>
        </rect>
       </property>
       <layout class="QFormLayout" name="yform">
@@ -1260,9 +1260,17 @@
     </property>
     <addaction name="LogSave_data"/>
    </widget>
+   <widget class="QMenu" name="menuAutocalibrate">
+    <property name="title">
+     <string>Autocalibrate</string>
+    </property>
+    <addaction name="actionCalibrate_X_axis"/>
+    <addaction name="actionCalibrate_Y_axis"/>
+   </widget>
    <addaction name="menuProgram"/>
    <addaction name="menuQuadro"/>
    <addaction name="menuJoystick"/>
+   <addaction name="menuAutocalibrate"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -1361,6 +1369,21 @@
    </property>
    <property name="text">
     <string>Autoupdate</string>
+   </property>
+  </action>
+  <action name="actionCalibrate_PID_automatically">
+   <property name="text">
+    <string>Calibrate PID automatically</string>
+   </property>
+  </action>
+  <action name="actionCalibrate_X_axis">
+   <property name="text">
+    <string>Calibrate X axis</string>
+   </property>
+  </action>
+  <action name="actionCalibrate_Y_axis">
+   <property name="text">
+    <string>Calibrate Y axis</string>
    </property>
   </action>
  </widget>

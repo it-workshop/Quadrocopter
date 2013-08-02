@@ -9,6 +9,7 @@
 #include <vect.h>
 #include <quadrocopter.h>
 #include <joystick.h>
+#include "calibrator.h"
 
 #include "qextserialenumerator.h"
 
@@ -114,6 +115,11 @@ private:
     void interface_read();
     void interface_write();
     void interface_init();
+
+    // Automatic PID calibration
+    Calibrator* calibrator;
+    bool autoCalibrationX;
+    bool autoCalibrationY;
 
 private slots:
     void update_ports();

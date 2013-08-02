@@ -175,6 +175,24 @@ void Quadro::timer_auto_update()
         {
             if(!plot_mytime.isSet()) plot_mytime.setTime();
             else plot_update();
+
+            if (calibrator != NULL)
+            {
+                if (calibrator->ready) {
+                    Calibrator* n;
+                    if (calibrator->coeff() == 'P') n = new Calibrator(&quadro, calibrator->axis(), 'I');
+                    if (calibrator->coeff() == 'I') n = new Calibrator(&quadro, calibrator->axis(), 'D');
+                    if (calibrator->coeff() == 'D') n = NULL;
+                    delete calibrator;
+                    calibrator = n;
+                }
+                calibrator->iteration();
+            }
+            else {
+                if(autoCalibrationX) calibrator = new Calibrator(&quadro, 'X', 'P');
+                if(autoCalibrationY) calibrator = new Calibrator(&quadro, 'Y', 'P');
+            }
+
             quadro.resetNewDataAvailable();
         }
 
