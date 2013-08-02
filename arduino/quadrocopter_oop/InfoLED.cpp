@@ -4,7 +4,7 @@
 InfoLED::InfoLED(int nPin, typeT nType)
 {
 #ifdef DEBUG_DAC
-    if(nType == DAC)
+    if(nType == DAC_8512)
         DACDev.init();
     else
 #endif
@@ -42,7 +42,7 @@ void InfoLED::setState(int state)
         digitalWrite(pin, state ? HIGH : LOW);
         digitalState = state;
     }
-    else if(type == PW)
+    else if(type == PulseWide)
         analogWrite(pin, state * 255 / 100);
 #ifdef DEBUG_DAC
     else DACDev.send(((1 << 12) - 1) * ((long int) state) / 100);

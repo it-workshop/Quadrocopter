@@ -50,7 +50,6 @@ MotorController::MotorController(const int motorControlPins[N_MOTORS])
     direction[B] = 0;
     direction[C] = 1;
     direction[D] = 0;
->>>>>>> MPU6050-fixed-FIFO
     
     for (int i = 0; i < N_MOTORS; i++)
     {

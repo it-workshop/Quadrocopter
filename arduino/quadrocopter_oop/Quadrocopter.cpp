@@ -1,7 +1,7 @@
 #include "Quadrocopter.h"
 #include "Arduino.h"
 #include "PID.h"
-#ifndef __arm__
+#ifdef _arch_avr_
     #include <avr/delay.h>
 #endif
 
@@ -28,7 +28,7 @@ Quadrocopter::Quadrocopter()
     MyMPU = new MPU6050DMP;
 
 #ifdef DEBUG_DAC
-    myLed = MPU->myLed;
+    myLed = MyMPU->myLed;
 #else
     myLed = InfoLED(13, InfoLED::PW);
     myLed.setState(0);
@@ -94,7 +94,7 @@ void Quadrocopter::reset()
     pidAngularVelocity.setDMax( angularVelocityMaxCorrection * 1.5);
 #endif
 
-    MPU->resetFIFO();
+    MyMPU->resetFIFO();
 }
 
 void Quadrocopter::processCorrection()
@@ -134,7 +134,7 @@ void Quadrocopter::iteration()
 #endif
 
 #ifdef DEBUG_MPUBYTES_PIN
-    mpuBytesLed.setState(MPU->bytesAvailableFIFO() > 42);
+    mpuBytesLed.setState(MyMPU->bytesAvailableFIFO() > 42);
 #endif
 
 #ifdef DEBUG_DAC

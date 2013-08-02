@@ -87,7 +87,12 @@ float *MPU6050DMP::getAngularVelocityXYZ()
 void MPU6050DMP::attachFIFOInterrupt()
 {
     // enable Arduino interrupt detection
+#ifdef _arch_avr_
     attachInterrupt(0, dmpDataReady, RISING);
+#endif
+#ifdef _arch_arm_
+    attachInterrupt(2, dmpDataReady, RISING);
+#endif
     mpuIntStatus = mpu.getIntStatus();
 
 }
@@ -121,7 +126,7 @@ MPU6050DMP::MPU6050DMP()
 
 void MPU6050DMP::initialize() {
 #ifdef DEBUG_DAC
-    myLed = InfoLED(A0, InfoLED::DAC);
+    myLed = InfoLED(A0, InfoLED::DAC_8512);
 #endif
 
     // reset YPR data

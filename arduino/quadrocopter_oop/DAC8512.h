@@ -3,30 +3,33 @@
 
 #include "Definitions.h"
 
-#ifdef DEBUG_DAC
+// only AVR is supported
+#ifdef _arch_avr_
+    #ifdef DEBUG_DAC
 
-class DAC8512
-{
-private:
-    //pins
+    class DAC8512
+    {
+    private:
+        //pins
 
-    volatile unsigned char* CMDDDR;
-    volatile unsigned char* CMDPORT;
+        volatile unsigned char* CMDDDR;
+        volatile unsigned char* CMDPORT;
 
 
-    unsigned int CS = 1;
-    unsigned int CLK = (1 << 2);
-    unsigned int SDI = (1 << 3);
-    unsigned int LD = (1 << 4);
-    unsigned int CLR = (1 << 5);
-    #define dac_delay() asm("nop")
+        static const unsigned int CS = 1;
+        static const unsigned int CLK = (1 << 2);
+        static const unsigned int SDI = (1 << 3);
+        static const unsigned int LD = (1 << 4);
+        static const unsigned int CLR = (1 << 5);
+        #define dac_delay() asm("nop")
 
-public:
-    DAC8512();
-    void init();
-    void send(unsigned int data);
-};
+    public:
+        DAC8512();
+        void init();
+        void send(unsigned int data);
+    };
 
+    #endif
 #endif
 
 #endif // DAC8512_H

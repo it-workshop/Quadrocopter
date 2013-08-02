@@ -135,7 +135,7 @@ void Quadrocopter::processSerialTx()
         MSerial->bufferAdd("; S=");
         MSerial->writeNumber(sensorsTime * 1000);
         MSerial->bufferAdd("; B = ");
-        MSerial->writeNumber(MPU->bytesAvailableFIFO());
+        MSerial->writeNumber(MyMPU->bytesAvailableFIFO());
         MSerial->bufferAdd('\n');
         MSerial->bufferWrite();
         MSerial->dropCommand();

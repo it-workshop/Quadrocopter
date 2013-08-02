@@ -17,9 +17,12 @@ private:
 #endif
 
 public:
-    enum typeT{DIGITAL, PW,
+    enum typeT{DIGITAL, PulseWide,
 #ifdef DEBUG_DAC
-               DAC
+               DAC_8512
+#endif
+#ifdef _arch_arm_
+               DAC_ONBOARD
 #endif
     } type;
     void setOn();
