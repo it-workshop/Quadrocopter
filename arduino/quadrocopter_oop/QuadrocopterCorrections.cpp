@@ -3,10 +3,11 @@
 
 RVector3D Quadrocopter::getAngleCorrection(RVector3D angle, double dt)
 {
-    pidAngle.setData0(angleManualCorrection);
+    pidAngleX.data0 = (angleManualCorrection.x);
+	pidAngleY.data0 = (angleManualCorrection.y);
 
 #ifdef PID_USE_YAW
-    pidAngularVelocity.setData0(0);
+    pidAngularVelocityZ.data0 = 0;
 #endif
 
     // here should be -1 because the equation
@@ -15,13 +16,14 @@ RVector3D Quadrocopter::getAngleCorrection(RVector3D angle, double dt)
     if(fabs(avPID.x) < PID_AV_MIN) avPID.x = 0;
     if(fabs(avPID.y) < PID_AV_MIN) avPID.y = 0;
     avPID /= 10;
-    RVector3D res = pidAngle.getY(angle, dt, avPID);
+    RVector3D res;
+	res.x = pidAngleX.getY(angle.x, dt, avPID.x);
+	res.y = pidAngleY.getY(angle.y, dt, avPID.y);
 
 #ifdef PID_USE_YAW
     RVector3D avPIDav = angularVelocity;
     if(fabs(avPIDav.z) < PID_AV_MIN_Z) avPIDav.z = 0;
-    RVector3D resAV = pidAngularVelocity.getY(avPIDav, dt);
-    res.z = resAV.z;
+    res.z = pidAngularVelocityZ.getY(avPIDav.z, dt);
 #else
     res.z = 0;
 #endif

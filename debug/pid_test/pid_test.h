@@ -50,7 +50,7 @@ private:
     void plot_reset_data();
     void plot_update();
 
-    PID<RVector3D> pid_angular_velocity, pid_angle;
+    PID pid_angular_velocity, pid_angle;
 
     void settings_read();
     void settings_write();

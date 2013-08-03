@@ -45,35 +45,35 @@ void Quadrocopter::processSerialTx()
 
                 double tDouble;
                 //PID angle coefficients X +6
-                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKp_x(tDouble);
-                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKi_x(tDouble);
-                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKd_x(tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleX.Kp = (tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleX.Ki = (tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleX.Kd = (tDouble);
 
                 //PID angle minmax X +6
-                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setPMinMax_x(tDouble);
-                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setIMinMax_x(tDouble);
-                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setDMinMax_x(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngleX.setPMinMax(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngleX.setIMinMax(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngleX.setDMinMax(tDouble);
 
                 //PID angle coefficients Y +6
-                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKp_y(tDouble);
-                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKi_y(tDouble);
-                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngle.setKd_y(tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleY.Kp = (tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleY.Ki = (tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleY.Kd = (tDouble);
 
                 //PID angle minmax Y +6
-                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setPMinMax_y(tDouble);
-                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setIMinMax_y(tDouble);
-                MSerial->readDouble(0, 5, tDouble, 2); pidAngle.setDMinMax_y(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngleY.setPMinMax(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngleY.setIMinMax(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngleY.setDMinMax(tDouble);
 
 #ifdef PID_USE_YAW
-                //PID AngularVelocity coefficients Z +6
-                MSerial->readDouble(-0.5, 0.5, tDouble, 2); pidAngularVelocity.setKp_z(tDouble);
-                MSerial->readDouble(-0.5, 0.5, tDouble, 2); pidAngularVelocity.setKi_z(tDouble);
-                MSerial->readDouble(-0.5, 0.5, tDouble, 2); pidAngularVelocity.setKd_z(tDouble);
+                //PID AngularVelocityZ coefficients Z +6
+                MSerial->readDouble(-0.5, 0.5, tDouble, 2); pidAngularVelocityZ.Kp = (tDouble);
+                MSerial->readDouble(-0.5, 0.5, tDouble, 2); pidAngularVelocityZ.Ki = (tDouble);
+                MSerial->readDouble(-0.5, 0.5, tDouble, 2); pidAngularVelocityZ.Kd = (tDouble);
 
-                //PID AngularVelocity minmax Z +6
-                MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocity.setPMinMax_z(tDouble);
-                MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocity.setIMinMax_z(tDouble);
-                MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocity.setDMinMax_z(tDouble);
+                //PID AngularVelocityZ minmax Z +6
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocityZ.setPMinMax(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocityZ.setIMinMax(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocityZ.setDMinMax(tDouble);
 #endif
             }
 #ifdef DEBUG_NO_TX_ARDUINO
@@ -101,18 +101,18 @@ void Quadrocopter::processSerialTx()
                 MSerial->writeDouble(-100, 100, angularVelocity.y, 1); // +1
                 MSerial->writeDouble(-100, 100, angularVelocity.z, 1); // +1
 
-                MSerial->writeDouble(-0.1, 0.1, pidAngle.P.x, 1); // +1
-                MSerial->writeDouble(-0.1, 0.1, pidAngle.I.x, 1); // +1
-                MSerial->writeDouble(-0.1, 0.1, pidAngle.D.x, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngleX.P, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngleX.I, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngleX.D, 1); // +1
 
-                MSerial->writeDouble(-0.1, 0.1, pidAngle.P.y, 1); // +1
-                MSerial->writeDouble(-0.1, 0.1, pidAngle.I.y, 1); // +1
-                MSerial->writeDouble(-0.1, 0.1, pidAngle.D.y, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngleY.P, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngleY.I, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngleY.D, 1); // +1
 
 #ifdef PID_USE_YAW
-                MSerial->writeDouble(-0.1, 0.1, pidAngularVelocity.P.z, 1); // +1
-                MSerial->writeDouble(-0.1, 0.1, pidAngularVelocity.I.z, 1); // +1
-                MSerial->writeDouble(-0.1, 0.1, pidAngularVelocity.D.z, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngularVelocityZ.P, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngularVelocityZ.I, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngularVelocityZ.D, 1); // +1
 #endif
 
                 //motors
