@@ -75,6 +75,12 @@ PID::PID()
     ePrev = 0;
     Kp = Ki = Kd = 0;
     eDerivative = 0;
+    PMin = PMax = 0;
+    IMin = IMax = 0;
+    DMin = DMax = 0;
+    yMin = yMax = 0;
+    P = I = D = 0;
+    y = 0;
 }
 
 

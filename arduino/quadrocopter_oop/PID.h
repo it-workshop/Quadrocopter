@@ -22,15 +22,12 @@ public:
     double DMin;
     double DMax;
 
-
     double P, I, D;	
-
 
 private:
 
     double eIntegral;
     double ePrev;
-
 
     //temp
     double e, eDerivative; //error
@@ -42,7 +39,6 @@ private:
 public:
     PID();
 
-   
     void setKpKiKd(double, double, double);
 
     void setPMinMax(double);
