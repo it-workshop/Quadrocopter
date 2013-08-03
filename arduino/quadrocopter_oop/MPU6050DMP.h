@@ -130,6 +130,8 @@ public:
 
     void resetFIFO();
 
+    int getPacketSize();
+
 #ifdef DEBUG_DAC
     InfoLED myLed;
 #endif
