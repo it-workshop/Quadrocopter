@@ -139,8 +139,6 @@ number_vect_t joystick::get_power_value()
 
     y /= 100;
 
-    cerr << x << "\t" << y << endl;
-
     return(y);
 }
 
