@@ -1,6 +1,8 @@
 #ifndef MOTOR_H
 #define MOTOR_H
 
+#include "Definitions.h"
+
 #ifdef _arch_arm_
     #include <pwm01.h>
 #endif

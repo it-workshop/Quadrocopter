@@ -10,16 +10,24 @@ Quadrocopter::Quadrocopter()
     DefaultVSensorPin = A3;
     reactionType = ReactionNone;
 
-#ifdef DEBUG_DAC
-    DefaultMotorPins[0] = 3;
-    DefaultMotorPins[1] = 5;
-    DefaultMotorPins[2] = 6;
-    DefaultMotorPins[3] = 9;
-#else
-    DefaultMotorPins[0] = 3;
-    DefaultMotorPins[1] = 9;
-    DefaultMotorPins[2] = 10;
-    DefaultMotorPins[3] = 11;
+#ifdef _arch_avr_
+    #ifdef DEBUG_DAC
+        DefaultMotorPins[0] = 3;
+        DefaultMotorPins[1] = 5;
+        DefaultMotorPins[2] = 6;
+        DefaultMotorPins[3] = 9;
+    #else
+        DefaultMotorPins[0] = 3;
+        DefaultMotorPins[1] = 9;
+        DefaultMotorPins[2] = 10;
+        DefaultMotorPins[3] = 11;
+    #endif
+#endif
+#ifdef _arch_arm_
+        DefaultMotorPins[0] = 6;
+        DefaultMotorPins[1] = 7;
+        DefaultMotorPins[2] = 8;
+        DefaultMotorPins[3] = 9;
 #endif
 
     MSerial = new MySerial;
