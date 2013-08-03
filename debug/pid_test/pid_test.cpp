@@ -165,15 +165,15 @@ void PID_test::plot_update()
     plot_x[plot_current] = x;
     if(ui->comboBox_type->currentIndex() == 0)
     {
-        plot_P[plot_current] = pid_angular_velocity.getLastPID()[0].x;
-        plot_I[plot_current] = pid_angular_velocity.getLastPID()[1].x;
-        plot_D[plot_current] = pid_angular_velocity.getLastPID()[2].x;
+        plot_P[plot_current] = pid_angular_velocity.P.x;
+        plot_I[plot_current] = pid_angular_velocity.I.x;
+        plot_D[plot_current] = pid_angular_velocity.D.x;
     }
     else
     {
-        plot_P[plot_current] = pid_angle.getLastPID()[0].x;
-        plot_I[plot_current] = pid_angle.getLastPID()[1].x;
-        plot_D[plot_current] = pid_angle.getLastPID()[2].x;
+        plot_P[plot_current] = pid_angle.P.x;
+        plot_I[plot_current] = pid_angle.I.x;
+        plot_D[plot_current] = pid_angle.D.x;
     }
 
     ui->plot->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
