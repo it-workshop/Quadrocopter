@@ -1,6 +1,10 @@
 #ifndef MOTOR_H
 #define MOTOR_H
 
+#ifdef _arch_arm_
+    #include <pwm01.h>
+#endif
+
 class Motor
 {
 private:
@@ -13,6 +17,12 @@ private:
 
     int controlPin;
     double power;
+    int speedie;
+
+#ifdef _arch_arm_
+    uint32_t PWMFreq  = 500;
+    uint32_t PWMScale = 256;
+#endif
 
 public:
     Motor(int pin);
