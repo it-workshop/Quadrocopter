@@ -30,7 +30,7 @@ private:
     int DefaultVSensorPin;
 
     //reaction type (different types of processing sensors' data)
-    enum reactionType_ {ReactionNone, ReactionAngularVelocity, ReactionAcceleration, ReactionAngle};
+    enum reactionType_ {ReactionNone, ReactionAngularVelocityZ, ReactionAcceleration, ReactionAngle};
     reactionType_ reactionType;
 
     // torque corrections
@@ -51,10 +51,10 @@ private:
     static const double angleMaxCorrection = MPI / 4;
     static const double angularVelocityMaxCorrection = MPI / 4;
 
-    PID<RVector3D> pidAngle;
+    PID pidAngleX, pidAngleY;
 
 #ifdef PID_USE_YAW
-    PID<RVector3D> pidAngularVelocity;
+    PID pidAngularVelocityZ;
 #endif
 
     RVector3D getAngleCorrection(RVector3D angle, double dt);

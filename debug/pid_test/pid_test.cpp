@@ -35,12 +35,12 @@ PID_test::PID_test(QWidget *parent) :
     //pid_angular_velocity.reset();
 
     pid_angular_velocity.setKpKiKd(10, 8, 0);
-    pid_angular_velocity.setYMin(-30);
-    pid_angular_velocity.setYMax(30);
+    pid_angular_velocity.yMin= (-30);
+    pid_angular_velocity.yMax = (30);
 
     pid_angle.setKpKiKd(50, 0, 70);
-    pid_angle.setYMin(-30);
-    pid_angle.setYMax(30);
+    pid_angle.yMin = (-30);
+    pid_angle.yMax = (30);
 
     timer_auto_interval = ui->dt->value();
 
@@ -165,15 +165,15 @@ void PID_test::plot_update()
     plot_x[plot_current] = x;
     if(ui->comboBox_type->currentIndex() == 0)
     {
-        plot_P[plot_current] = pid_angular_velocity.getLastPID()[0].x;
-        plot_I[plot_current] = pid_angular_velocity.getLastPID()[1].x;
-        plot_D[plot_current] = pid_angular_velocity.getLastPID()[2].x;
+        plot_P[plot_current] = pid_angular_velocity.P;
+        plot_I[plot_current] = pid_angular_velocity.I;
+        plot_D[plot_current] = pid_angular_velocity.D;
     }
     else
     {
-        plot_P[plot_current] = pid_angle.getLastPID()[0].x;
-        plot_I[plot_current] = pid_angle.getLastPID()[1].x;
-        plot_D[plot_current] = pid_angle.getLastPID()[2].x;
+        plot_P[plot_current] = pid_angle.P;
+        plot_I[plot_current] = pid_angle.I;
+        plot_D[plot_current] = pid_angle.D;
     }
 
     ui->plot->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
@@ -185,8 +185,8 @@ void PID_test::plot_update()
     //for dt_seconds
     plot_mytime.setTime();
 
-    ui->value->setValue(value * 100);
-    ui->diff->setValue(-(ui->x->value() / 100. - value) * 1000);
+    //ui->value->setValue(value * 100);
+    //ui->diff->setValue(-(ui->x->value() / 100. - value) * 1000);
 }
 
 void PID_test::timer_auto_update()
@@ -207,9 +207,9 @@ void PID_test::timer_auto_update()
             value_speed_ = (value - prev_value) / dt;
 
             if(ui->comboBox_type->currentIndex() == 0)
-                correction = pid_angular_velocity.getY(value_speed_, dt).x;
+                correction = pid_angular_velocity.getY(value_speed_, dt);
             else
-                correction = pid_angle.getY(value, dt).x;
+                correction = pid_angle.getY(value, dt);
 
             if(fabs(correction) < ui->mincorr->value())
                 correction = 0;
@@ -248,13 +248,13 @@ void PID_test::on_pushButton_reset_clicked()
     if(ui->comboBox_type->currentIndex() == 0)
     {
         pid_angular_velocity.setKpKiKd(ui->Kp->value(), ui->Ki->value(), ui->Kd->value());
-        pid_angular_velocity.setData0(0);
+        pid_angular_velocity.data0 = 0;
         pid_angular_velocity.reset();
     }
     else
     {
         pid_angle.setKpKiKd(ui->Kp->value(), ui->Ki->value(), ui->Kd->value());
-        pid_angle.setData0(ui->x->value() / 100.);
+        pid_angle.data0 = (ui->x->value() / 100.);
         pid_angle.reset();
     }
 }
@@ -280,34 +280,34 @@ void PID_test::on_x_valueChanged(int value)
     x = value;
     x /= 100;
     if(ui->comboBox_type->currentIndex() == 1)
-        pid_angle.setData0(x);
+        pid_angle.data0 = (x);
     settings_write();
 }
 
 void PID_test::on_Kp_valueChanged(double arg1)
 {
     if(ui->comboBox_type->currentIndex() == 0)
-        pid_angular_velocity.setKp(arg1);
+        pid_angular_velocity.Kp = (arg1);
     else
-        pid_angle.setKp(arg1);
+        pid_angle.Kp = (arg1);
     settings_write();
 }
 
 void PID_test::on_Ki_valueChanged(double arg1)
 {
     if(ui->comboBox_type->currentIndex() == 0)
-        pid_angular_velocity.setKi(arg1);
+        pid_angular_velocity.Ki = (arg1);
     else
-        pid_angle.setKi(arg1);
+        pid_angle.Ki = (arg1);
     settings_write();
 }
 
 void PID_test::on_Kd_valueChanged(double arg1)
 {
     if(ui->comboBox_type->currentIndex() == 0)
-        pid_angular_velocity.setKd(arg1);
+        pid_angular_velocity.Kd = (arg1);
     else
-        pid_angle.setKd(arg1);
+        pid_angle.Kd = (arg1);
     settings_write();
 }
 
@@ -321,24 +321,24 @@ void PID_test::on_comboBox_type_currentIndexChanged(int index)
 {
     if(index == 0)
     {
-        ui->Kp->setValue(pid_angular_velocity.getKp().x);
-        ui->Ki->setValue(pid_angular_velocity.getKi().x);
-        ui->Kd->setValue(pid_angular_velocity.getKd().x);
-        ui->x->setValue(pid_angular_velocity.getData0().x * 100.);
+        ui->Kp->setValue(pid_angular_velocity.Kp);
+        ui->Ki->setValue(pid_angular_velocity.Ki);
+        ui->Kd->setValue(pid_angular_velocity.Kd);
+        ui->x->setValue(pid_angular_velocity.data0 * 100.);
 
-        ui->Kp_2->setValue(pid_angular_velocity.getPMax_x());
-        ui->Ki_2->setValue(pid_angular_velocity.getIMax_x());
-        ui->Kd_2->setValue(pid_angular_velocity.getDMax_x());
+        ui->Kp_2->setValue(pid_angular_velocity.PMax);
+        ui->Ki_2->setValue(pid_angular_velocity.IMax);
+        ui->Kd_2->setValue(pid_angular_velocity.DMax);
     }
     else
     {
-        ui->Kp->setValue(pid_angle.getKp().x);
-        ui->Ki->setValue(pid_angle.getKi().x);
-        ui->Kd->setValue(pid_angle.getKd().x);
-        ui->x->setValue(pid_angle.getData0().x * 100.);
-        ui->Kp_2->setValue(pid_angle.getPMax_x());
-        ui->Ki_2->setValue(pid_angle.getIMax_x());
-        ui->Kd_2->setValue(pid_angle.getDMax_x());
+        ui->Kp->setValue(pid_angle.Kp);
+        ui->Ki->setValue(pid_angle.Ki);
+        ui->Kd->setValue(pid_angle.Kd);
+        ui->x->setValue(pid_angle.data0 * 100.);
+        ui->Kp_2->setValue(pid_angle.PMax);
+        ui->Ki_2->setValue(pid_angle.IMax);
+        ui->Kd_2->setValue(pid_angle.DMax);
     }
     settings_write();
 }
@@ -359,9 +359,9 @@ void PID_test::on_Kp_2_valueChanged(double arg1)
 {
     if(ui->comboBox_type->currentIndex() == 0)
         //av
-        pid_angular_velocity.setPMinMax_x(arg1);
+        pid_angular_velocity.setPMinMax(arg1);
     else
-        pid_angle.setPMinMax_x(arg1);
+        pid_angle.setPMinMax(arg1);
     settings_write();
 }
 
@@ -369,9 +369,9 @@ void PID_test::on_Ki_2_valueChanged(double arg1)
 {
     if(ui->comboBox_type->currentIndex() == 0)
         //av
-        pid_angular_velocity.setIMinMax_x(arg1);
+        pid_angular_velocity.setIMinMax(arg1);
     else
-        pid_angle.setIMinMax_x(arg1);
+        pid_angle.setIMinMax(arg1);
     settings_write();
 }
 
@@ -379,9 +379,9 @@ void PID_test::on_Kd_2_valueChanged(double arg1)
 {
     if(ui->comboBox_type->currentIndex() == 0)
         //av
-        pid_angular_velocity.setDMinMax_x(arg1);
+        pid_angular_velocity.setDMinMax(arg1);
     else
-        pid_angle.setDMinMax_x(arg1);
+        pid_angle.setDMinMax(arg1);
     settings_write();
 }
 
@@ -394,25 +394,25 @@ void PID_test::settings_write()
 
     ss << ui->comboBox_type->currentIndex() << "\t";
 
-    ss << pid_angular_velocity.getKp().x << "\t";
-    ss << pid_angular_velocity.getKi().x << "\t";
-    ss << pid_angular_velocity.getKd().x << "\t";
+    ss << pid_angular_velocity.Kp << "\t";
+    ss << pid_angular_velocity.Ki << "\t";
+    ss << pid_angular_velocity.Kd << "\t";
 
-    ss << pid_angular_velocity.getPMax_x() << "\t";
-    ss << pid_angular_velocity.getIMax_x() << "\t";
-    ss << pid_angular_velocity.getDMax_x() << "\t";
+    ss << pid_angular_velocity.PMax << "\t";
+    ss << pid_angular_velocity.IMax << "\t";
+    ss << pid_angular_velocity.DMax << "\t";
 
-    ss << pid_angular_velocity.getData0().x << "\t";
+    ss << pid_angular_velocity.data0 << "\t";
 
-    ss << pid_angle.getKp().x << "\t";
-    ss << pid_angle.getKi().x << "\t";
-    ss << pid_angle.getKd().x << "\t";
+    ss << pid_angle.Kp << "\t";
+    ss << pid_angle.Ki << "\t";
+    ss << pid_angle.Kd << "\t";
 
-    ss << pid_angle.getPMax_x() << "\t";
-    ss << pid_angle.getIMax_x() << "\t";
-    ss << pid_angle.getDMax_x() << "\t";
+    ss << pid_angle.PMax << "\t";
+    ss << pid_angle.IMax << "\t";
+    ss << pid_angle.DMax << "\t";
 
-    ss << pid_angle.getData0().x << "\t";
+    ss << pid_angle.data0 << "\t";
 
     ss << ui->dt->value() << "\t";
     ss << ui->spinBox_wind->value() << "\t";
@@ -443,16 +443,16 @@ void PID_test::settings_read()
     pid_angular_velocity.setKpKiKd(p1, i1, d1);
     pid_angle.setKpKiKd(p2, i2, d2);
 
-    pid_angular_velocity.setPMinMax_x(mp1);
-    pid_angular_velocity.setIMinMax_x(mi1);
-    pid_angular_velocity.setDMinMax_x(md1);
+    pid_angular_velocity.setPMinMax(mp1);
+    pid_angular_velocity.setIMinMax(mi1);
+    pid_angular_velocity.setDMinMax(md1);
 
-    pid_angle.setPMinMax_x(mp2);
-    pid_angle.setIMinMax_x(mi2);
-    pid_angle.setDMinMax_x(md2);
+    pid_angle.setPMinMax(mp2);
+    pid_angle.setIMinMax(mi2);
+    pid_angle.setDMinMax(md2);
 
-    pid_angular_velocity.setData0(x1);
-    pid_angle.setData0(x2);
+    pid_angular_velocity.data0 = (x1);
+    pid_angle.data0 = (x2);
 
     if(t_int == 0)
     {

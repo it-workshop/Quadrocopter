@@ -21,12 +21,10 @@ CONFIG += qwt
 SOURCES += main.cpp\
         pid_test.cpp \
     ../../control/qt/mytime.cpp \
-    ../../arduino/quadrocopter_oop/PID.cpp \
-    ../../arduino/quadrocopter_oop/RVector3D.cpp
+    ../../arduino/quadrocopter_oop/PID.cpp
 
 HEADERS  += pid_test.h \
     ../../control/qt/mytime.h \
-    ../../arduino/quadrocopter_oop/PID.h \
-    ../../arduino/quadrocopter_oop/RVector3D.h
+    ../../arduino/quadrocopter_oop/PID.h
 
 FORMS    += pid_test.ui
