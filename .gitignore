@@ -25,3 +25,8 @@ arduino/quadrocopter_oop/KalmanFilter.h
 
 *.autosave
 *~
+*.map
+*.hex
+*.lst
+*.elf
+*.o
