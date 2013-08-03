@@ -136,6 +136,11 @@ void MPU6050DMP::resetFIFO()
         mpu.resetFIFO();
 }
 
+int MPU6050DMP::getPacketSize()
+{
+    return(packetSize);
+}
+
 MPU6050DMP::MPU6050DMP()
 {
 #ifdef DEBUG_NO_MPU

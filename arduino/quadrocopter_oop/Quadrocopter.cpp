@@ -67,7 +67,7 @@ void Quadrocopter::reset()
     MController->setTorque(RVector3D());
 
     pidAngleX.reset();
-	pidAngleY.reset();
+    pidAngleY.reset();
 
 #ifdef PID_USE_YAW
     pidAngularVelocityZ.reset();
@@ -116,7 +116,7 @@ void Quadrocopter::iteration()
 #endif
 
 #ifdef DEBUG_MPUBYTES_PIN
-    mpuBytesLed.setState(MyMPU->bytesAvailableFIFO() > 42);
+    mpuBytesLed.setState(MyMPU->bytesAvailableFIFO() > MyMPU->getPacketSize());
 #endif
 
 #ifdef DEBUG_DAC
