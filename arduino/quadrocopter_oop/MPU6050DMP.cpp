@@ -58,7 +58,9 @@ void dmpDataReady()
 #ifdef DEBUG_NO_MPU
     return;
 #endif
+#ifdef _arch_avr_
     interrupts();
+#endif
     mpuInterrupt = true;
     quadro->MPUInterrupt();
 }

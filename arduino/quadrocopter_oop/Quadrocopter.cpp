@@ -53,7 +53,9 @@ Quadrocopter::Quadrocopter()
     this->reset();
 
     MyMPU->initialize();
+#ifdef _arch_avr_
     interrupts();
+#endif
 }
 
 void Quadrocopter::reset()
