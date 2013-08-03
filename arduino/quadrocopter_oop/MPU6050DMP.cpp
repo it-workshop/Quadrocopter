@@ -55,6 +55,9 @@ extern Quadrocopter *quadro;
 
 void dmpDataReady()
 {
+#ifdef DEBUG_NO_MPU
+    return;
+#endif
     interrupts();
     mpuInterrupt = true;
     quadro->MPUInterrupt();
@@ -86,6 +89,9 @@ float *MPU6050DMP::getAngularVelocityXYZ()
 
 void MPU6050DMP::attachFIFOInterrupt()
 {
+#ifdef DEBUG_NO_MPU
+    return;
+#endif
     // enable Arduino interrupt detection
 #ifdef _arch_avr_
     attachInterrupt(0, dmpDataReady, RISING);
@@ -99,11 +105,17 @@ void MPU6050DMP::attachFIFOInterrupt()
 
 int MPU6050DMP::bytesAvailableFIFO()
 {
+#ifdef DEBUG_NO_MPU
+    return 0;
+#endif
     return(mpu.getFIFOCount());
 }
 
 void MPU6050DMP::resetNewData()
 {
+#ifdef DEBUG_NO_MPU
+    return;
+#endif
     newData = false;
 }
 
@@ -114,6 +126,9 @@ bool MPU6050DMP::getNewData()
 
 void MPU6050DMP::resetFIFO()
 {
+#ifdef DEBUG_NO_MPU
+    return;
+#endif
     if(dmpReady)
         //mpu.flushFIFOBytes(mpu.getFIFOCount());
         mpu.resetFIFO();
@@ -121,10 +136,17 @@ void MPU6050DMP::resetFIFO()
 
 MPU6050DMP::MPU6050DMP()
 {
-     dmpReady = false;
+#ifdef DEBUG_NO_MPU
+    return;
+#endif
+    dmpReady = false;
 }
 
-void MPU6050DMP::initialize() {
+void MPU6050DMP::initialize()
+{
+#ifdef DEBUG_NO_MPU
+    return;
+#endif
 #ifdef DEBUG_DAC
     myLed = InfoLED(A0, InfoLED::DAC_8512);
 #endif
@@ -163,16 +185,25 @@ void MPU6050DMP::initialize() {
 
 bool MPU6050DMP::notBusy()
 {
+#ifdef DEBUG_NO_MPU
+    return false;
+#endif
     return(!mpuInterrupt && fifoCount < packetSize);
 }
 
 void MPU6050DMP::processInterrupt()
 {
+#ifdef DEBUG_NO_MPU
+    return;
+#endif
     newData = true;
 }
 
 void MPU6050DMP::iteration()
 {
+#ifdef DEBUG_NO_MPU
+    return;
+#endif
     if(!dmpReady) return;
 
 #ifdef DEBUG_DAC
