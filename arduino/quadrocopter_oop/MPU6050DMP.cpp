@@ -150,7 +150,12 @@ void MPU6050DMP::initialize()
     return;
 #endif
 #ifdef DEBUG_DAC
-    myLed = InfoLED(A0, InfoLED::DAC_8512);
+    #ifdef _arch_avr_
+        myLed = InfoLED(A0, InfoLED::DAC_8512);
+    #endif
+    #ifdef _arch_arm_
+        myLed = InfoLED(0, InfoLED::DAC_ONBOARD);
+    #endif
 #endif
 
     // reset YPR data

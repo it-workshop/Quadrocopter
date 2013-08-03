@@ -35,13 +35,6 @@ Quadrocopter::Quadrocopter()
     VSensor = new VoltageSensor(DefaultVSensorPin, DefaultVSensorMaxVoltage);
     MyMPU = new MPU6050DMP;
 
-#ifdef DEBUG_DAC
-    myLed = MyMPU->myLed;
-#else
-    myLed = InfoLED(13, InfoLED::PulseWide);
-    myLed.setState(0);
-#endif
-
 #ifdef DEBUG_FREQ_PIN
     freqLed = InfoLED(DEBUG_FREQ_PIN, InfoLED::DIGITAL);
 #endif
@@ -53,6 +46,12 @@ Quadrocopter::Quadrocopter()
     this->reset();
 
     MyMPU->initialize();
+
+#ifdef DEBUG_DAC
+    myLed = MyMPU->myLed;
+    myLed.setState(0);
+#endif
+
 #ifdef _arch_avr_
     interrupts();
 #endif
