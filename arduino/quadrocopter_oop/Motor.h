@@ -20,8 +20,8 @@ private:
     int speedie;
 
 #ifdef _arch_arm_
-    uint32_t PWMFreq  = 500;
-    uint32_t PWMScale = 256;
+    static const uint32_t PWMFreq  = 500;
+    static const uint32_t PWMScale = 256;
 #endif
 
 public:

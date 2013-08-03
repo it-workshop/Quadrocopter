@@ -1,5 +1,9 @@
 #include "Wire.h"
 #include "I2Cdev.h"
+#include "Definitions.h"
+#ifdef _arch_arm_
+    #include "pwm01.h"
+#endif
 #include "MPU6050_6Axis_MotionApps20.h"
 #include "Quadrocopter.h"
 
