@@ -124,6 +124,8 @@ void Quadro::interface_write()
 
         ui->joystick_data->clear();
         ui->joystick_data->setText(t_ss1.str().c_str());
+
+        ui->CompassJoystick->setOrigin(-joy.get_heading() * 180. / M_PI);
     }
 
     if(joy.isoperational())

@@ -57,7 +57,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab_manual">
      <attribute name="title">
@@ -461,7 +461,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>8</number>
     </property>
     <widget class="QWidget" name="tabgyro_data">
      <attribute name="title">
@@ -580,6 +580,27 @@
         <width>617</width>
         <height>471</height>
        </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Compass</string>
+     </attribute>
+     <widget class="QwtCompass" name="CompassJoystick">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>130</y>
+        <width>200</width>
+        <height>200</height>
+       </rect>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+      <property name="origin">
+       <double>0.000000000000000</double>
       </property>
      </widget>
     </widget>
@@ -1670,6 +1691,16 @@
    <class>QwtPlot</class>
    <extends>QFrame</extends>
    <header>qwt_plot.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QwtCompass</class>
+   <extends>QwtDial</extends>
+   <header>qwt_compass.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QwtDial</class>
+   <extends>QWidget</extends>
+   <header>qwt_dial.h</header>
   </customwidget>
   <customwidget>
    <class>QwtSlider</class>
