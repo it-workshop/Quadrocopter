@@ -14,7 +14,7 @@ joystick::joystick()
 
     connectDelayTime = 500;
 
-    readBytesN = 7;
+    readBytesN = 9;
 
     defaults();
 }
@@ -25,6 +25,7 @@ void joystick::defaults()
     data_default.y = 0;
     data.x = 0;
     data.y = 0;
+	heading = 0.;
     power_switch = false;
     power_value = 0;
 }
@@ -39,32 +40,36 @@ void joystick::initiate_transmission()
     swrite('r');
     swritePut();
 }
+int joystick::read_int(){
+     int t_high, t_low;
+	 t_high = sread();
+     t_low = sread();
+     return (t_low & 0xff) + (t_high << 8);
+}
 
 void joystick::read_data()
 {
-    int t_high, t_low, t_int;
+    int t_power, t_head;
 
     vect t_vect;
 
     for(int i = 0; i < 2; i++) // 2 - axis count
     {
-        t_high = sread();
-        t_low = sread();
-        t_int = (t_low & 0xff) + (t_high << 8);
-
-        t_vect.value_by_axis_index(i) = t_int;
+        t_vect.value_by_axis_index(i) = read_int();
     }
 
-    t_high = sread();
-    t_low = sread();
+   	t_power = read_int();
 
     bool t_bool = sread();
+
+    t_head = read_int();
 
     if(!readError())
     {
         data = t_vect;
-        power_value = ((t_low & 0xff) + (t_high << 8));
-        power_switch = t_bool;
+        power_value = t_power;
+		power_switch = t_bool;
+        heading = t_head/10000.;
     }
     else qDebug() << "error";
 }
@@ -98,6 +103,8 @@ vect joystick::get_readings()
     //data_formatted.y *= -1;
 
     data_formatted *= 0.5;
+
+    data_formatted.z = heading;
 
     return(data_formatted);
 }

@@ -5,6 +5,11 @@
 #include <string>
 #include <vect.h>
 
+struct MagnetometerRaw
+{
+	int x, y, z;
+};
+
 class joystick: public serial
 {
 private:
@@ -12,6 +17,8 @@ private:
     number_vect_t power_value;
 
     vect data, data_default;
+	double heading; // an angle in radians from north direction to joystic's forward	
+
     static const number_vect_t MAX_VALUE = 1023;
     static const number_vect_t MIN_VALUE = 0;
 
@@ -28,6 +35,8 @@ public:
 
     void do_connect();
     void do_disconnect();
+
+    int read_int();
 
     void set_data_default(); // set zero position
     void initiate_transmission(); // initiate transmission
