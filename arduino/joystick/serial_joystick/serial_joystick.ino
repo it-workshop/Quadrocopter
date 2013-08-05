@@ -11,9 +11,11 @@ const int DPINS[DPINS_N] = {A2};
 
 const char C_REQUEST = 'r';
 
-// Store our compass as a variable.
 HMC5883L compass;
-// Record any errors that may occur in the compass.
+// compass's position on the joystick, while usual hold
+// x looks left
+// y looks forward
+// z looks down
 int error = 0;
 
 int heading10000 = 0;
@@ -21,7 +23,7 @@ float heading = 0;
 
 #define infoLedPin 13
 
-inline long sqr(long x) {
+inline long long sqr(long long x) {
 	return x * x;
 }
 
@@ -31,7 +33,7 @@ inline double sign (double x) {
 
 
 
-//#define DEBUG
+#define DEBUG
 
 inline void transmitInt(int t_int) {
 	int t_low, t_high;
@@ -116,7 +118,7 @@ void loop()
             }
 			MagnetometerRaw raw = compass.readRawAxis();
 			heading = atan2(-raw.XAxis, raw.YAxis);
-			//heading = atan2(-raw.XAxis, sign(raw.YAxis)*sqrt(sqr(raw.ZAxis) + sqr(raw.YAxis)));
+			//heading = atan2(raw.XAxis, sign(raw.YAxis)*sqrt(sqr(raw.ZAxis) + sqr(raw.YAxis)));
   
 		 
 		    if(heading < 0)
