@@ -3,6 +3,11 @@
 
 RVector3D Quadrocopter::getAngleCorrection(RVector3D angle, double dt)
 {
+#ifdef USE_COMPASS
+    // HERE should be code that "rotates" data0
+    // by (copterHeading - joystickHeading)
+#endif
+
     pidAngleX.data0 = (angleManualCorrection.x);
 	pidAngleY.data0 = (angleManualCorrection.y);
 

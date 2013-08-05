@@ -69,6 +69,9 @@ void quadrocopter::read_data()
 #ifdef PID_USE_YAW
     vect t_PID_z;
 #endif
+#ifdef USE_COMPASS
+    number_vect_t t_copter_heading;
+#endif
 
     t_torque_corrected.x = read_number_vect_t(-0.5, 0.5, 1);
     t_torque_corrected.y = read_number_vect_t(-0.5, 0.5, 1);
@@ -93,6 +96,10 @@ void quadrocopter::read_data()
     t_PID_z.x = read_number_vect_t(-0.1, 0.1, 1);
     t_PID_z.y = read_number_vect_t(-0.1, 0.1, 1);
     t_PID_z.z = read_number_vect_t(-0.1, 0.1, 1);
+#endif
+
+#ifdef USE_COMPASS
+    t_copter_heading = read_number_vect_t(0, 7, 2);
 #endif
 
     for(int i = 0; i < MOTORS_N; i++)
@@ -124,6 +131,9 @@ void quadrocopter::read_data()
         PID_D.z = t_PID_z.z;
 #endif
 
+#ifdef USE_COMPASS
+        copter_heading = t_copter_heading;
+#endif
 
         voltage = t_voltage;
     }
@@ -199,5 +209,9 @@ void quadrocopter::write_data()
     write_number_vect_t(0, 5, PID_angularVelocity_MAXp.z, 2);
     write_number_vect_t(0, 5, PID_angularVelocity_MAXi.z, 2);
     write_number_vect_t(0, 5, PID_angularVelocity_MAXd.z, 2);
+#endif
+
+#ifdef USE_COMPASS
+    write_number_vect_t(0, 7, joystick_heading, 2);
 #endif
 }

@@ -39,4 +39,7 @@
 // Enable 3rd angle PID (used both in Arduino and Qt apps)
 #define PID_USE_YAW
 
+// Enable copter compass
+#define USE_COMPASS
+
 #endif

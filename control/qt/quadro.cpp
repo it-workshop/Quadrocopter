@@ -64,6 +64,8 @@ void Quadro::set_quadro_data()
 
         t_power = joy.get_power_value();
         if(!joy.is_switched_on()) t_power = 0;
+
+        quadro.set_joystick_heading(joy.get_heading());
     }
     else
     {

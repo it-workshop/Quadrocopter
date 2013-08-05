@@ -48,6 +48,8 @@ private:
 
     bool newDataAvailable;
 
+    number_vect_t copter_heading, joystick_heading;
+
     void defaults();
 
     void read_data(); // read data from device
@@ -136,6 +138,9 @@ public:
     void resetNewDataAvailable();
 
     number_vect_t get_joystick_coefficient();
+
+    void set_joystick_heading(number_vect_t a);
+    number_vect_t get_copter_heading();
 
     virtual void on_rx();
 };

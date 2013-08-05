@@ -120,12 +120,15 @@ void Quadro::interface_write()
 
         //t_ss1 << (joy.is_switched_on() ? "online" : "offline") << "\t";
         //t_ss1 << "p=" << joy.get_power_value() << "\t";
-        t_ss1 << joy.get_readings().print();
+        t_ss1 << joy.get_readings().print2d();
+        t_ss1.precision(3);
+        t_ss1 << "\t" << joy.get_heading() * 180 / M_PI;
 
         ui->joystick_data->clear();
         ui->joystick_data->setText(t_ss1.str().c_str());
 
         ui->CompassJoystick->setOrigin(-joy.get_heading() * 180. / M_PI);
+        ui->CopterJoystick->setOrigin(-quadro.get_copter_heading() * 180. / M_PI);
     }
 
     if(joy.isoperational())

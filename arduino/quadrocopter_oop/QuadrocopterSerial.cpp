@@ -75,6 +75,11 @@ void Quadrocopter::processSerialTx()
                 MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocityZ.setIMinMax(tDouble);
                 MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocityZ.setDMinMax(tDouble);
 #endif
+
+#ifdef USE_COMPASS
+                // joystick heading +2
+                MSerial->readDouble(0, 7, joystickHeading, 2);
+#endif
             }
 #ifdef DEBUG_NO_TX_ARDUINO
             Serial.write('x');
@@ -115,6 +120,10 @@ void Quadrocopter::processSerialTx()
                 MSerial->writeDouble(-0.1, 0.1, pidAngularVelocityZ.D, 1); // +1
 #endif
 
+#ifdef USE_COMPASS
+                MSerial->writeDouble(0, 7, copterHeading, 2); // +2
+#endif
+
                 //motors
                 for (unsigned i = 0; i < 4; i++)
                     MSerial->bufferAdd(100 * MController->getSpeed(getTorques(), i)); // +4
@@ -136,6 +145,10 @@ void Quadrocopter::processSerialTx()
         MSerial->writeNumber(sensorsTime * 1000);
         MSerial->bufferAdd("; B = ");
         MSerial->writeNumber(MyMPU->bytesAvailableFIFO());
+#ifdef USE_COMPASS
+        MSerial->bufferAdd("; H = ");
+        MSerial->writeNumber(copterHeading);
+#endif
         MSerial->bufferAdd('\n');
         MSerial->bufferWrite();
         MSerial->dropCommand();
