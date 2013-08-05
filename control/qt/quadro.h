@@ -52,7 +52,7 @@ private:
 
     QextSerialEnumerator QeSEnumerator;
 
-    static const double timer_auto_interval = 75;
+    static const double timer_auto_interval = 50;
     static const double timer_reconnect_interval = 1000;
     QTimer timer_auto, timer_reconnect;
 
