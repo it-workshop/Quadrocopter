@@ -13,6 +13,11 @@ debug/pid_test/pid_test
 debug/pid_test/pid_test.pro.user
 debug/pid_test/ui*
 
+*.eep
+*.a
+*.svn-base
+.DS_Store
+
 arduino/quadrocopter_oop/quadrocopter_oop.pro.user
 arduino/quadrocopter_oop/quadrocopter_oop.pro
 
