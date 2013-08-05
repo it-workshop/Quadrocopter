@@ -33,7 +33,7 @@ inline double sign (double x) {
 
 
 
-#define DEBUG
+//#define DEBUG
 
 inline void transmitInt(int t_int) {
 	int t_low, t_high;
