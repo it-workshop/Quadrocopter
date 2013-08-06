@@ -76,6 +76,18 @@ void Quadrocopter::processSerialTx()
                 MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocityZ.setDMinMax(tDouble);
 #endif
 
+#ifdef PID_USE_YAW_ANGLE
+                //PID angle coefficients Z +6
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleZ.Kp = (tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleZ.Ki = (tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleZ.Kd = (tDouble);
+
+                //PID angle minmax Z +6
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngleZ.setPMinMax(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngleZ.setIMinMax(tDouble);
+                MSerial->readDouble(0, 5, tDouble, 2); pidAngleZ.setDMinMax(tDouble);
+#endif
+
 #ifdef USE_COMPASS
                 // joystick heading +2
                 MSerial->readDouble(0, 7, joystickHeading, 2);
@@ -118,6 +130,12 @@ void Quadrocopter::processSerialTx()
                 MSerial->writeDouble(-0.1, 0.1, pidAngularVelocityZ.P, 1); // +1
                 MSerial->writeDouble(-0.1, 0.1, pidAngularVelocityZ.I, 1); // +1
                 MSerial->writeDouble(-0.1, 0.1, pidAngularVelocityZ.D, 1); // +1
+#endif
+
+#ifdef PID_USE_YAW_ANGLE
+                MSerial->writeDouble(-0.1, 0.1, pidAngleZ.P, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngleZ.I, 1); // +1
+                MSerial->writeDouble(-0.1, 0.1, pidAngleZ.D, 1); // +1
 #endif
 
 #ifdef USE_COMPASS

@@ -11,6 +11,9 @@ Quadrocopter::Quadrocopter()
 #ifdef PID_USE_YAW
     serialReadN += 12;
 #endif
+#ifdef PID_USE_YAW_ANGLE
+    serialReadN += 12;
+#endif
 #ifdef USE_COMPASS
     serialReadN += 2;
 #endif
@@ -84,6 +87,10 @@ void Quadrocopter::reset()
 
 #ifdef PID_USE_YAW
     pidAngularVelocityZ.reset();
+#endif
+
+#ifdef PID_USE_YAW_ANGLE
+    pidAngleZ.reset();
 #endif
 
     voltage = 0;

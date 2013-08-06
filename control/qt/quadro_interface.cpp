@@ -53,7 +53,7 @@ void Quadro::interface_init()
     ui->PID_angularVelocity_MAXi_z->setValue(quadro.get_PID_angularVelocity_MAXi().z);
     ui->PID_angularVelocity_MAXd_z->setValue(quadro.get_PID_angularVelocity_MAXd().z);
 
-#ifndef PID_USE_YAW
+#if !(defined(PID_USE_YAW) || defined(PID_USE_YAW_ANGLE))
     ui->PID_angularVelocity_Kp_z->setEnabled(false);
     ui->PID_angularVelocity_Ki_z->setEnabled(false);
     ui->PID_angularVelocity_Kd_z->setEnabled(false);

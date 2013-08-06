@@ -35,6 +35,9 @@ quadrocopter::quadrocopter()
     #ifdef PID_USE_YAW
         readBytesN += 3;
     #endif
+    #ifdef PID_USE_YAW_ANGLE
+        readBytesN += 3;
+    #endif
     #ifdef USE_COMPASS
         readBytesN += 2;
     #endif

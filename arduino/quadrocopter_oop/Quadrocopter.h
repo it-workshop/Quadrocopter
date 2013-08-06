@@ -71,6 +71,10 @@ private:
     PID pidAngularVelocityZ;
 #endif
 
+#ifdef PID_USE_YAW_ANGLE
+    PID pidAngleZ;
+#endif
+
     RVector3D getAngleCorrection(RVector3D angle, double dt);
 
     double dt, dtMax, sensorsTime, calculationsTime;
