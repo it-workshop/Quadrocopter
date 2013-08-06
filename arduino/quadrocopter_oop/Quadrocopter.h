@@ -11,7 +11,8 @@
 
 
 #ifdef USE_COMPASS
-#include <HMC5883L.h>
+    // i2cdevlib
+    #include <HMC5883L.h>
 #endif
 
 #ifndef QUADROCOPTER_H

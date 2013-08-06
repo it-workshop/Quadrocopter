@@ -43,13 +43,6 @@ Quadrocopter::Quadrocopter()
     VSensor = new VoltageSensor(DefaultVSensorPin, DefaultVSensorMaxVoltage);
     MyMPU = new MPU6050DMP;
 
-#ifdef USE_COMPASS
-    MyCompass = new HMC5883L;
-    Wire1.begin();
-    MyCompass->setScale(1.3);
-    MyCompass->setMeasurementMode(MEASUREMENT_CONTINUOUS);
-#endif
-
 #ifdef DEBUG_FREQ_PIN
     freqLed = InfoLED(DEBUG_FREQ_PIN, InfoLED::DIGITAL);
 #endif
@@ -61,6 +54,11 @@ Quadrocopter::Quadrocopter()
     this->reset();
 
     MyMPU->initialize();
+
+#ifdef USE_COMPASS
+    MyCompass = new HMC5883L;
+    MyCompass->initialize();
+#endif
 
 #ifdef DEBUG_DAC
     myLed = MyMPU->myLed;

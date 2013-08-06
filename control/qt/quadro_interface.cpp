@@ -108,6 +108,7 @@ void Quadro::interface_write()
         }
 
         ui->motors->setText(t_ss.str().c_str());
+        ui->CompassCopter->setOrigin(-quadro.get_copter_heading() * 180. / M_PI);
     }
 
     if(joy.isoperational())
@@ -128,7 +129,6 @@ void Quadro::interface_write()
         ui->joystick_data->setText(t_ss1.str().c_str());
 
         ui->CompassJoystick->setOrigin(-joy.get_heading() * 180. / M_PI);
-        ui->CopterJoystick->setOrigin(-quadro.get_copter_heading() * 180. / M_PI);
     }
 
     if(joy.isoperational())

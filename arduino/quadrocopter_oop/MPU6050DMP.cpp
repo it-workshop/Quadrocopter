@@ -190,6 +190,10 @@ void MPU6050DMP::initialize()
         dmpReady = true;
 
         //Serial.print("MPU init ok\n");
+
+#ifdef USE_MPU_BYPASS
+        mpu.setI2CBypassEnabled(true);
+#endif
     }
     //else Serial.print("MPU init failed\n");
     newData = false;

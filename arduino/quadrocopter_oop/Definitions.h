@@ -39,6 +39,9 @@
 // Enable 3rd angle PID (used both in Arduino and Qt apps)
 #define PID_USE_YAW
 
+// Enable MPU-6050 I2C BYPASS
+#define USE_MPU_BYPASS
+
 // Enable copter compass
 #define USE_COMPASS
 
