@@ -122,11 +122,11 @@ void loop()
   
 		 
 		    if(heading < 0)
-				heading += 2*PI;
+                heading += 2 * PI;
 			
 		  	// Check for wrap due to addition of declination.
-		  	if(heading > 2*PI)
-				heading -= 2*PI;
+            if(heading > 2 * PI)
+                heading -= 2 * PI;
 
 			heading10000 = heading * 10000;
 			#ifdef DEBUG
