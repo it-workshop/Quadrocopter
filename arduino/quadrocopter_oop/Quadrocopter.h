@@ -1,4 +1,5 @@
 #include "Definitions.h"
+#include "ArduinoCompass.h"
 #include "MPU6050DMP.h"
 #include "RVector3D.h"
 #include "TimerCount.h"
@@ -8,11 +9,6 @@
 #include "PID.h"
 #include "InfoLED.h"
 #include "VoltageSensor.h"
-
-
-#ifdef USE_COMPASS
-#include <HMC5883L.h>
-#endif
 
 #ifndef QUADROCOPTER_H
 #define QUADROCOPTER_H
@@ -28,7 +24,7 @@ private:
     VoltageSensor* VSensor;
     MPU6050DMP* MyMPU;
 #ifdef USE_COMPASS
-    HMC5883L* MyCompass;
+    ArduinoCompass* MyCompass;
 #endif
 
     // pins configuration

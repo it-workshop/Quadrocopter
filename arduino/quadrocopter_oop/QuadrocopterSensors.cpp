@@ -10,6 +10,16 @@ void Quadrocopter::processSensorsData()
 
 #ifdef USE_COMPASS
     {
+        if(!MyCompass->requested)
+        {
+            MyCompass->requestHeading();
+            MyCompass->readHeading();
+        }
+        else
+        {
+            copterHeading = MyCompass->getHeading();
+        }
+
         //it doesn't work
 //        Serial.println("compass A");
 //        if(!MyCompass->requested)

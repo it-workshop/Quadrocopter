@@ -40,6 +40,6 @@
 #define PID_USE_YAW
 
 // Enable copter compass
-//#define USE_COMPASS
+#define USE_COMPASS
 
 #endif

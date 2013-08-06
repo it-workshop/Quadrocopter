@@ -44,10 +44,7 @@ Quadrocopter::Quadrocopter()
     MyMPU = new MPU6050DMP;
 
 #ifdef USE_COMPASS
-    MyCompass = new HMC5883L;
-    Wire1.begin();
-    MyCompass->setScale(1.3);
-    MyCompass->setMeasurementMode(MEASUREMENT_CONTINUOUS);
+    MyCompass = new ArduinoCompass;
 #endif
 
 #ifdef DEBUG_FREQ_PIN

@@ -8,9 +8,10 @@ class ArduinoCompass
 private:
     double heading;
 public:
+    bool requested;
     ArduinoCompass();
-    double requestHeading();
-    double readHeading();
+    void requestHeading();
+    void readHeading();
     double getHeading();
 
 };
