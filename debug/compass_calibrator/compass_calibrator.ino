@@ -58,11 +58,6 @@ void loop()
 				transmitInt(raw.ZAxis);
 			#endif
 
-
-            
-            #ifdef DEBUG
-                Serial.print("\n");
-            #endif
         }
         #ifdef DEBUG
 		    delay(100);

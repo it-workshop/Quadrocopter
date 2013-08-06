@@ -1,0 +1,51 @@
+from numpy import *
+import scipy.optimize as opt
+
+def unique(a):
+    dif = diff(a, axis=0)
+    ui = ones(len(a), 'bool')
+    ui[1:] = (dif != 0).all(axis=1) 
+    return a[ui]
+
+if not raw.size: 
+	raw = genfromtxt('joystick_raw.csv', dtype='float96', delimiter=',')
+	raw = unique(raw)
+	clear = (abs(raw) < 1200).all(axis=1)
+	raw = raw[clear]
+
+rawT= raw.T
+
+def error(a, b, c, x0, y0, z0):
+	global rawT
+	return sum((((rawT[0] - x0)*a)**2 + ((rawT[1] - y0)*b)**2 + ((rawT[2] - z0)*c)**2 - 1)**2);
+
+def minimizable_error(guess):
+	return error (*guess)
+
+def jacobian(guess):
+	global rawT
+	a, b, c, x0, y0, z0 = guess
+	r0, r1, r2 = (rawT[0] - x0), (rawT[1] - y0), (rawT[2] - z0)
+	z0, z1, z2 = r0 * a, r1 * b, r2 * c
+	err = ((r0*a)**2 + (r1*b)**2 + (r2*c)**2 - 1)
+	res = array((4*err*z0*r0, 4*err*r1*z1, 4*err*r2*z2,
+		-2*err*a*z0, -2*err*b*z1, -2*err*c*z2))
+	rr = []
+	for arr in res:
+		rr.append(sum(arr))
+	return array(rr, dtype=float96)
+
+guess = initial_guess = array((1.e-3, 1.e-3, 1.e-3, 0., 0., 0.), dtype = float96)
+res = 0
+i= 0
+
+while(True):
+	res = opt.minimize(minimizable_error, guess, method='Powell', options={'maxiter':10})
+	print i, "\n", res
+	if (res.success): break
+	guess = res.x
+	i+=10
+		
+
+
+

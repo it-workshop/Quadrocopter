@@ -1,27 +1,35 @@
 #include <QCoreApplication>
 #include "qextserialport.h"
 #include "../../../control/qt/serial.h"
+#include <fstream>
 #include <iostream>
 
 serial Serial;
 
-int read_int(){
-     int t_high, t_low;
+int16_t read_int(){
+     int16_t t_high, t_low, t_int;
      t_high = Serial.sread();
      t_low = Serial.sread();
-     return (t_low & 0xff) + (t_high << 8);
+     t_int = (t_low & 0xff) + (t_high << 8);
+     return t_int;
 }
 
 struct raw {
     double x, y, z;
     raw();
+    bool operator==(raw& oth){
+           return x == oth.x && y == oth.y && z == oth.z;
+    }
+    bool operator!=(raw& oth){
+           return x != oth.x || y != oth.y || z != oth.z;
+    }
 };
 
 raw::raw(){
         x = y= z= 0;
 }
 
-const unsigned int N = 10000;
+const unsigned int N = 7000;
 
 inline double sqr(double x){
         return x * x;
@@ -40,40 +48,31 @@ int main(int argc, char *argv[])
     double k = 1./N;
     Serial.setDevice(argv[1]);
     Serial.sopen();
-    std::cout << argv[1];
-    raw measurements[N];
+    std::cout << "Device: " << argv[1] << "\n";
+    std::ofstream raw_csv ("../raw.csv", std::ofstream::out);
+    raw m[N]; //measurements
     raw mean, mean2;
+
 
     for (int i = 0; i < N; i++){
         initiate_transmission();
-        measurements[i].x = read_int();
-        measurements[i].y = read_int();
-        measurements[i].z = read_int();
-        if (!(i%100)) std::cout << "Measurement " << i << "\n";
-        mean.x += k * measurements[i].x;
-        mean.y += k * measurements[i].y;
-        mean.z += k * measurements[i].z;
+        while(Serial.bytesAvailable()<6) continue;
+
+        m[i].x = read_int();
+        m[i].y = read_int();
+        m[i].z = read_int();
+        if (i==0 || (m[i-1]!=m[i])) {
+            raw_csv << m[i].x << ',' << m[i].y << ',' << m[i].z << '\n';
+        }
+        if (!(i%100)) std::cout << "Measurement " << i << ":\n" \
+                                   << m[i].x << ',' << m[i].y << ',' << m[i].z << '\n';
+
     }
 
-    for (int i = 0; i < N; i++){
-        mean2.x += k * sqr(measurements[i].x - mean.x);
-        mean2.y += k * sqr(measurements[i].y - mean.y);
-        mean2.z += k * sqr(measurements[i].z - mean.z);
-    }
+    raw_csv.close();
 
-    float a, b, c, II;
-    II = (mean2.x + mean2.y + mean2.z)/2.;
-    a = (II - mean2.x)/II;
-    b = (II - mean2.y)/II;
-    c = (II - mean2.z)/II;
-
-    std::cout << "Calibration done\n" \
-         << "Mean: x: " << mean.x \
-         << " y: " << mean.y \
-         << " z: " << mean.z << "\n"\
-         << "Axes: x: " << a \
-         << " y: " << b \
-         << " z: " << c << "\n";
+    std::cout << "Data prepared for calibration.\n" \
+         << "Now you should proccess your raw.csv with elipsoid.ipy";
 
 
 }

@@ -28,6 +28,7 @@ friend class joystick;
 protected:
     QextSerialPort *port;
 
+
     unsigned int rate;
     string device;
 
@@ -44,11 +45,11 @@ protected:
     unsigned int readBytesN;
 
     bool busyBit;
-
+public:
     void sopen();
     void sclose();
     void reopen();
-public:
+
     serial();
 
     //device-specific initialization (unused)
@@ -75,6 +76,7 @@ public:
     bool iswaiting();
     bool isoperational();
     bool iswriteable();
+    inline int bytesAvailable(){ return port->bytesAvailable();}
 
     vect read_vect_byte(unsigned int axis = 3);
     unsigned int read_unsigned_int_3byte();
