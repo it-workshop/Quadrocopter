@@ -46,6 +46,7 @@ void Quadro::settings_data()
     //ss << quadro.get_torque_manual_correction().y << " ";
     ss << ui->torque_manual_correction_x->value() << " ";
     ss << ui->torque_manual_correction_y->value() << " ";
+    ss << ui->torque_manual_correction_z->value() << " ";
     ss << quadro.get_reaction_type() << " ";
     ss << ui->quadro_autoupdate->isChecked() << " ";
 
@@ -94,6 +95,9 @@ void Quadro::settings_read()
     settings_file >> t_double;
     settings_file >> t_double1;
     quadro.set_torque_manual_correction(vect(t_double, t_double1, 0));
+
+    settings_file >> t_double;
+    quadro.set_joystick_heading(t_double * M_PI / 180.);
 
     int t_int;
     settings_file >> t_int; quadro.set_reaction_type((quadrocopter::reaction_type_) t_int);

@@ -72,6 +72,7 @@ void Quadro::interface_init()
 
     ui->torque_manual_correction_x->setValue(quadro.get_torque_manual_correction().x);
     ui->torque_manual_correction_y->setValue(quadro.get_torque_manual_correction().y);
+    ui->torque_manual_correction_z->setValue(quadro.get_joystick_heading() * 180. / M_PI);
 
     ui->reaction_type->setCurrentIndex(quadro.get_reaction_type());
 

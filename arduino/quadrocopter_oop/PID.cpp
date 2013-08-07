@@ -102,6 +102,12 @@ void PID::setDMinMax(double arg)
     DMax =  arg;
 }
 
+void PID::setYMinYMax(double arg)
+{
+    yMin = -arg;
+    yMax =  arg;
+}
+
 void PID::setKpKiKd(double nKp, double nKi, double nKd)
 {
     Kp = nKp;

@@ -70,6 +70,7 @@ void Quadro::set_quadro_data()
     else
     {
         t_power = ui->power->value();
+        quadro.set_joystick_heading(ui->torque_manual_correction_z->value() / 180. * M_PI);
     }
 
     quadro.set_power(t_power);

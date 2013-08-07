@@ -149,6 +149,7 @@ private slots:
     void on_PID_angularVelocity_MAXp_z_valueChanged(double arg1);
     void on_PID_angularVelocity_MAXi_z_valueChanged(double arg1);
     void on_PID_angularVelocity_MAXd_z_valueChanged(double arg1);
+    void on_torque_manual_correction_z_valueChanged(double arg1);
 };
 
 #endif // QUADRO_H

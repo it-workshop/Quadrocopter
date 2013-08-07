@@ -45,6 +45,8 @@ public:
     void setIMinMax(double);
     void setDMinMax(double);
 
+    void setYMinYMax(double);
+
     void reset();
     double getY(double, double); // iteration
     double getY(double, double, double); // iteration

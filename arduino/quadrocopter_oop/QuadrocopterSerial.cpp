@@ -163,6 +163,8 @@ void Quadrocopter::processSerialTx()
         MSerial->writeNumber(sensorsTime * 1000);
         MSerial->bufferAdd("; B = ");
         MSerial->writeNumber(MyMPU->bytesAvailableFIFO());
+        MSerial->bufferAdd("; V = ");
+        MSerial->writeNumber(voltage);
 #ifdef USE_COMPASS
         MSerial->bufferAdd("; H = ");
         MSerial->writeNumber(copterHeading * 180 / M_PI);

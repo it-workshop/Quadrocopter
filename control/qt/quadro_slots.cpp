@@ -81,6 +81,7 @@ void Quadro::on_setAngle_clicked()
 {
     ui->torque_manual_correction_x->setValue(quadro.get_angle().x);
     ui->torque_manual_correction_y->setValue(quadro.get_angle().y);
+    ui->torque_manual_correction_z->setValue(quadro.get_copter_heading() * 180 / M_PI);
     settings_data();
 }
 
@@ -88,6 +89,7 @@ void Quadro::on_torque_manual_reset_clicked()
 {
     ui->torque_manual_correction_x->setValue(0);
     ui->torque_manual_correction_y->setValue(0);
+    ui->torque_manual_correction_z->setValue(90);
     settings_data();
 }
 
@@ -106,6 +108,11 @@ void Quadro::on_torque_manual_correction_x_valueChanged(double arg1)
 void Quadro::on_torque_manual_correction_y_valueChanged(double arg1)
 {
     quadro.set_torque_manual_correction(vect(quadro.get_torque_manual_correction().x, arg1, 0));
+    settings_data();
+}
+
+void Quadro::on_torque_manual_correction_z_valueChanged(double arg1)
+{
     settings_data();
 }
 

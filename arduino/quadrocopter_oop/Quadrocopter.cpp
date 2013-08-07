@@ -83,14 +83,18 @@ void Quadrocopter::reset()
     MController->setTorque(RVector3D());
 
     pidAngleX.reset();
+    pidAngleX.setYMinYMax(angleMaxCorrection);
     pidAngleY.reset();
+    pidAngleY.setYMinYMax(angleMaxCorrection);
 
 #ifdef PID_USE_YAW
     pidAngularVelocityZ.reset();
+    pidAngularVelocityZ.setYMinYMax(angularVelocityMaxCorrection);
 #endif
 
 #ifdef PID_USE_YAW_ANGLE
     pidAngleZ.reset();
+    pidAngleZ.setYMinYMax(angleMaxCorrection);
 #endif
 
     voltage = 0;

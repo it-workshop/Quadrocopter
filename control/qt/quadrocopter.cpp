@@ -145,6 +145,11 @@ number_vect_t quadrocopter::get_copter_heading()
 #endif
 }
 
+number_vect_t quadrocopter::get_joystick_heading()
+{
+    return(joystick_heading);
+}
+
 vect quadrocopter::get_torque_corrected()
 {
     return(torque_corrected);

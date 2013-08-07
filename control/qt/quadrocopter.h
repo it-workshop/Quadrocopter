@@ -141,6 +141,7 @@ public:
 
     void set_joystick_heading(number_vect_t a);
     number_vect_t get_copter_heading();
+    number_vect_t get_joystick_heading();
 
     virtual void on_rx();
 };
