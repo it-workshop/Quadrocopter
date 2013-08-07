@@ -83,9 +83,9 @@ void Quadrocopter::processSerialTx()
                 MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleZ.Kd = (tDouble);
 
                 //PID angle minmax Z +6
-                MSerial->readDouble(0, 5, tDouble, 2); pidAngleZ.setPMinMax(tDouble);
-                MSerial->readDouble(0, 5, tDouble, 2); pidAngleZ.setIMinMax(tDouble);
-                MSerial->readDouble(0, 5, tDouble, 2); pidAngleZ.setDMinMax(tDouble);
+                MSerial->readDouble(0, 10, tDouble, 2); pidAngleZ.setPMinMax(tDouble);
+                MSerial->readDouble(0, 10, tDouble, 2); pidAngleZ.setIMinMax(tDouble);
+                MSerial->readDouble(0, 10, tDouble, 2); pidAngleZ.setDMinMax(tDouble);
 #endif
 
 #ifdef USE_COMPASS
@@ -133,9 +133,9 @@ void Quadrocopter::processSerialTx()
 #endif
 
 #ifdef PID_USE_YAW_ANGLE
-                MSerial->writeDouble(-0.1, 0.1, pidAngleZ.P, 1); // +1
-                MSerial->writeDouble(-0.1, 0.1, pidAngleZ.I, 1); // +1
-                MSerial->writeDouble(-0.1, 0.1, pidAngleZ.D, 1); // +1
+                MSerial->writeDouble(-1, 1, pidAngleZ.P, 1); // +1
+                MSerial->writeDouble(-1, 1, pidAngleZ.I, 1); // +1
+                MSerial->writeDouble(-1, 1, pidAngleZ.D, 1); // +1
 #endif
 
 #ifdef USE_COMPASS

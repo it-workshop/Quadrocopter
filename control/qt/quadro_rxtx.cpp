@@ -93,9 +93,9 @@ void quadrocopter::read_data()
     t_PID_y.z = read_number_vect_t(-0.1, 0.1, 1);
 
 #if defined(PID_USE_YAW) || defined(PID_USE_YAW_ANGLE)
-    t_PID_z.x = read_number_vect_t(-0.1, 0.1, 1);
-    t_PID_z.y = read_number_vect_t(-0.1, 0.1, 1);
-    t_PID_z.z = read_number_vect_t(-0.1, 0.1, 1);
+    t_PID_z.x = read_number_vect_t(-1, 1, 1);
+    t_PID_z.y = read_number_vect_t(-1, 1, 1);
+    t_PID_z.z = read_number_vect_t(-1, 1, 1);
 #endif
 
 #ifdef USE_COMPASS
@@ -202,13 +202,13 @@ void quadrocopter::write_data()
     write_number_vect_t(0, 5, PID_angle_MAXd.y, 2);
 
 #if defined(PID_USE_YAW) || defined(PID_USE_YAW_ANGLE)
-    write_number_vect_t(-0.5, 0.5, PID_angularVelocity_Kp.z, 2);
-    write_number_vect_t(-0.5, 0.5, PID_angularVelocity_Ki.z, 2);
-    write_number_vect_t(-0.5, 0.5, PID_angularVelocity_Kd.z, 2);
+    write_number_vect_t(-1.5, 1.5, PID_angularVelocity_Kp.z, 2);
+    write_number_vect_t(-1.5, 1.5, PID_angularVelocity_Ki.z, 2);
+    write_number_vect_t(-1.5, 1.5, PID_angularVelocity_Kd.z, 2);
 
-    write_number_vect_t(0, 5, PID_angularVelocity_MAXp.z, 2);
-    write_number_vect_t(0, 5, PID_angularVelocity_MAXi.z, 2);
-    write_number_vect_t(0, 5, PID_angularVelocity_MAXd.z, 2);
+    write_number_vect_t(0, 10, PID_angularVelocity_MAXp.z, 2);
+    write_number_vect_t(0, 10, PID_angularVelocity_MAXi.z, 2);
+    write_number_vect_t(0, 10, PID_angularVelocity_MAXd.z, 2);
 #endif
 
 #ifdef USE_COMPASS
