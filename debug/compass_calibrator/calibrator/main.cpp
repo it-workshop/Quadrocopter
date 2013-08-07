@@ -36,25 +36,35 @@ inline double sqr(double x){
 }
 
 void initiate_transmission(){
-    Serial.flush();
-
     Serial.swriteClear();
     Serial.swrite('r');
     Serial.swritePut();
 }
 
+using std::cin;
+using std::cout;
+
 int main(int argc, char *argv[])
 {
     double k = 1./N;
     Serial.setDevice(argv[1]);
+    Serial.setRate(115200);
     Serial.sopen();
+
     std::cout << "Device: " << argv[1] << "\n";
     std::ofstream raw_csv ("../raw.csv", std::ofstream::out);
     raw m[N]; //measurements
     raw mean, mean2;
 
+    char c;
+    cout << "Do continue? [y/n]?: ";
+    cin >> c;
+    if(c == 'n') return(0);
+    
+
 
     for (int i = 0; i < N; i++){
+        std::cerr << "#";
         initiate_transmission();
         while(Serial.bytesAvailable()<6) continue;
 
@@ -64,7 +74,7 @@ int main(int argc, char *argv[])
         if (i==0 || (m[i-1]!=m[i])) {
             raw_csv << m[i].x << ',' << m[i].y << ',' << m[i].z << '\n';
         }
-        if (!(i%100)) std::cout << "Measurement " << i << ":\n" \
+        /*if (!(i%100))*/ std::cout << "Measurement " << i << ":\n" \
                                    << m[i].x << ',' << m[i].y << ',' << m[i].z << '\n';
 
     }
