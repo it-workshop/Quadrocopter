@@ -101,13 +101,13 @@ void Quadro::on_quadro_update_clicked()
 
 void Quadro::on_torque_manual_correction_x_valueChanged(double arg1)
 {
-    quadro.set_torque_manual_correction(vect(arg1, quadro.get_torque_manual_correction().y, 0));
+    //quadro.set_torque_manual_correction(vect(arg1, quadro.get_torque_manual_correction().y, 0));
     settings_data();
 }
 
 void Quadro::on_torque_manual_correction_y_valueChanged(double arg1)
 {
-    quadro.set_torque_manual_correction(vect(quadro.get_torque_manual_correction().x, arg1, 0));
+    //quadro.set_torque_manual_correction(vect(quadro.get_torque_manual_correction().x, arg1, 0));
     settings_data();
 }
 
