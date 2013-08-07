@@ -26,6 +26,8 @@ void Quadrocopter::processSensorsData()
         copterHeading = atan2(xi1.y, xi1.x);
         if(copterHeading < 0)
             copterHeading += 2 * M_PI;
+
+        copterHeading = 2 * M_PI - copterHeading;
     }
 #endif
 }
