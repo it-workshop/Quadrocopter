@@ -23,11 +23,15 @@ void Quadrocopter::processSensorsData()
         xi1.y =        0        +        xi2.y    +         0;
         xi1.z =-sin(angle.y) * xi2.x +          0      + cos(angle.y) * xi2.z;
 
-        copterHeading = atan2(xi1.y, xi1.x);
-        if(copterHeading < 0)
-            copterHeading += 2 * M_PI;
+        double tCopterHeading = atan2(xi1.y, xi1.x);
 
-        copterHeading = 2 * M_PI - copterHeading;
+        if(tCopterHeading < 0)
+            tCopterHeading += 2 * M_PI;
+
+        tCopterHeading = 2 * M_PI - tCopterHeading;
+
+        if(tCopterHeading >= 0 && tCopterHeading <= 2 * M_PI)
+            copterHeading = tCopterHeading;
     }
 #endif
 }
