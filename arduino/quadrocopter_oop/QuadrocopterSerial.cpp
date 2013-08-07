@@ -168,11 +168,11 @@ void Quadrocopter::processSerialTx()
         MSerial->writeNumber(copterHeading * 180 / M_PI);
 
         MSerial->bufferAdd("; MX = ");
-        MSerial->writeNumber(BMag.x);
+        MSerial->writeNumber(BMag.x * 100);
         MSerial->bufferAdd("; MY = ");
-        MSerial->writeNumber(BMag.y);
+        MSerial->writeNumber(BMag.y * 100);
         MSerial->bufferAdd("; MZ = ");
-        MSerial->writeNumber(BMag.z);
+        MSerial->writeNumber(BMag.z * 100);
 #endif
         MSerial->bufferAdd('\n');
         MSerial->bufferWrite();
