@@ -59,6 +59,10 @@ private:
 #ifdef USE_COMPASS
     double copterHeading;
     double joystickHeading;
+    RVector3D BMag;
+
+    //temp mag variables
+    int16_t magX, magY, magZ;
 #endif
 
     //corrections

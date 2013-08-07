@@ -10,23 +10,18 @@ void Quadrocopter::processSensorsData()
 
 #ifdef USE_COMPASS
     {
-        double ax = angle.x;
-        double ay = angle.y;
-        int16_t mx, my, mz;
-        MyCompass->getHeading(&mx, &my, &mz);
+        MyCompass->getHeadingCorrected(&magX, &magY, &magZ, &(BMag.x), &(BMag.y), &(BMag.z));
 
         RVector3D xi3, xi2, xi1;
-        xi3.x = mx;
-        xi3.y = my;
-        xi3.z = mz;
+        xi3 = BMag;
 
         xi2.x =      xi3.x      +          0      +         0;
-        xi2.y =        0        + cos(ax) * xi3.y - sin(ax) * xi3.z;
-        xi2.z =        0        + sin(ax) * xi3.y + cos(ax) * xi3.z;
+        xi2.y =        0        + cos(angle.x) * xi3.y - sin(angle.x) * xi3.z;
+        xi2.z =        0        + sin(angle.x) * xi3.y + cos(angle.x) * xi3.z;
 
-        xi1.x = cos(ay) * xi2.x +          0      + sin(ay) * xi2.z;
+        xi1.x = cos(angle.y) * xi2.x +          0      + sin(angle.y) * xi2.z;
         xi1.y =        0        +        xi2.y    +         0;
-        xi1.z =-sin(ay) * xi2.x +          0      + cos(ay) * xi2.z;
+        xi1.z =-sin(angle.y) * xi2.x +          0      + cos(angle.y) * xi2.z;
 
         copterHeading = atan2(xi1.y, xi1.x);
         if(copterHeading < 0)

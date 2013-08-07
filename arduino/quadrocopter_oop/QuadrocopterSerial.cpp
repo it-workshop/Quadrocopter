@@ -166,6 +166,13 @@ void Quadrocopter::processSerialTx()
 #ifdef USE_COMPASS
         MSerial->bufferAdd("; H = ");
         MSerial->writeNumber(copterHeading * 180 / M_PI);
+
+        MSerial->bufferAdd("; MX = ");
+        MSerial->writeNumber(BMag.x);
+        MSerial->bufferAdd("; MY = ");
+        MSerial->writeNumber(BMag.y);
+        MSerial->bufferAdd("; MZ = ");
+        MSerial->writeNumber(BMag.z);
 #endif
         MSerial->bufferAdd('\n');
         MSerial->bufferWrite();
