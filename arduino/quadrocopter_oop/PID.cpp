@@ -1,4 +1,5 @@
 #include "PID.h"
+#include "math.h"
 
 double PID::getY(double data, double dt)
 {
@@ -18,7 +19,21 @@ double PID::getY(double data, double dt, double derivative)
 void PID::prepare(double data, double dt)
 {
     //difference between requested and current data
-    e = data0 - data;
+
+    if(mode == DIFFERENCE_NORMAL)
+        e = data0 - data;
+    else if(mode == DIFFERENCE_ANGLE)
+    {
+        double e1, e2, e3;
+        e1 = data0 - data;
+        e2 = e1 - 2 * MPI;
+        e3 = e1 + 2 * MPI;
+        if(fabs(e2) < fabs(e1))
+            e1 = e2;
+        if(fabs(e3) < fabs(e1))
+            e1 = e3;
+        e = e1;
+    }
 
     //discrete derivative
     eDerivative = (e - ePrev) / dt;
@@ -68,7 +83,7 @@ void PID::iteration()
 
 }
 
-PID::PID()
+PID::PID(pidMode nMode)
 {
     eIntegral = 0;
     data0 = 0;
@@ -81,6 +96,7 @@ PID::PID()
     yMin = yMax = 0;
     P = I = D = 0;
     y = 0;
+    mode = nMode;
 }
 
 

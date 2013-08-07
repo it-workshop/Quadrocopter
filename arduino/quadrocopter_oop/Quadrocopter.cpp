@@ -45,6 +45,9 @@ Quadrocopter::Quadrocopter()
     MController = new MotorController(DefaultMotorPins);
     VSensor = new VoltageSensor(DefaultVSensorPin, DefaultVSensorMaxVoltage);
     MyMPU = new MPU6050DMP;
+#ifdef PID_USE_YAW_ANGLE
+    pidAngleZ = PID(PID::DIFFERENCE_ANGLE);
+#endif
 
 #ifdef DEBUG_FREQ_PIN
     freqLed = InfoLED(DEBUG_FREQ_PIN, InfoLED::DIGITAL);
