@@ -173,7 +173,7 @@ void loop()
     #endif
 #else
             //310 910
-            heading = (analogRead(A4) - 310.) / 600. * 2 * PI;
+            heading = (analogRead(A4)) / 1023. * 2 * PI;
 #endif
             if(heading < 0)
                 heading += 2*PI;
@@ -181,6 +181,8 @@ void loop()
                 heading -= 2*PI;
 
 #ifdef DEBUG
+			Serial.print(analogRead(A4));
+            Serial.print("\t");
             Serial.print(heading);
 #else
             transmitInt(heading * 10000);
