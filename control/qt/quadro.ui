@@ -675,7 +675,7 @@
      </size>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="x">
      <attribute name="title">
@@ -1386,7 +1386,7 @@
             <double>-0.490000000000000</double>
            </property>
            <property name="maximum">
-            <double>0.490000000000000</double>
+            <double>1.400000000000000</double>
            </property>
            <property name="singleStep">
             <double>0.001000000000000</double>
@@ -1441,7 +1441,7 @@
             <double>0.000000000000000</double>
            </property>
            <property name="maximum">
-            <double>5.000000000000000</double>
+            <double>9.000000000000000</double>
            </property>
            <property name="singleStep">
             <double>0.010000000000000</double>
@@ -1482,7 +1482,7 @@
             <double>0.000000000000000</double>
            </property>
            <property name="maximum">
-            <double>5.000000000000000</double>
+            <double>9.000000000000000</double>
            </property>
            <property name="singleStep">
             <double>0.010000000000000</double>
@@ -1520,7 +1520,7 @@
             <double>0.000000000000000</double>
            </property>
            <property name="maximum">
-            <double>5.000000000000000</double>
+            <double>9.000000000000000</double>
            </property>
            <property name="singleStep">
             <double>0.010000000000000</double>
