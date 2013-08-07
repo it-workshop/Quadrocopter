@@ -52,7 +52,7 @@ private:
 
     QextSerialEnumerator QeSEnumerator;
 
-    static const double timer_auto_interval = 75;
+    static const double timer_auto_interval = 50;
     static const double timer_reconnect_interval = 1000;
     QTimer timer_auto, timer_reconnect;
 
@@ -149,6 +149,7 @@ private slots:
     void on_PID_angularVelocity_MAXp_z_valueChanged(double arg1);
     void on_PID_angularVelocity_MAXi_z_valueChanged(double arg1);
     void on_PID_angularVelocity_MAXd_z_valueChanged(double arg1);
+    void on_torque_manual_correction_z_valueChanged(double arg1);
 };
 
 #endif // QUADRO_H

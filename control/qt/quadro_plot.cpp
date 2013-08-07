@@ -221,7 +221,7 @@ void Quadro::plot_init()
 
     ui->plot_PID_x->setAxisScale(QwtPlot::yLeft, -0.1, 0.1);
     ui->plot_PID_y->setAxisScale(QwtPlot::yLeft, -0.1, 0.1);
-    ui->plot_PID_z->setAxisScale(QwtPlot::yLeft, -0.1, 0.1);
+    ui->plot_PID_z->setAxisScale(QwtPlot::yLeft, -1, 1);
 
     // Set curve styles
     PID_P_x->setPen(QPen(Qt::green));

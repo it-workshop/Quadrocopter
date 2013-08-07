@@ -53,7 +53,7 @@ void Quadro::interface_init()
     ui->PID_angularVelocity_MAXi_z->setValue(quadro.get_PID_angularVelocity_MAXi().z);
     ui->PID_angularVelocity_MAXd_z->setValue(quadro.get_PID_angularVelocity_MAXd().z);
 
-#ifndef PID_USE_YAW
+#if !(defined(PID_USE_YAW) || defined(PID_USE_YAW_ANGLE))
     ui->PID_angularVelocity_Kp_z->setEnabled(false);
     ui->PID_angularVelocity_Ki_z->setEnabled(false);
     ui->PID_angularVelocity_Kd_z->setEnabled(false);
@@ -72,6 +72,7 @@ void Quadro::interface_init()
 
     ui->torque_manual_correction_x->setValue(quadro.get_torque_manual_correction().x);
     ui->torque_manual_correction_y->setValue(quadro.get_torque_manual_correction().y);
+    ui->torque_manual_correction_z->setValue(quadro.get_joystick_heading() * 180. / M_PI);
 
     ui->reaction_type->setCurrentIndex(quadro.get_reaction_type());
 
@@ -108,6 +109,7 @@ void Quadro::interface_write()
         }
 
         ui->motors->setText(t_ss.str().c_str());
+        ui->CompassCopter->setOrigin(-quadro.get_copter_heading() * 180. / M_PI);
     }
 
     if(joy.isoperational())
@@ -120,10 +122,14 @@ void Quadro::interface_write()
 
         //t_ss1 << (joy.is_switched_on() ? "online" : "offline") << "\t";
         //t_ss1 << "p=" << joy.get_power_value() << "\t";
-        t_ss1 << joy.get_readings().print();
+        t_ss1 << joy.get_readings().print2d();
+        t_ss1.precision(3);
+        t_ss1 << "\t" << joy.get_heading() * 180 / M_PI;
 
         ui->joystick_data->clear();
         ui->joystick_data->setText(t_ss1.str().c_str());
+
+        ui->CompassJoystick->setOrigin(joy.get_heading() * 180. / M_PI);
     }
 
     if(joy.isoperational())

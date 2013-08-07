@@ -31,10 +31,15 @@ quadrocopter::quadrocopter()
 #ifdef DEBUG_NO_TX_ARDUINO
     readBytesN = 1;
 #else
+    readBytesN = 21;
     #ifdef PID_USE_YAW
-        readBytesN = 24;
-    #else
-        readBytesN = 21;
+        readBytesN += 3;
+    #endif
+    #ifdef PID_USE_YAW_ANGLE
+        readBytesN += 3;
+    #endif
+    #ifdef USE_COMPASS
+        readBytesN += 2;
     #endif
 #endif
     //readBytesN = BN;
@@ -124,6 +129,25 @@ void quadrocopter::resetNewDataAvailable()
 number_vect_t quadrocopter::get_joystick_coefficient()
 {
     return(joystick_coefficient);
+}
+
+void quadrocopter::set_joystick_heading(number_vect_t a)
+{
+    joystick_heading = a;
+}
+
+number_vect_t quadrocopter::get_copter_heading()
+{
+#ifdef USE_COMPASS
+    return(copter_heading);
+#else
+    return(0);
+#endif
+}
+
+number_vect_t quadrocopter::get_joystick_heading()
+{
+    return(joystick_heading);
 }
 
 vect quadrocopter::get_torque_corrected()

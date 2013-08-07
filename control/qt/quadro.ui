@@ -67,9 +67,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>414</width>
-        <height>90</height>
+        <y>9</y>
+        <width>411</width>
+        <height>81</height>
        </rect>
       </property>
       <layout class="QFormLayout" name="formLayout_5">
@@ -89,7 +89,7 @@
        <item row="1" column="0">
         <widget class="QLabel" name="label_torque_manual_correction">
          <property name="text">
-          <string>Torque manual</string>
+          <string>Angle manual</string>
          </property>
         </widget>
        </item>
@@ -137,22 +137,6 @@
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>30</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
           <widget class="QLabel" name="label_torque_manual_correction_y">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -194,6 +178,47 @@
           </widget>
          </item>
          <item>
+          <widget class="QLabel" name="label_torque_manual_correction_z">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>y</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="torque_manual_correction_z">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="suffix">
+            <string/>
+           </property>
+           <property name="decimals">
+            <number>0</number>
+           </property>
+           <property name="minimum">
+            <double>0.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>360.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>5.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>90.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="torque_manual_reset">
            <property name="text">
             <string>Reset</string>
@@ -201,6 +226,13 @@
           </widget>
          </item>
         </layout>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_power_2">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -461,7 +493,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>8</number>
     </property>
     <widget class="QWidget" name="tabgyro_data">
      <attribute name="title">
@@ -581,6 +613,43 @@
         <height>471</height>
        </rect>
       </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabCompass">
+     <attribute name="title">
+      <string>Compass</string>
+     </attribute>
+     <widget class="QWidget" name="horizontalLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>611</width>
+        <height>461</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QwtCompass" name="CompassJoystick">
+         <property name="lineWidth">
+          <number>4</number>
+         </property>
+         <property name="origin">
+          <double>0.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QwtCompass" name="CompassCopter">
+         <property name="lineWidth">
+          <number>4</number>
+         </property>
+         <property name="origin">
+          <double>0.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
    </widget>
@@ -1317,7 +1386,7 @@
             <double>-0.490000000000000</double>
            </property>
            <property name="maximum">
-            <double>0.490000000000000</double>
+            <double>1.400000000000000</double>
            </property>
            <property name="singleStep">
             <double>0.001000000000000</double>
@@ -1372,7 +1441,7 @@
             <double>0.000000000000000</double>
            </property>
            <property name="maximum">
-            <double>5.000000000000000</double>
+            <double>9.000000000000000</double>
            </property>
            <property name="singleStep">
             <double>0.010000000000000</double>
@@ -1413,7 +1482,7 @@
             <double>0.000000000000000</double>
            </property>
            <property name="maximum">
-            <double>5.000000000000000</double>
+            <double>9.000000000000000</double>
            </property>
            <property name="singleStep">
             <double>0.010000000000000</double>
@@ -1451,7 +1520,7 @@
             <double>0.000000000000000</double>
            </property>
            <property name="maximum">
-            <double>5.000000000000000</double>
+            <double>9.000000000000000</double>
            </property>
            <property name="singleStep">
             <double>0.010000000000000</double>
@@ -1670,6 +1739,16 @@
    <class>QwtPlot</class>
    <extends>QFrame</extends>
    <header>qwt_plot.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QwtCompass</class>
+   <extends>QwtDial</extends>
+   <header>qwt_compass.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QwtDial</class>
+   <extends>QWidget</extends>
+   <header>qwt_dial.h</header>
   </customwidget>
   <customwidget>
    <class>QwtSlider</class>

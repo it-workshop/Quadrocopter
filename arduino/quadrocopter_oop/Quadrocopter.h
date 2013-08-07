@@ -9,6 +9,12 @@
 #include "InfoLED.h"
 #include "VoltageSensor.h"
 
+
+#ifdef USE_COMPASS
+    // i2cdevlib
+    #include <HMC5883L.h>
+#endif
+
 #ifndef QUADROCOPTER_H
 #define QUADROCOPTER_H
 
@@ -22,6 +28,9 @@ private:
     MySerial* MSerial;
     VoltageSensor* VSensor;
     MPU6050DMP* MyMPU;
+#ifdef USE_COMPASS
+    HMC5883L* MyCompass;
+#endif
 
     // pins configuration
 
@@ -38,7 +47,7 @@ private:
 
     RVector3D angleManualCorrection;
 
-    static const double DefaultVSensorMaxVoltage = 14.2; //maximal voltage (before voltage divider)
+    static const double DefaultVSensorMaxVoltage = 14.79; //maximal voltage (before voltage divider)
 
     static const double g = 9.80665; // gravitational acceleration
 
@@ -46,6 +55,15 @@ private:
     RVector3D angle; // angle between Earth's coordinate and ours (filtered)
     RVector3D angularVelocity; // angular velocity from gyroscope
     double voltage; //accumulators voltage
+
+#ifdef USE_COMPASS
+    double copterHeading;
+    double joystickHeading;
+    RVector3D BMag;
+
+    //temp mag variables
+    int16_t magX, magY, magZ;
+#endif
 
     //corrections
     static const double angleMaxCorrection = MPI / 4;
@@ -55,6 +73,10 @@ private:
 
 #ifdef PID_USE_YAW
     PID pidAngularVelocityZ;
+#endif
+
+#ifdef PID_USE_YAW_ANGLE
+    PID pidAngleZ;
 #endif
 
     RVector3D getAngleCorrection(RVector3D angle, double dt);
@@ -73,11 +95,8 @@ private:
 #endif
 
     // bytes to read
-#ifdef PID_USE_YAW
-    static const unsigned int serialReadN = 42;
-#else
-    static const unsigned int serialReadN = 30;
-#endif
+    // Defines in Quadrocopter.cpp
+    unsigned int serialReadN;
 
 public:
     Quadrocopter();

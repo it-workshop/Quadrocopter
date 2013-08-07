@@ -64,10 +64,13 @@ void Quadro::set_quadro_data()
 
         t_power = joy.get_power_value();
         if(!joy.is_switched_on()) t_power = 0;
+
+        quadro.set_joystick_heading(joy.get_heading());
     }
     else
     {
         t_power = ui->power->value();
+        quadro.set_joystick_heading(ui->torque_manual_correction_z->value() / 180. * M_PI);
     }
 
     quadro.set_power(t_power);

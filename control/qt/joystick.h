@@ -41,6 +41,8 @@ public:
     void set_data_default(); // set zero position
     void initiate_transmission(); // initiate transmission
 
+    number_vect_t get_heading();
+
     vect get_readings(); // 2D vect, values [0...1]
 
     bool is_switched_on();

@@ -40,6 +40,7 @@ void joystick::initiate_transmission()
     swrite('r');
     swritePut();
 }
+
 int joystick::read_int(){
      int t_high, t_low;
 	 t_high = sread();
@@ -69,7 +70,7 @@ void joystick::read_data()
         data = t_vect;
         power_value = t_power;
 		power_switch = t_bool;
-        heading = t_head/10000.;
+        heading = t_head / 10000.;
     }
     else qDebug() << "error";
 }
@@ -104,9 +105,12 @@ vect joystick::get_readings()
 
     data_formatted *= 0.5;
 
-    data_formatted.z = heading;
-
     return(data_formatted);
+}
+
+number_vect_t joystick::get_heading()
+{
+    return(heading);
 }
 
 void joystick::set_data_default()

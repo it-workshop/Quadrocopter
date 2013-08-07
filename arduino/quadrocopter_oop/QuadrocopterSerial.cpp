@@ -75,6 +75,23 @@ void Quadrocopter::processSerialTx()
                 MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocityZ.setIMinMax(tDouble);
                 MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocityZ.setDMinMax(tDouble);
 #endif
+
+#ifdef PID_USE_YAW_ANGLE
+                //PID angle coefficients Z +6
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleZ.Kp = (tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleZ.Ki = (tDouble);
+                MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleZ.Kd = (tDouble);
+
+                //PID angle minmax Z +6
+                MSerial->readDouble(0, 10, tDouble, 2); pidAngleZ.setPMinMax(tDouble);
+                MSerial->readDouble(0, 10, tDouble, 2); pidAngleZ.setIMinMax(tDouble);
+                MSerial->readDouble(0, 10, tDouble, 2); pidAngleZ.setDMinMax(tDouble);
+#endif
+
+#ifdef USE_COMPASS
+                // joystick heading +2
+                MSerial->readDouble(0, 7, joystickHeading, 2);
+#endif
             }
 #ifdef DEBUG_NO_TX_ARDUINO
             Serial.write('x');
@@ -115,6 +132,16 @@ void Quadrocopter::processSerialTx()
                 MSerial->writeDouble(-0.1, 0.1, pidAngularVelocityZ.D, 1); // +1
 #endif
 
+#ifdef PID_USE_YAW_ANGLE
+                MSerial->writeDouble(-1, 1, pidAngleZ.P, 1); // +1
+                MSerial->writeDouble(-1, 1, pidAngleZ.I, 1); // +1
+                MSerial->writeDouble(-1, 1, pidAngleZ.D, 1); // +1
+#endif
+
+#ifdef USE_COMPASS
+                MSerial->writeDouble(0, 7, copterHeading, 2); // +2
+#endif
+
                 //motors
                 for (unsigned i = 0; i < 4; i++)
                     MSerial->bufferAdd(100 * MController->getSpeed(getTorques(), i)); // +4
@@ -136,6 +163,19 @@ void Quadrocopter::processSerialTx()
         MSerial->writeNumber(sensorsTime * 1000);
         MSerial->bufferAdd("; B = ");
         MSerial->writeNumber(MyMPU->bytesAvailableFIFO());
+        MSerial->bufferAdd("; V = ");
+        MSerial->writeNumber(voltage);
+#ifdef USE_COMPASS
+        MSerial->bufferAdd("; H = ");
+        MSerial->writeNumber(copterHeading * 180 / M_PI);
+
+        MSerial->bufferAdd("; MX = ");
+        MSerial->writeNumber(BMag.x * 100);
+        MSerial->bufferAdd("; MY = ");
+        MSerial->writeNumber(BMag.y * 100);
+        MSerial->bufferAdd("; MZ = ");
+        MSerial->writeNumber(BMag.z * 100);
+#endif
         MSerial->bufferAdd('\n');
         MSerial->bufferWrite();
         MSerial->dropCommand();

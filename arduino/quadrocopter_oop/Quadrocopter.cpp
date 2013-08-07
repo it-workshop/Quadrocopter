@@ -7,6 +7,17 @@
 
 Quadrocopter::Quadrocopter()
 {
+    serialReadN = 30;
+#ifdef PID_USE_YAW
+    serialReadN += 12;
+#endif
+#ifdef PID_USE_YAW_ANGLE
+    serialReadN += 12;
+#endif
+#ifdef USE_COMPASS
+    serialReadN += 2;
+#endif
+
     DefaultVSensorPin = A3;
     reactionType = ReactionNone;
 
@@ -34,6 +45,9 @@ Quadrocopter::Quadrocopter()
     MController = new MotorController(DefaultMotorPins);
     VSensor = new VoltageSensor(DefaultVSensorPin, DefaultVSensorMaxVoltage);
     MyMPU = new MPU6050DMP;
+#ifdef PID_USE_YAW_ANGLE
+    pidAngleZ = PID(PID::DIFFERENCE_ANGLE);
+#endif
 
 #ifdef DEBUG_FREQ_PIN
     freqLed = InfoLED(DEBUG_FREQ_PIN, InfoLED::DIGITAL);
@@ -46,6 +60,11 @@ Quadrocopter::Quadrocopter()
     this->reset();
 
     MyMPU->initialize();
+
+#ifdef USE_COMPASS
+    MyCompass = new HMC5883L;
+    MyCompass->initialize();
+#endif
 
 #ifdef DEBUG_DAC
     myLed = MyMPU->myLed;
@@ -67,10 +86,18 @@ void Quadrocopter::reset()
     MController->setTorque(RVector3D());
 
     pidAngleX.reset();
+    pidAngleX.setYMinYMax(angleMaxCorrection);
     pidAngleY.reset();
+    pidAngleY.setYMinYMax(angleMaxCorrection);
 
 #ifdef PID_USE_YAW
     pidAngularVelocityZ.reset();
+    pidAngularVelocityZ.setYMinYMax(angularVelocityMaxCorrection);
+#endif
+
+#ifdef PID_USE_YAW_ANGLE
+    pidAngleZ.reset();
+    pidAngleZ.setYMinYMax(angleMaxCorrection);
 #endif
 
     voltage = 0;
