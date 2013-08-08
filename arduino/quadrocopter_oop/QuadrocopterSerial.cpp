@@ -175,6 +175,8 @@ void Quadrocopter::processSerialTx()
         MSerial->writeNumber(BMag.y * 100);
         MSerial->bufferAdd("; MZ = ");
         MSerial->writeNumber(BMag.z * 100);
+        MSerial->bufferAdd("; val=");
+        MSerial->writeNumber(BMag.module() * 100);
 #endif
         MSerial->bufferAdd('\n');
         MSerial->bufferWrite();

@@ -11,7 +11,7 @@ private:
     //constants
     const char* Accuracy; //precision
     static const unsigned int MaxwaitU = 100000; //maximal wait time in useconds
-    static const unsigned int BufferMax = 70; //maximal buffer size
+    static const unsigned int BufferMax = 200; //maximal buffer size
 
     bool readError; //read error
     unsigned int readN;
