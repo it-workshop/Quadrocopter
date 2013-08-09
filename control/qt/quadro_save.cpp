@@ -34,12 +34,12 @@ void Quadro::settings_data()
     ss << quadro.get_PID_angle_MAXi().y << " ";
     ss << quadro.get_PID_angle_MAXd().y << " ";
 
-    ss << quadro.get_PID_angularVelocity_Kp().z << " ";
-    ss << quadro.get_PID_angularVelocity_Ki().z << " ";
-    ss << quadro.get_PID_angularVelocity_Kd().z << " ";
-    ss << quadro.get_PID_angularVelocity_MAXp().z << " ";
-    ss << quadro.get_PID_angularVelocity_MAXi().z << " ";
-    ss << quadro.get_PID_angularVelocity_MAXd().z << " ";
+    ss << quadro.get_PID_angle_Kp().z << " ";
+    ss << quadro.get_PID_angle_Ki().z << " ";
+    ss << quadro.get_PID_angle_Kd().z << " ";
+    ss << quadro.get_PID_angle_MAXp().z << " ";
+    ss << quadro.get_PID_angle_MAXi().z << " ";
+    ss << quadro.get_PID_angle_MAXd().z << " ";
 
     //ss << quadro.getDevice() << " ";
     //ss << quadro.get_torque_manual_correction().x << " ";
@@ -80,13 +80,13 @@ void Quadro::settings_read()
     settings_file >> t_double; quadro.set_PID_angle_MAXi_y(t_double);
     settings_file >> t_double; quadro.set_PID_angle_MAXd_y(t_double);
 
-    settings_file >> t_double; quadro.set_PID_angularVelocity_Kp_z(t_double);
-    settings_file >> t_double; quadro.set_PID_angularVelocity_Ki_z(t_double);
-    settings_file >> t_double; quadro.set_PID_angularVelocity_Kd_z(t_double);
+    settings_file >> t_double; quadro.set_PID_angle_Kp_z(t_double);
+    settings_file >> t_double; quadro.set_PID_angle_Ki_z(t_double);
+    settings_file >> t_double; quadro.set_PID_angle_Kd_z(t_double);
 
-    settings_file >> t_double; quadro.set_PID_angularVelocity_MAXp_z(t_double);
-    settings_file >> t_double; quadro.set_PID_angularVelocity_MAXi_z(t_double);
-    settings_file >> t_double; quadro.set_PID_angularVelocity_MAXd_z(t_double);
+    settings_file >> t_double; quadro.set_PID_angle_MAXp_z(t_double);
+    settings_file >> t_double; quadro.set_PID_angle_MAXi_z(t_double);
+    settings_file >> t_double; quadro.set_PID_angle_MAXd_z(t_double);
 
 //    string t_string;
 //    settings_file >> t_string; quadro.setDevice(t_string);
@@ -121,10 +121,11 @@ void Quadro::save_open()
     if(ui->LogSave_data->isChecked())
     {
         save_file.open(save_filename.c_str(), std::ios_base::app);
-        save_file << "#seconds\tdatetime\tgyro_x\tgyro_y\tgyro_z\tacc_x\tacc_y\tacc_z\treact._t\tangle_x\tangle_y\t"
-                  << "ca_x\tca_y\tca_z\tj_conn\tj_use\tj_x\tj_y\tj_power\tj_switch\tquad_conn\t"
-                  << "cm_x\tcm_y\tcm_z\ttorq_x\ttorq_y\ttorq_z\tforce\tM_A\tM_B\tM_C\tM_D\t"
-                  << "read_t\twrite_t\tloop_t\tav_kp\tav_ki\tav_kd\ta_kp\ta_ki\ta_kd\tTaccel\tTangle" << endl;
+        save_file << "#seconds\tdatetime\tqptr_op\tjoy_op\tj_use\tgyro_x\tgyro_y\tgyro_z\treact_t\tangle_x\tangle_y\tangle_z\t"
+                  << "trq_x\ttrq_y\ttrq_z\tc_power\tvoltage\tPID_P_x\tPID_P_y\tPID_P_z\tPID_I_x\tPID_I_y\tPID_I_z\t"
+                  << "PID_D_x\tPID_D_y\tPID_D_z\tq_head\tKp_x\tKp_y\tKp_z\tKi_x\tKi_y\tKi_z\tKd_x\tKd_y\tKd_z\t"
+                  << "MaxP_x\tMaxP_y\tMaxP_z\tMaxI_x\tMaxI_y\tMaxI_z\tMaxD_x\tMaxD_y\tMaxD_z\tjoy_x\tjoy_y\tc_man_x\tc_man_y\tc_man_z\t"
+                  << "j_power\tj_heading\tj_onoff\tM1\tM2\tM3\tM4\tread_time\twrite_time\tloop_time" << endl;
     }
 }
 
@@ -136,24 +137,34 @@ void Quadro::save_data()
         int i;
         mytime t_time;
 
-        t_ss.precision(2);
+        t_ss.precision(3);
 
         t_ss << t_time.getSeconds() << "\t" << t_time.getTime() << "\t"
-             << quadro.get_gyroscope_readings().print() << "\t"
-             << quadro.get_accelerometer_readings().print() << "\t"
-             << quadro.get_reaction_type() << "\t"
-             << quadro.get_angle().print2d() << "\t"
-
+             << quadro.isoperational() << "\t"
              << joy.isoperational() << "\t"
              << ui->JoystickUse->isChecked() << "\t"
-             << joy.get_readings().print2d() << "\t"
-             << joy.get_power_value() << "\t"
-             << joy.is_switched_on() << "\t"
-
-             << quadro.isoperational() << "\t"
-             << quadro.get_torque_manual_correction().print() << "\t"
+             << quadro.get_gyroscope_readings().print() << "\t"
+             << quadro.get_reaction_type() << "\t"
+             << quadro.get_angle().print() << "\t"
              << quadro.get_torque_corrected().print() << "\t"
-             << quadro.get_power() << "\t";
+             << quadro.get_power() << "\t"
+             << quadro.get_voltage() << "\t"
+             << quadro.get_PID_P().print() << "\t"
+             << quadro.get_PID_I().print() << "\t"
+             << quadro.get_PID_D().print() << "\t"
+             << quadro.get_copter_heading() << "\t"
+             << quadro.get_PID_angle_Kp().print() << "\t"
+             << quadro.get_PID_angle_Ki().print() << "\t"
+             << quadro.get_PID_angle_Kd().print() << "\t"
+             << quadro.get_PID_angle_MAXp().print() << "\t"
+             << quadro.get_PID_angle_MAXi().print() << "\t"
+             << quadro.get_PID_angle_MAXd().print() << "\t"
+
+             << joy.get_readings().print2d() << "\t"
+             << quadro.get_torque_manual_correction().print() << "\t"
+             << joy.get_power_value() << "\t"
+             << joy.get_heading() << "\t"
+             << joy.is_switched_on() << "\t";
 
         for(i = 0; i < quadro.get_motors_n(); i++)
         {
@@ -164,14 +175,6 @@ void Quadro::save_data()
         t_ss << quadro.get_read_time() << "\t"
              << quadro.get_write_time() << "\t"
              << quadro.get_loop_time() << "\t";
-
-        t_ss << quadro.get_PID_angle_Kp().x << "\t";
-        t_ss << quadro.get_PID_angle_Ki().x << "\t";
-        t_ss << quadro.get_PID_angle_Kd().x << "\t";
-
-        t_ss << quadro.get_PID_angle_Kp().y << "\t";
-        t_ss << quadro.get_PID_angle_Ki().y << "\t";
-        t_ss << quadro.get_PID_angle_Kd().y << "\t";
 
         save_file << t_ss.str() << endl;
     }

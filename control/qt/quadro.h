@@ -143,12 +143,12 @@ private slots:
     void on_joystick_calibrate_clicked();
     void on_quadro_autoupdate_triggered();
     void on_quadro_connect_clicked();
-    void on_PID_angularVelocity_Kp_z_valueChanged(double arg1);
-    void on_PID_angularVelocity_Ki_z_valueChanged(double arg1);
-    void on_PID_angularVelocity_Kd_z_valueChanged(double arg1);
-    void on_PID_angularVelocity_MAXp_z_valueChanged(double arg1);
-    void on_PID_angularVelocity_MAXi_z_valueChanged(double arg1);
-    void on_PID_angularVelocity_MAXd_z_valueChanged(double arg1);
+    void on_PID_angle_Kp_z_valueChanged(double arg1);
+    void on_PID_angle_Ki_z_valueChanged(double arg1);
+    void on_PID_angle_Kd_z_valueChanged(double arg1);
+    void on_PID_angle_MAXp_z_valueChanged(double arg1);
+    void on_PID_angle_MAXi_z_valueChanged(double arg1);
+    void on_PID_angle_MAXd_z_valueChanged(double arg1);
     void on_torque_manual_correction_z_valueChanged(double arg1);
 };
 

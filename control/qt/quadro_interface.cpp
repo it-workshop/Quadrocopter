@@ -37,9 +37,9 @@ void Quadro::interface_init()
     ui->PID_angle_Ki_y->setValue(quadro.get_PID_angle_Ki().y);
     ui->PID_angle_Kd_y->setValue(quadro.get_PID_angle_Kd().y);
 
-    ui->PID_angularVelocity_Kp_z->setValue(quadro.get_PID_angularVelocity_Kp().z);
-    ui->PID_angularVelocity_Ki_z->setValue(quadro.get_PID_angularVelocity_Ki().z);
-    ui->PID_angularVelocity_Kd_z->setValue(quadro.get_PID_angularVelocity_Kd().z);
+    ui->PID_angle_Kp_z->setValue(quadro.get_PID_angle_Kp().z);
+    ui->PID_angle_Ki_z->setValue(quadro.get_PID_angle_Ki().z);
+    ui->PID_angle_Kd_z->setValue(quadro.get_PID_angle_Kd().z);
 
     ui->PID_angle_MAXp_x->setValue(quadro.get_PID_angle_MAXp().x);
     ui->PID_angle_MAXi_x->setValue(quadro.get_PID_angle_MAXi().x);
@@ -49,18 +49,18 @@ void Quadro::interface_init()
     ui->PID_angle_MAXi_y->setValue(quadro.get_PID_angle_MAXi().y);
     ui->PID_angle_MAXd_y->setValue(quadro.get_PID_angle_MAXd().y);
 
-    ui->PID_angularVelocity_MAXp_z->setValue(quadro.get_PID_angularVelocity_MAXp().z);
-    ui->PID_angularVelocity_MAXi_z->setValue(quadro.get_PID_angularVelocity_MAXi().z);
-    ui->PID_angularVelocity_MAXd_z->setValue(quadro.get_PID_angularVelocity_MAXd().z);
+    ui->PID_angle_MAXp_z->setValue(quadro.get_PID_angle_MAXp().z);
+    ui->PID_angle_MAXi_z->setValue(quadro.get_PID_angle_MAXi().z);
+    ui->PID_angle_MAXd_z->setValue(quadro.get_PID_angle_MAXd().z);
 
 #if !(defined(PID_USE_YAW) || defined(PID_USE_YAW_ANGLE))
-    ui->PID_angularVelocity_Kp_z->setEnabled(false);
-    ui->PID_angularVelocity_Ki_z->setEnabled(false);
-    ui->PID_angularVelocity_Kd_z->setEnabled(false);
+    ui->PID_angle_Kp_z->setEnabled(false);
+    ui->PID_angle_Ki_z->setEnabled(false);
+    ui->PID_angle_Kd_z->setEnabled(false);
 
-    ui->PID_angularVelocity_MAXp_z->setEnabled(false);
-    ui->PID_angularVelocity_MAXi_z->setEnabled(false);
-    ui->PID_angularVelocity_MAXd_z->setEnabled(false);
+    ui->PID_angle_MAXp_z->setEnabled(false);
+    ui->PID_angle_MAXi_z->setEnabled(false);
+    ui->PID_angle_MAXd_z->setEnabled(false);
 #endif
 
     ui->power->setValue(0);
