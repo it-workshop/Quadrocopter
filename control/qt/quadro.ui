@@ -186,7 +186,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>y</string>
+            <string>z</string>
            </property>
           </widget>
          </item>
@@ -219,9 +219,9 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="torque_manual_reset">
+          <widget class="QPushButton" name="torque_manual_resetZ">
            <property name="text">
-            <string>Reset</string>
+            <string>Reset Z</string>
            </property>
           </widget>
          </item>
@@ -327,7 +327,7 @@
       <x>0</x>
       <y>120</y>
       <width>421</width>
-      <height>211</height>
+      <height>225</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_2">
@@ -405,7 +405,7 @@
      <item row="5" column="0">
       <widget class="QLabel" name="label_angle">
        <property name="text">
-        <string>Angle (filtered)</string>
+        <string>Angle</string>
        </property>
       </widget>
      </item>
@@ -422,9 +422,16 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="setAngleZ">
+         <property name="text">
+          <string>Keep Z</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="setAngle">
          <property name="text">
-          <string>Keep it</string>
+          <string>Keep XYZ</string>
          </property>
         </widget>
        </item>
@@ -493,8 +500,23 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>7</number>
+     <number>0</number>
     </property>
+    <widget class="QWidget" name="tabangle">
+     <attribute name="title">
+      <string>Angle</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_angle">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>617</width>
+        <height>471</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
     <widget class="QWidget" name="tabgyro_data">
      <attribute name="title">
       <string>Gyroscope data</string>
@@ -515,21 +537,6 @@
       <string>Accelerometer data</string>
      </attribute>
      <widget class="QwtPlot" name="plot_acc">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>617</width>
-        <height>471</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tabangle">
-     <attribute name="title">
-      <string>Angle</string>
-     </attribute>
-     <widget class="QwtPlot" name="plot_angle">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -657,7 +664,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>330</y>
+      <y>350</y>
       <width>421</width>
       <height>91</height>
      </rect>

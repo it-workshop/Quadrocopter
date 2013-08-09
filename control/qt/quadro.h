@@ -122,7 +122,7 @@ private slots:
     void on_quadro_device_currentIndexChanged(const QString &arg1);
     void keyPressEvent(QKeyEvent*);
     void on_setAngle_clicked();
-    void on_torque_manual_reset_clicked();
+    void on_torque_manual_resetZ_clicked();
     void on_quadro_update_clicked();
     void on_torque_manual_correction_x_valueChanged(double arg1);
     void on_torque_manual_correction_y_valueChanged(double arg1);
@@ -150,6 +150,7 @@ private slots:
     void on_PID_angle_MAXi_z_valueChanged(double arg1);
     void on_PID_angle_MAXd_z_valueChanged(double arg1);
     void on_torque_manual_correction_z_valueChanged(double arg1);
+    void on_setAngleZ_clicked();
 };
 
 #endif // QUADRO_H

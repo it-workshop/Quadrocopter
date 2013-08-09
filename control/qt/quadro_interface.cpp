@@ -92,11 +92,10 @@ void Quadro::interface_write()
         ui->torque->setText(quadro.get_torque_corrected().print().c_str());
         ui->gyro->setText(quadro.get_gyroscope_readings().print().c_str());
 
-        //t_ss3 << quadro.get_accelerometer_readings().print().c_str() << "\t"
-        //      << "[" << quadro.get_accelerometer_readings().abs() << "]";
-        //ui->accel->setText(t_ss3.str().c_str());
+        t_ss3 << (quadro.get_angle() * 180 / M_PI).print2d().c_str() << "\t"
+              << quadro.get_copter_heading() * 180 / M_PI;
 
-        ui->angle->setText(quadro.get_angle().print2d().c_str());
+        ui->angle->setText(t_ss3.str().c_str());
 
         t_ss2 << quadro.get_read_time() * 1E3 << " ms / " << quadro.get_write_time() * 1E3 << " ms / "
               << quadro.get_loop_time() * 1E6 << " us";

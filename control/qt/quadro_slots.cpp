@@ -85,11 +85,15 @@ void Quadro::on_setAngle_clicked()
     settings_data();
 }
 
-void Quadro::on_torque_manual_reset_clicked()
+void Quadro::on_setAngleZ_clicked()
 {
-    ui->torque_manual_correction_x->setValue(0);
-    ui->torque_manual_correction_y->setValue(0);
-    ui->torque_manual_correction_z->setValue(90);
+    ui->torque_manual_correction_z->setValue(quadro.get_copter_heading() * 180 / M_PI);
+    settings_data();
+}
+
+void Quadro::on_torque_manual_resetZ_clicked()
+{
+    ui->torque_manual_correction_z->setValue(0);
     settings_data();
 }
 
