@@ -1,21 +1,21 @@
 В этом репозитории хранится код, который каким-то образом связан с разработкой квадрокоптеров.
 
-На данный момент мы используем Arduino Uno и датчик InvenSense MPU-6050.
+На данный момент мы используем Arduino Due и датчики InvenSense MPU-6050 (DMP) и HMC5883L.
 
-Управление квадрокоптером осуществляется с использованием [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/control/qt программы на Qt]&nbsp;(джойстик подключается к компьютеру по USB, квадрокоптер&nbsp;&mdash; через Bluetooth).
+Управление квадрокоптером осуществляется с использованием [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050-Compass/control/qt программы на Qt]&nbsp;(джойстик подключается к компьютеру по USB, квадрокоптер&nbsp;&mdash; через XBee Pro).
 
 '''Описание содержимого репозитория:'''
 
-* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/quadrocopter_oop Программа для квадрокоптера]
+* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050-Compass/arduino/quadrocopter_oop Программа для квадрокоптера]
 
-* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/joystick/serial_joystick/serial_joystick.ino joystick]&nbsp;&mdash; программа для джойстика на arduino, который подключается к компьютеру.
+* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050-Compass/arduino/joystick/serial_joystick/serial_joystick.ino joystick]&nbsp;&mdash; программа для джойстика на arduino, который подключается к компьютеру.
 
-* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/xbee xbee]&nbsp;&mdash; профили двух модулей XBee для программы X-CTU.
+* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050-Compass/xbee xbee]&nbsp;&mdash; профили двух модулей XBee для программы X-CTU.
 
-* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/debug/pid_test pid_test]&nbsp;&mdash; симуляция работы ПИД на квадрокоптере.
+* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050-Compass/debug/pid_test pid_test]&nbsp;&mdash; симуляция работы ПИД на квадрокоптере.
 
-* Скетч [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/pot_controlled_engine/pot_controlled_engine.ino pot_controlled_engine]&nbsp;позволяет управлять ESC при помощи переменного резистора.
+* Скетч [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050-Compass/arduino/pot_controlled_engine/pot_controlled_engine.ino pot_controlled_engine]&nbsp;позволяет управлять ESC при помощи переменного резистора.
 
-* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/bee_programmer/bee_programmer.ino bee_programmer]&nbsp;использует UART arduino для изменения режима работы Bluetooth Bee, который используется в проекте.
+* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050-Compass/arduino/bee_programmer/bee_programmer.ino bee_programmer]&nbsp;использует UART arduino для изменения режима работы Bluetooth Bee, который используется в проекте.
 
 Дополнительную информацию можно найти на [https://github.com/it-workshop/Quadrocopter/wiki вики] проекта, а также на сайте [http://technoworks.ru/qcopter/ technoworks.ru].
