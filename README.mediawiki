@@ -19,3 +19,6 @@
 * [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050-Compass/arduino/bee_programmer/bee_programmer.ino bee_programmer]&nbsp;использует UART arduino для изменения режима работы Bluetooth Bee, который используется в проекте.
 
 Дополнительную информацию можно найти на [https://github.com/it-workshop/Quadrocopter/wiki вики] проекта, а также на сайте [http://technoworks.ru/qcopter/ technoworks.ru].
+
+'''Необходимое'''
+Для работы потребуется Qt 4, [https://code.google.com/p/qextserialport/ qextserialport], Qwt 5, [http://arduino.cc/ Arduino] (beta-версия для Due), [https://github.com/it-workshop/pwm01.h_by_randomvibe pwm01.h], [https://github.com/it-workshop/i2cdevlib i2cdevlib], wine для x-ctu.
