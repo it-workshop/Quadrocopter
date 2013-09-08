@@ -417,9 +417,9 @@ void Quadro::plot_update()
         if(plot_time[i] == 0) plot_time[i] = plot_time[i + 1] - dt_seconds;
 
     //gyro
-    plot_gyro_x[plot_current] = quadro.get_gyroscope_readings().x;
-    plot_gyro_y[plot_current] = quadro.get_gyroscope_readings().y;
-    plot_gyro_z[plot_current] = quadro.get_gyroscope_readings().z;
+    plot_gyro_x[plot_current] = angular_velocity.x;
+    plot_gyro_y[plot_current] = angular_velocity.y;
+    plot_gyro_z[plot_current] = angular_velocity.z;
 
     ui->plot_gyro->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
     ui->plot_gyro->replot();
@@ -433,17 +433,17 @@ void Quadro::plot_update()
     ui->plot_acc->replot();
 
     //torque
-    plot_torque_x[plot_current] = quadro.get_torque_corrected().x;
-    plot_torque_y[plot_current] = quadro.get_torque_corrected().y;
-    plot_torque_z[plot_current] = quadro.get_torque_corrected().z;
-    plot_force[plot_current] = quadro.get_power();
+    plot_torque_x[plot_current] = torque.x;
+    plot_torque_y[plot_current] = torque.y;
+    plot_torque_z[plot_current] = torque.z;
+    plot_force[plot_current] = power;
 
     ui->plot_torques_and_force->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
     ui->plot_torques_and_force->replot();
 
     //angle
-    plot_angle_x[plot_current] = quadro.get_angle().x;
-    plot_angle_y[plot_current] = quadro.get_angle().y;
+    plot_angle_x[plot_current] = angle.x;
+    plot_angle_y[plot_current] = angle.y;
 
     plot_angle_accx[plot_current] = quadro.get_accelerometer_readings().angle_from_projections().x;
     plot_angle_accy[plot_current] = quadro.get_accelerometer_readings().angle_from_projections().y;
@@ -452,23 +452,23 @@ void Quadro::plot_update()
     ui->plot_angle->replot();
 
     //voltage
-    plot_voltage[plot_current] = quadro.get_voltage();
+    plot_voltage[plot_current] = voltage;
 
     ui->plot_voltage->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
     ui->plot_voltage->replot();
 
     //PID
-    plot_PID_P_x[plot_current] = quadro.get_PID_P().x;
-    plot_PID_I_x[plot_current] = quadro.get_PID_I().x;
-    plot_PID_D_x[plot_current] = quadro.get_PID_D().x;
+    plot_PID_P_x[plot_current] = PID_P.x;
+    plot_PID_I_x[plot_current] = PID_I.x;
+    plot_PID_D_x[plot_current] = PID_D.x;
 
-    plot_PID_P_y[plot_current] = quadro.get_PID_P().y;
-    plot_PID_I_y[plot_current] = quadro.get_PID_I().y;
-    plot_PID_D_y[plot_current] = quadro.get_PID_D().y;
+    plot_PID_P_y[plot_current] = PID_P.y;
+    plot_PID_I_y[plot_current] = PID_I.y;
+    plot_PID_D_y[plot_current] = PID_D.y;
 
-    plot_PID_P_z[plot_current] = quadro.get_PID_P().z;
-    plot_PID_I_z[plot_current] = quadro.get_PID_I().z;
-    plot_PID_D_z[plot_current] = quadro.get_PID_D().z;
+    plot_PID_P_z[plot_current] = PID_P.z;
+    plot_PID_I_z[plot_current] = PID_I.z;
+    plot_PID_D_z[plot_current] = PID_D.z;
 
     ui->plot_PID_x->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
     ui->plot_PID_x->replot();

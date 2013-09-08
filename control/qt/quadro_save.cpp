@@ -18,6 +18,8 @@ void Quadro::save_close()
 
 void Quadro::settings_data()
 {
+    if(!quadro_save_settings)
+        return;
     stringstream ss;
 
     ss << quadro.get_PID_angle_Kp().x << " ";

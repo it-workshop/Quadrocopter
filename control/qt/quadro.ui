@@ -51,13 +51,13 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
+      <y>-10</y>
       <width>421</width>
       <height>121</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tab_manual">
      <attribute name="title">
@@ -320,6 +320,125 @@
       </layout>
      </widget>
     </widget>
+    <widget class="QWidget" name="tab_log">
+     <attribute name="title">
+      <string>Log</string>
+     </attribute>
+     <widget class="QWidget" name="gridLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>411</width>
+        <height>62</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="log_grid">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="log_browse">
+         <property name="text">
+          <string>Browse...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="log_file"/>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="log_pause">
+         <property name="text">
+          <string>Pause</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="log_open">
+         <property name="text">
+          <string>Open</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="log_start">
+         <property name="text">
+          <string>Start</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <layout class="QFormLayout" name="log_time_form">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="log_time_label">
+           <property name="text">
+            <string>Timer</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QSpinBox" name="log_time">
+           <property name="suffix">
+            <string> msec</string>
+           </property>
+           <property name="maximum">
+            <number>1000</number>
+           </property>
+           <property name="singleStep">
+            <number>5</number>
+           </property>
+           <property name="value">
+            <number>50</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="gridLayoutWidget_3">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>70</y>
+        <width>411</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="log_grid_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="current_time">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>5</width>
+           <height>4</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QScrollBar" name="log_scroll">
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </widget>
    <widget class="QWidget" name="formLayoutWidget_2">
     <property name="geometry">
@@ -327,7 +446,7 @@
       <x>0</x>
       <y>120</y>
       <width>421</width>
-      <height>225</height>
+      <height>221</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_2">
@@ -1601,6 +1720,13 @@
      </item>
     </layout>
    </widget>
+   <zorder>tabWidget_mode</zorder>
+   <zorder>formLayoutWidget_2</zorder>
+   <zorder>tabwidgetplot</zorder>
+   <zorder>PID</zorder>
+   <zorder>gridLayoutWidget</zorder>
+   <zorder>current_time</zorder>
+   <zorder>log_scroll</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

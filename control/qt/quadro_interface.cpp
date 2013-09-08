@@ -82,38 +82,38 @@ void Quadro::interface_init()
 void Quadro::interface_write()
 {
     stringstream t_ss, t_ss1, t_ss2, t_ss3, t_ss4;
-    if(quadro.isoperational())
+    if(quadro.isoperational() || timer_log.isActive())
     {
         ui->voltage->setValue(quadro.get_voltage_percent());
         t_ss.precision(2);
-        t_ss4 << quadro.get_voltage() << "V";
+        t_ss4 << voltage << "V";
         ui->voltage->setFormat(t_ss4.str().c_str());
 
-        ui->torque->setText(quadro.get_torque_corrected().print().c_str());
-        ui->gyro->setText(quadro.get_gyroscope_readings().print().c_str());
+        ui->torque->setText(torque.print().c_str());
+        ui->gyro->setText(angular_velocity.print().c_str());
 
-        t_ss3 << (quadro.get_angle() * 180 / M_PI).print2d().c_str() << "\t"
-              << quadro.get_copter_heading() * 180 / M_PI;
+        t_ss3 << (angle * 180 / M_PI).print2d().c_str() << "\t"
+              << angle.z * 180 / M_PI;
 
         ui->angle->setText(t_ss3.str().c_str());
 
-        t_ss2 << quadro.get_read_time() * 1E3 << " ms / " << quadro.get_write_time() * 1E3 << " ms / "
-              << quadro.get_loop_time() * 1E6 << " us";
+        t_ss2 << read_time * 1E3 << " ms / " << write_time * 1E3 << " ms / "
+              << loop_time * 1E6 << " us";
         ui->readwrite_time->setText(t_ss2.str().c_str());
 
         for(int i = 0; i < quadro.get_motors_n(); i++)
         {
-            t_ss << quadro.get_motor_power(i);
+            t_ss << M[i];
             if(i != quadro.get_motors_n() - 1) t_ss << "\t";
         }
 
         ui->motors->setText(t_ss.str().c_str());
-        ui->CompassCopter->setOrigin(-quadro.get_copter_heading() * 180. / M_PI);
+        ui->CompassCopter->setOrigin(-angle.z * 180. / M_PI);
     }
 
     if(joy.isoperational())
     {
-        ui->joystick_power->setValue(joy.get_power_value() * 100);
+        ui->joystick_power->setValue(joystick_power * 100);
         if(joy.is_switched_on())
             ui->label_joystick_power->setStyleSheet("background-color: rgb(100, 255, 100);");
         else
@@ -121,14 +121,14 @@ void Quadro::interface_write()
 
         //t_ss1 << (joy.is_switched_on() ? "online" : "offline") << "\t";
         //t_ss1 << "p=" << joy.get_power_value() << "\t";
-        t_ss1 << joy.get_readings().print2d();
+        t_ss1 << joystick_readings.print2d();
         t_ss1.precision(3);
-        t_ss1 << "\t" << joy.get_heading() * 180 / M_PI;
+        t_ss1 << "\t" << joystick_heading * 180 / M_PI;
 
         ui->joystick_data->clear();
         ui->joystick_data->setText(t_ss1.str().c_str());
 
-        ui->CompassJoystick->setOrigin(joy.get_heading() * 180. / M_PI);
+        ui->CompassJoystick->setOrigin(joystick_heading * 180. / M_PI);
     }
 
     if(joy.isoperational())
