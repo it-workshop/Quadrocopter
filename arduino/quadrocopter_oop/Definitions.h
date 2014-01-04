@@ -34,7 +34,7 @@
 #define PID_AV_MIN 1
 
 // Cut AV that is lower than this value (used in PID)
-#define PID_AV_MIN_Z 0.5
+#define PID_AV_MIN_Z 0.2
 
 // Enable 3rd angular velocity PID (used both in Arduino and Qt apps)
 //#define PID_USE_YAW
