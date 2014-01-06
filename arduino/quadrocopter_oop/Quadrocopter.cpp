@@ -18,7 +18,7 @@ Quadrocopter::Quadrocopter()
     serialReadN += 2;
 #endif
 
-    DefaultVSensorPin = A3;
+    DefaultVSensorPin = A4;
     reactionType = ReactionNone;
 
 #ifdef _arch_avr_
