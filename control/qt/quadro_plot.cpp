@@ -433,9 +433,9 @@ void Quadro::plot_update()
     ui->plot_acc->replot();
 
     //torque
-    plot_torque_x[plot_current] = quadro.get_torque_corrected().x;
-    plot_torque_y[plot_current] = quadro.get_torque_corrected().y;
-    plot_torque_z[plot_current] = quadro.get_torque_corrected().z;
+    plot_torque_x[plot_current] = quadro.get_torque_corrected().x * PLOT_TORQUE_COEFF_XY;
+    plot_torque_y[plot_current] = quadro.get_torque_corrected().y * PLOT_TORQUE_COEFF_XY;
+    plot_torque_z[plot_current] = quadro.get_torque_corrected().z * PLOT_TORQUE_COEFF_Z;
     plot_force[plot_current] = quadro.get_power();
 
     ui->plot_torques_and_force->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
