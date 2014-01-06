@@ -428,13 +428,6 @@
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QPushButton" name="setAngle">
-         <property name="text">
-          <string>Keep XYZ</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </item>
      <item row="6" column="0">
