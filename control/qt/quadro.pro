@@ -23,7 +23,6 @@ SOURCES += main.cpp\
         quadro.cpp \
     serial.cpp \
     vect.cpp \
-    joystick.cpp \
     quadrocopter.cpp \
     mytime.cpp \
     quadro_plot.cpp \
@@ -35,7 +34,6 @@ SOURCES += main.cpp\
 HEADERS  += quadro.h \
     serial.h \
     vect.h \
-    joystick.h \
     quadrocopter.h \
     mytime.h
 

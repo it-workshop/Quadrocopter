@@ -24,7 +24,8 @@ HEADERS += ComplementaryFilter.h \
            VoltageSensor.h \
            LowPassFilter.cpp \
            ComplementaryFilter.cpp \
-    PWMInput.h
+    PWMInput.h \
+    PWMJoystick.h
 SOURCES += ComplementaryFilter.cpp \
            DAC8512.cpp \
            InfoLED.cpp \
@@ -41,4 +42,6 @@ SOURCES += ComplementaryFilter.cpp \
            RVector3D.cpp \
            TimerCount.cpp \
            VoltageSensor.cpp \
-    PWMInput.cpp
+           PWMInput.cpp \
+           quadrocopter_oop.ino \
+    PWMJoystick.cpp

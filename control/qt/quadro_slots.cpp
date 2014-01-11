@@ -18,48 +18,15 @@ void Quadro::on_actionQuadroReset_triggered()
     quadro.reset();
 }
 
-void Quadro::on_actionJoystickConnect_triggered()
-{
-    joy_connect();
-}
-
-void Quadro::on_actionJoystickDisconnect_triggered()
-{
-    ui->joy_reconnect->setChecked(false);
-    joy_disconnect();
-}
-
-void Quadro::on_actionJoystickCalibrate_zero_triggered()
-{
-    if(joy.isoperational())
-    {
-        joy.initiate_transmission();
-        joy.set_data_default();
-        settings_data();
-    }
-}
-
 void Quadro::on_quadro_device_textChanged(const QString &arg1)
 {
     quadro.setDevice(arg1.toAscii().data());
     settings_data();
 }
 
-void Quadro::on_joystick_device_textChanged(const QString &arg1)
-{
-    joy.setDevice(arg1.toAscii().data());
-    settings_data();
-}
-
 void Quadro::on_reaction_type_currentIndexChanged(int index)
 {
     quadro.set_reaction_type((quadrocopter::reaction_type_) index);
-    settings_data();
-}
-
-void Quadro::on_joystick_device_currentIndexChanged(const QString &arg1)
-{
-    joy.setDevice(arg1.toAscii().data());
     settings_data();
 }
 
@@ -77,47 +44,10 @@ void Quadro::keyPressEvent(QKeyEvent *a)
     }
 }
 
-void Quadro::on_setAngle_clicked()
-{
-    ui->torque_manual_correction_x->setValue(quadro.get_angle().x);
-    ui->torque_manual_correction_y->setValue(quadro.get_angle().y);
-    ui->torque_manual_correction_z->setValue(quadro.get_copter_heading() * 180 / M_PI);
-    settings_data();
-}
-
-void Quadro::on_setAngleZ_clicked()
-{
-    ui->torque_manual_correction_z->setValue(quadro.get_copter_heading() * 180 / M_PI);
-    settings_data();
-}
-
-void Quadro::on_torque_manual_resetZ_clicked()
-{
-    ui->torque_manual_correction_z->setValue(0);
-    settings_data();
-}
-
 void Quadro::on_quadro_update_clicked()
 {
     if(quadro.iswriteable())
         quadro.initiate_transmission();
-}
-
-void Quadro::on_torque_manual_correction_x_valueChanged(double arg1)
-{
-    //quadro.set_torque_manual_correction(vect(arg1, quadro.get_torque_manual_correction().y, 0));
-    settings_data();
-}
-
-void Quadro::on_torque_manual_correction_y_valueChanged(double arg1)
-{
-    //quadro.set_torque_manual_correction(vect(quadro.get_torque_manual_correction().x, arg1, 0));
-    settings_data();
-}
-
-void Quadro::on_torque_manual_correction_z_valueChanged(double arg1)
-{
-    settings_data();
 }
 
 void Quadro::on_PID_angle_Kp_x_valueChanged(double arg1)
@@ -190,39 +120,6 @@ void Quadro::on_PID_angle_MAXd_y_valueChanged(double arg1)
 {
     quadro.set_PID_angle_MAXd_y(arg1);
     settings_data();
-}
-
-void Quadro::on_joystick_connect_clicked()
-{
-    if(joy.isconnected())
-    {
-        ui->joy_reconnect->setChecked(false);
-        joy_disconnect();
-    }
-    else
-    {
-        joy_connect();
-    }
-}
-
-void Quadro::on_joystick_use_clicked()
-{
-    if(joy.isoperational())
-    {
-        joy.set_data_default();
-
-        ui->power->setValue(0);
-    }
-}
-
-void Quadro::on_joystick_calibrate_clicked()
-{
-    if(joy.isoperational())
-    {
-        joy.initiate_transmission();
-        joy.set_data_default();
-        settings_data();
-    }
 }
 
 void Quadro::on_quadro_autoupdate_triggered()

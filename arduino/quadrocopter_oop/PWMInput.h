@@ -9,7 +9,9 @@ extern const int PINS[PINSN];
 extern volatile int A[PINSN], B[PINSN];
 extern volatile int S[PINSN];
 
-int PWMGetValue(int i);
+extern double PWMMin[PINSN], PWMMax[PINSN], PWMAvg[PINSN];
+
+double PWMGetValue(int i);
 void PWMUpdateHL(int i);
 void PWMUpdateLH(int i);
 void PWMUpdater();

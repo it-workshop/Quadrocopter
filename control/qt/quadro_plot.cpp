@@ -73,34 +73,29 @@ void Quadro::plot_init()
     ui->plot_voltage->setAxisTitle(QwtPlot::xBottom, "Time [s]");
     ui->plot_voltage->setAxisTitle(QwtPlot::yLeft, "Voltage [V]");
 
-    ui->plot_acc->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
-    ui->plot_acc->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
-    ui->plot_acc->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
+    ui->plot_joy->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
+    ui->plot_joy->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
+    ui->plot_joy->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
 
     // Insert new curves
-    QwtPlotCurve *acc_x = new QwtPlotCurve("(g - a)<sub>x</sub>");
-    acc_x->attach(ui->plot_acc);
+    QwtPlotCurve *joy_x = new QwtPlotCurve("x");
+    joy_x->attach(ui->plot_joy);
 
-    QwtPlotCurve *acc_y = new QwtPlotCurve("(g - a)<sub>y</sub>");
-    acc_y->attach(ui->plot_acc);
+    QwtPlotCurve *joy_y = new QwtPlotCurve("y");
+    joy_y->attach(ui->plot_joy);
 
-    QwtPlotCurve *acc_z = new QwtPlotCurve("(g - a)<sub>z</sub>");
-    acc_z->attach(ui->plot_acc);
-
-    ui->plot_acc->setAxisScale(QwtPlot::yLeft, -15, 15);
+    ui->plot_joy->setAxisScale(QwtPlot::yLeft, -0.5, 0.5);
 
     // Set curve styles
-    acc_x->setPen(QPen(Qt::red));
-    acc_y->setPen(QPen(Qt::green));
-    acc_z->setPen(QPen(Qt::blue));
+    joy_x->setPen(QPen(Qt::red));
+    joy_y->setPen(QPen(Qt::green));
 
     // Attach (don't copy) data.
-    acc_x->setRawData(plot_time, plot_acc_x, plot_size);
-    acc_y->setRawData(plot_time, plot_acc_y, plot_size);
-    acc_z->setRawData(plot_time, plot_acc_z, plot_size);
+    joy_x->setRawData(plot_time, plot_joy_x, plot_size);
+    joy_y->setRawData(plot_time, plot_joy_y, plot_size);
 
-    ui->plot_acc->setAxisTitle(QwtPlot::xBottom, "Time [s]");
-    ui->plot_acc->setAxisTitle(QwtPlot::yLeft, "Acceleration [m/s^2]");
+    ui->plot_joy->setAxisTitle(QwtPlot::xBottom, "Time [s]");
+    ui->plot_joy->setAxisTitle(QwtPlot::yLeft, "Angle [rad]");
 
     ui->plot_angle->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
     ui->plot_angle->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
@@ -280,11 +275,11 @@ void Quadro::plot_init()
     gyro_zero->setYValue(0.0);
     gyro_zero->attach(ui->plot_gyro);
 
-    QwtPlotMarker *acc_zero = new QwtPlotMarker();
-    acc_zero->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
-    acc_zero->setLineStyle(QwtPlotMarker::HLine);
-    acc_zero->setYValue(0.0);
-    acc_zero->attach(ui->plot_acc);
+    QwtPlotMarker *joy_zero = new QwtPlotMarker();
+    joy_zero->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
+    joy_zero->setLineStyle(QwtPlotMarker::HLine);
+    joy_zero->setYValue(0.0);
+    joy_zero->attach(ui->plot_joy);
 
     QwtPlotMarker *PID_zero_x = new QwtPlotMarker();
     PID_zero_x->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
@@ -315,9 +310,8 @@ void Quadro::plot_reset_data()
         plot_gyro_y[i] = 0;
         plot_gyro_z[i] = 0;
 
-        plot_acc_x[i] = 0;
-        plot_acc_y[i] = 0;
-        plot_acc_z[i] = 0;
+        plot_joy_x[i] = 0;
+        plot_joy_y[i] = 0;
 
         plot_angle_x[i] = 0;
         plot_angle_y[i] = 0;
@@ -380,9 +374,8 @@ void Quadro::plot_update()
         plot_gyro_y[i] = plot_gyro_y[i + 1];
         plot_gyro_z[i] = plot_gyro_z[i + 1];
 
-        plot_acc_x[i] = plot_acc_x[i + 1];
-        plot_acc_y[i] = plot_acc_y[i + 1];
-        plot_acc_z[i] = plot_acc_z[i + 1];
+        plot_joy_x[i] = plot_joy_x[i + 1];
+        plot_joy_y[i] = plot_joy_y[i + 1];
 
         plot_angle_x[i] = plot_angle_x[i + 1];
         plot_angle_y[i] = plot_angle_y[i + 1];
@@ -425,12 +418,11 @@ void Quadro::plot_update()
     ui->plot_gyro->replot();
 
     //acc
-    plot_acc_x[plot_current] = quadro.get_accelerometer_readings().x;
-    plot_acc_y[plot_current] = quadro.get_accelerometer_readings().y;
-    plot_acc_z[plot_current] = quadro.get_accelerometer_readings().z;
+    plot_joy_x[plot_current] = quadro.get_torque_manual_correction().x;
+    plot_joy_y[plot_current] = quadro.get_torque_manual_correction().y;
 
-    ui->plot_acc->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
-    ui->plot_acc->replot();
+    ui->plot_joy->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
+    ui->plot_joy->replot();
 
     //torque
     plot_torque_x[plot_current] = quadro.get_torque_corrected().x * PLOT_TORQUE_COEFF_XY;

@@ -8,7 +8,7 @@
 #include "PID.h"
 #include "InfoLED.h"
 #include "VoltageSensor.h"
-#include "PWMInput.h"
+#include "PWMJoystick.h"
 
 #ifdef USE_COMPASS
     // i2cdevlib
@@ -31,6 +31,7 @@ private:
 #ifdef USE_COMPASS
     HMC5883L* MyCompass;
 #endif
+    PWMJoystick* Joystick;
 
     // pins configuration
 
@@ -110,6 +111,8 @@ public:
 
     void processSerialRx();
     void processSerialTx();
+
+    void processJoystickRx();
 
     void iteration();
     void MPUInterrupt();

@@ -42,9 +42,9 @@ quadrocopter::quadrocopter()
         readBytesN += 2;
     #endif
 #endif
-    //readBytesN = BN;
 
-    joystick_coefficient = 0.5;
+    readBytesN += 7;
+    //readBytesN = BN;
 
     busyBit = false;
 
@@ -126,16 +126,6 @@ void quadrocopter::resetNewDataAvailable()
     newDataAvailable = false;
 }
 
-number_vect_t quadrocopter::get_joystick_coefficient()
-{
-    return(joystick_coefficient);
-}
-
-void quadrocopter::set_joystick_heading(number_vect_t a)
-{
-    joystick_heading = a;
-}
-
 number_vect_t quadrocopter::get_copter_heading()
 {
 #ifdef USE_COMPASS
@@ -178,18 +168,6 @@ number_vect_t quadrocopter::get_motor_power(int i)
 int quadrocopter::get_motors_n()
 {
     return(MOTORS_N);
-}
-
-void quadrocopter::set_power(number_vect_t n_power)
-{
-    if(n_power > 1) n_power = 1;
-    else if(n_power < 0) n_power = 0;
-    power = n_power;
-}
-
-void quadrocopter::set_joystick_correction(vect n_joystick_correction)
-{
-    set_torque_manual_correction(n_joystick_correction * joystick_coefficient);
 }
 
 void quadrocopter::set_PID_angle_Kp_x(number_vect_t t)
@@ -295,11 +273,6 @@ vect quadrocopter::get_PID_angle_Ki()
 vect quadrocopter::get_PID_angle_Kd()
 {
     return(PID_angle_Kd);
-}
-
-void quadrocopter::set_torque_manual_correction(vect n_torque_manual_correction)
-{
-    torque_manual_correction = n_torque_manual_correction;
 }
 
 vect quadrocopter::get_torque_manual_correction()

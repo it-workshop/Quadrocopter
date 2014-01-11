@@ -18,6 +18,8 @@ Quadrocopter::Quadrocopter()
     serialReadN += 2;
 #endif
 
+    serialReadN -= 7;
+
     DefaultVSensorPin = A4;
     reactionType = ReactionNone;
 
@@ -65,6 +67,8 @@ Quadrocopter::Quadrocopter()
     MyCompass = new HMC5883L;
     MyCompass->initialize();
 #endif
+
+    Joystick = new PWMJoystick;
 
 #ifdef DEBUG_DAC
     myLed = MyMPU->myLed;
@@ -154,6 +158,7 @@ void Quadrocopter::iteration()
             processSerialRx();
             myLed.setState(5);
             processSerialTx();
+            processJoystickRx();
         }
 
 #ifdef DEBUG_DAC

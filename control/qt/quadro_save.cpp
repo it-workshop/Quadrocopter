@@ -44,13 +44,8 @@ void Quadro::settings_data()
     //ss << quadro.getDevice() << " ";
     //ss << quadro.get_torque_manual_correction().x << " ";
     //ss << quadro.get_torque_manual_correction().y << " ";
-    ss << ui->torque_manual_correction_x->value() << " ";
-    ss << ui->torque_manual_correction_y->value() << " ";
-    ss << ui->torque_manual_correction_z->value() << " ";
     ss << quadro.get_reaction_type() << " ";
     ss << ui->quadro_autoupdate->isChecked() << " ";
-
-    //ss << joy.getDevice() << " ";
 
     settings_open();
 
@@ -91,14 +86,6 @@ void Quadro::settings_read()
 //    string t_string;
 //    settings_file >> t_string; quadro.setDevice(t_string);
 
-    double t_double1;
-    settings_file >> t_double;
-    settings_file >> t_double1;
-    quadro.set_torque_manual_correction(vect(t_double, t_double1, 0));
-
-    settings_file >> t_double;
-    quadro.set_joystick_heading(t_double * M_PI / 180.);
-
     int t_int;
     settings_file >> t_int; quadro.set_reaction_type((quadrocopter::reaction_type_) t_int);
     settings_file >> t_int; ui->quadro_autoupdate->setChecked(t_int);
@@ -121,7 +108,7 @@ void Quadro::save_open()
     if(ui->LogSave_data->isChecked())
     {
         save_file.open(save_filename.c_str(), std::ios_base::app);
-        save_file << "#seconds\tdatetime\tqptr_op\tjoy_op\tj_use\tgyro_x\tgyro_y\tgyro_z\treact_t\tangle_x\tangle_y\tangle_z\t"
+        save_file << "#seconds\tdatetime\tqptr_op\t\tj_use\tgyro_x\tgyro_y\tgyro_z\treact_t\tangle_x\tangle_y\tangle_z\t"
                   << "trq_x\ttrq_y\ttrq_z\tc_power\tvoltage\tPID_P_x\tPID_P_y\tPID_P_z\tPID_I_x\tPID_I_y\tPID_I_z\t"
                   << "PID_D_x\tPID_D_y\tPID_D_z\tq_head\tKp_x\tKp_y\tKp_z\tKi_x\tKi_y\tKi_z\tKd_x\tKd_y\tKd_z\t"
                   << "MaxP_x\tMaxP_y\tMaxP_z\tMaxI_x\tMaxI_y\tMaxI_z\tMaxD_x\tMaxD_y\tMaxD_z\tjoy_x\tjoy_y\tc_man_x\tc_man_y\tc_man_z\t"
@@ -141,8 +128,6 @@ void Quadro::save_data()
 
         t_ss << t_time.getSeconds() << "\t" << t_time.getTime() << "\t"
              << quadro.isoperational() << "\t"
-             << joy.isoperational() << "\t"
-             << ui->JoystickUse->isChecked() << "\t"
              << quadro.get_gyroscope_readings().print() << "\t"
              << quadro.get_reaction_type() << "\t"
              << quadro.get_angle().print() << "\t"
@@ -160,11 +145,7 @@ void Quadro::save_data()
              << quadro.get_PID_angle_MAXi().print() << "\t"
              << quadro.get_PID_angle_MAXd().print() << "\t"
 
-             << joy.get_readings().print2d() << "\t"
-             << quadro.get_torque_manual_correction().print() << "\t"
-             << joy.get_power_value() << "\t"
-             << joy.get_heading() << "\t"
-             << joy.is_switched_on() << "\t";
+             << quadro.get_torque_manual_correction().print() << "\t";
 
         for(i = 0; i < quadro.get_motors_n(); i++)
         {

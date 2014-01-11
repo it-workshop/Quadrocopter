@@ -35,8 +35,6 @@ private:
     vect PID_angle_Kp, PID_angle_Ki, PID_angle_Kd;
     vect PID_angle_MAXp, PID_angle_MAXi, PID_angle_MAXd;
 
-    number_vect_t joystick_coefficient;
-
     number_vect_t voltage;
     static const number_vect_t voltage_min = 8.0;
     static const number_vect_t voltage_max = 12.6;
@@ -63,10 +61,6 @@ public:
     vect get_gyroscope_readings(); // returns gyroscope readings, values [0...1]
     vect get_accelerometer_readings(); // returns acceleromter readings, values [0...]
     vect get_angle(); //returns angle, values [0...1]
-
-    void set_power(number_vect_t);
-    void set_torque_manual_correction(vect);
-    void set_joystick_correction(vect);
 
     void set_PID_angle_Kp_x(number_vect_t);
     void set_PID_angle_Ki_x(number_vect_t);
@@ -126,13 +120,12 @@ public:
     bool getNewDataAvailable();
     void resetNewDataAvailable();
 
-    number_vect_t get_joystick_coefficient();
-
-    void set_joystick_heading(number_vect_t a);
     number_vect_t get_copter_heading();
     number_vect_t get_joystick_heading();
 
     virtual void on_rx();
+
+    double getPower();
 };
 
 #endif // QUADROCOPTER_H

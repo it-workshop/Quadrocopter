@@ -22,6 +22,11 @@ void quadrocopter::on_rx()
     }
 }
 
+double quadrocopter::getPower()
+{
+    return(power);
+}
+
 void quadrocopter::reset()
 {
 //    torque_manual_correction.x = 0;
@@ -70,8 +75,9 @@ void quadrocopter::read_data()
     vect t_PID_z;
 #endif
 #ifdef USE_COMPASS
-    number_vect_t t_copter_heading;
+    number_vect_t t_copter_heading, t_joystick_heading;
 #endif
+    number_vect_t t_power, t_angle0_x, t_angle0_y;
 
     t_torque_corrected.x = read_number_vect_t(-0.5, 0.5, 1);
     t_torque_corrected.y = read_number_vect_t(-0.5, 0.5, 1);
@@ -100,7 +106,13 @@ void quadrocopter::read_data()
 
 #ifdef USE_COMPASS
     t_copter_heading = read_number_vect_t(0, 7, 2);
+    t_joystick_heading = read_number_vect_t(0, 7, 2);
 #endif
+
+    t_power = read_number_vect_t(0, 100, 1) / 100;
+
+    t_angle0_x = read_number_vect_t(-2, 2, 2);
+    t_angle0_y = read_number_vect_t(-2, 2, 2);
 
     for(int i = 0; i < MOTORS_N; i++)
         t_motors[i] = sread();
@@ -133,7 +145,13 @@ void quadrocopter::read_data()
 
 #ifdef USE_COMPASS
         copter_heading = t_copter_heading;
+        joystick_heading = t_joystick_heading;
 #endif
+
+        torque_manual_correction.x = t_angle0_x;
+        torque_manual_correction.y = t_angle0_y;
+
+        power = t_power;
 
         voltage = t_voltage;
     }
@@ -168,19 +186,6 @@ void quadrocopter::read_data()
 
 void quadrocopter::write_data()
 {
-//    for(int i = 0; i < BN; i++)
-//    {
-//        swrite(i + 33);
-//    }
-    if(power > 1) power = 1;
-    else if(power < 0) power = 0;
-
-    //send torque_manual_correction
-    for(int i = 0; i < 2; i++) // 2 - axis count
-        write_number_vect_t(-1, 1, torque_manual_correction.value_by_axis_index(i), 2);
-
-    //send power
-    swrite(power * 100); // in percents
 
     //send reaction type
     swrite('0' + reaction_type);
@@ -209,9 +214,5 @@ void quadrocopter::write_data()
     write_number_vect_t(0, 10, PID_angle_MAXp.z, 2);
     write_number_vect_t(0, 10, PID_angle_MAXi.z, 2);
     write_number_vect_t(0, 10, PID_angle_MAXd.z, 2);
-#endif
-
-#ifdef USE_COMPASS
-    write_number_vect_t(0, 7, joystick_heading, 2);
 #endif
 }

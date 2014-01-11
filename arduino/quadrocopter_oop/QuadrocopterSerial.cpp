@@ -33,13 +33,6 @@ void Quadrocopter::processSerialTx()
 #endif
 
             {
-                // torque_manual_correction +4
-                for(int i = 0; i < 2; i++)
-                    MSerial->readDouble(-1, 1, angleManualCorrection.valueByAxisIndex(i), 2);
-
-                //force +1
-                MController->setForce(MSerial->read() / 100.);
-
                 //reaction_type +1
                 reactionType = (reactionType_) (MSerial->read() - '0');
 
@@ -86,11 +79,6 @@ void Quadrocopter::processSerialTx()
                 MSerial->readDouble(0, 10, tDouble, 2); pidAngleZ.setPMinMax(tDouble);
                 MSerial->readDouble(0, 10, tDouble, 2); pidAngleZ.setIMinMax(tDouble);
                 MSerial->readDouble(0, 10, tDouble, 2); pidAngleZ.setDMinMax(tDouble);
-#endif
-
-#ifdef USE_COMPASS
-                // joystick heading +2
-                MSerial->readDouble(0, 7, joystickHeading, 2);
 #endif
             }
 #ifdef DEBUG_NO_TX_ARDUINO
@@ -140,7 +128,13 @@ void Quadrocopter::processSerialTx()
 
 #ifdef USE_COMPASS
                 MSerial->writeDouble(0, 7, copterHeading, 2); // +2
+                MSerial->writeDouble(0, 7, joystickHeading, 2); // +2
 #endif
+
+                MSerial->writeDouble(0, 100, MController->getForce() * 100, 1); // +1
+
+                MSerial->writeDouble(-2, 2, angleManualCorrection.x, 2); // +2
+                MSerial->writeDouble(-2, 2, angleManualCorrection.y, 2); // +2
 
                 //motors
                 for (unsigned i = 0; i < 4; i++)
@@ -199,5 +193,13 @@ void Quadrocopter::processSerialTx()
 //        MSerial->bufferAdd('\n');
 //        MSerial->bufferWrite();
 //        return;
-//    }
+    //    }
+}
+
+void Quadrocopter::processJoystickRx()
+{
+    joystickHeading += Joystick->getAV();
+    angleManualCorrection.x = Joystick->getAngleX();
+    angleManualCorrection.y = Joystick->getAngleY();
+    MController->setForce(Joystick->getPower());
 }

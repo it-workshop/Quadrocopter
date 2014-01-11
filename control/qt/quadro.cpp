@@ -37,7 +37,6 @@ Quadro::Quadro(QWidget *parent) :
     update_ports();
     save_open();
 
-    joy_disconnect();
     quadro_disconnect();
 
     timer_reconnect.start(timer_reconnect_interval);
@@ -53,29 +52,7 @@ Quadro::~Quadro()
 
 void Quadro::set_quadro_data()
 {
-    number_vect_t t_power;
-    vect t_correction;
-
-    t_correction = vect(ui->torque_manual_correction_x->value(), ui->torque_manual_correction_y->value(), 0);
-
-    if(joy.isoperational() && ui->joystick_use->isChecked())
-    {
-        t_correction += joy.get_readings() * quadro.get_joystick_coefficient();
-
-        t_power = joy.get_power_value();
-        if(!joy.is_switched_on()) t_power = 0;
-
-        quadro.set_joystick_heading(joy.get_heading());
-    }
-    else
-    {
-        t_power = ui->power->value();
-        quadro.set_joystick_heading(ui->torque_manual_correction_z->value() / 180. * M_PI);
-    }
-
-    quadro.set_power(t_power);
-    quadro.set_reaction_type((quadrocopter::reaction_type_) ui->reaction_type->currentIndex());
-    quadro.set_torque_manual_correction(t_correction);
+   quadro.set_reaction_type((quadrocopter::reaction_type_) ui->reaction_type->currentIndex());
 }
 
 void Quadro::quadro_disconnect()
@@ -83,29 +60,6 @@ void Quadro::quadro_disconnect()
     quadro.do_disconnect();
 
     interface_write();
-}
-
-void Quadro::joy_disconnect()
-{
-    ui->power->setValue(0);
-
-    joy.do_disconnect();
-
-    interface_write();
-}
-
-void Quadro::joy_connect()
-{
-    joy.readErrorReset();
-    joy.do_connect();
-
-    if(joy.isoperational())
-    {
-        joy.initiate_transmission();
-        joy.set_data_default();
-
-        interface_write();
-    }
 }
 
 void Quadro::quadro_connect()
@@ -133,12 +87,6 @@ void Quadro::timer_reconnect_update()
             quadro_connect();
             interface_write();
         }
-        if(!joy.isoperational() && ui->joy_reconnect->isChecked())
-        {
-            joy.readErrorReset();
-            joy_connect();
-            interface_write();
-        }
         allowed = true;
     }
 }
@@ -156,11 +104,6 @@ void Quadro::timer_auto_update()
             quadro_disconnect();
             quadro.readErrorReset();
         }
-        if(joy.readError())
-        {
-            joy_disconnect();
-            joy.readErrorReset();
-        }
 
         save_data();
 
@@ -168,9 +111,6 @@ void Quadro::timer_auto_update()
 
         if(quadro.iswriteable() && ui->quadro_autoupdate->isChecked())
             quadro.initiate_transmission();
-
-        if(joy.isoperational())
-            joy.initiate_transmission();
 
         interface_write();
 
