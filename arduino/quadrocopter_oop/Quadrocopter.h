@@ -8,7 +8,7 @@
 #include "PID.h"
 #include "InfoLED.h"
 #include "VoltageSensor.h"
-
+#include "PWMInput.h"
 
 #ifdef USE_COMPASS
     // i2cdevlib

@@ -23,7 +23,8 @@ HEADERS += ComplementaryFilter.h \
            TimerCount.h \
            VoltageSensor.h \
            LowPassFilter.cpp \
-           ComplementaryFilter.cpp
+           ComplementaryFilter.cpp \
+    PWMInput.h
 SOURCES += ComplementaryFilter.cpp \
            DAC8512.cpp \
            InfoLED.cpp \
@@ -39,4 +40,5 @@ SOURCES += ComplementaryFilter.cpp \
            QuadrocopterSerial.cpp \
            RVector3D.cpp \
            TimerCount.cpp \
-           VoltageSensor.cpp
+           VoltageSensor.cpp \
+    PWMInput.cpp

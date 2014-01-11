@@ -11,13 +11,18 @@
 #include "Quadrocopter.h"
 
 Quadrocopter* quadro;
+PWMInput* t;
 void setup()
 {
-    quadro = new Quadrocopter;
+    //quadro = new Quadrocopter;
+    t = new PWMInput(4);
+    Serial.begin(115200);
 }
 
 void loop()
 {
-    quadro->iteration();
+    //quadro->iteration();
+    Serial.println(t->getValue());
+    delay(500);
 }
 
