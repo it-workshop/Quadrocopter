@@ -3,19 +3,16 @@
 
 #include <Arduino.h>
 
-#define NMAX 4
+#define PINSN 4
 
-class PWMInput
-{
-private:
-    int pin;
-    volatile int A, B;
-    // A = \tau, B = T - \tau
-    void updateLH();
-    void updateHL();
-public:
-    PWMInput(int _pin);
-    int getValue();
-};
+extern const int PINS[PINSN];
+extern volatile int A[PINSN], B[PINSN];
+extern volatile int S[PINSN];
+
+int PWMGetValue(int i);
+void PWMUpdateHL(int i);
+void PWMUpdateLH(int i);
+void PWMUpdater();
+void PWMInit();
 
 #endif // PWMINPUT_H

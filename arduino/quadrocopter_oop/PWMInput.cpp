@@ -1,28 +1,49 @@
 #include "PWMInput.h"
 
-PWMInput::PWMInput(int _pin)
+const int PINS[PINSN] = {4, 5, 12, 13};
+volatile int A[PINSN], B[PINSN];
+volatile int S[PINSN];
+
+void PWMInit()
 {
-    pin = _pin;
-    attachInterrupt(pin, (void (*)(void))(this->updateLH), RISING);
-    attachInterrupt(pin, (void (*)()) (this->updateHL), FALLING);
+    for(int i = 0; i < PINSN; i++)
+    {
+        attachInterrupt(PINS[i], PWMUpdater, CHANGE);
+        A[i] = B[i] = 1;
+    }
 }
 
-void PWMInput::updateLH()
+void PWMUpdater()
+{
+    int t;
+    for(int i = 0; i < PINSN; i++)
+    {
+        t = digitalRead(PINS[i]);
+
+        if(S[i] == HIGH && t == LOW)
+            PWMUpdateHL(i);
+        else if(S[i] == LOW && t == HIGH)
+            PWMUpdateLH(i);
+
+        S[i] = t;
+    }
+}
+
+void PWMUpdateLH(int i)
 {
     int C = micros();
-    A = C;
-    B = C - B;
+    A[i] = C;
+    B[i] = C - B[i];
 }
 
-
-void PWMInput::updateHL()
+void PWMUpdateHL(int i)
 {
     int C = micros();
-    A = C - A;
-    B = micros();
+    A[i] = C - A[i];
+    B[i] = micros();
 }
 
-int PWMInput::getValue()
+int PWMGetValue(int i)
 {
-    return(100 * A / (A + B));
+    return(100 * A[i] / (A[i] + B[i]));
 }
