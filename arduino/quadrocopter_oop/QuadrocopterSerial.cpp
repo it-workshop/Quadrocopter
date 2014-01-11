@@ -1,5 +1,6 @@
 #include "Quadrocopter.h"
 #include "PID.h"
+#include "PWMInput.h"
 
 void Quadrocopter::processSerialRx()
 {
@@ -26,8 +27,8 @@ void Quadrocopter::processSerialTx()
             // reading
 
             //myLed.setState(70);
-//            for(int i = 0; i < BN; i++)
-//                x[i] = MSerial->read();
+            //            for(int i = 0; i < BN; i++)
+            //                x[i] = MSerial->read();
 #ifdef DEBUG_DAC
             myLed.setState(10);
 #endif
@@ -92,8 +93,8 @@ void Quadrocopter::processSerialTx()
 #endif
 
 #ifndef DEBUG_NO_TX_ARDUINO
-//            for(int i = 0; i < BN; i++)
-//                MSerial->bufferAdd(x[i]);
+            //            for(int i = 0; i < BN; i++)
+            //                MSerial->bufferAdd(x[i]);
             // writing bytes
             {
                 MSerial->writeDouble(-0.5, 0.5, getTorques().x, 1); // +1
@@ -165,6 +166,15 @@ void Quadrocopter::processSerialTx()
         MSerial->bufferAdd("; H = ");
         MSerial->writeNumber(copterHeading * 180 / M_PI);
 
+        MSerial->bufferAdd("; J = ");
+        MSerial->writeNumber(joystickHeading * 180 / M_PI);
+
+        MSerial->bufferAdd("; P = ");
+        MSerial->writeNumber(MController->getForce());
+
+        MSerial->bufferAdd("; _P_ = ");
+        MSerial->writeNumber(1.0 * RA[2] / (RA[2] + RB[2]));
+
         MSerial->bufferAdd("; MX = ");
         MSerial->writeNumber(BMag.x * 100);
         MSerial->bufferAdd("; MY = ");
@@ -182,23 +192,27 @@ void Quadrocopter::processSerialTx()
         return;
     }
     else MSerial->dropCommand();
-//    else if(MSerial->getCommand() == 'h')
-//    {
-//        MSerial->toggleSendAutomaticly();
-//        MSerial->dropCommand();
-//    }
-//    else if(MSerial->isSendAutomaticlyEnabled())
-//    {
-//        MSerial->bufferInit();
-//        MSerial->bufferAdd('\n');
-//        MSerial->bufferWrite();
-//        return;
+    //    else if(MSerial->getCommand() == 'h')
+    //    {
+    //        MSerial->toggleSendAutomaticly();
+    //        MSerial->dropCommand();
+    //    }
+    //    else if(MSerial->isSendAutomaticlyEnabled())
+    //    {
+    //        MSerial->bufferInit();
+    //        MSerial->bufferAdd('\n');
+    //        MSerial->bufferWrite();
+    //        return;
     //    }
 }
 
 void Quadrocopter::processJoystickRx()
 {
-    joystickHeading += Joystick->getAV();
+    joystickHeading += Joystick->getAV() * dt;
+    while(joystickHeading > 2 * M_PI)
+        joystickHeading -= 2 * M_PI;
+    while(joystickHeading < 0)
+        joystickHeading += 2 * M_PI;
     angleManualCorrection.x = Joystick->getAngleX();
     angleManualCorrection.y = Joystick->getAngleY();
     MController->setForce(Joystick->getPower());

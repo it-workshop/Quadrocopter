@@ -1,6 +1,6 @@
 #include "PWMInput.h"
 
-const int PINS[PINSN] = {3, 4, 5, 12};
+const int PINS[PINSN] = {3, 4, 11, 12};
 volatile int A[PINSN], B[PINSN], S[PINSN];
 volatile int RA[PINSN], RB[PINSN];
 
@@ -14,8 +14,8 @@ void PWMInit()
     {
         attachInterrupt(PINS[i], PWMUpdater, CHANGE);
         A[i] = B[i] = -1;
-        RA[i] = 1;
-        RB[i] = 1;
+        RA[i] = -1;
+        RB[i] = -1;
     }
 }
 
@@ -59,6 +59,8 @@ void PWMUpdateHL(int i)
 
 double PWMGetValue(int i)
 {
+    if(RA[i] == -1 || RB[i] == -1 || (RA[i] + RB[i]) == 0)
+        return(0);
     double v = 1.0 * RA[i] / (RA[i] + RB[i]);
     if(v != v) v = PWMAvg[i];
 

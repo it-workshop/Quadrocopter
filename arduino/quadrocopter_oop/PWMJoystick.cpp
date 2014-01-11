@@ -8,7 +8,9 @@ PWMJoystick::PWMJoystick()
 
 double PWMJoystick::getAV()
 {
-    return(PWMGetValue(AVIndex) * AVCoeff);
+    double v = PWMGetValue(AVIndex) * AVCoeff;
+    if(fabs(v) < AVCoeffMin) v = 0;
+    return(v);
 }
 
 double PWMJoystick::getAngleX()
@@ -20,7 +22,6 @@ double PWMJoystick::getAngleY()
 {
     return(PWMGetValue(AngleYIndex) * AngleCoeff);
 }
-
 
 double PWMJoystick::getPower()
 {

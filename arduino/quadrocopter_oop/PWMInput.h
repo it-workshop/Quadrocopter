@@ -6,7 +6,7 @@
 #define PINSN 4
 
 extern const int PINS[PINSN];
-extern volatile int A[PINSN], B[PINSN];
+extern volatile int A[PINSN], B[PINSN], RA[PINSN], RB[PINSN];
 extern volatile int S[PINSN];
 
 extern double PWMMin[PINSN], PWMMax[PINSN], PWMAvg[PINSN];
