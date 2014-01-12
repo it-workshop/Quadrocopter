@@ -88,6 +88,9 @@ private:
 
     InfoLED myLed;
 
+    double forceOverrideValue;
+    bool forceOverride;
+
 #ifdef DEBUG_FREQ_PIN
     InfoLED freqLed;
 #endif

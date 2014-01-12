@@ -50,6 +50,9 @@ quadrocopter::quadrocopter()
 
     newDataAvailable = false;
 
+    force_override = 0;
+    force_override_value = 0;
+
     defaults();
 }
 
@@ -138,6 +141,13 @@ number_vect_t quadrocopter::get_copter_heading()
 number_vect_t quadrocopter::get_joystick_heading()
 {
     return(joystick_heading);
+}
+
+void quadrocopter::set_force_override(bool _do, double _value)
+{
+    force_override = _do;
+    force_override_value = _value / 100.;
+    //cerr << "set do=" << force_override << " value=" << force_override_value << endl;
 }
 
 vect quadrocopter::get_torque_corrected()

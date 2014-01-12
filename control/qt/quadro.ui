@@ -53,7 +53,7 @@
       <x>0</x>
       <y>10</y>
       <width>421</width>
-      <height>288</height>
+      <height>251</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_2">
@@ -199,6 +199,16 @@
         </property>
        </item>
       </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QCheckBox" name="force_checkbox">
+       <property name="text">
+        <string>Frc ovrd</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QwtSlider" name="force"/>
      </item>
     </layout>
    </widget>
@@ -376,7 +386,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>350</y>
+      <y>270</y>
       <width>421</width>
       <height>91</height>
      </rect>
@@ -1256,7 +1266,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>440</y>
+      <y>360</y>
       <width>431</width>
       <height>31</height>
      </rect>
@@ -1291,6 +1301,19 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="stopButton">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>420</y>
+      <width>181</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>STOP</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -1447,6 +1470,11 @@
    <class>QwtDial</class>
    <extends>QWidget</extends>
    <header>qwt_dial.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QwtSlider</class>
+   <extends>QWidget</extends>
+   <header>qwt_slider.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -174,3 +174,23 @@ void Quadro::on_PID_angle_MAXd_z_valueChanged(double arg1)
     quadro.set_PID_angle_MAXd_z(arg1);
     settings_data();
 }
+
+void Quadro::on_force_checkbox_clicked()
+{
+    quadro.set_force_override(ui->force_checkbox->isChecked(), ui->force->value());
+    settings_data();
+}
+
+void Quadro::on_force_valueChanged(double value)
+{
+    quadro.set_force_override(ui->force_checkbox->isChecked(), ui->force->value());
+    settings_data();
+}
+
+void Quadro::on_stopButton_clicked()
+{
+    ui->force->setValue(0);
+    ui->force_checkbox->setChecked(1);
+    quadro.set_force_override(ui->force_checkbox->isChecked(), ui->force->value());
+    settings_data();
+}

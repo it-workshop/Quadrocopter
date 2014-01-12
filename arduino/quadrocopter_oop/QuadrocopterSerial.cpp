@@ -34,6 +34,9 @@ void Quadrocopter::processSerialTx()
 #endif
 
             {
+                forceOverrideValue = MSerial->read() / 100.; // +1
+                forceOverride = MSerial->read(); // +1
+
                 //reaction_type +1
                 reactionType = (reactionType_) (MSerial->read() - '0');
 
@@ -215,5 +218,9 @@ void Quadrocopter::processJoystickRx()
         joystickHeading += 2 * M_PI;
     angleManualCorrection.x = Joystick->getAngleX();
     angleManualCorrection.y = Joystick->getAngleY();
-    MController->setForce(Joystick->getPower());
+
+    if(forceOverride)
+        MController->setForce(forceOverrideValue);
+    else
+        MController->setForce(Joystick->getPower());
 }

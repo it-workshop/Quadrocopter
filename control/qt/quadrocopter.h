@@ -45,6 +45,9 @@ private:
 
     number_vect_t copter_heading, joystick_heading;
 
+    bool force_override;
+    double force_override_value;
+
     void defaults();
 
     void read_data(); // read data from device
@@ -122,6 +125,8 @@ public:
 
     number_vect_t get_copter_heading();
     number_vect_t get_joystick_heading();
+
+    void set_force_override(bool _do, double _value);
 
     virtual void on_rx();
 

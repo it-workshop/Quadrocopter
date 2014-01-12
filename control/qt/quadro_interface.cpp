@@ -62,6 +62,8 @@ void Quadro::interface_init()
 
     ui->reaction_type->setCurrentIndex(quadro.get_reaction_type());
 
+    ui->stopButton->setStyleSheet("background-color: rgb(255, 0, 0); font-size: 30pt; font-weight: bold;");
+
     setFocus();
 }
 

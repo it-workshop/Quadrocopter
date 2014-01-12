@@ -186,6 +186,10 @@ void quadrocopter::read_data()
 
 void quadrocopter::write_data()
 {
+    swrite(force_override_value * 100); // +1
+
+    swrite(force_override); // +1
+
 
     //send reaction type
     swrite('0' + reaction_type);

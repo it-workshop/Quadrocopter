@@ -133,6 +133,9 @@ private slots:
     void on_PID_angle_MAXp_z_valueChanged(double arg1);
     void on_PID_angle_MAXi_z_valueChanged(double arg1);
     void on_PID_angle_MAXd_z_valueChanged(double arg1);
+    void on_force_checkbox_clicked();
+    void on_force_valueChanged(double value);
+    void on_stopButton_clicked();
 };
 
 #endif // QUADRO_H

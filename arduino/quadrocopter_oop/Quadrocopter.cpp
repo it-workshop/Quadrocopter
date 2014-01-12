@@ -19,6 +19,7 @@ Quadrocopter::Quadrocopter()
 #endif
 
     serialReadN -= 7;
+    serialReadN += 2;
 
     DefaultVSensorPin = A4;
     reactionType = ReactionNone;
@@ -58,6 +59,9 @@ Quadrocopter::Quadrocopter()
 #ifdef DEBUG_MPUBYTES_PIN
     mpuBytesLed = InfoLED(DEBUG_MPUBYTES_PIN, InfoLED::DIGITAL);
 #endif
+
+    forceOverrideValue = 0;
+    forceOverride = 1;
 
     this->reset();
 
