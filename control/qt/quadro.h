@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <vect.h>
 #include <quadrocopter.h>
+#include <vector>
 
 #include "qextserialenumerator.h"
 
@@ -15,6 +16,8 @@
 
 using std::string;
 using std::ofstream;
+using std::ifstream;
+using std::vector;
 
 namespace Ui {
     class Quadro;
@@ -31,6 +34,7 @@ public:
 private slots:
     void timer_auto_update();
     void timer_reconnect_update();
+    void timer_log_update();
 
     //quadro
     void on_actionQuadroConnect_triggered();
@@ -46,10 +50,20 @@ private:
     QextSerialEnumerator QeSEnumerator;
 
     static const double timer_auto_interval = 50;
+    double timer_log_interval;
     static const double timer_reconnect_interval = 1000;
-    QTimer timer_auto, timer_reconnect;
+    QTimer timer_auto, timer_reconnect, timer_log;
 
     quadrocopter quadro;
+
+    vect angular_velocity, angle, acceleration, torque, PID_P, PID_I, PID_D;
+    vect joystick_readings, correction;
+
+    double power, voltage, joystick_heading, joystick_power;
+    int M[4];
+    double read_time, write_time, loop_time;
+    vector<int> log_lines;
+    int log_line;
 
     // plot
 
@@ -78,6 +92,9 @@ private:
 
     mytime plot_mytime;
 
+    string log_filename;
+    ifstream log_file;
+
     string save_filename;
     ofstream save_file;
 
@@ -86,6 +103,7 @@ private:
 
     void quadro_connect();
     void quadro_disconnect();
+    void quadro_fetch_data();
 
     void set_quadro_data();
     void set_auto(bool);
@@ -93,6 +111,8 @@ private:
     void save_data();
     void save_open();
     void save_close();
+
+    bool quadro_save_settings;
 
     void settings_data();
     void settings_open();
@@ -136,6 +156,11 @@ private slots:
     void on_force_checkbox_clicked();
     void on_force_valueChanged(double value);
     void on_stopButton_clicked();
+    void on_log_browse_clicked();
+    void on_log_start_clicked();
+    void on_log_pause_clicked();
+    void on_log_time_valueChanged(int arg1);
+    void on_log_scroll_valueChanged(int value);
 };
 
 #endif // QUADRO_H

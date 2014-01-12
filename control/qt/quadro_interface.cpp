@@ -70,37 +70,37 @@ void Quadro::interface_init()
 void Quadro::interface_write()
 {
     stringstream t_ss, t_ss1, t_ss2, t_ss3, t_ss4;
-    if(quadro.isoperational())
+    if(quadro.isoperational() || timer_log.isActive())
     {
         ui->voltage->setValue(quadro.get_voltage_percent());
         t_ss.precision(2);
-        t_ss4 << quadro.get_voltage() << "V";
+        t_ss4 << voltage << "V";
         ui->voltage->setFormat(t_ss4.str().c_str());
 
-        ui->torque->setText(quadro.get_torque_corrected().print().c_str());
-        ui->gyro->setText(quadro.get_gyroscope_readings().print().c_str());
+        ui->torque->setText(torque.print().c_str());
+        ui->gyro->setText(angular_velocity.print().c_str());
 
-        t_ss3 << (quadro.get_angle() * 180 / M_PI).print2d().c_str() << "\t"
-              << quadro.get_copter_heading() * 180 / M_PI;
+        t_ss3 << (angle * 180 / M_PI).print2d().c_str() << "\t"
+              << angle.z * 180 / M_PI;
 
         ui->angle->setText(t_ss3.str().c_str());
 
-        t_ss2 << quadro.get_read_time() * 1E3 << " ms / " << quadro.get_write_time() * 1E3 << " ms / "
-              << quadro.get_loop_time() * 1E6 << " us";
+        t_ss2 << read_time * 1E3 << " ms / " << write_time * 1E3 << " ms / "
+              << loop_time * 1E6 << " us";
         ui->readwrite_time->setText(t_ss2.str().c_str());
 
         for(int i = 0; i < quadro.get_motors_n(); i++)
         {
-            t_ss << quadro.get_motor_power(i);
+            t_ss << M[i];
             if(i != quadro.get_motors_n() - 1) t_ss << "\t";
         }
 
         ui->motors->setText(t_ss.str().c_str());
-        ui->CompassCopter->setOrigin(-quadro.get_copter_heading() * 180. / M_PI);
-        ui->CompassJoystick->setOrigin(-quadro.get_joystick_heading() * 180. / M_PI);
+        ui->CompassCopter->setOrigin(-angle.z * 180. / M_PI);
+        ui->CompassJoystick->setOrigin(-joystick_heading * 180. / M_PI);
     }
 
-    if(quadro.isoperational())
+    if(quadro.isconnected())
     {
         //ui->quadro_device->setEditable(0);
         ui->quadro_device->setStyleSheet("background-color: rgb(100, 255, 100);");

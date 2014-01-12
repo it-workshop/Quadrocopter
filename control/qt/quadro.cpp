@@ -26,6 +26,7 @@ Quadro::Quadro(QWidget *parent) :
 
     connect(&timer_auto, SIGNAL(timeout()), this, SLOT(timer_auto_update()));
     connect(&timer_reconnect, SIGNAL(timeout()), this, SLOT(timer_reconnect_update()));
+    connect(&timer_log, SIGNAL(timeout()), this, SLOT(timer_log_update()));
 
     //only works on Windows and OSX
     /*QeSEnumerator.setUpNotifications();
@@ -41,6 +42,8 @@ Quadro::Quadro(QWidget *parent) :
 
     timer_reconnect.start(timer_reconnect_interval);
     timer_auto.start(timer_auto_interval);
+
+    quadro_save_settings = true;
 
     plot_init();
 }
@@ -60,6 +63,35 @@ void Quadro::quadro_disconnect()
     quadro.do_disconnect();
 
     interface_write();
+}
+
+void Quadro::quadro_fetch_data()
+{
+    angular_velocity = quadro.get_gyroscope_readings();
+    angle = quadro.get_angle();
+    angle.z = quadro.get_copter_heading();
+    /*vect angular_velocity, angle, acceleration, torque, power, voltage, PID_P, PID_I, PID_D;
+    vect joystick_readings, correction, joystick_power, joystick_heading, joystick_power;
+    int M1, M2, M3, M4;
+    double read_time, write_time, loop_time;*/
+    torque = quadro.get_torque_corrected();
+    power = quadro.get_power();
+    voltage = quadro.get_voltage();
+    PID_P = quadro.get_PID_P();
+    PID_I = quadro.get_PID_I();
+    PID_D = quadro.get_PID_D();
+
+    for(int i = 0; i < quadro.get_motors_n(); i++)
+        M[i] = quadro.get_motor_power(i);
+
+    read_time = quadro.get_read_time();
+    write_time = quadro.get_write_time();
+    loop_time = quadro.get_loop_time();
+
+    
+    joystick_readings = quadro.get_torque_manual_correction();
+    joystick_power = quadro.get_power();
+    joystick_heading = quadro.get_joystick_heading();
 }
 
 void Quadro::quadro_connect()
@@ -117,7 +149,11 @@ void Quadro::timer_auto_update()
         if(quadro.getNewDataAvailable())
         {
             if(!plot_mytime.isSet()) plot_mytime.setTime();
-            else plot_update();
+            else
+            {
+                plot_update();
+                quadro_fetch_data();
+            }
             quadro.resetNewDataAvailable();
         }
 
