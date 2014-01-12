@@ -48,7 +48,7 @@ private:
 
     RVector3D angleManualCorrection;
 
-    static const double DefaultVSensorMaxVoltage = 15.16; //maximal voltage (before voltage divider)
+    static const double DefaultVSensorMaxVoltage = 17.95; //maximal voltage (before voltage divider)
     //15.16? 11.95->2.6
 
     static const double g = 9.80665; // gravitational acceleration
