@@ -1,4 +1,3 @@
-control/log
 control/qt/*.o
 control/qt/moc*
 control/qt/Makefile
