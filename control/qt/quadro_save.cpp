@@ -108,11 +108,11 @@ void Quadro::save_open()
     if(ui->LogSave_data->isChecked())
     {
         save_file.open(save_filename.c_str(), std::ios_base::app);
-        save_file << "#seconds\tdatetime\tqptr_op\t\tj_use\tgyro_x\tgyro_y\tgyro_z\treact_t\tangle_x\tangle_y\tangle_z\t"
+        save_file << "#seconds\tdatetime\tqptr_op\tgyro_x\tgyro_y\tgyro_z\treact_t\tangle_x\tangle_y\tangle_z\t"
                   << "trq_x\ttrq_y\ttrq_z\tc_power\tvoltage\tPID_P_x\tPID_P_y\tPID_P_z\tPID_I_x\tPID_I_y\tPID_I_z\t"
                   << "PID_D_x\tPID_D_y\tPID_D_z\tq_head\tKp_x\tKp_y\tKp_z\tKi_x\tKi_y\tKi_z\tKd_x\tKd_y\tKd_z\t"
-                  << "MaxP_x\tMaxP_y\tMaxP_z\tMaxI_x\tMaxI_y\tMaxI_z\tMaxD_x\tMaxD_y\tMaxD_z\tjoy_x\tjoy_y\tc_man_x\tc_man_y\tc_man_z\t"
-                  << "j_power\tj_heading\tj_onoff\tM1\tM2\tM3\tM4\tread_time\twrite_time\tloop_time" << endl;
+                  << "MaxP_x\tMaxP_y\tMaxP_z\tMaxI_x\tMaxI_y\tMaxI_z\tMaxD_x\tMaxD_y\tMaxD_z\tjoy_x\tjoy_y\tjoy_hdn\t"
+                  << "j_power\t\tM1\tM2\tM3\tM4\tread_time\twrite_time\tloop_time" << endl;
     }
 }
 
@@ -145,7 +145,10 @@ void Quadro::save_data()
              << quadro.get_PID_angle_MAXi().print() << "\t"
              << quadro.get_PID_angle_MAXd().print() << "\t"
 
-             << quadro.get_torque_manual_correction().print() << "\t";
+             << quadro.get_torque_manual_correction().x << "\t"
+             << quadro.get_torque_manual_correction().y << "\t"
+             << quadro.get_joystick_heading() << "\t"
+             << quadro.get_power() << "\t";
 
         for(i = 0; i < quadro.get_motors_n(); i++)
         {
