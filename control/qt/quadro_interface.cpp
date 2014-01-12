@@ -100,7 +100,7 @@ void Quadro::interface_write()
         ui->CompassJoystick->setOrigin(-joystick_heading * 180. / M_PI);
     }
 
-    if(quadro.isconnected())
+    if(quadro.isoperational())
     {
         //ui->quadro_device->setEditable(0);
         ui->quadro_device->setStyleSheet("background-color: rgb(100, 255, 100);");
