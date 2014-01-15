@@ -205,3 +205,11 @@ vect vect::projections_from_angle(double a)
 
     return(result);
 }
+
+vect vect::operator =(number_vect_t t)
+{
+    x = t;
+    y = t;
+    z = t;
+    return(*this);
+}

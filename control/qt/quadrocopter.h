@@ -4,6 +4,9 @@
 #include <serial.h>
 #include <vect.h>
 #include <vector>
+#include "Definitions.h"
+
+#define BN 60
 
 using std::vector;
 
@@ -15,7 +18,6 @@ private:
     number_vect_t power;
     vect angle, torque_corrected;
     vect gyroscope_readings, accelerometer_readings;
-    vect torque_angular_velocity_correction, torque_acceleration_correction, torque_angle_correction;
 
     vect torque_manual_correction;
 
@@ -30,16 +32,21 @@ private:
 
     number_vect_t connect_delay_arduino;
 
-    number_vect_t PID_angle_Kp, PID_angle_Ki, PID_angle_Kd;
-    number_vect_t PID_angular_velocity_Kp, PID_angular_velocity_Ki, PID_angular_velocity_Kd;
-
-    number_vect_t joystick_coefficient;
+    vect PID_angle_Kp, PID_angle_Ki, PID_angle_Kd;
+    vect PID_angle_MAXp, PID_angle_MAXi, PID_angle_MAXd;
 
     number_vect_t voltage;
-    static const number_vect_t voltage_min = 11.0;
+    static const number_vect_t voltage_min = 8.0;
     static const number_vect_t voltage_max = 12.6;
 
-    number_vect_t accel_period, angle_period;
+    vect PID_P, PID_I, PID_D;
+
+    bool newDataAvailable;
+
+    number_vect_t copter_heading, joystick_heading;
+
+    bool force_override;
+    double force_override_value;
 
     void defaults();
 
@@ -58,30 +65,42 @@ public:
     vect get_accelerometer_readings(); // returns acceleromter readings, values [0...]
     vect get_angle(); //returns angle, values [0...1]
 
-    vect get_torque_angular_velocity_correction();
-    vect get_torque_acceleration_correction();
-    vect get_torque_angle_correction();
-    vect get_torque_automatic_correction();
+    void set_PID_angle_Kp_x(number_vect_t);
+    void set_PID_angle_Ki_x(number_vect_t);
+    void set_PID_angle_Kd_x(number_vect_t);
 
-    void set_power(number_vect_t);
-    void set_torque_manual_correction(vect);
-    void set_joystick_correction(vect);
+    void set_PID_angle_Kp_y(number_vect_t);
+    void set_PID_angle_Ki_y(number_vect_t);
+    void set_PID_angle_Kd_y(number_vect_t);
 
-    void set_PID_angle_Kp(number_vect_t);
-    void set_PID_angle_Ki(number_vect_t);
-    void set_PID_angle_Kd(number_vect_t);
+    void set_PID_angle_Kp_z(number_vect_t);
+    void set_PID_angle_Ki_z(number_vect_t);
+    void set_PID_angle_Kd_z(number_vect_t);
 
-    void set_PID_angular_velocity_Kp(number_vect_t);
-    void set_PID_angular_velocity_Ki(number_vect_t);
-    void set_PID_angular_velocity_Kd(number_vect_t);
+    void set_PID_angle_MAXp_x(number_vect_t);
+    void set_PID_angle_MAXi_x(number_vect_t);
+    void set_PID_angle_MAXd_x(number_vect_t);
 
-    number_vect_t get_PID_angle_Kp();
-    number_vect_t get_PID_angle_Ki();
-    number_vect_t get_PID_angle_Kd();
+    void set_PID_angle_MAXp_y(number_vect_t);
+    void set_PID_angle_MAXi_y(number_vect_t);
+    void set_PID_angle_MAXd_y(number_vect_t);
 
-    number_vect_t get_PID_angular_velocity_Kp();
-    number_vect_t get_PID_angular_velocity_Ki();
-    number_vect_t get_PID_angular_velocity_Kd();
+    void set_PID_angle_MAXp_z(number_vect_t);
+    void set_PID_angle_MAXi_z(number_vect_t);
+    void set_PID_angle_MAXd_z(number_vect_t);
+
+    vect get_PID_angle_Kp();
+    vect get_PID_angle_Ki();
+    vect get_PID_angle_Kd();
+
+    vect get_PID_angle_MAXp();
+    vect get_PID_angle_MAXi();
+    vect get_PID_angle_MAXd();
+
+    // Live PID values from Arduino
+    vect get_PID_P();
+    vect get_PID_I();
+    vect get_PID_D();
 
     void do_connect();
     void do_disconnect();
@@ -96,18 +115,22 @@ public:
     reaction_type_ get_reaction_type();
     void set_reaction_type(reaction_type_);
 
-    void read_data_request(); // request read data from device
+    void initiate_transmission(); // initiate transmission
     void write_data(); // write data to device
 
     void reset(); // set torque to (0, 0, 1)
 
-    void set_accel_period(double n_period);
-    void set_angle_period(double n_period);
+    bool getNewDataAvailable();
+    void resetNewDataAvailable();
 
-    double get_accel_period();
-    double get_angle_period();
+    number_vect_t get_copter_heading();
+    number_vect_t get_joystick_heading();
+
+    void set_force_override(bool _do, double _value);
 
     virtual void on_rx();
+
+    double getPower();
 };
 
 #endif // QUADROCOPTER_H

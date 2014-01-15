@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-INCLUDEPATH += /usr/include /usr/local/include /usr/include/qwt-qt4 /usr/include/qt4/QtExtSerialPort
+INCLUDEPATH += /usr/include /usr/local/include /usr/include/qwt-qt4 /usr/include/qt4/QtExtSerialPort ../../arduino/quadrocopter_oop/
 
 LIBS += -L/usr/local/lib -lqwt-qt4
 LIBS += -L/usr/local/lib -lQtSvg
@@ -23,18 +23,18 @@ SOURCES += main.cpp\
         quadro.cpp \
     serial.cpp \
     vect.cpp \
-    joystick.cpp \
     quadrocopter.cpp \
     mytime.cpp \
     quadro_plot.cpp \
     quadro_save.cpp \
     quadro_slots.cpp \
-    quadro_interface.cpp
+    quadro_interface.cpp \
+    quadro_rxtx.cpp \
+    quadro_log.cpp
 
 HEADERS  += quadro.h \
     serial.h \
     vect.h \
-    joystick.h \
     quadrocopter.h \
     mytime.h
 

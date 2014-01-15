@@ -12,15 +12,15 @@ class mytime
 public:
     mytime();
 
-    void set_time();
-    unsigned long long int get_time_difference();
-    unsigned long long int get_time_ms();
+    void setTime();
+    unsigned long long int getTimeDifference();
+    unsigned long long int getTimeMs();
 
     void reset();
-    bool is_set();
+    bool isSet();
 
-    time_t get_seconds();
-    string get_time();
+    time_t getSeconds();
+    string getTime();
 
 private:
     unsigned long long int old;

@@ -1,4 +1,3 @@
-control/log
 control/qt/*.o
 control/qt/moc*
 control/qt/Makefile
@@ -6,18 +5,26 @@ control/qt/quadro
 control/qt/quadro.pro.user
 control/qt/ui*
 
-pid_test/*.o
-pid_test/moc*
-pid_test/Makefile
-pid_test/pid_test
-pid_test/pid_test.pro.user
-pid_test/ui*
+debug/pid_test/*.o
+debug/pid_test/moc*
+debug/pid_test/Makefile
+debug/pid_test/pid_test
+debug/pid_test/pid_test.pro.user
+debug/pid_test/ui*
 
-arduino/auto_controlled_engine_set_oop/auto_controlled_engine_set_oop.pro.user
-arduino/auto_controlled_engine_set_oop/auto_controlled_engine_set_oop.pro
-arduino/basic_auto_controlled_engine_set
+arduino/quadrocopter_oop/quadrocopter_oop.pro.user
 
-accel_test/201211
+debug/accel_test/201211
 
-arduino/auto_controlled_engine_set_oop/KalmanFilter.cpp
-arduino/auto_controlled_engine_set_oop/KalmanFilter.h
+arduino/quadrocopter_oop_ino/
+
+arduino/quadrocopter_oop/KalmanFilter.cpp
+arduino/quadrocopter_oop/KalmanFilter.h
+
+*.autosave
+*~
+*.map
+*.hex
+*.lst
+*.elf
+*.o
