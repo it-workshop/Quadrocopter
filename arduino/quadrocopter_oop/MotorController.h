@@ -24,10 +24,10 @@ private:
         A, B, C, D, N_MOTORS
     };
 
-#ifdef PID_USE_YAW
+//#ifdef PID_USE_YAW
     //1 if AV ^
     int direction[N_MOTORS];
-#endif
+//#endif
 
     Motor motors_[N_MOTORS];
 

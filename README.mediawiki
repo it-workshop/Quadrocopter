@@ -1,21 +1,31 @@
 В этом репозитории хранится код, который каким-то образом связан с разработкой квадрокоптеров.
 
-На данный момент мы используем Arduino Uno и датчик InvenSense MPU-6050.
+На данный момент мы используем Arduino Due и датчики InvenSense MPU-6050 (DMP) и HMC5883L.
 
-Управление квадрокоптером осуществляется с использованием [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/control/qt программы на Qt]&nbsp;(джойстик подключается к компьютеру по USB, квадрокоптер&nbsp;&mdash; через Bluetooth).
+Управление квадрокоптером осуществляется с использованием джойстика (свой радиоканал).
+
+[https://github.com/it-workshop/Quadrocopter/tree/master/control/qt Программа на Qt] на компьютере подключается к коптеру через XBee Pro для получения отладочной информации.
 
 '''Описание содержимого репозитория:'''
 
-* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/quadrocopter_oop Программа для квадрокоптера]
+* [https://github.com/it-workshop/Quadrocopter/tree/master/arduino/quadrocopter_oop Программа для квадрокоптера]&nbsp;&mdash; сейчас поддерживается Arduino Due, совместимость с Uno возможна.
 
-* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/joystick/serial_joystick/serial_joystick.ino joystick]&nbsp;&mdash; программа для джойстика на arduino, который подключается к компьютеру.
+* [https://github.com/it-workshop/Quadrocopter/tree/master/xbee xbee]&nbsp;&mdash; профили двух модулей XBee для программы X-CTU.
 
-* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/xbee xbee]&nbsp;&mdash; профили двух модулей XBee для программы X-CTU.
+* [https://github.com/it-workshop/Quadrocopter/tree/master/debug/pid_test pid_test]&nbsp;&mdash; симуляция работы ПИД.
 
-* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/debug/pid_test pid_test]&nbsp;&mdash; симуляция работы ПИД на квадрокоптере.
+* Скетч [https://github.com/it-workshop/Quadrocopter/tree/master/arduino/pot_controlled_engine/pot_controlled_engine.ino pot_controlled_engine]&nbsp;позволяет управлять ESC при помощи переменного резистора.
 
-* Скетч [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/pot_controlled_engine/pot_controlled_engine.ino pot_controlled_engine]&nbsp;позволяет управлять ESC при помощи переменного резистора.
+* [https://github.com/it-workshop/Quadrocopter/tree/master/arduino/bee_programmer/bee_programmer.ino bee_programmer]&nbsp;использует UART Arduino для изменения режима работы Bluetooth Bee (сейчас не используется).
 
-* [https://github.com/it-workshop/Quadrocopter/tree/MPU-6050/arduino/bee_programmer/bee_programmer.ino bee_programmer]&nbsp;использует UART arduino для изменения режима работы Bluetooth Bee, который используется в проекте.
+* [https://github.com/it-workshop/Quadrocopter/tree/master/arduino/joystick/serial_joystick/serial_joystick.ino joystick]&nbsp;&mdash; программа для джойстика на Arduino, который подключается к компьютеру (сейчас не используется).
 
-Дополнительную информацию можно найти на [https://github.com/it-workshop/Quadrocopter/wiki вики] проекта, а также на сайте [http://technoworks.ru/qcopter/ technoworks.ru].
+Дополнительную информацию можно найти на [https://github.com/it-workshop/Quadrocopter/wiki вики] проекта, а также на нашем сайте [http://technoworks.ru/projects/qcopter/ technoworks.ru].
+
+Небольшая презентация: [http://alex-ac.github.io/presentation-template/#/ http://alex-ac.github.io/presentation-template] ''(листать стрелками)''
+
+'''Необходимое для работы'''
+
+* Код для коптера: [http://arduino.cc/ Arduino] (beta-версия для Due), [https://github.com/it-workshop/i2cdevlib i2cdevlib], [https://github.com/it-workshop/pwm01.h_by_randomvibe pwm01.h]<br />(библиотеки i2cdevlib и pwm01.h устанавливать как обычно)
+* Программа управления: [http://qt-project.org/ Qt 4], [https://code.google.com/p/qextserialport/ qextserialport], Qwt 5
+* Дополнительно может потребоваться Wine для [http://www.digi.com/support/productdetail?pid=3352&osvid=57&type=utilities X-CTU] (программа настройки XBee).

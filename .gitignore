@@ -1,4 +1,3 @@
-control/log
 control/qt/*.o
 control/qt/moc*
 control/qt/Makefile
@@ -19,7 +18,6 @@ debug/pid_test/ui*
 .DS_Store
 
 arduino/quadrocopter_oop/quadrocopter_oop.pro.user
-arduino/quadrocopter_oop/quadrocopter_oop.pro
 
 debug/accel_test/201211
 

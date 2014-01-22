@@ -58,7 +58,9 @@ void dmpDataReady()
 #ifdef DEBUG_NO_MPU
     return;
 #endif
+#ifdef _arch_avr_
     interrupts();
+#endif
     mpuInterrupt = true;
     quadro->MPUInterrupt();
 }
@@ -134,6 +136,11 @@ void MPU6050DMP::resetFIFO()
         mpu.resetFIFO();
 }
 
+int MPU6050DMP::getPacketSize()
+{
+    return(packetSize);
+}
+
 MPU6050DMP::MPU6050DMP()
 {
 #ifdef DEBUG_NO_MPU
@@ -148,7 +155,12 @@ void MPU6050DMP::initialize()
     return;
 #endif
 #ifdef DEBUG_DAC
-    myLed = InfoLED(A0, InfoLED::DAC_8512);
+    #ifdef _arch_avr_
+        myLed = InfoLED(A0, InfoLED::DAC_8512);
+    #endif
+    #ifdef _arch_arm_
+        myLed = InfoLED(0, InfoLED::DAC_ONBOARD);
+    #endif
 #endif
 
     // reset YPR data
@@ -178,6 +190,10 @@ void MPU6050DMP::initialize()
         dmpReady = true;
 
         //Serial.print("MPU init ok\n");
+
+#ifdef USE_MPU_BYPASS
+        mpu.setI2CBypassEnabled(true);
+#endif
     }
     //else Serial.print("MPU init failed\n");
     newData = false;

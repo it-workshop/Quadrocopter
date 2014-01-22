@@ -35,11 +35,6 @@ private:
     vect PID_angle_Kp, PID_angle_Ki, PID_angle_Kd;
     vect PID_angle_MAXp, PID_angle_MAXi, PID_angle_MAXd;
 
-    vect PID_angularVelocity_Kp, PID_angularVelocity_Ki, PID_angularVelocity_Kd;
-    vect PID_angularVelocity_MAXp, PID_angularVelocity_MAXi, PID_angularVelocity_MAXd;
-
-    number_vect_t joystick_coefficient;
-
     number_vect_t voltage;
     static const number_vect_t voltage_min = 8.0;
     static const number_vect_t voltage_max = 12.6;
@@ -47,6 +42,11 @@ private:
     vect PID_P, PID_I, PID_D;
 
     bool newDataAvailable;
+
+    number_vect_t copter_heading, joystick_heading;
+
+    bool force_override;
+    double force_override_value;
 
     void defaults();
 
@@ -65,10 +65,6 @@ public:
     vect get_accelerometer_readings(); // returns acceleromter readings, values [0...]
     vect get_angle(); //returns angle, values [0...1]
 
-    void set_power(number_vect_t);
-    void set_torque_manual_correction(vect);
-    void set_joystick_correction(vect);
-
     void set_PID_angle_Kp_x(number_vect_t);
     void set_PID_angle_Ki_x(number_vect_t);
     void set_PID_angle_Kd_x(number_vect_t);
@@ -77,9 +73,9 @@ public:
     void set_PID_angle_Ki_y(number_vect_t);
     void set_PID_angle_Kd_y(number_vect_t);
 
-    void set_PID_angularVelocity_Kp_z(number_vect_t);
-    void set_PID_angularVelocity_Ki_z(number_vect_t);
-    void set_PID_angularVelocity_Kd_z(number_vect_t);
+    void set_PID_angle_Kp_z(number_vect_t);
+    void set_PID_angle_Ki_z(number_vect_t);
+    void set_PID_angle_Kd_z(number_vect_t);
 
     void set_PID_angle_MAXp_x(number_vect_t);
     void set_PID_angle_MAXi_x(number_vect_t);
@@ -89,9 +85,9 @@ public:
     void set_PID_angle_MAXi_y(number_vect_t);
     void set_PID_angle_MAXd_y(number_vect_t);
 
-    void set_PID_angularVelocity_MAXp_z(number_vect_t);
-    void set_PID_angularVelocity_MAXi_z(number_vect_t);
-    void set_PID_angularVelocity_MAXd_z(number_vect_t);
+    void set_PID_angle_MAXp_z(number_vect_t);
+    void set_PID_angle_MAXi_z(number_vect_t);
+    void set_PID_angle_MAXd_z(number_vect_t);
 
     vect get_PID_angle_Kp();
     vect get_PID_angle_Ki();
@@ -100,14 +96,6 @@ public:
     vect get_PID_angle_MAXp();
     vect get_PID_angle_MAXi();
     vect get_PID_angle_MAXd();
-
-    vect get_PID_angularVelocity_Kp();
-    vect get_PID_angularVelocity_Ki();
-    vect get_PID_angularVelocity_Kd();
-
-    vect get_PID_angularVelocity_MAXp();
-    vect get_PID_angularVelocity_MAXi();
-    vect get_PID_angularVelocity_MAXd();
 
     // Live PID values from Arduino
     vect get_PID_P();
@@ -135,9 +123,14 @@ public:
     bool getNewDataAvailable();
     void resetNewDataAvailable();
 
-    number_vect_t get_joystick_coefficient();
+    number_vect_t get_copter_heading();
+    number_vect_t get_joystick_heading();
+
+    void set_force_override(bool _do, double _value);
 
     virtual void on_rx();
+
+    double getPower();
 };
 
 #endif // QUADROCOPTER_H

@@ -7,7 +7,21 @@
 
 Quadrocopter::Quadrocopter()
 {
-    DefaultVSensorPin = A3;
+    serialReadN = 30;
+#ifdef PID_USE_YAW
+    serialReadN += 12;
+#endif
+#ifdef PID_USE_YAW_ANGLE
+    serialReadN += 12;
+#endif
+#ifdef USE_COMPASS
+    serialReadN += 2;
+#endif
+
+    serialReadN -= 7;
+    serialReadN += 2;
+
+    DefaultVSensorPin = A4;
     reactionType = ReactionNone;
 
 #ifdef _arch_avr_
@@ -34,12 +48,8 @@ Quadrocopter::Quadrocopter()
     MController = new MotorController(DefaultMotorPins);
     VSensor = new VoltageSensor(DefaultVSensorPin, DefaultVSensorMaxVoltage);
     MyMPU = new MPU6050DMP;
-
-#ifdef DEBUG_DAC
-    myLed = MyMPU->myLed;
-#else
-    myLed = InfoLED(13, InfoLED::PulseWide);
-    myLed.setState(0);
+#ifdef PID_USE_YAW_ANGLE
+    pidAngleZ = PID(PID::DIFFERENCE_ANGLE);
 #endif
 
 #ifdef DEBUG_FREQ_PIN
@@ -50,10 +60,28 @@ Quadrocopter::Quadrocopter()
     mpuBytesLed = InfoLED(DEBUG_MPUBYTES_PIN, InfoLED::DIGITAL);
 #endif
 
+    forceOverrideValue = 0;
+    forceOverride = 1;
+
     this->reset();
 
     MyMPU->initialize();
+
+#ifdef USE_COMPASS
+    MyCompass = new HMC5883L;
+    MyCompass->initialize();
+#endif
+
+    Joystick = new PWMJoystick;
+
+#ifdef DEBUG_DAC
+    myLed = MyMPU->myLed;
+    myLed.setState(0);
+#endif
+
+#ifdef _arch_avr_
     interrupts();
+#endif
 }
 
 void Quadrocopter::reset()
@@ -65,42 +93,23 @@ void Quadrocopter::reset()
     MController->setForce(0);
     MController->setTorque(RVector3D());
 
-    pidAngle.reset();
+    pidAngleX.reset();
+    pidAngleX.setYMinYMax(angleMaxCorrection);
+    pidAngleY.reset();
+    pidAngleY.setYMinYMax(angleMaxCorrection);
 
 #ifdef PID_USE_YAW
-    pidAngularVelocity.reset();
+    pidAngularVelocityZ.reset();
+    pidAngularVelocityZ.setYMinYMax(angularVelocityMaxCorrection);
+#endif
+
+#ifdef PID_USE_YAW_ANGLE
+    pidAngleZ.reset();
+    pidAngleZ.setYMinYMax(angleMaxCorrection);
 #endif
 
     voltage = 0;
     dtMax = 0;
-
-    pidAngle.setKpKiKd(0, 0, 0);
-    pidAngle.setYMin(-angleMaxCorrection);
-    pidAngle.setYMax(angleMaxCorrection);
-
-    pidAngle.setPMin(-angleMaxCorrection * 5);
-    pidAngle.setPMax( angleMaxCorrection * 5);
-
-    pidAngle.setIMin(-angleMaxCorrection);
-    pidAngle.setIMax( angleMaxCorrection);
-
-    pidAngle.setDMin(-angleMaxCorrection * 1.5);
-    pidAngle.setDMax( angleMaxCorrection * 1.5);
-
-#ifdef PID_USE_YAW
-    pidAngularVelocity.setKpKiKd(0, 0, 0);
-    pidAngularVelocity.setYMin(-angularVelocityMaxCorrection);
-    pidAngularVelocity.setYMax(angularVelocityMaxCorrection);
-
-    pidAngularVelocity.setPMin(-angularVelocityMaxCorrection * 5);
-    pidAngularVelocity.setPMax( angularVelocityMaxCorrection * 5);
-
-    pidAngularVelocity.setIMin(-angularVelocityMaxCorrection);
-    pidAngularVelocity.setIMax( angularVelocityMaxCorrection);
-
-    pidAngularVelocity.setDMin(-angularVelocityMaxCorrection * 1.5);
-    pidAngularVelocity.setDMax( angularVelocityMaxCorrection * 1.5);
-#endif
 
     MyMPU->resetFIFO();
 }
@@ -142,7 +151,7 @@ void Quadrocopter::iteration()
 #endif
 
 #ifdef DEBUG_MPUBYTES_PIN
-    mpuBytesLed.setState(MyMPU->bytesAvailableFIFO() > 42);
+    mpuBytesLed.setState(MyMPU->bytesAvailableFIFO() > MyMPU->getPacketSize());
 #endif
 
 #ifdef DEBUG_DAC
@@ -153,6 +162,7 @@ void Quadrocopter::iteration()
             processSerialRx();
             myLed.setState(5);
             processSerialTx();
+            processJoystickRx();
         }
 
 #ifdef DEBUG_DAC

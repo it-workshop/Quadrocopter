@@ -16,3 +16,8 @@ double VoltageSensor::getValue()
     t_val *= maxVoltage;
     return(t_val);
 }
+
+double VoltageSensor::getRawValue()
+{
+    return(analogRead(pin));
+}

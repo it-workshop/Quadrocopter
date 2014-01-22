@@ -1,16 +1,14 @@
 #include "PID.h"
+#include "math.h"
 
-#ifndef PID_CPP
-#define PID_CPP
-
-template <typename T> T PID<T>::getY(T data, double dt)
+double PID::getY(double data, double dt)
 {
     prepare(data, dt);
     iteration();
     return(y);
 }
 
-template <typename T> T PID<T>::getY(T data, double dt, T derivative)
+double PID::getY(double data, double dt, double derivative)
 {
     prepare(data, dt);
     eDerivative = derivative;
@@ -18,10 +16,24 @@ template <typename T> T PID<T>::getY(T data, double dt, T derivative)
     return(y);
 }
 
-template <typename T> void PID<T>::prepare(T data, double dt)
+void PID::prepare(double data, double dt)
 {
     //difference between requested and current data
-    e = data0 - data;
+
+    if(mode == DIFFERENCE_NORMAL)
+        e = data0 - data;
+    else if(mode == DIFFERENCE_ANGLE)
+    {
+        double e1, e2, e3;
+        e1 = data0 - data;
+        e2 = e1 - 2 * MPI;
+        e3 = e1 + 2 * MPI;
+        if(fabs(e2) < fabs(e1))
+            e1 = e2;
+        if(fabs(e3) < fabs(e1))
+            e1 = e3;
+        e = e1;
+    }
 
     //discrete derivative
     eDerivative = (e - ePrev) / dt;
@@ -30,263 +42,98 @@ template <typename T> void PID<T>::prepare(T data, double dt)
     eIntegral += e * dt;
 }
 
-template <typename T> void PID<T>::iteration()
+void PID::iteration()
 {
     ePrev = e;
 
-    for(int i = 0; i < 3; i++)
-    {
-        if(e.valueByAxisIndex(i) < PMin.valueByAxisIndex(i))
-            e.valueByAxisIndex(i) = PMin.valueByAxisIndex(i);
+    
+	if(e < PMin)
+		e = PMin;
 
-        if(e.valueByAxisIndex(i) > PMax.valueByAxisIndex(i))
-            e.valueByAxisIndex(i) = PMax.valueByAxisIndex(i);
+	if(e > PMax)
+		e = PMax;
 
-        if(eIntegral.valueByAxisIndex(i) < IMin.valueByAxisIndex(i))
-            eIntegral.valueByAxisIndex(i) = IMin.valueByAxisIndex(i);
+	if(eIntegral < IMin)
+		eIntegral = IMin;
 
-        if(eIntegral.valueByAxisIndex(i) > IMax.valueByAxisIndex(i))
-            eIntegral.valueByAxisIndex(i) = IMax.valueByAxisIndex(i);
+	if(eIntegral > IMax)
+		eIntegral = IMax;
 
-        if(eDerivative.valueByAxisIndex(i) < DMin.valueByAxisIndex(i))
-            eDerivative.valueByAxisIndex(i) = DMin.valueByAxisIndex(i);
+	if(eDerivative < DMin)
+		eDerivative = DMin;
 
-        if(eDerivative.valueByAxisIndex(i) > DMax.valueByAxisIndex(i))
-            eDerivative.valueByAxisIndex(i) = DMax.valueByAxisIndex(i);
-    }
+	if(eDerivative > DMax)
+		eDerivative = DMax;
+
 
     //correction
-    P = e % Kp;
-    I = eIntegral % Ki;
-    D = eDerivative % Kd;
+    P = e * Kp;
+    I = eIntegral * Ki;
+    D = eDerivative * Kd;
 
     y = P + I + D;
 
-    for(int i = 0; i < 3; i++)
-    {
-        if(y.valueByAxisIndex(i) < yMin.valueByAxisIndex(i))
-            y.valueByAxisIndex(i) = yMin.valueByAxisIndex(i);
 
-        if(y.valueByAxisIndex(i) > yMax.valueByAxisIndex(i))
-            y.valueByAxisIndex(i) = yMax.valueByAxisIndex(i);
-    }
+	if(y < yMin)
+		y = yMin;
+
+	if(y > yMax)
+		y = yMax;
+
 
 }
 
-template <typename T> PID<T>::PID()
+PID::PID(pidMode nMode)
 {
-    eIntegral = T();
-    data0 = T();
-    ePrev = T();
-    Kp = Ki = Kd = T();
-    eDerivative = T();
+    eIntegral = 0;
+    data0 = 0;
+    ePrev = 0;
+    Kp = Ki = Kd = 0;
+    eDerivative = 0;
+    PMin = PMax = 0;
+    IMin = IMax = 0;
+    DMin = DMax = 0;
+    yMin = yMax = 0;
+    P = I = D = 0;
+    y = 0;
+    mode = nMode;
 }
 
-template <typename T> T PID<T>::getKp()
+
+void PID::setPMinMax(double arg)
 {
-    return(Kp);
+    PMin = -arg;
+    PMax =  arg;
 }
 
-template <typename T> T PID<T>::getKi()
+void PID::setIMinMax(double arg)
 {
-    return(Ki);
+    IMin = -arg;
+    IMax =  arg;
 }
 
-template <typename T> T PID<T>::getKd()
+void PID::setDMinMax(double arg)
 {
-    return(Kd);
+    DMin = -arg;
+    DMax =  arg;
 }
 
-template <typename T> void PID<T>::setKp_x(double arg)
+void PID::setYMinYMax(double arg)
 {
-    Kp.x = arg;
+    yMin = -arg;
+    yMax =  arg;
 }
 
-template <typename T> void PID<T>::setKi_x(double arg)
-{
-    Ki.x = arg;
-}
-
-template <typename T> void PID<T>::setKd_x(double arg)
-{
-    Kd.x = arg;
-}
-
-template <typename T> void PID<T>::setKp_y(double arg)
-{
-    Kp.y = arg;
-}
-
-template <typename T> void PID<T>::setKi_y(double arg)
-{
-    Ki.y = arg;
-}
-
-template <typename T> void PID<T>::setKd_y(double arg)
-{
-    Kd.y = arg;
-}
-
-template <typename T> void PID<T>::setKp_z(double arg)
-{
-    Kp.z = arg;
-}
-
-template <typename T> void PID<T>::setKi_z(double arg)
-{
-    Ki.z = arg;
-}
-
-template <typename T> void PID<T>::setKd_z(double arg)
-{
-    Kd.z = arg;
-}
-
-template <typename T> void PID<T>::setPMinMax_x(double arg)
-{
-    PMin.x = -arg;
-    PMax.x =  arg;
-}
-
-template <typename T> void PID<T>::setIMinMax_x(double arg)
-{
-    IMin.x = -arg;
-    IMax.x =  arg;
-}
-
-template <typename T> void PID<T>::setDMinMax_x(double arg)
-{
-    DMin.x = -arg;
-    DMax.x =  arg;
-}
-
-template <typename T> void PID<T>::setPMinMax_y(double arg)
-{
-    PMin.y = -arg;
-    PMax.y =  arg;
-}
-
-template <typename T> void PID<T>::setIMinMax_y(double arg)
-{
-    IMin.y = -arg;
-    IMax.y =  arg;
-}
-
-template <typename T> void PID<T>::setDMinMax_y(double arg)
-{
-    DMin.y = -arg;
-    DMax.y =  arg;
-}
-
-template <typename T> void PID<T>::setPMinMax_z(double arg)
-{
-    PMin.z = -arg;
-    PMax.z =  arg;
-}
-
-template <typename T> void PID<T>::setIMinMax_z(double arg)
-{
-    IMin.z = -arg;
-    IMax.z =  arg;
-}
-
-template <typename T> void PID<T>::setDMinMax_z(double arg)
-{
-    DMin.z = -arg;
-    DMax.z =  arg;
-}
-
-template <typename T> double PID<T>::getPMax_x()
-{
-    return(PMax.x);
-}
-
-template <typename T> double PID<T>::getIMax_x()
-{
-    return(IMax.x);
-}
-
-template <typename T> double PID<T>::getDMax_x()
-{
-    return(DMax.x);
-}
-
-template <typename T> void PID<T>::setKp(double arg)
-{
-    Kp = arg;
-}
-
-template <typename T> void PID<T>::setKi(double arg)
-{
-    Ki = arg;
-}
-
-template <typename T> void PID<T>::setKd(double arg)
-{
-    Kd = arg;
-}
-
-template <typename T> void PID<T>::setKpKiKd(double nKp, double nKi, double nKd)
+void PID::setKpKiKd(double nKp, double nKi, double nKd)
 {
     Kp = nKp;
     Ki = nKi;
     Kd = nKd;
 }
 
-template <typename T> void PID<T>::setYMin(T arg)
-{
-    yMin = arg;
-}
 
-template <typename T> void PID<T>::setYMax(T arg)
+void PID::reset()
 {
-    yMax = arg;
-}
-
-template <typename T> void PID<T>::setPMin(T arg)
-{
-    PMin = arg;
-}
-
-template <typename T> void PID<T>::setPMax(T arg)
-{
-    PMax = arg;
-}
-
-template <typename T> void PID<T>::setIMin(T arg)
-{
-    IMin = arg;
-}
-
-template <typename T> void PID<T>::setIMax(T arg)
-{
-    IMax = arg;
-}
-
-template <typename T> void PID<T>::setDMin(T arg)
-{
-    DMin = arg;
-}
-
-template <typename T> void PID<T>::setDMax(T arg)
-{
-    DMax = arg;
-}
-
-template <typename T> void PID<T>::setData0(T arg)
-{
-    data0 = arg;
-}
-
-template <typename T> T PID<T>::getData0()
-{
-    return(data0);
-}
-
-template <typename T> void PID<T>::reset()
-{
-    ePrev = data0;
+    ePrev = 0;
     eIntegral = 0;
 }
-
-#endif

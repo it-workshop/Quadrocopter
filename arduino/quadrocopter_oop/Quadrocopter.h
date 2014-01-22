@@ -8,6 +8,12 @@
 #include "PID.h"
 #include "InfoLED.h"
 #include "VoltageSensor.h"
+#include "PWMJoystick.h"
+
+#ifdef USE_COMPASS
+    // i2cdevlib
+    #include <HMC5883L.h>
+#endif
 
 #ifndef QUADROCOPTER_H
 #define QUADROCOPTER_H
@@ -22,6 +28,10 @@ private:
     MySerial* MSerial;
     VoltageSensor* VSensor;
     MPU6050DMP* MyMPU;
+#ifdef USE_COMPASS
+    HMC5883L* MyCompass;
+#endif
+    PWMJoystick* Joystick;
 
     // pins configuration
 
@@ -38,7 +48,8 @@ private:
 
     RVector3D angleManualCorrection;
 
-    static const double DefaultVSensorMaxVoltage = 14.2; //maximal voltage (before voltage divider)
+    static const double DefaultVSensorMaxVoltage = 17.95; //maximal voltage (before voltage divider)
+    //15.16? 11.95->2.6
 
     static const double g = 9.80665; // gravitational acceleration
 
@@ -47,14 +58,27 @@ private:
     RVector3D angularVelocity; // angular velocity from gyroscope
     double voltage; //accumulators voltage
 
+#ifdef USE_COMPASS
+    double copterHeading;
+    double joystickHeading;
+    RVector3D BMag;
+
+    //temp mag variables
+    int16_t magX, magY, magZ;
+#endif
+
     //corrections
     static const double angleMaxCorrection = MPI / 4;
     static const double angularVelocityMaxCorrection = MPI / 4;
 
-    PID<RVector3D> pidAngle;
+    PID pidAngleX, pidAngleY;
 
 #ifdef PID_USE_YAW
-    PID<RVector3D> pidAngularVelocity;
+    PID pidAngularVelocityZ;
+#endif
+
+#ifdef PID_USE_YAW_ANGLE
+    PID pidAngleZ;
 #endif
 
     RVector3D getAngleCorrection(RVector3D angle, double dt);
@@ -63,6 +87,9 @@ private:
     TimerCount tCount;
 
     InfoLED myLed;
+
+    double forceOverrideValue;
+    bool forceOverride;
 
 #ifdef DEBUG_FREQ_PIN
     InfoLED freqLed;
@@ -73,11 +100,8 @@ private:
 #endif
 
     // bytes to read
-#ifdef PID_USE_YAW
-    static const unsigned int serialReadN = 42;
-#else
-    static const unsigned int serialReadN = 30;
-#endif
+    // Defines in Quadrocopter.cpp
+    unsigned int serialReadN;
 
 public:
     Quadrocopter();
@@ -90,6 +114,8 @@ public:
 
     void processSerialRx();
     void processSerialTx();
+
+    void processJoystickRx();
 
     void iteration();
     void MPUInterrupt();

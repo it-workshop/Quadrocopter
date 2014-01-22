@@ -15,7 +15,6 @@ using std::vector;
 using std::map;
 
 class quadrocopter;
-class joystick;
 
 typedef short unsigned int serial_t;
 
@@ -23,7 +22,6 @@ class serial : public QObject
 {
 Q_OBJECT
 friend class quadrocopter;
-friend class joystick;
 
 protected:
     QextSerialPort *port;

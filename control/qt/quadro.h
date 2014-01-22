@@ -8,7 +8,7 @@
 #include <QTimer>
 #include <vect.h>
 #include <quadrocopter.h>
-#include <joystick.h>
+#include <vector>
 
 #include "qextserialenumerator.h"
 
@@ -16,6 +16,8 @@
 
 using std::string;
 using std::ofstream;
+using std::ifstream;
+using std::vector;
 
 namespace Ui {
     class Quadro;
@@ -32,6 +34,7 @@ public:
 private slots:
     void timer_auto_update();
     void timer_reconnect_update();
+    void timer_log_update();
 
     //quadro
     void on_actionQuadroConnect_triggered();
@@ -41,30 +44,33 @@ private slots:
 
     void on_reaction_type_currentIndexChanged(int index);
 
-    //joy
-    void on_actionJoystickConnect_triggered();
-    void on_actionJoystickDisconnect_triggered();
-    void on_actionJoystickCalibrate_zero_triggered();
-    void on_joystick_device_textChanged(const QString &arg1);
-
 private:
     Ui::Quadro *ui;
 
     QextSerialEnumerator QeSEnumerator;
 
-    static const double timer_auto_interval = 75;
+    static const double timer_auto_interval = 50;
+    double timer_log_interval;
     static const double timer_reconnect_interval = 1000;
-    QTimer timer_auto, timer_reconnect;
+    QTimer timer_auto, timer_reconnect, timer_log;
 
     quadrocopter quadro;
-    joystick joy;
+
+    vect angular_velocity, angle, acceleration, torque, PID_P, PID_I, PID_D;
+    vect joystick_readings, correction;
+
+    double power, voltage, joystick_heading, joystick_power;
+    int M[4];
+    double read_time, write_time, loop_time;
+    vector<int> log_lines;
+    int log_line;
 
     // plot
 
     static const int plot_size = 200 + 1;
     double plot_time[plot_size],
         plot_gyro_x[plot_size], plot_gyro_y[plot_size], plot_gyro_z[plot_size],
-        plot_acc_x[plot_size], plot_acc_y[plot_size], plot_acc_z[plot_size],
+        plot_joy_x[plot_size], plot_joy_y[plot_size],
         plot_angle_x[plot_size], plot_angle_y[plot_size],
         plot_angle_accx[plot_size], plot_angle_accy[plot_size],
         plot_torque_x[plot_size], plot_torque_y[plot_size], plot_torque_z[plot_size], plot_force[plot_size],
@@ -75,14 +81,19 @@ private:
         plot_PID_P_y[plot_size], plot_PID_I_y[plot_size], plot_PID_D_y[plot_size],
         plot_PID_P_z[plot_size], plot_PID_I_z[plot_size], plot_PID_D_z[plot_size];
 
+    static const long double PLOT_TORQUE_COEFF_XY = 20, PLOT_TORQUE_COEFF_Z = 2;
+
     QwtPlotCurve *plot_curve_angular_velocity_correction_x, *plot_curve_angular_velocity_correction_y, *plot_curve_angular_velocity_correction_z;
     QwtPlotCurve *plot_curve_acceleration_correction_x, *plot_curve_acceleration_correction_y, *plot_curve_acceleration_correction_z;
     QwtPlotCurve *plot_curve_angle_correction_x, *plot_curve_angle_correction_y, *plot_curve_angle_correction_z;
-    QwtPlotCurve *plot_curve_voltage;
+    QwtPlotCurve *plot_curve_voltage, *plot_curve_joy_x, *plot_curve_joy_y;
 
     // /plot
 
     mytime plot_mytime;
+
+    string log_filename;
+    ifstream log_file;
 
     string save_filename;
     ofstream save_file;
@@ -92,8 +103,7 @@ private:
 
     void quadro_connect();
     void quadro_disconnect();
-    void joy_disconnect();
-    void joy_connect();
+    void quadro_fetch_data();
 
     void set_quadro_data();
     void set_auto(bool);
@@ -101,6 +111,8 @@ private:
     void save_data();
     void save_open();
     void save_close();
+
+    bool quadro_save_settings;
 
     void settings_data();
     void settings_open();
@@ -118,14 +130,9 @@ private:
 
 private slots:
     void update_ports();
-    void on_joystick_device_currentIndexChanged(const QString &arg1);
     void on_quadro_device_currentIndexChanged(const QString &arg1);
     void keyPressEvent(QKeyEvent*);
-    void on_setAngle_clicked();
-    void on_torque_manual_reset_clicked();
     void on_quadro_update_clicked();
-    void on_torque_manual_correction_x_valueChanged(double arg1);
-    void on_torque_manual_correction_y_valueChanged(double arg1);
     void on_PID_angle_Kp_x_valueChanged(double arg1);
     void on_PID_angle_Ki_x_valueChanged(double arg1);
     void on_PID_angle_Kd_x_valueChanged(double arg1);
@@ -138,17 +145,22 @@ private slots:
     void on_PID_angle_MAXp_y_valueChanged(double arg1);
     void on_PID_angle_MAXi_y_valueChanged(double arg1);
     void on_PID_angle_MAXd_y_valueChanged(double arg1);
-    void on_joystick_connect_clicked();
-    void on_joystick_use_clicked();
-    void on_joystick_calibrate_clicked();
     void on_quadro_autoupdate_triggered();
     void on_quadro_connect_clicked();
-    void on_PID_angularVelocity_Kp_z_valueChanged(double arg1);
-    void on_PID_angularVelocity_Ki_z_valueChanged(double arg1);
-    void on_PID_angularVelocity_Kd_z_valueChanged(double arg1);
-    void on_PID_angularVelocity_MAXp_z_valueChanged(double arg1);
-    void on_PID_angularVelocity_MAXi_z_valueChanged(double arg1);
-    void on_PID_angularVelocity_MAXd_z_valueChanged(double arg1);
+    void on_PID_angle_Kp_z_valueChanged(double arg1);
+    void on_PID_angle_Ki_z_valueChanged(double arg1);
+    void on_PID_angle_Kd_z_valueChanged(double arg1);
+    void on_PID_angle_MAXp_z_valueChanged(double arg1);
+    void on_PID_angle_MAXi_z_valueChanged(double arg1);
+    void on_PID_angle_MAXd_z_valueChanged(double arg1);
+    void on_force_checkbox_clicked();
+    void on_force_valueChanged(double value);
+    void on_stopButton_clicked();
+    void on_log_browse_clicked();
+    void on_log_start_clicked();
+    void on_log_pause_clicked();
+    void on_log_time_valueChanged(int arg1);
+    void on_log_scroll_valueChanged(int value);
 };
 
 #endif // QUADRO_H

@@ -10,6 +10,7 @@ class VoltageSensor
 public:
     VoltageSensor(int newPin, double newMaxVoltage);
     double getValue();
+    double getRawValue();
 };
 
 #endif // VOLTAGESENSOR_H

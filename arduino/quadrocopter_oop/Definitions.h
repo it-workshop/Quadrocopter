@@ -13,16 +13,16 @@
 #endif
 
 // Disable MPU-6050
-#define DEBUG_NO_MPU
+//#define DEBUG_NO_MPU
 
 // Do not wait for motors
 //#define DEBUG_NO_MOTORS
 
-// Add DAC8512 support and use it as InfoLED (AVR only)
-//#define DEBUG_DAC
+// Add DAC8512 support and use it as InfoLED
+#define DEBUG_DAC
 
 // Oscilloscope freq at pin
-//#define DEBUG_FREQ_PIN 6
+#define DEBUG_FREQ_PIN 13
 
 // Oscilloscope MPU bytes pin
 //#define DEBUG_MPUBYTES_PIN 4
@@ -34,9 +34,22 @@
 #define PID_AV_MIN 1
 
 // Cut AV that is lower than this value (used in PID)
-#define PID_AV_MIN_Z 1
+#define PID_AV_MIN_Z 0.2
 
-// Enable 3rd angle PID (used both in Arduino and Qt apps)
-#define PID_USE_YAW
+// Enable 3rd angular velocity PID (used both in Arduino and Qt apps)
+//#define PID_USE_YAW
+
+// Use 3rd angle instead of angular velocity
+#define PID_USE_YAW_ANGLE
+
+// Enable MPU-6050 I2C BYPASS
+#define USE_MPU_BYPASS
+
+// Enable copter compass (also enables compass rxtx)
+#define USE_COMPASS
+
+// if defined: joystick's compass rotates copter; default control
+// ifndef    : joystick doesnt rotate copter    ; rotated control
+#define COMPASS_ROTATE_COPTER
 
 #endif
