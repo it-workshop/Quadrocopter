@@ -1121,9 +1121,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>260</y>
+      <y>254</y>
       <width>421</width>
-      <height>241</height>
+      <height>231</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_2">
@@ -1471,6 +1471,7 @@
     <addaction name="actionQuadroReset"/>
     <addaction name="quadro_reconnect"/>
     <addaction name="quadro_autoupdate"/>
+    <addaction name="actionDebug_stderr"/>
    </widget>
    <widget class="QMenu" name="menuJoystick">
     <property name="title">
@@ -1588,6 +1589,14 @@
    </property>
    <property name="text">
     <string>Autoupdate</string>
+   </property>
+  </action>
+  <action name="actionDebug_stderr">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Debug stderr</string>
    </property>
   </action>
  </widget>

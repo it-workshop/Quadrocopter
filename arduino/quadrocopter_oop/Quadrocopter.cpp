@@ -7,6 +7,8 @@
 
 Quadrocopter::Quadrocopter()
 {
+    needPCTx = false;
+
     serialReadN = 30;
 #ifdef PID_USE_YAW
     serialReadN += 12;
@@ -42,6 +44,10 @@ Quadrocopter::Quadrocopter()
         DefaultMotorPins[1] = 7;
         DefaultMotorPins[2] = 8;
         DefaultMotorPins[3] = 9;
+#endif
+
+#ifdef DEBUG_SERIAL_SECOND
+    DEBUG_SERIAL_SECOND.begin(115200);
 #endif
 
     MSerial = new MySerial;
@@ -159,10 +165,9 @@ void Quadrocopter::iteration()
 #endif
 
         { // Serial
-            processSerialRx();
+            processSerialGetCommand();
             myLed.setState(5);
-            processSerialTx();
-            processJoystickRx();
+            processSerialDoCommand();
         }
 
 #ifdef DEBUG_DAC
@@ -179,6 +184,12 @@ void Quadrocopter::iteration()
 #ifdef DEBUG_DAC
         myLed.setState(80);
 #endif
+
+
+        { // Joystick
+
+            processJoystickRx();
+        }
 
         tCount.setTime();
         { // Corrections, Motors

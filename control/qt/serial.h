@@ -43,6 +43,8 @@ protected:
 
     bool busyBit;
 
+    bool debug_stderr;
+
     void sopen();
     void sclose();
     void reopen();
@@ -79,6 +81,9 @@ public:
 
     void write_number_vect_t(number_vect_t min_value, number_vect_t max_value, number_vect_t value, unsigned int bytes);
     number_vect_t read_number_vect_t(number_vect_t min_value, number_vect_t max_value, unsigned int bytes);
+
+    void set_debug_stderr(bool _arg);
+    bool get_debug_stderr();
 
 public slots:
     virtual void on_rx();

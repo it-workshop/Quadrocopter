@@ -28,6 +28,10 @@ void MySerial::bufferInit()
 
 void MySerial::bufferWrite()
 {
+#ifdef DEBUG_SERIAL_SECOND
+    DEBUG_SERIAL_SECOND.print("tx ");
+    DEBUG_SERIAL_SECOND.println(bufferCount);
+#endif
     Serial.write(buffer, bufferCount);
 }
 

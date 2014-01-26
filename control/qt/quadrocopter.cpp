@@ -12,6 +12,8 @@ using std::endl;
 
 quadrocopter::quadrocopter()
 {
+    debug_stderr = true;
+
     rate = 115200;
     maxwait = 500;
 
@@ -31,7 +33,7 @@ quadrocopter::quadrocopter()
 #ifdef DEBUG_NO_TX_ARDUINO
     readBytesN = 1;
 #else
-    readBytesN = 21;
+    readBytesN = 28;
     #ifdef PID_USE_YAW
         readBytesN += 3;
     #endif
@@ -43,7 +45,9 @@ quadrocopter::quadrocopter()
     #endif
 #endif
 
-    readBytesN += 7;
+    if(debug_stderr)
+        qDebug() << "readBytesN=" << readBytesN;
+
     //readBytesN = BN;
 
     busyBit = false;

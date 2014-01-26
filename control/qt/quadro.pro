@@ -36,6 +36,7 @@ HEADERS  += quadro.h \
     serial.h \
     vect.h \
     quadrocopter.h \
-    mytime.h
+    mytime.h \
+    ../../arduino/quadrocopter_oop/Definitions.h
 
 FORMS    += quadro.ui

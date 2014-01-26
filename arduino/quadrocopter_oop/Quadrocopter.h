@@ -102,6 +102,7 @@ private:
     // bytes to read
     // Defines in Quadrocopter.cpp
     unsigned int serialReadN;
+    bool needPCTx;
 
 public:
     Quadrocopter();
@@ -112,8 +113,13 @@ public:
     void processCorrection();
     void processMotors();
 
-    void processSerialRx();
-    void processSerialTx();
+    void processSerialGetCommand();
+    void processSerialDoCommand();
+
+    void processSerialPCRx();
+    void processSerialPCTx();
+
+    void processSerialTextTx();
 
     void processJoystickRx();
 

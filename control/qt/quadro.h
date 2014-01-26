@@ -161,6 +161,7 @@ private slots:
     void on_log_pause_clicked();
     void on_log_time_valueChanged(int arg1);
     void on_log_scroll_valueChanged(int value);
+    void on_actionDebug_stderr_triggered(bool checked);
 };
 
 #endif // QUADRO_H

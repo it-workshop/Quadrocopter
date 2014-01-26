@@ -12,13 +12,16 @@ using std::endl;
 
 void quadrocopter::on_rx()
 {
-    qDebug() << "available: " << port->bytesAvailable();
+    if(debug_stderr)
+        qDebug() << "available: " << port->bytesAvailable();
 
     while(port->bytesAvailable() >= readBytesN)
     {
-        qDebug() << "calling read_data()";
+        if(debug_stderr)
+            qDebug() << "calling read_data()";
         read_data();
-        qDebug() << "read_data() ok";
+        if(debug_stderr)
+            qDebug() << "read_data() ok";
     }
 }
 
@@ -43,7 +46,8 @@ void quadrocopter::initiate_transmission()
     readErrorReset();
     if(!isoperational() || busyBit) return;
     busyBit = true;
-    qDebug() << "=== TRANSMISSION BEGINS ===";
+    if(debug_stderr)
+        qDebug() << "=== TRANSMISSION BEGINS ===";
 
     mytime write_timer;
     write_timer.setTime();
@@ -51,7 +55,8 @@ void quadrocopter::initiate_transmission()
     flush();
     swriteClear();
 
-    qDebug() << "=== TRANSMISSION: WRITE ===";
+    if(debug_stderr)
+        qDebug() << "=== TRANSMISSION: WRITE ===";
     swrite('p');
     write_data();
 
@@ -60,12 +65,14 @@ void quadrocopter::initiate_transmission()
     write_time = write_timer.getTimeDifference() / 1.E3;
 
     readTimer.setTime();
-    qDebug() << "=== TRANSMISSION: READ_BEGIN ===";
+    if(debug_stderr)
+        qDebug() << "=== TRANSMISSION: READ_BEGIN ===";
 }
 
 void quadrocopter::read_data()
 {
-    qDebug() << "=== TRANSMISSION: READ_ACTUAL ===";
+    if(debug_stderr)
+        qDebug() << "=== TRANSMISSION: READ_ACTUAL ===";
 #ifndef DEBUG_NO_TX_ARDUINO
     vect t_torque_corrected, t_gyroscope_readings;
     number_vect_t t_angle_x, t_angle_y, t_motors[MOTORS_N];
@@ -181,7 +188,8 @@ void quadrocopter::read_data()
     if(!(/*ef || */readError()))
         busyBit = false;
 
-    qDebug() << "=== END OF TRANSMISSION ===" << endl;
+    if(debug_stderr)
+        qDebug() << "=== END OF TRANSMISSION ===" << endl;
 }
 
 void quadrocopter::write_data()

@@ -19,7 +19,7 @@
 //#define DEBUG_NO_MOTORS
 
 // Add DAC8512 support and use it as InfoLED
-#define DEBUG_DAC
+//#define DEBUG_DAC
 
 // Oscilloscope freq at pin
 #define DEBUG_FREQ_PIN 13
@@ -51,5 +51,9 @@
 // if defined: joystick's compass rotates copter; default control
 // ifndef    : joystick doesnt rotate copter    ; rotated control
 #define COMPASS_ROTATE_COPTER
+
+// Additional debug serial port
+//define to enable
+#define DEBUG_SERIAL_SECOND Serial1
 
 #endif

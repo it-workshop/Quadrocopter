@@ -64,6 +64,8 @@ void Quadro::interface_init()
 
     ui->stopButton->setStyleSheet("background-color: rgb(255, 0, 0); font-size: 30pt; font-weight: bold;");
 
+    ui->actionDebug_stderr->setChecked(quadro.get_debug_stderr());
+
     setFocus();
 }
 

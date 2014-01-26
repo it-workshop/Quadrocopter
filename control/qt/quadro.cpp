@@ -160,3 +160,8 @@ void Quadro::timer_auto_update()
         allowed = true;
     }
 }
+
+void Quadro::on_actionDebug_stderr_triggered(bool checked)
+{
+    quadro.set_debug_stderr(checked);
+}
