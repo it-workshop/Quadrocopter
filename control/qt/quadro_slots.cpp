@@ -194,3 +194,29 @@ void Quadro::on_stopButton_clicked()
     quadro.set_force_override(ui->force_checkbox->isChecked(), ui->force->value());
     settings_data();
 }
+
+void Quadro::on_actionDebug_stderr_triggered(bool checked)
+{
+    quadro.set_debug_stderr(checked);
+}
+
+void Quadro::on_logfileaction_clicked()
+{
+    if(save_file.is_open())
+    {
+        //close it
+        ui->logfileaction->setText("Open");
+        save_close();
+    }
+    else
+    {
+        mytime t_time;
+        save_filename = "../log/quadro_";
+        save_filename.append(t_time.getTime());
+        save_filename.append("_");
+        save_filename.append(ui->flightname->text().toAscii().data());
+        save_filename.append(".txt");
+        save_open();
+        ui->logfileaction->setText("Close");
+    }
+}

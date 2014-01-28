@@ -53,7 +53,7 @@
       <x>10</x>
       <y>0</y>
       <width>421</width>
-      <height>251</height>
+      <height>271</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -107,7 +107,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>50</y>
+        <y>42</y>
         <width>411</width>
         <height>91</height>
        </rect>
@@ -987,7 +987,7 @@
       <property name="geometry">
        <rect>
         <x>160</x>
-        <y>160</y>
+        <y>136</y>
         <width>101</width>
         <height>41</height>
        </rect>
@@ -995,6 +995,45 @@
       <property name="text">
        <string>STOP</string>
       </property>
+     </widget>
+     <widget class="QWidget" name="formLayoutWidget_4">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>179</y>
+        <width>411</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <layout class="QFormLayout" name="formLayout">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_flightname">
+         <property name="text">
+          <string>Flight name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="flightname">
+         <property name="font">
+          <font>
+           <family>Terminus</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="logfileaction">
+         <property name="text">
+          <string>Open</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_log">
@@ -1121,7 +1160,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>254</y>
+      <y>280</y>
       <width>421</width>
       <height>231</height>
      </rect>
@@ -1473,15 +1512,6 @@
     <addaction name="quadro_autoupdate"/>
     <addaction name="actionDebug_stderr"/>
    </widget>
-   <widget class="QMenu" name="menuJoystick">
-    <property name="title">
-     <string>Joystick</string>
-    </property>
-    <addaction name="actionJoystickConnect"/>
-    <addaction name="actionJoystickDisconnect"/>
-    <addaction name="actionJoystickCalibrate_zero"/>
-    <addaction name="joy_reconnect"/>
-   </widget>
    <widget class="QMenu" name="menuProgram">
     <property name="title">
      <string>Program</string>
@@ -1490,7 +1520,6 @@
    </widget>
    <addaction name="menuProgram"/>
    <addaction name="menuQuadro"/>
-   <addaction name="menuJoystick"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">

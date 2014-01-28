@@ -9,12 +9,10 @@ using std::string;
 
 void Quadro::interface_init()
 {
-    mytime t_time;
-
     ui->LogSave_data->setChecked(true);
-    save_filename = "../log/quadro_";
-    save_filename.append(t_time.getTime());
-    save_filename.append(".txt");
+    ui->logfileaction->setText("Open");
+
+    ui->flightname->setText("noName");
 
     settings_filename = "settings.txt";
 

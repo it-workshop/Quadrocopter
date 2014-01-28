@@ -120,7 +120,7 @@ void Quadro::save_open()
 
 void Quadro::save_data()
 {
-    if(ui->LogSave_data->isChecked() && quadro.isoperational())
+    if(ui->LogSave_data->isChecked() && quadro.isoperational() && save_file.is_open())
     {
         stringstream t_ss;
         int i;
