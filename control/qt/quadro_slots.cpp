@@ -206,6 +206,7 @@ void Quadro::on_logfileaction_clicked()
     {
         //close it
         ui->logfileaction->setText("Open");
+        ui->logfileaction->setStyleSheet("");
         save_close();
     }
     else
@@ -218,5 +219,6 @@ void Quadro::on_logfileaction_clicked()
         save_filename.append(".txt");
         save_open();
         ui->logfileaction->setText("Close");
+        ui->logfileaction->setStyleSheet("background-color: rgb(100, 255, 100);");
     }
 }
