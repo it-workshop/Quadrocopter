@@ -29,8 +29,8 @@ SOURCES += main.cpp\
     quadro_save.cpp \
     quadro_slots.cpp \
     quadro_interface.cpp \
-    quadro_rxtx.cpp \
-    quadro_log.cpp
+    quadro_log.cpp \
+    quadrocopter_rxtx.cpp
 
 HEADERS  += quadro.h \
     serial.h \
