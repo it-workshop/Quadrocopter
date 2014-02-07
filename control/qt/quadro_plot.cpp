@@ -418,8 +418,8 @@ void Quadro::plot_update()
     ui->plot_gyro->replot();
 
     //acc
-    plot_joy_x[plot_current] = quadro.get_torque_manual_correction().x;
-    plot_joy_y[plot_current] = quadro.get_torque_manual_correction().y;
+    plot_joy_x[plot_current] = joystick_readings.x;
+    plot_joy_y[plot_current] = joystick_readings.y;
 
     ui->plot_joy->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
     ui->plot_joy->replot();
