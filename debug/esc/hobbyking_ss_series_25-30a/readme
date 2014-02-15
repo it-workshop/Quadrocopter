@@ -1,0 +1,14 @@
+1) connect to avr910
+2) connect to 12V
+3) connect motor (optionally)
+
+1) download from sim-/tgy
+2) add makefile section bootload_avr910:
+bootload_avr910:
+	avrdude -c avr910 -P /dev/ttyACM0 -u -p m8 -U hfuse:w:`avrdude -c avr910 -P /dev/ttyACM0 -u -p m8 -U hfuse:r:-:h | sed -n '/^0x/{s/.$$/a/;p}'`:m
+3) (flash) sudo avrdude -p m8 -c avr910 -P /dev/ttyACM0 -U flash:w:tp_8khz.hex
+4) (fuse) sudo make bootload_avr910
+
+1) full power -> one beep
+2) zero power -> two beeps
+3) reboot
