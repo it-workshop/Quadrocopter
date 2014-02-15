@@ -41,6 +41,8 @@ void MotorController::setMotors(double power[N_MOTORS])
 
 MotorController::MotorController(const int motorControlPins[N_MOTORS])
 {
+    initialized = false;
+
     useMotors[A] = 1;
     useMotors[B] = 1;
     useMotors[C] = 1;
@@ -74,6 +76,14 @@ MotorController::MotorController(const int motorControlPins[N_MOTORS])
 double MotorController::getForce()
 {
     return(force);
+}
+
+void MotorController::initialize()
+{
+    if(initialized) return;
+    for(int i = 0; i < N_MOTORS; i++)
+        motors_[i].initializeControlPin();
+    initialized = true;
 }
 
 void MotorController::setForce(double a)

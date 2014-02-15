@@ -1,4 +1,5 @@
 #include "Motor.h"
+#include "Definitions.h"
 #include "Arduino.h"
 
 Motor::Motor(int pin)
@@ -12,6 +13,7 @@ Motor::Motor()
 {
     controlPin = -1;
     power = 0;
+    PWMInitialized = false;
 }
 
 inline double Motor::getPower()
@@ -29,6 +31,8 @@ void Motor::setPower(double powerValue)
         else if (power <= 0) speedie = MinSpeed;
         else speedie = power * (MaxSpeed - MinSpeed) + MinSpeed;
 
+        if(!PWMInitialized) return;
+
 #ifdef _arch_avr_
         analogWrite(controlPin, speedie);
 #endif
@@ -41,12 +45,18 @@ void Motor::setPower(double powerValue)
 void Motor::setControlPin(int control_pin_)
 {
     controlPin = control_pin_;
-#ifdef _arch_avr_
-    pinMode(controlPin, OUTPUT);
-#endif
-#ifdef _arch_arm_
-    pwm_setup(controlPin, PWMFreq, 1);
-#endif
 
     setPower(0);
+}
+
+void Motor::initializeControlPin()
+{
+    #ifdef _arch_avr_
+        pinMode(controlPin, OUTPUT);
+    #endif
+    #ifdef _arch_arm_
+        pwm_setup(controlPin, PWMFreq, 1);
+    #endif
+
+    PWMInitialized = true;
 }

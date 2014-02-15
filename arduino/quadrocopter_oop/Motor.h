@@ -21,6 +21,8 @@ private:
     double power;
     int speedie;
 
+    bool PWMInitialized;
+
 #ifdef _arch_arm_
     static const uint32_t PWMFreq  = 500;
     static const uint32_t PWMScale = 256;
@@ -33,6 +35,7 @@ public:
     inline double getPower(); // value in [0...1]
     void setPower(double powerValue); // value in [0...1]
     void setControlPin(int newPin);
+    void initializeControlPin();
 };
 
 #endif

@@ -16,6 +16,8 @@ private:
 #endif
 
     double force;
+
+    bool initialized;
     
     static const double MIN_SPEED = 0.1;
 
@@ -50,6 +52,8 @@ public:
     void setForce(double a); //force
 
     double getForce();
+
+    void initialize();
 };
 
 #endif
