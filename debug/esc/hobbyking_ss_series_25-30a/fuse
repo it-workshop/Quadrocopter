@@ -1,0 +1,25 @@
+avrdude: AVR device initialized and ready to accept instructions
+
+Reading | ################################################## | 100% 0.00s
+
+avrdude: Device signature = 0x1e9307
+avrdude: current erase-rewrite cycle count is -50462977 (if being tracked)
+avrdude: reading lfuse memory:
+
+Reading | ################################################## | 100% 0.05s
+
+avrdude: writing output file "<stdout>"
+:010000003FC0
+:00000001FF
+avrdude: reading hfuse memory:
+
+Reading | ################################################## | 100% 0.05s
+
+avrdude: writing output file "<stdout>"
+:01000000C13E
+:00000001FF
+"efuse" memory type not defined for part "ATMEGA8"
+
+avrdude: safemode: Fuses OK
+
+avrdude done.  Thank you.
