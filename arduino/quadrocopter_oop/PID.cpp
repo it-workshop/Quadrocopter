@@ -42,45 +42,24 @@ void PID::prepare(double data, double dt)
     eIntegral += e * dt;
 }
 
+#define LIMIT_CUT(x, xMin, xMax) {if(x < xMin) {x = xMin;} if(x > xMax) {x = xMax;} }
+
 void PID::iteration()
 {
     ePrev = e;
-
-    
-	if(e < PMin)
-		e = PMin;
-
-	if(e > PMax)
-		e = PMax;
-
-	if(eIntegral < IMin)
-		eIntegral = IMin;
-
-	if(eIntegral > IMax)
-		eIntegral = IMax;
-
-	if(eDerivative < DMin)
-		eDerivative = DMin;
-
-	if(eDerivative > DMax)
-		eDerivative = DMax;
-
 
     //correction
     P = e * Kp;
     I = eIntegral * Ki;
     D = eDerivative * Kd;
 
+    LIMIT_CUT(P, PMin, PMax);
+    LIMIT_CUT(I, IMin, IMax);
+    LIMIT_CUT(D, DMin, DMax);
+
     y = P + I + D;
 
-
-	if(y < yMin)
-		y = yMin;
-
-	if(y > yMax)
-		y = yMax;
-
-
+    LIMIT_CUT(y, yMin, yMax);
 }
 
 PID::PID(pidMode nMode)
