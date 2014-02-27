@@ -55,7 +55,8 @@ void Quadro::timer_log_update()
 {
     static bool allowed = true;
 
-    double seconds, t_double;
+    double t_double;
+    long long seconds;
     string date, t_str;
     int t_int;
 
@@ -71,8 +72,6 @@ void Quadro::timer_log_update()
         log_file.seekg(log_lines[log_line]);
 
         log_file >> seconds >> date >> t_int;
-
-
 
         log_file >> angular_velocity.value_by_axis_index(0) >>
                     angular_velocity.value_by_axis_index(1) >>
@@ -142,6 +141,8 @@ void Quadro::on_log_start_clicked()
     ui->LogSave_data->setChecked(false);
     ui->LogSave_data->setCheckable(false);
     timer_log_interval = ui->log_time->value();
+    plot_reset_data();
+    plot_mytime.reset();
     timer_log.start(timer_log_interval);
 }
 

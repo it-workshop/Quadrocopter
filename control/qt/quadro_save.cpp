@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <mytime.h>
+#include <QDateTime>
 
 using std::endl;
 
@@ -110,7 +111,7 @@ void Quadro::save_open()
     if(ui->LogSave_data->isChecked())
     {
         save_file.open(save_filename.c_str(), std::ios_base::app);
-        save_file << "#seconds\tdatetime\tqptr_op\tgyro_x\tgyro_y\tgyro_z\treact_t\tangle_x\tangle_y\tangle_z\t"
+        save_file << "#milliseconds\tdatetime\tqptr_op\tgyro_x\tgyro_y\tgyro_z\treact_t\tangle_x\tangle_y\tangle_z\t"
                   << "trq_x\ttrq_y\ttrq_z\tc_power\tvoltage\tPID_P_x\tPID_P_y\tPID_P_z\tPID_I_x\tPID_I_y\tPID_I_z\t"
                   << "PID_D_x\tPID_D_y\tPID_D_z\tq_head\tKp_x\tKp_y\tKp_z\tKi_x\tKi_y\tKi_z\tKd_x\tKd_y\tKd_z\t"
                   << "MaxP_x\tMaxP_y\tMaxP_z\tMaxI_x\tMaxI_y\tMaxI_z\tMaxD_x\tMaxD_y\tMaxD_z\tjoy_x\tjoy_y\tjoy_hdn\t"
@@ -128,7 +129,7 @@ void Quadro::save_data()
 
         t_ss.precision(3);
 
-        t_ss << t_time.getSeconds() << "\t" << t_time.getTime() << "\t"
+        t_ss << (QDateTime::currentMSecsSinceEpoch()) << "\t" << t_time.getTime() << "\t"
              << quadro.isoperational() << "\t"
              << quadro.get_gyroscope_readings().print() << "\t"
              << quadro.get_reaction_type() << "\t"
