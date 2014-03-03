@@ -22,7 +22,7 @@
 
 Дополнительную информацию можно найти на [https://github.com/it-workshop/Quadrocopter/wiki вики] проекта, а также на нашем сайте [http://technoworks.ru/projects/qcopter/ technoworks.ru].
 
-Небольшая презентация: [http://alex-ac.github.io/presentation-template/#/ http://alex-ac.github.io/presentation-template] ''(листать стрелками)''
+Небольшая презентация: [http://it-workshop.github.io/QuadrocopterPresentation http://it-workshop.github.io/QuadrocopterPresentation] ''(листать стрелками)''
 
 '''Необходимое для работы'''
 
