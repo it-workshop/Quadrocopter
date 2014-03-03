@@ -141,8 +141,8 @@ void Quadro::on_log_start_clicked()
     ui->LogSave_data->setChecked(false);
     ui->LogSave_data->setCheckable(false);
     timer_log_interval = ui->log_time->value();
-    plot_reset_data();
-    plot_mytime.reset();
+    //plot_reset_data();
+    //plot_mytime.reset();
     timer_log.start(timer_log_interval);
 }
 
