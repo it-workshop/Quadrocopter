@@ -63,7 +63,7 @@ quadrocopter::quadrocopter()
 void quadrocopter::defaults()
 {
     busyBit = false;
-    torque_manual_correction = vect();
+    copter_angle0 = vect();
     torque_corrected = vect();
     gyroscope_readings = vect();
     accelerometer_readings = vect();
@@ -152,6 +152,11 @@ void quadrocopter::set_force_override(bool _do, double _value)
     force_override = _do;
     force_override_value = _value / 100.;
     //cerr << "set do=" << force_override << " value=" << force_override_value << endl;
+}
+
+void quadrocopter::set_angle_offset(vect v)
+{
+    angle_offset = v;
 }
 
 vect quadrocopter::get_torque_corrected()
@@ -291,7 +296,7 @@ vect quadrocopter::get_PID_angle_Kd()
 
 vect quadrocopter::get_torque_manual_correction()
 {
-    return(torque_manual_correction);
+    return(copter_angle0);
 }
 
 number_vect_t quadrocopter::get_power()
