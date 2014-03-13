@@ -48,6 +48,8 @@ private:
 
     RVector3D angleManualCorrection;
 
+    RVector3D angleOffsetPC;
+
     static const double DefaultVSensorMaxVoltage = 17.95; //maximal voltage (before voltage divider)
     //15.16? 11.95->2.6
 

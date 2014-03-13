@@ -93,25 +93,25 @@ void Quadrocopter::processSerialPCRx()
     reactionType = (reactionType_) (MSerial->read() - '0');
 
     double tDouble;
-    //PID angle coefficients X +6
-    MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleX.Kp = (tDouble);
-    MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleX.Ki = (tDouble);
-    MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleX.Kd = (tDouble);
+    //PID angle coefficients X +3
+    MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleX.Kp = (tDouble);
+    MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleX.Ki = (tDouble);
+    MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleX.Kd = (tDouble);
 
-    //PID angle minmax X +6
-    MSerial->readDouble(0, 5, tDouble, 2); pidAngleX.setPMinMax(tDouble);
-    MSerial->readDouble(0, 5, tDouble, 2); pidAngleX.setIMinMax(tDouble);
-    MSerial->readDouble(0, 5, tDouble, 2); pidAngleX.setDMinMax(tDouble);
+    //PID angle minmax X +3
+    MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleX.setPMinMax(tDouble);
+    MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleX.setIMinMax(tDouble);
+    MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleX.setDMinMax(tDouble);
 
-    //PID angle coefficients Y +6
-    MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleY.Kp = (tDouble);
-    MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleY.Ki = (tDouble);
-    MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleY.Kd = (tDouble);
+    //PID angle coefficients Y +3
+    MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleY.Kp = (tDouble);
+    MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleY.Ki = (tDouble);
+    MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleY.Kd = (tDouble);
 
-    //PID angle minmax Y +6
-    MSerial->readDouble(0, 5, tDouble, 2); pidAngleY.setPMinMax(tDouble);
-    MSerial->readDouble(0, 5, tDouble, 2); pidAngleY.setIMinMax(tDouble);
-    MSerial->readDouble(0, 5, tDouble, 2); pidAngleY.setDMinMax(tDouble);
+    //PID angle minmax Y +3
+    MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleY.setPMinMax(tDouble);
+    MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleY.setIMinMax(tDouble);
+    MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleY.setDMinMax(tDouble);
 
 #ifdef PID_USE_YAW
     //PID AngularVelocityZ coefficients Z +6
@@ -126,15 +126,15 @@ void Quadrocopter::processSerialPCRx()
 #endif
 
 #ifdef PID_USE_YAW_ANGLE
-    //PID angle coefficients Z +6
-    MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleZ.Kp = (tDouble);
-    MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleZ.Ki = (tDouble);
-    MSerial->readDouble(-1.5, 1.5, tDouble, 2); pidAngleZ.Kd = (tDouble);
+    //PID angle coefficients Z +3
+    MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleZ.Kp = (tDouble);
+    MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleZ.Ki = (tDouble);
+    MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleZ.Kd = (tDouble);
 
-    //PID angle minmax Z +6
-    MSerial->readDouble(0, 10, tDouble, 2); pidAngleZ.setPMinMax(tDouble);
-    MSerial->readDouble(0, 10, tDouble, 2); pidAngleZ.setIMinMax(tDouble);
-    MSerial->readDouble(0, 10, tDouble, 2); pidAngleZ.setDMinMax(tDouble);
+    //PID angle minmax Z +3
+    MSerial->readDouble(0, 1, tDouble, 1); pidAngleZ.setPMinMax(tDouble);
+    MSerial->readDouble(0, 1, tDouble, 1); pidAngleZ.setIMinMax(tDouble);
+    MSerial->readDouble(0, 1, tDouble, 1); pidAngleZ.setDMinMax(tDouble);
 #endif
 }
 

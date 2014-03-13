@@ -155,8 +155,8 @@ void quadrocopter::read_data()
         joystick_heading = t_joystick_heading;
 #endif
 
-        torque_manual_correction.x = t_angle0_x;
-        torque_manual_correction.y = t_angle0_y;
+        copter_angle0.x = t_angle0_x;
+        copter_angle0.y = t_angle0_y;
 
         power = t_power;
 
@@ -195,36 +195,36 @@ void quadrocopter::read_data()
 void quadrocopter::write_data()
 {
     swrite(force_override_value * 100); // +1
-
+    //write_number_vect_t
     swrite(force_override); // +1
 
 
     //send reaction type
     swrite('0' + reaction_type);
 
-    write_number_vect_t(-1.5, 1.5, PID_angle_Kp.x, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angle_Ki.x, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angle_Kd.x, 2);
+    write_number_vect_t(0, 0.5, PID_angle_Kp.x, 1);
+    write_number_vect_t(0, 0.5, PID_angle_Ki.x, 1);
+    write_number_vect_t(0, 0.5, PID_angle_Kd.x, 1);
 
-    write_number_vect_t(0, 5, PID_angle_MAXp.x, 2);
-    write_number_vect_t(0, 5, PID_angle_MAXi.x, 2);
-    write_number_vect_t(0, 5, PID_angle_MAXd.x, 2);
+    write_number_vect_t(0, 0.5, PID_angle_MAXp.x, 1);
+    write_number_vect_t(0, 0.5, PID_angle_MAXi.x, 1);
+    write_number_vect_t(0, 0.5, PID_angle_MAXd.x, 1);
 
-    write_number_vect_t(-1.5, 1.5, PID_angle_Kp.y, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angle_Ki.y, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angle_Kd.y, 2);
+    write_number_vect_t(0, 0.5, PID_angle_Kp.y, 1);
+    write_number_vect_t(0, 0.5, PID_angle_Ki.y, 1);
+    write_number_vect_t(0, 0.5, PID_angle_Kd.y, 1);
 
-    write_number_vect_t(0, 5, PID_angle_MAXp.y, 2);
-    write_number_vect_t(0, 5, PID_angle_MAXi.y, 2);
-    write_number_vect_t(0, 5, PID_angle_MAXd.y, 2);
+    write_number_vect_t(0, 0.5, PID_angle_MAXp.y, 1);
+    write_number_vect_t(0, 0.5, PID_angle_MAXi.y, 1);
+    write_number_vect_t(0, 0.5, PID_angle_MAXd.y, 1);
 
 #if defined(PID_USE_YAW) || defined(PID_USE_YAW_ANGLE)
-    write_number_vect_t(-1.5, 1.5, PID_angle_Kp.z, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angle_Ki.z, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angle_Kd.z, 2);
+    write_number_vect_t(0, 0.5, PID_angle_Kp.z, 1);
+    write_number_vect_t(0, 0.5, PID_angle_Ki.z, 1);
+    write_number_vect_t(0, 0.5, PID_angle_Kd.z, 1);
 
-    write_number_vect_t(0, 10, PID_angle_MAXp.z, 2);
-    write_number_vect_t(0, 10, PID_angle_MAXi.z, 2);
-    write_number_vect_t(0, 10, PID_angle_MAXd.z, 2);
+    write_number_vect_t(0, 1, PID_angle_MAXp.z, 1);
+    write_number_vect_t(0, 1, PID_angle_MAXi.z, 1);
+    write_number_vect_t(0, 1, PID_angle_MAXd.z, 1);
 #endif
 }

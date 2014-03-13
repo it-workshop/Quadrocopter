@@ -9,19 +9,11 @@ Quadrocopter::Quadrocopter()
 {
     needPCTx = false;
 
-    serialReadN = 30;
-#ifdef PID_USE_YAW
-    serialReadN += 12;
-#endif
-#ifdef PID_USE_YAW_ANGLE
-    serialReadN += 12;
-#endif
-#ifdef USE_COMPASS
-    serialReadN += 2;
-#endif
+    serialReadN = 15; // 3 + 12
 
-    serialReadN -= 7;
-    serialReadN += 2;
+#ifdef PID_USE_YAW_ANGLE
+    serialReadN += 6;
+#endif
 
     DefaultVSensorPin = A4;
     reactionType = ReactionNone;
@@ -68,6 +60,7 @@ Quadrocopter::Quadrocopter()
 
     forceOverrideValue = 0;
     forceOverride = 1;
+    angleOffsetPC = RVector3D(0);
 
     this->reset();
 
@@ -92,6 +85,8 @@ Quadrocopter::Quadrocopter()
 
 void Quadrocopter::reset()
 {
+    angleOffsetPC = RVector3D(0);
+
     angle = RVector3D();
     torqueAutomaticCorrection = RVector3D();
     angleManualCorrection = RVector3D();
