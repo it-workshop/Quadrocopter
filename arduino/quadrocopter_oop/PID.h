@@ -28,6 +28,9 @@ public:
 
     double IUse;
 
+    enum _angleDifferenceType{TNONE, T1, T2, T3};
+    int angleDifferenceType, angleDifferenceTypePrev;
+
 private:
 
     double eIntegral;

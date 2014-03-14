@@ -33,15 +33,27 @@ void PID::prepare(double data, double dt)
         e1 = data0 - data;
         e2 = e1 - 2 * MPI;
         e3 = e1 + 2 * MPI;
+        angleDifferenceType = T1;
         if(fabs(e2) < fabs(e1))
+        {
             e1 = e2;
+            angleDifferenceType = T2;
+        }
         if(fabs(e3) < fabs(e1))
+        {
             e1 = e3;
+            angleDifferenceType = T3;
+        }
         e = e1;
     }
 
     //discrete derivative
-    eDerivative = (e - ePrev) / dt;
+    if((mode != DIFFERENCE_ANGLE) ||
+            (angleDifferenceTypePrev == TNONE) ||
+            (angleDifferenceType == angleDifferenceTypePrev))
+        eDerivative = (e - ePrev) / dt;
+
+    angleDifferenceTypePrev = angleDifferenceType;
 
     //discrete integral
     if(IUse)
@@ -73,6 +85,9 @@ void PID::iteration()
 
 PID::PID(pidMode nMode)
 {
+    angleDifferenceType = TNONE;
+    angleDifferenceType = TNONE;
+
     eIntegral = 0;
     data0 = 0;
     ePrev = 0;
