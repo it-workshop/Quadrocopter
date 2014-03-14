@@ -9,7 +9,7 @@ Quadrocopter::Quadrocopter()
 {
     needPCTx = false;
 
-    serialReadN = 15; // 3 + 12
+    serialReadN = 21; // 3 + 12 + 6
 
 #ifdef PID_USE_YAW_ANGLE
     serialReadN += 6;

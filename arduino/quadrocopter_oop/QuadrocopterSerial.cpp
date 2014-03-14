@@ -93,6 +93,11 @@ void Quadrocopter::processSerialPCRx()
     reactionType = (reactionType_) (MSerial->read() - '0');
 
     double tDouble;
+
+    MSerial->readDouble(-M_PI, M_PI, tDouble, 2); angleOffsetPC.x = tDouble;
+    MSerial->readDouble(-M_PI, M_PI, tDouble, 2); angleOffsetPC.y = tDouble;
+    MSerial->readDouble(-M_PI, M_PI, tDouble, 2); angleOffsetPC.z = tDouble;
+
     //PID angle coefficients X +3
     MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleX.Kp = (tDouble);
     MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleX.Ki = (tDouble);

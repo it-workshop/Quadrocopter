@@ -198,10 +198,15 @@ void quadrocopter::write_data()
     //write_number_vect_t
     swrite(force_override); // +1
 
-
     //send reaction type
     swrite('0' + reaction_type);
 
+    // +6
+    write_number_vect_t(-M_PI, M_PI, angle_offset.x, 2);
+    write_number_vect_t(-M_PI, M_PI, angle_offset.y, 2);
+    write_number_vect_t(-M_PI, M_PI, angle_offset.z, 2);
+
+    // PID
     write_number_vect_t(0, 0.5, PID_angle_Kp.x, 1);
     write_number_vect_t(0, 0.5, PID_angle_Ki.x, 1);
     write_number_vect_t(0, 0.5, PID_angle_Kd.x, 1);

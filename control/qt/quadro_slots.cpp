@@ -222,3 +222,18 @@ void Quadro::on_logfileaction_clicked()
         ui->logfileaction->setStyleSheet("background-color: rgb(100, 255, 100);");
     }
 }
+
+void Quadro::on_angle_offset_x_valueChanged(double arg1)
+{
+    quadro.set_angle_offset_x(arg1 * M_PI / 180);
+}
+
+void Quadro::on_angle_offset_y_valueChanged(double arg1)
+{
+    quadro.set_angle_offset_y(arg1 * M_PI / 180);
+}
+
+void Quadro::on_angle_offset_z_valueChanged(double arg1)
+{
+    quadro.set_angle_offset_z(arg1 * M_PI / 180);
+}

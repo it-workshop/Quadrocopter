@@ -129,6 +129,9 @@ public:
 
     void set_force_override(bool _do, double _value);
     void set_angle_offset(vect);
+    void set_angle_offset_x(double);
+    void set_angle_offset_y(double);
+    void set_angle_offset_z(double);
 
     virtual void on_rx();
 

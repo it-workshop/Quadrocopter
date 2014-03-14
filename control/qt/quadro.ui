@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1054</width>
-    <height>573</height>
+    <height>611</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="maximumSize">
    <size>
     <width>1054</width>
-    <height>573</height>
+    <height>611</height>
    </size>
   </property>
   <property name="contextMenuPolicy">
@@ -53,7 +53,7 @@
       <x>10</x>
       <y>0</y>
       <width>421</width>
-      <height>271</height>
+      <height>321</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -109,7 +109,7 @@
         <x>0</x>
         <y>42</y>
         <width>411</width>
-        <height>91</height>
+        <height>131</height>
        </rect>
       </property>
       <property name="minimumSize">
@@ -136,7 +136,7 @@
          <rect>
           <x>50</x>
           <y>0</y>
-          <width>301</width>
+          <width>313</width>
           <height>61</height>
          </rect>
         </property>
@@ -400,6 +400,38 @@
          </item>
         </layout>
        </widget>
+       <widget class="QWidget" name="gridLayoutWidget_7">
+        <property name="geometry">
+         <rect>
+          <x>110</x>
+          <y>68</y>
+          <width>171</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="angle_offset_x_layout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="angle_offset_x_label">
+           <property name="text">
+            <string>Angle offset</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QDoubleSpinBox" name="angle_offset_x">
+           <property name="decimals">
+            <number>1</number>
+           </property>
+           <property name="minimum">
+            <double>-180.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>180.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
       <widget class="QWidget" name="y">
        <attribute name="title">
@@ -410,7 +442,7 @@
          <rect>
           <x>50</x>
           <y>0</y>
-          <width>301</width>
+          <width>313</width>
           <height>61</height>
          </rect>
         </property>
@@ -674,6 +706,38 @@
          </item>
         </layout>
        </widget>
+       <widget class="QWidget" name="gridLayoutWidget_8">
+        <property name="geometry">
+         <rect>
+          <x>110</x>
+          <y>68</y>
+          <width>171</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="angle_offset_y_layout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="angle_offset_y_label">
+           <property name="text">
+            <string>Angle offset</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QDoubleSpinBox" name="angle_offset_y">
+           <property name="decimals">
+            <number>1</number>
+           </property>
+           <property name="minimum">
+            <double>-180.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>180.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
       <widget class="QWidget" name="z">
        <attribute name="title">
@@ -684,7 +748,7 @@
          <rect>
           <x>50</x>
           <y>0</y>
-          <width>301</width>
+          <width>313</width>
           <height>61</height>
          </rect>
         </property>
@@ -948,13 +1012,45 @@
          </item>
         </layout>
        </widget>
+       <widget class="QWidget" name="gridLayoutWidget_9">
+        <property name="geometry">
+         <rect>
+          <x>110</x>
+          <y>68</y>
+          <width>171</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="angle_offset_z_layout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="angle_offset_z_label">
+           <property name="text">
+            <string>Angle offset</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QDoubleSpinBox" name="angle_offset_z">
+           <property name="decimals">
+            <number>1</number>
+           </property>
+           <property name="minimum">
+            <double>-180.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>180.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </widget>
      <widget class="QPushButton" name="stopButton">
       <property name="geometry">
        <rect>
         <x>160</x>
-        <y>136</y>
+        <y>176</y>
         <width>101</width>
         <height>41</height>
        </rect>
@@ -967,7 +1063,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>179</y>
+        <y>220</y>
         <width>411</width>
         <height>61</height>
        </rect>
@@ -1123,13 +1219,185 @@
      </widget>
     </widget>
    </widget>
+   <widget class="QTabWidget" name="tabwidgetplot">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>4</y>
+      <width>621</width>
+      <height>501</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tabangle">
+     <attribute name="title">
+      <string>Angle</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_angle">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>617</width>
+        <height>471</height>
+       </rect>
+      </property>
+     </widget>
+     <zorder>plot_angle</zorder>
+     <zorder>dockWidget_2</zorder>
+    </widget>
+    <widget class="QWidget" name="tabgyro_data">
+     <attribute name="title">
+      <string>Gyroscope data</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_gyro">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>617</width>
+        <height>471</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabjoy_data">
+     <attribute name="title">
+      <string>Joystick xy</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_joy">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>617</width>
+        <height>471</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabthrottle">
+     <attribute name="title">
+      <string>Torques and force</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_torques_and_force">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>617</width>
+        <height>471</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabvoltage">
+     <attribute name="title">
+      <string>Voltage</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_voltage">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>617</width>
+        <height>471</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabPIDx">
+     <attribute name="title">
+      <string>PID: X</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_PID_x">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>617</width>
+        <height>471</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabPIDy">
+     <attribute name="title">
+      <string>PID: Y</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_PID_y">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>617</width>
+        <height>471</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabPIDz">
+     <attribute name="title">
+      <string>PID: Z</string>
+     </attribute>
+     <widget class="QwtPlot" name="plot_PID_z">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>617</width>
+        <height>471</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabCompass">
+     <attribute name="title">
+      <string>Compass</string>
+     </attribute>
+     <widget class="QWidget" name="horizontalLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>611</width>
+        <height>461</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QwtCompass" name="CompassJoystick">
+         <property name="lineWidth">
+          <number>4</number>
+         </property>
+         <property name="origin">
+          <double>0.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QwtCompass" name="CompassCopter">
+         <property name="lineWidth">
+          <number>4</number>
+         </property>
+         <property name="origin">
+          <double>0.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </widget>
    <widget class="QWidget" name="formLayoutWidget_2">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>280</y>
+      <y>320</y>
       <width>421</width>
-      <height>231</height>
+      <height>228</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout_2">
@@ -1288,176 +1556,10 @@
      </item>
     </layout>
    </widget>
-   <widget class="QTabWidget" name="tabwidgetplot">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>4</y>
-      <width>621</width>
-      <height>501</height>
-     </rect>
-    </property>
-    <property name="currentIndex">
-     <number>0</number>
-    </property>
-    <widget class="QWidget" name="tabangle">
-     <attribute name="title">
-      <string>Angle</string>
-     </attribute>
-     <widget class="QwtPlot" name="plot_angle">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>617</width>
-        <height>471</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tabgyro_data">
-     <attribute name="title">
-      <string>Gyroscope data</string>
-     </attribute>
-     <widget class="QwtPlot" name="plot_gyro">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>617</width>
-        <height>471</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tabjoy_data">
-     <attribute name="title">
-      <string>Joystick xy</string>
-     </attribute>
-     <widget class="QwtPlot" name="plot_joy">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>617</width>
-        <height>471</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tabthrottle">
-     <attribute name="title">
-      <string>Torques and force</string>
-     </attribute>
-     <widget class="QwtPlot" name="plot_torques_and_force">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>617</width>
-        <height>471</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tabvoltage">
-     <attribute name="title">
-      <string>Voltage</string>
-     </attribute>
-     <widget class="QwtPlot" name="plot_voltage">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>617</width>
-        <height>471</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tabPIDx">
-     <attribute name="title">
-      <string>PID: X</string>
-     </attribute>
-     <widget class="QwtPlot" name="plot_PID_x">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>617</width>
-        <height>471</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tabPIDy">
-     <attribute name="title">
-      <string>PID: Y</string>
-     </attribute>
-     <widget class="QwtPlot" name="plot_PID_y">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>617</width>
-        <height>471</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tabPIDz">
-     <attribute name="title">
-      <string>PID: Z</string>
-     </attribute>
-     <widget class="QwtPlot" name="plot_PID_z">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>617</width>
-        <height>471</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tabCompass">
-     <attribute name="title">
-      <string>Compass</string>
-     </attribute>
-     <widget class="QWidget" name="horizontalLayoutWidget_2">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>611</width>
-        <height>461</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QwtCompass" name="CompassJoystick">
-         <property name="lineWidth">
-          <number>4</number>
-         </property>
-         <property name="origin">
-          <double>0.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QwtCompass" name="CompassCopter">
-         <property name="lineWidth">
-          <number>4</number>
-         </property>
-         <property name="origin">
-          <double>0.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-   </widget>
+   <zorder>tabWidget_mode</zorder>
+   <zorder>tabwidgetplot</zorder>
+   <zorder>plot_angle</zorder>
+   <zorder>formLayoutWidget_2</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

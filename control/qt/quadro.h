@@ -163,6 +163,9 @@ private slots:
     void on_log_scroll_valueChanged(int value);
     void on_actionDebug_stderr_triggered(bool checked);
     void on_logfileaction_clicked();
+    void on_angle_offset_x_valueChanged(double arg1);
+    void on_angle_offset_y_valueChanged(double arg1);
+    void on_angle_offset_z_valueChanged(double arg1);
 };
 
 #endif // QUADRO_H

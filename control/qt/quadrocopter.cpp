@@ -159,6 +159,21 @@ void quadrocopter::set_angle_offset(vect v)
     angle_offset = v;
 }
 
+void quadrocopter::set_angle_offset_x(double v)
+{
+    angle_offset.x = v;
+}
+
+void quadrocopter::set_angle_offset_y(double v)
+{
+    angle_offset.y = v;
+}
+
+void quadrocopter::set_angle_offset_z(double v)
+{
+    angle_offset.z = v;
+}
+
 vect quadrocopter::get_torque_corrected()
 {
     return(torque_corrected);
