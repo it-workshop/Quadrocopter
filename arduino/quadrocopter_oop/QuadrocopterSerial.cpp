@@ -178,8 +178,6 @@ void Quadrocopter::processSerialPCTx()
         MSerial->bufferAdd(100 * MController->getSpeed(getTorques(), i)); // +4
 
     MSerial->writeDouble(0, 20, voltage, 1); //+1
-
-    MController->initialize();
 }
 
 void Quadrocopter::processSerialTextTx()

@@ -58,6 +58,8 @@ Quadrocopter::Quadrocopter()
     mpuBytesLed = InfoLED(DEBUG_MPUBYTES_PIN, InfoLED::DIGITAL);
 #endif
 
+    MController->calibrate();
+
     forceOverrideValue = 0;
     forceOverride = 1;
 

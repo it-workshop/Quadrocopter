@@ -86,6 +86,19 @@ void MotorController::initialize()
     initialized = true;
 }
 
+void MotorController::calibrate()
+{
+    initialize();
+    setTorque(0);
+    delay(500);
+    setForce(100);
+    setTorque(0);
+    delay(500);
+    setForce(0);
+    setTorque(0);
+    delay(500);
+}
+
 void MotorController::setForce(double a)
 {
     force = a;

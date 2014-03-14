@@ -48,5 +48,10 @@ RVector3D Quadrocopter::getAngleCorrection(RVector3D angle, double dt)
     res.z = pidAngleZ.getY(copterHeading, dt, avPIDav.z);
 #endif
 
+#ifdef MINIMUM_PID_THROTTLE
+    if(MController->getForce() < MINIMUM_PID_THROTTLE)
+        return(RVector3D(0, 0, 0));
+    else
+#endif
     return(res);
 }

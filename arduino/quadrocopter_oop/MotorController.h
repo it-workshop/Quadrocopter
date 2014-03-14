@@ -54,6 +54,8 @@ public:
     double getForce();
 
     void initialize();
+
+    void calibrate();
 };
 
 #endif
