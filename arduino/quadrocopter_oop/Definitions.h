@@ -57,7 +57,7 @@
 #define DEBUG_SERIAL_SECOND Serial1
 
 // Disables PID if throttle < _value_
-#define MINIMUM_PID_THROTTLE 0.35
+#define MINIMUM_PID_THROTTLE 0.18
 
 // Minimum throttle: weight < 0
 #define MINIMUM_FLYING_THROTTLE 0.55
