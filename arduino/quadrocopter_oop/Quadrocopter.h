@@ -91,6 +91,8 @@ private:
     double forceOverrideValue;
     bool forceOverride;
 
+    RVector3D angleOffsetPC;
+
 #ifdef DEBUG_FREQ_PIN
     InfoLED freqLed;
 #endif

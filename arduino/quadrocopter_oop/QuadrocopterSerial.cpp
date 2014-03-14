@@ -113,18 +113,6 @@ void Quadrocopter::processSerialPCRx()
     MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleY.setIMinMax(tDouble);
     MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleY.setDMinMax(tDouble);
 
-#ifdef PID_USE_YAW
-    //PID AngularVelocityZ coefficients Z +6
-    MSerial->readDouble(-0.5, 0.5, tDouble, 2); pidAngularVelocityZ.Kp = (tDouble);
-    MSerial->readDouble(-0.5, 0.5, tDouble, 2); pidAngularVelocityZ.Ki = (tDouble);
-    MSerial->readDouble(-0.5, 0.5, tDouble, 2); pidAngularVelocityZ.Kd = (tDouble);
-
-    //PID AngularVelocityZ minmax Z +6
-    MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocityZ.setPMinMax(tDouble);
-    MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocityZ.setIMinMax(tDouble);
-    MSerial->readDouble(0, 5, tDouble, 2); pidAngularVelocityZ.setDMinMax(tDouble);
-#endif
-
 #ifdef PID_USE_YAW_ANGLE
     //PID angle coefficients Z +3
     MSerial->readDouble(0, 0.5, tDouble, 1); pidAngleZ.Kp = (tDouble);

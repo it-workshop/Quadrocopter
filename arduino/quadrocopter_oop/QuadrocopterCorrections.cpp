@@ -9,8 +9,8 @@ RVector3D Quadrocopter::getAngleCorrection(RVector3D angle, double dt)
         // by (copterHeading - joystickHeading)
     #endif
 #endif
-    pidAngleX.data0 = (angleManualCorrection.x);
-    pidAngleY.data0 = (angleManualCorrection.y);
+    pidAngleX.data0 = (angleManualCorrection.x + angleOffsetPC.x);
+    pidAngleY.data0 = (angleManualCorrection.y + angleOffsetPC.y);
 
 #ifdef PID_USE_YAW
     pidAngularVelocityZ.data0 = 0;
@@ -18,7 +18,7 @@ RVector3D Quadrocopter::getAngleCorrection(RVector3D angle, double dt)
 
 #ifdef PID_USE_YAW_ANGLE
     #ifdef COMPASS_ROTATE_COPTER
-        pidAngleZ.data0 = joystickHeading;
+        pidAngleZ.data0 = (joystickHeading + angleOffsetPC.z);
     #else
         pidAngleZ.data0 = 0;
     #endif

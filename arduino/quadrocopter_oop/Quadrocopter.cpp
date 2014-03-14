@@ -84,6 +84,7 @@ Quadrocopter::Quadrocopter()
 
 void Quadrocopter::reset()
 {
+    angleOffsetPC = RVector3D();
     angle = RVector3D();
     torqueAutomaticCorrection = RVector3D();
     angleManualCorrection = RVector3D();
