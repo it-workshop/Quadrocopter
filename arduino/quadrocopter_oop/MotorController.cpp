@@ -18,6 +18,8 @@ double MotorController::getSpeed(RVector3D torqueVec, int motor)
     // it is necessary because the motor controller starts a motor with greater speed than needed
     if (res <= MIN_SPEED && getForce() != 0) res = MIN_SPEED;
 
+    if(res > 1) res = 1;
+
     // motors offline
     if(getForce() < MIN_SPEED) res = 0;
 
