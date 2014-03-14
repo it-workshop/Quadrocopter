@@ -30,13 +30,15 @@ SOURCES += main.cpp\
     quadro_slots.cpp \
     quadro_interface.cpp \
     quadro_log.cpp \
-    quadrocopter_rxtx.cpp
+    quadrocopter_rxtx.cpp \
+    PIDCalibrator.cpp
 
 HEADERS  += quadro.h \
     serial.h \
     vect.h \
     quadrocopter.h \
     mytime.h \
-    ../../arduino/quadrocopter_oop/Definitions.h
+    ../../arduino/quadrocopter_oop/Definitions.h \
+    PIDCalibrator.h
 
 FORMS    += quadro.ui
