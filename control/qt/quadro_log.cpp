@@ -122,6 +122,8 @@ void Quadro::timer_log_update()
 
         log_file >> read_time >> write_time >> loop_time;
 
+        log_file >> t_double >> t_double >> t_double;
+
 
         ui->current_time->setText(date.c_str());
 
