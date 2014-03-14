@@ -73,6 +73,9 @@ private:
 
     PID pidAngleX, pidAngleY;
 
+    bool flying;
+    double flyingTime;
+
 #ifdef PID_USE_YAW
     PID pidAngularVelocityZ;
 #endif

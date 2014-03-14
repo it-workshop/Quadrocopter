@@ -31,6 +31,10 @@ RVector3D Quadrocopter::getAngleCorrection(RVector3D angle, double dt)
     if(fabs(avPID.y) < PID_AV_MIN) avPID.y = 0;
     avPID /= 10;
     RVector3D res;
+
+    pidAngleX.setIUse(flying);
+    pidAngleY.setIUse(flying);
+
     res.x = pidAngleX.getY(angle.x, dt/*, avPID.x*/);
     res.y = pidAngleY.getY(angle.y, dt/*, avPID.y*/);
 
@@ -45,6 +49,9 @@ RVector3D Quadrocopter::getAngleCorrection(RVector3D angle, double dt)
     RVector3D avPIDav = angularVelocity * -1;
     avPIDav /= 10;
     if(fabs(avPIDav.z) < PID_AV_MIN_Z) avPIDav.z = 0;
+
+    pidAngleZ.setIUse(flying);
+
     res.z = pidAngleZ.getY(copterHeading, dt, avPIDav.z);
 #endif
 
@@ -53,5 +60,5 @@ RVector3D Quadrocopter::getAngleCorrection(RVector3D angle, double dt)
         return(RVector3D(0, 0, 0));
     else
 #endif
-    return(res);
+        return(res);
 }

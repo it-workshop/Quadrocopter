@@ -59,4 +59,10 @@
 // Disables PID if throttle < _value_
 #define MINIMUM_PID_THROTTLE 0.35
 
+// Minimum throttle: weight < 0
+#define MINIMUM_FLYING_THROTTLE 0.55
+
+// Disables PID I (integral <-- 0) if time < _value_ (seconds)
+#define MINIMUM_FLYING_TIME 2
+
 #endif

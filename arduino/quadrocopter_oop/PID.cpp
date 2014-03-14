@@ -16,6 +16,11 @@ double PID::getY(double data, double dt, double derivative)
     return(y);
 }
 
+void PID::setIUse(bool a)
+{
+    IUse = a;
+}
+
 void PID::prepare(double data, double dt)
 {
     //difference between requested and current data
@@ -39,7 +44,11 @@ void PID::prepare(double data, double dt)
     eDerivative = (e - ePrev) / dt;
 
     //discrete integral
-    eIntegral += e * dt;
+    if(IUse)
+        eIntegral += e * dt;
+    else eIntegral = 0;
+
+    if(eIntegral != eIntegral) eIntegral = 0;
 }
 
 #define LIMIT_CUT(x, xMin, xMax) {if((x) < (xMin)) {x = (xMin);} if((x) > (xMax)) {(x) = (xMax);} }
@@ -76,6 +85,7 @@ PID::PID(pidMode nMode)
     P = I = D = 0;
     y = 0;
     mode = nMode;
+    IUse = true;
 }
 
 

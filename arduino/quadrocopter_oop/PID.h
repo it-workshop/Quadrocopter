@@ -24,7 +24,9 @@ public:
     double DMin;
     double DMax;
 
-    double P, I, D;	
+    double P, I, D;
+
+    double IUse;
 
 private:
 
@@ -54,6 +56,8 @@ public:
     void reset();
     double getY(double, double); // iteration
     double getY(double, double, double); // iteration
+
+    void setIUse(bool a);
 };
 
 #endif // PID_H

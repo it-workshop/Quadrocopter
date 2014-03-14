@@ -9,6 +9,8 @@ Quadrocopter::Quadrocopter()
 {
     needPCTx = false;
 
+    flying = false;
+
     serialReadN = 21; // 3 + 12 + 6
 
 #ifdef PID_USE_YAW_ANGLE
@@ -86,6 +88,9 @@ Quadrocopter::Quadrocopter()
 
 void Quadrocopter::reset()
 {
+    flyingTime = 0;
+    flying = false;
+
     angleOffsetPC = RVector3D();
     angle = RVector3D();
     torqueAutomaticCorrection = RVector3D();
@@ -137,6 +142,11 @@ void Quadrocopter::processCorrection()
 
 void Quadrocopter::processMotors()
 {
+    if(MController->getForce() >= MINIMUM_FLYING_THROTTLE)
+        flyingTime += dt;
+    if(flyingTime >= MINIMUM_FLYING_TIME)
+        flying = 1;
+
     MController->setTorque(getTorques());
 }
 
