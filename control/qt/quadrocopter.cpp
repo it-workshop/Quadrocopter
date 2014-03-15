@@ -81,7 +81,7 @@ void quadrocopter::defaults()
     voltage = 0;
 
     //wait for arduino to load
-    connectDelayTime = 5500;
+    connectDelayTime = 7000;
 }
 
 void quadrocopter::do_connect()
