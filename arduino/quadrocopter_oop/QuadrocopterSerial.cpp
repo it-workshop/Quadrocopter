@@ -232,5 +232,5 @@ void Quadrocopter::processJoystickRx()
     if(forceOverride)
         MController->setForce(forceOverrideValue);
     else
-        MController->setForce(Joystick->getPower());
+        MController->setForce(Joystick->getPower() < MINIMUM_PID_THROTTLE ? 0 : Joystick->getPower());
 }
