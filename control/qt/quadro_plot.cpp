@@ -84,7 +84,7 @@ void Quadro::plot_init()
     QwtPlotCurve *joy_y = new QwtPlotCurve("y");
     joy_y->attach(ui->plot_joy);
 
-    ui->plot_joy->setAxisScale(QwtPlot::yLeft, -0.5, 0.5);
+    ui->plot_joy->setAxisScale(QwtPlot::yLeft, -1, 1);
 
     // Set curve styles
     joy_x->setPen(QPen(Qt::red));
@@ -150,8 +150,8 @@ void Quadro::plot_init()
     QwtPlotCurve *force = new QwtPlotCurve("F<sub>ABCD</sub>");
     force->attach(ui->plot_torques_and_force);
 
-    ui->plot_torques_and_force->setAxisScale(QwtPlot::yLeft, -1, 1);
-    ui->plot_torques_and_force->setAxisScale(QwtPlot::yRight, -0.25, 0.25);
+    ui->plot_torques_and_force->setAxisScale(QwtPlot::yLeft, -1.1, 1.1);
+    ui->plot_torques_and_force->setAxisScale(QwtPlot::yRight, -5, 5);
 
     // Set curve styles
     torque_x->setPen(QPen(Qt::red));
