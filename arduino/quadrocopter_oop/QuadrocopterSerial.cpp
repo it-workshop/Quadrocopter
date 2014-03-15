@@ -168,7 +168,7 @@ void Quadrocopter::processSerialPCTx()
     MSerial->writeDouble(0, 7, joystickHeading, 2); // +2
 #endif
 
-    MSerial->writeDouble(0, 100, MController->getForce() * 100, 1); // +1
+    MSerial->writeDouble(0, 105, MController->getForce() * 100, 1); // +1
 
     MSerial->writeDouble(-2, 2, angleManualCorrection.x, 2); // +2
     MSerial->writeDouble(-2, 2, angleManualCorrection.y, 2); // +2

@@ -12,6 +12,7 @@ using std::endl;
 
 void quadrocopter::on_rx()
 {
+    debug_stderr = 1;
     if(debug_stderr)
         qDebug() << "available: " << port->bytesAvailable();
 
@@ -116,7 +117,7 @@ void quadrocopter::read_data()
     t_joystick_heading = read_number_vect_t(0, 7, 2);
 #endif
 
-    t_power = read_number_vect_t(0, 100, 1) / 100;
+    t_power = read_number_vect_t(0, 105, 1) / 100.;
 
     t_angle0_x = read_number_vect_t(-2, 2, 2);
     t_angle0_y = read_number_vect_t(-2, 2, 2);
