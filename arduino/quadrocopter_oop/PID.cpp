@@ -11,7 +11,8 @@ double PID::getY(double data, double dt)
 double PID::getY(double data, double dt, double derivative)
 {
     prepare(data, dt);
-    eDerivative = derivative;
+    eDerivative = (data0 - data0Prev) / dt - derivative;
+    data0Prev = data0;
     iteration();
     return(y);
 }
@@ -93,6 +94,7 @@ PID::PID(pidMode nMode)
     ePrev = 0;
     Kp = Ki = Kd = 0;
     eDerivative = 0;
+    data0Prev = 0;
     PMin = PMax = 0;
     IMin = IMax = 0;
     DMin = DMax = 0;

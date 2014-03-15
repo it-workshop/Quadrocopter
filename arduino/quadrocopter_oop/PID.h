@@ -36,6 +36,8 @@ private:
     double eIntegral;
     double ePrev;
 
+    double data0Prev;
+
     //temp
     double e, eDerivative; //error
     double y; //correction
