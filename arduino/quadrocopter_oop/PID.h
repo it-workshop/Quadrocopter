@@ -37,6 +37,7 @@ private:
     double ePrev;
 
     double data0Prev;
+    double valuePrev;
 
     //temp
     double e, eDerivative; //error

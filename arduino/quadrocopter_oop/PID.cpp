@@ -52,7 +52,7 @@ void PID::prepare(double data, double dt)
     if((mode != DIFFERENCE_ANGLE) ||
             (angleDifferenceTypePrev == TNONE) ||
             (angleDifferenceType == angleDifferenceTypePrev))
-        eDerivative = (e - ePrev) / dt;
+        eDerivative = (valuePrev - data) / dt;
 
     angleDifferenceTypePrev = angleDifferenceType;
 
@@ -62,6 +62,7 @@ void PID::prepare(double data, double dt)
     else eIntegral = 0;
 
     if(eIntegral != eIntegral) eIntegral = 0;
+    valuePrev = data;
 }
 
 #define LIMIT_CUT(x, xMin, xMax) {if((x) < (xMin)) {x = (xMin);} if((x) > (xMax)) {(x) = (xMax);} }
@@ -94,6 +95,7 @@ PID::PID(pidMode nMode)
     ePrev = 0;
     Kp = Ki = Kd = 0;
     eDerivative = 0;
+    valuePrev = 0;
     data0Prev = 0;
     PMin = PMax = 0;
     IMin = IMax = 0;
