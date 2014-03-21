@@ -165,12 +165,14 @@ void Quadro::timer_track_update()
 {
     if(track_line < track_line_max)
     {
+        ui->track_pb->setValue(track_line * 100 / track_line_max);
         stringstream ss;
-        double t1, t2, t3;
-        track_file >> t1 >> t2 >> t3;
+        double t0, t1, t2, t3;
+        track_file >> t0 >> t1 >> t2 >> t3;
+        quadro.set_force_override(1, t0);
         quadro.set_angle_offset(vect(t1, t2, t3) * M_PI / 180);
         track_line++;
-        ss << t1 << "\t" << t2 << "\t" << t3;
+        ss << t0 << "\t" << t1 << "\t" << t2 << "\t" << t3;
         ui->track_current->setText(ss.str().c_str());
     }
 }
