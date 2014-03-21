@@ -1,6 +1,8 @@
 #include "quadro.h"
 #include "QKeyEvent"
 #include "ui_quadro.h"
+#include <QFileDialog>
+#include <QDebug>
 
 void Quadro::on_actionQuadroConnect_triggered()
 {
@@ -239,4 +241,36 @@ void Quadro::on_angle_offset_z_valueChanged(double arg1)
 {
     quadro.set_angle_offset_z(arg1 * M_PI / 180);
     settings_data();
+}
+
+void Quadro::on_track_browse_clicked()
+{
+    track_filename = QFileDialog::getOpenFileName(this,
+             tr("Open track file"), "../track", tr("Quadro track file (*.txt)")).toAscii().data();
+
+    qDebug() << "Opening" << track_filename.c_str();
+
+    ui->track_file->setText(track_filename.c_str());
+}
+
+void Quadro::on_track_start_clicked()
+{
+    timer_track_interval = ui->track_timer_interval->value();
+    //plot_reset_data();
+    //plot_mytime.reset();
+    timer_track.start(timer_track_interval);
+}
+
+void Quadro::on_track_pause_clicked()
+{
+    timer_track.stop();
+}
+
+void Quadro::on_track_open_clicked()
+{
+    on_track_pause_clicked();
+    track_file.close();
+    track_file.open(track_filename.c_str());
+    track_line = 0;
+    track_file >> track_line_max;
 }
