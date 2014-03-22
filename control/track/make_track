@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ "X$1" == "X" ]
+then
+    echo "Usage: $0 filename"
+fi
+
+g++ $1gen.cpp -o $1program && ./$1program > $1precount && cat $1precount | wc -l > $1.txt && cat $1precount >> $1.txt
