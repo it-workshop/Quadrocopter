@@ -9,6 +9,7 @@
 #include "InfoLED.h"
 #include "VoltageSensor.h"
 #include "PWMJoystick.h"
+#include "LowPassFilter.h"
 
 #ifdef USE_COMPASS
     // i2cdevlib
@@ -95,6 +96,8 @@ private:
     bool forceOverride;
 
     RVector3D angleOffsetPC;
+
+    LowPassFilter<double> angleZLPF;
 
 #ifdef DEBUG_FREQ_PIN
     InfoLED freqLed;

@@ -63,6 +63,8 @@
 #define MINIMUM_FLYING_THROTTLE 0.55
 
 // Disables PID I (integral <-- 0) if time < _value_ (seconds)
-#define MINIMUM_FLYING_TIME 2
+#define MINIMUM_FLYING_TIME 0
+
+#define angleMPIPINorm(x) {while(x < -M_PI) {x += 2 * M_PI;} while(x > M_PI) {x -= 2 * M_PI;}}
 
 #endif

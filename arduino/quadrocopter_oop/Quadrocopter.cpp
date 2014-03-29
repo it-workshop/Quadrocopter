@@ -92,6 +92,7 @@ Quadrocopter::Quadrocopter()
 
 void Quadrocopter::reset()
 {
+    angleZLPF.setPeriod(0.05);
     flyingTime = 0;
     flying = false;
 
