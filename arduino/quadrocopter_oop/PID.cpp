@@ -11,9 +11,15 @@ double PID::getY(double data, double dt)
 double PID::getY(double data, double dt, double derivative)
 {
     prepare(data, dt);
-    eDerivative = derivative;
+    eDerivative = (data0 - data0Prev) / dt - derivative;
+    data0Prev = data0;
     iteration();
     return(y);
+}
+
+void PID::setIUse(bool a)
+{
+    IUse = a;
 }
 
 void PID::prepare(double data, double dt)
@@ -28,43 +34,45 @@ void PID::prepare(double data, double dt)
         e1 = data0 - data;
         e2 = e1 - 2 * MPI;
         e3 = e1 + 2 * MPI;
+        angleDifferenceType = T1;
         if(fabs(e2) < fabs(e1))
+        {
             e1 = e2;
+            angleDifferenceType = T2;
+        }
         if(fabs(e3) < fabs(e1))
+        {
             e1 = e3;
+            angleDifferenceType = T3;
+        }
         e = e1;
     }
 
     //discrete derivative
-    eDerivative = (e - ePrev) / dt;
+    if((mode != DIFFERENCE_ANGLE) ||
+            (angleDifferenceTypePrev == TNONE) ||
+            (angleDifferenceType == angleDifferenceTypePrev))
+        eDerivative = (e - ePrev) / dt;
+
+    angleDifferenceTypePrev = angleDifferenceType;
 
     //discrete integral
-    eIntegral += e * dt;
+    if(IUse)
+        eIntegral += e * dt;
+    else eIntegral = 0;
+
+    if(eIntegral != eIntegral) eIntegral = 0;
 }
+
+#define LIMIT_CUT(x, xMin, xMax) {if((x) < (xMin)) {x = (xMin);} if((x) > (xMax)) {(x) = (xMax);} }
 
 void PID::iteration()
 {
     ePrev = e;
 
-    
-	if(e < PMin)
-		e = PMin;
-
-	if(e > PMax)
-		e = PMax;
-
-	if(eIntegral < IMin)
-		eIntegral = IMin;
-
-	if(eIntegral > IMax)
-		eIntegral = IMax;
-
-	if(eDerivative < DMin)
-		eDerivative = DMin;
-
-	if(eDerivative > DMax)
-		eDerivative = DMax;
-
+    LIMIT_CUT(e          , PMin / Kp, PMax / Kp);
+    LIMIT_CUT(eIntegral  , IMin / Ki, IMax / Ki);
+    LIMIT_CUT(eDerivative, DMin / Kd, DMax / Kd);
 
     //correction
     P = e * Kp;
@@ -73,23 +81,20 @@ void PID::iteration()
 
     y = P + I + D;
 
-
-	if(y < yMin)
-		y = yMin;
-
-	if(y > yMax)
-		y = yMax;
-
-
+    LIMIT_CUT(y, yMin, yMax);
 }
 
 PID::PID(pidMode nMode)
 {
+    angleDifferenceType = TNONE;
+    angleDifferenceType = TNONE;
+
     eIntegral = 0;
     data0 = 0;
     ePrev = 0;
     Kp = Ki = Kd = 0;
     eDerivative = 0;
+    data0Prev = 0;
     PMin = PMax = 0;
     IMin = IMax = 0;
     DMin = DMax = 0;
@@ -97,6 +102,7 @@ PID::PID(pidMode nMode)
     P = I = D = 0;
     y = 0;
     mode = nMode;
+    IUse = true;
 }
 
 

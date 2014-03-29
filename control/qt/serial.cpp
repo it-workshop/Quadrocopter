@@ -192,11 +192,13 @@ void serial::swritePut()
 {
     char* c = new char[buffer.size()];
 
-    cerr << "writing [" << buffer.size() << "] = ";
+    if(debug_stderr)
+        cerr << "writing [" << buffer.size() << "] = ";
 
     for(unsigned int i = 0; i < buffer.size(); i++)
     {
-        cerr << buffer[i] << " ";
+        if(debug_stderr)
+            cerr << buffer[i] << " ";
         c[i] = buffer[i];
 
     }
@@ -205,7 +207,8 @@ void serial::swritePut()
 
     delete c;
 
-    cerr << endl;
+    if(debug_stderr)
+        cerr << endl;
 }
 
 void serial::flush()
@@ -246,4 +249,14 @@ bool serial::iswaiting()
 void serial::on_rx()
 {
     port->readAll();
+}
+
+void serial::set_debug_stderr(bool _arg)
+{
+    debug_stderr = _arg;
+}
+
+bool serial::get_debug_stderr()
+{
+    return(debug_stderr);
 }

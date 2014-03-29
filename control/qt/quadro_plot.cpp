@@ -84,7 +84,7 @@ void Quadro::plot_init()
     QwtPlotCurve *joy_y = new QwtPlotCurve("y");
     joy_y->attach(ui->plot_joy);
 
-    ui->plot_joy->setAxisScale(QwtPlot::yLeft, -0.5, 0.5);
+    ui->plot_joy->setAxisScale(QwtPlot::yLeft, -1, 1);
 
     // Set curve styles
     joy_x->setPen(QPen(Qt::red));
@@ -108,27 +108,20 @@ void Quadro::plot_init()
     QwtPlotCurve *angle_y = new QwtPlotCurve("angle<sub>y</sub>");
     angle_y->attach(ui->plot_angle);
 
-    QwtPlotCurve *angle_accx = new QwtPlotCurve("acc_data_angle<sub>x</sub>");
-    angle_accx->attach(ui->plot_angle);
+    QwtPlotCurve *angle_z = new QwtPlotCurve("angle<sub>z</sub>");
+    angle_z->attach(ui->plot_angle);
 
-    QwtPlotCurve *angle_accy = new QwtPlotCurve("acc_data_angle<sub>y</sub>");
-    angle_accy->attach(ui->plot_angle);
-
-    ui->plot_angle->setAxisScale(QwtPlot::yLeft, -M_PI / 2 * 1.1, M_PI / 2 * 1.1);
+    ui->plot_angle->setAxisScale(QwtPlot::yLeft, -M_PI, M_PI);
 
     // Set curve styles
     angle_x->setPen(QPen(Qt::red));
     angle_y->setPen(QPen(Qt::green));
-
-    angle_accx->setPen(QPen(Qt::blue));
-    angle_accy->setPen(QPen(Qt::yellow));
+    angle_z->setPen(QPen(Qt::blue));
 
     // Attach (don't copy) data.
     angle_x->setRawData(plot_time, plot_angle_x, plot_size);
     angle_y->setRawData(plot_time, plot_angle_y, plot_size);
-
-    angle_accx->setRawData(plot_time, plot_angle_accx, plot_size);
-    angle_accy->setRawData(plot_time, plot_angle_accy, plot_size);
+    angle_z->setRawData(plot_time, plot_angle_z, plot_size);
 
     ui->plot_angle->setAxisTitle(QwtPlot::xBottom, "Time [s]");
     ui->plot_angle->setAxisTitle(QwtPlot::yLeft, "Angle [radians]");
@@ -150,8 +143,8 @@ void Quadro::plot_init()
     QwtPlotCurve *force = new QwtPlotCurve("F<sub>ABCD</sub>");
     force->attach(ui->plot_torques_and_force);
 
-    ui->plot_torques_and_force->setAxisScale(QwtPlot::yLeft, -1, 1);
-    ui->plot_torques_and_force->setAxisScale(QwtPlot::yRight, -0.25, 0.25);
+    ui->plot_torques_and_force->setAxisScale(QwtPlot::yLeft, -1.1, 1.1);
+    ui->plot_torques_and_force->setAxisScale(QwtPlot::yRight, -5, 5);
 
     // Set curve styles
     torque_x->setPen(QPen(Qt::red));
@@ -315,6 +308,7 @@ void Quadro::plot_reset_data()
 
         plot_angle_x[i] = 0;
         plot_angle_y[i] = 0;
+        plot_angle_z[i] = 0;
 
         plot_angle_accx[i] = 0;
         plot_angle_accy[i] = 0;
@@ -379,6 +373,7 @@ void Quadro::plot_update()
 
         plot_angle_x[i] = plot_angle_x[i + 1];
         plot_angle_y[i] = plot_angle_y[i + 1];
+        plot_angle_z[i] = plot_angle_z[i + 1];
 
         plot_angle_accx[i] = plot_angle_accx[i + 1];
         plot_angle_accy[i] = plot_angle_accy[i + 1];
@@ -418,8 +413,8 @@ void Quadro::plot_update()
     ui->plot_gyro->replot();
 
     //acc
-    plot_joy_x[plot_current] = quadro.get_torque_manual_correction().x;
-    plot_joy_y[plot_current] = quadro.get_torque_manual_correction().y;
+    plot_joy_x[plot_current] = joystick_readings.x;
+    plot_joy_y[plot_current] = joystick_readings.y;
 
     ui->plot_joy->setAxisScale(QwtPlot::xBottom, plot_time[0], plot_time[plot_current]);
     ui->plot_joy->replot();
@@ -436,6 +431,7 @@ void Quadro::plot_update()
     //angle
     plot_angle_x[plot_current] = angle.x;
     plot_angle_y[plot_current] = angle.y;
+    plot_angle_z[plot_current] = quadro.get_copter_heading();
 
     plot_angle_accx[plot_current] = quadro.get_accelerometer_readings().angle_from_projections().x;
     plot_angle_accy[plot_current] = quadro.get_accelerometer_readings().angle_from_projections().y;

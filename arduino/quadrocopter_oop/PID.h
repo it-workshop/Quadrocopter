@@ -24,12 +24,19 @@ public:
     double DMin;
     double DMax;
 
-    double P, I, D;	
+    double P, I, D;
+
+    double IUse;
+
+    enum _angleDifferenceType{TNONE, T1, T2, T3};
+    int angleDifferenceType, angleDifferenceTypePrev;
 
 private:
 
     double eIntegral;
     double ePrev;
+
+    double data0Prev;
 
     //temp
     double e, eDerivative; //error
@@ -54,6 +61,8 @@ public:
     void reset();
     double getY(double, double); // iteration
     double getY(double, double, double); // iteration
+
+    void setIUse(bool a);
 };
 
 #endif // PID_H

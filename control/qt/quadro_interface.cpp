@@ -9,12 +9,10 @@ using std::string;
 
 void Quadro::interface_init()
 {
-    mytime t_time;
-
     ui->LogSave_data->setChecked(true);
-    save_filename = "../log/quadro_";
-    save_filename.append(t_time.getTime());
-    save_filename.append(".txt");
+    ui->logfileaction->setText("Open");
+
+    ui->flightname->setText("noName");
 
     settings_filename = "settings.txt";
 
@@ -63,6 +61,8 @@ void Quadro::interface_init()
     ui->reaction_type->setCurrentIndex(quadro.get_reaction_type());
 
     ui->stopButton->setStyleSheet("background-color: rgb(255, 0, 0); font-size: 30pt; font-weight: bold;");
+
+    ui->actionDebug_stderr->setChecked(quadro.get_debug_stderr());
 
     setFocus();
 }

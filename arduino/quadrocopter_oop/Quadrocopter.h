@@ -9,6 +9,7 @@
 #include "InfoLED.h"
 #include "VoltageSensor.h"
 #include "PWMJoystick.h"
+#include "LowPassFilter.h"
 
 #ifdef USE_COMPASS
     // i2cdevlib
@@ -73,6 +74,9 @@ private:
 
     PID pidAngleX, pidAngleY;
 
+    bool flying;
+    double flyingTime;
+
 #ifdef PID_USE_YAW
     PID pidAngularVelocityZ;
 #endif
@@ -91,6 +95,10 @@ private:
     double forceOverrideValue;
     bool forceOverride;
 
+    RVector3D angleOffsetPC;
+
+    LowPassFilter<double> angleZLPF;
+
 #ifdef DEBUG_FREQ_PIN
     InfoLED freqLed;
 #endif
@@ -102,6 +110,7 @@ private:
     // bytes to read
     // Defines in Quadrocopter.cpp
     unsigned int serialReadN;
+    bool needPCTx;
 
 public:
     Quadrocopter();
@@ -112,8 +121,13 @@ public:
     void processCorrection();
     void processMotors();
 
-    void processSerialRx();
-    void processSerialTx();
+    void processSerialGetCommand();
+    void processSerialDoCommand();
+
+    void processSerialPCRx();
+    void processSerialPCTx();
+
+    void processSerialTextTx();
 
     void processJoystickRx();
 

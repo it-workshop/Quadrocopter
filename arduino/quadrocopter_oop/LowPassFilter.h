@@ -18,6 +18,7 @@ public:
     inline void setPeriod(double nPeriod);
 
     inline void iteration(T currentRawValue, double dt); // update value using period and argument as dt
+    inline void iterationAngle(T currentRawValue, double dt); // update value using period and argument as dt (angle)
     inline double getAlpha(double dt); // returns alpha coefficient
     inline T getValue(); // returns current value
     inline double getPeriod(); // returns period

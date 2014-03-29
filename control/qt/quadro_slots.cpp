@@ -1,6 +1,8 @@
 #include "quadro.h"
 #include "QKeyEvent"
 #include "ui_quadro.h"
+#include <QFileDialog>
+#include <QDebug>
 
 void Quadro::on_actionQuadroConnect_triggered()
 {
@@ -193,4 +195,82 @@ void Quadro::on_stopButton_clicked()
     ui->force_checkbox->setChecked(1);
     quadro.set_force_override(ui->force_checkbox->isChecked(), ui->force->value());
     settings_data();
+}
+
+void Quadro::on_actionDebug_stderr_triggered(bool checked)
+{
+    quadro.set_debug_stderr(checked);
+}
+
+void Quadro::on_logfileaction_clicked()
+{
+    if(save_file.is_open())
+    {
+        //close it
+        ui->logfileaction->setText("Open");
+        ui->logfileaction->setStyleSheet("");
+        save_close();
+    }
+    else
+    {
+        mytime t_time;
+        save_filename = "../log/quadro_";
+        save_filename.append(t_time.getTime());
+        save_filename.append("_");
+        save_filename.append(ui->flightname->text().toAscii().data());
+        save_filename.append(".txt");
+        save_open();
+        ui->logfileaction->setText("Close");
+        ui->logfileaction->setStyleSheet("background-color: rgb(100, 255, 100);");
+    }
+}
+
+void Quadro::on_angle_offset_x_valueChanged(double arg1)
+{
+    quadro.set_angle_offset_x(arg1 * M_PI / 180);
+    settings_data();
+}
+
+void Quadro::on_angle_offset_y_valueChanged(double arg1)
+{
+    quadro.set_angle_offset_y(arg1 * M_PI / 180);
+    settings_data();
+}
+
+void Quadro::on_angle_offset_z_valueChanged(double arg1)
+{
+    quadro.set_angle_offset_z(arg1 * M_PI / 180);
+    settings_data();
+}
+
+void Quadro::on_track_browse_clicked()
+{
+    track_filename = QFileDialog::getOpenFileName(this,
+             tr("Open track file"), "../track", tr("Quadro track file (*.txt)")).toAscii().data();
+
+    qDebug() << "Opening" << track_filename.c_str();
+
+    ui->track_file->setText(track_filename.c_str());
+}
+
+void Quadro::on_track_start_clicked()
+{
+    timer_track_interval = ui->track_timer_interval->value();
+    //plot_reset_data();
+    //plot_mytime.reset();
+    timer_track.start(timer_track_interval);
+}
+
+void Quadro::on_track_pause_clicked()
+{
+    timer_track.stop();
+}
+
+void Quadro::on_track_open_clicked()
+{
+    on_track_pause_clicked();
+    track_file.close();
+    track_file.open(track_filename.c_str());
+    track_line = 0;
+    track_file >> track_line_max;
 }

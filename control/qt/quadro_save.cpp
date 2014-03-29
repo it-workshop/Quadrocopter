@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <mytime.h>
+#include <QDateTime>
 
 using std::endl;
 
@@ -21,6 +22,10 @@ void Quadro::settings_data()
     if(!quadro_save_settings)
         return;
     stringstream ss;
+
+    ss << ui->angle_offset_x->value() << " ";
+    ss << ui->angle_offset_y->value() << " ";
+    ss << ui->angle_offset_z->value() << " ";
 
     ss << quadro.get_PID_angle_Kp().x << " ";
     ss << quadro.get_PID_angle_Ki().x << " ";
@@ -61,6 +66,14 @@ void Quadro::settings_read()
     ifstream settings_file(settings_filename.c_str());
 
     double t_double;
+
+    settings_file >> t_double; ui->angle_offset_x->setValue(t_double);
+    quadro.set_angle_offset_x(t_double * M_PI / 180);
+    settings_file >> t_double; ui->angle_offset_y->setValue(t_double);
+    quadro.set_angle_offset_y(t_double * M_PI / 180);
+    settings_file >> t_double; ui->angle_offset_z->setValue(t_double);
+    quadro.set_angle_offset_z(t_double * M_PI / 180);
+
     settings_file >> t_double; quadro.set_PID_angle_Kp_x(t_double);
     settings_file >> t_double; quadro.set_PID_angle_Ki_x(t_double);
     settings_file >> t_double; quadro.set_PID_angle_Kd_x(t_double);
@@ -110,17 +123,17 @@ void Quadro::save_open()
     if(ui->LogSave_data->isChecked())
     {
         save_file.open(save_filename.c_str(), std::ios_base::app);
-        save_file << "#seconds\tdatetime\tqptr_op\tgyro_x\tgyro_y\tgyro_z\treact_t\tangle_x\tangle_y\tangle_z\t"
+        save_file << "#milliseconds\tdatetime\tqptr_op\tgyro_x\tgyro_y\tgyro_z\treact_t\tangle_x\tangle_y\tangle_z\t"
                   << "trq_x\ttrq_y\ttrq_z\tc_power\tvoltage\tPID_P_x\tPID_P_y\tPID_P_z\tPID_I_x\tPID_I_y\tPID_I_z\t"
                   << "PID_D_x\tPID_D_y\tPID_D_z\tq_head\tKp_x\tKp_y\tKp_z\tKi_x\tKi_y\tKi_z\tKd_x\tKd_y\tKd_z\t"
                   << "MaxP_x\tMaxP_y\tMaxP_z\tMaxI_x\tMaxI_y\tMaxI_z\tMaxD_x\tMaxD_y\tMaxD_z\tjoy_x\tjoy_y\tjoy_hdn\t"
-                  << "j_power\t\tM1\tM2\tM3\tM4\tread_time\twrite_time\tloop_time" << endl;
+                  << "j_power\t\tM1\tM2\tM3\tM4\tread_time\twrite_time\tloop_time\toffx\toffy\toffz" << endl;
     }
 }
 
 void Quadro::save_data()
 {
-    if(ui->LogSave_data->isChecked() && quadro.isoperational())
+    if(ui->LogSave_data->isChecked() && quadro.isoperational() && save_file.is_open())
     {
         stringstream t_ss;
         int i;
@@ -128,7 +141,7 @@ void Quadro::save_data()
 
         t_ss.precision(3);
 
-        t_ss << t_time.getSeconds() << "\t" << t_time.getTime() << "\t"
+        t_ss << (QDateTime::currentMSecsSinceEpoch()) << "\t" << t_time.getTime() << "\t"
              << quadro.isoperational() << "\t"
              << quadro.get_gyroscope_readings().print() << "\t"
              << quadro.get_reaction_type() << "\t"
@@ -162,6 +175,12 @@ void Quadro::save_data()
              << quadro.get_write_time() << "\t"
              << quadro.get_loop_time() << "\t";
 
-        save_file << t_ss.str() << endl;
+        save_file << t_ss.str();
+
+        save_file << ui->angle_offset_x->value() << "\t";
+        save_file << ui->angle_offset_y->value() << "\t";
+        save_file << ui->angle_offset_z->value() << "\t";
+
+        save_file << endl;
     }
 }

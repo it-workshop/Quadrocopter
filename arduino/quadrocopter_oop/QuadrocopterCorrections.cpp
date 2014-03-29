@@ -9,8 +9,8 @@ RVector3D Quadrocopter::getAngleCorrection(RVector3D angle, double dt)
         // by (copterHeading - joystickHeading)
     #endif
 #endif
-    pidAngleX.data0 = (angleManualCorrection.x);
-    pidAngleY.data0 = (angleManualCorrection.y);
+    pidAngleX.data0 = (angleManualCorrection.x + angleOffsetPC.x);
+    pidAngleY.data0 = (angleManualCorrection.y + angleOffsetPC.y);
 
 #ifdef PID_USE_YAW
     pidAngularVelocityZ.data0 = 0;
@@ -18,35 +18,32 @@ RVector3D Quadrocopter::getAngleCorrection(RVector3D angle, double dt)
 
 #ifdef PID_USE_YAW_ANGLE
     #ifdef COMPASS_ROTATE_COPTER
-        pidAngleZ.data0 = joystickHeading;
+        pidAngleZ.data0 = (joystickHeading + angleOffsetPC.z);
     #else
         pidAngleZ.data0 = 0;
     #endif
 #endif
 
-    // here should be -1 because the equation
-    // should be like x'' = -x'
-    RVector3D avPID = angularVelocity * -1;
-    if(fabs(avPID.x) < PID_AV_MIN) avPID.x = 0;
-    if(fabs(avPID.y) < PID_AV_MIN) avPID.y = 0;
-    avPID /= 10;
+    pidAngleX.setIUse(flying);
+    pidAngleY.setIUse(flying);
+
     RVector3D res;
-    res.x = pidAngleX.getY(angle.x, dt/*, avPID.x*/);
-    res.y = pidAngleY.getY(angle.y, dt/*, avPID.y*/);
+
+    res.x = pidAngleX.getY(angle.x, dt);
+    res.y = pidAngleY.getY(angle.y, dt);
 
     res.z = 0;
-#ifdef PID_USE_YAW
-    RVector3D avPIDav = angularVelocity;
-    if(fabs(avPIDav.z) < PID_AV_MIN_Z) avPIDav.z = 0;
-    res.z = pidAngularVelocityZ.getY(avPIDav.z, dt);
-#endif
 
 #ifdef PID_USE_YAW_ANGLE
-    RVector3D avPIDav = angularVelocity * -1;
-    avPIDav /= 10;
-    if(fabs(avPIDav.z) < PID_AV_MIN_Z) avPIDav.z = 0;
-    res.z = pidAngleZ.getY(copterHeading, dt, avPIDav.z);
+    pidAngleZ.setIUse(flying);
+
+    res.z = pidAngleZ.getY(copterHeading, dt, angularVelocity.z);
 #endif
 
-    return(res);
+#ifdef MINIMUM_PID_THROTTLE
+    if(MController->getForce() < MINIMUM_PID_THROTTLE)
+        return(RVector3D(0, 0, 0));
+    else
+#endif
+        return(res);
 }

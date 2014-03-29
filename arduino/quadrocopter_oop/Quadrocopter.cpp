@@ -7,19 +7,15 @@
 
 Quadrocopter::Quadrocopter()
 {
-    serialReadN = 30;
-#ifdef PID_USE_YAW
-    serialReadN += 12;
-#endif
-#ifdef PID_USE_YAW_ANGLE
-    serialReadN += 12;
-#endif
-#ifdef USE_COMPASS
-    serialReadN += 2;
-#endif
+    needPCTx = false;
 
-    serialReadN -= 7;
-    serialReadN += 2;
+    flying = false;
+
+    serialReadN = 21; // 3 + 12 + 6
+
+#ifdef PID_USE_YAW_ANGLE
+    serialReadN += 6;
+#endif
 
     DefaultVSensorPin = A4;
     reactionType = ReactionNone;
@@ -44,10 +40,18 @@ Quadrocopter::Quadrocopter()
         DefaultMotorPins[3] = 9;
 #endif
 
+#ifdef DEBUG_SERIAL_SECOND
+    DEBUG_SERIAL_SECOND.begin(115200);
+#endif
+
     MSerial = new MySerial;
     MController = new MotorController(DefaultMotorPins);
     VSensor = new VoltageSensor(DefaultVSensorPin, DefaultVSensorMaxVoltage);
     MyMPU = new MPU6050DMP;
+
+    pidAngleX = PID(PID::DIFFERENCE_ANGLE);
+    pidAngleY = PID(PID::DIFFERENCE_ANGLE);
+
 #ifdef PID_USE_YAW_ANGLE
     pidAngleZ = PID(PID::DIFFERENCE_ANGLE);
 #endif
@@ -59,6 +63,8 @@ Quadrocopter::Quadrocopter()
 #ifdef DEBUG_MPUBYTES_PIN
     mpuBytesLed = InfoLED(DEBUG_MPUBYTES_PIN, InfoLED::DIGITAL);
 #endif
+
+    MController->calibrate();
 
     forceOverrideValue = 0;
     forceOverride = 1;
@@ -86,6 +92,11 @@ Quadrocopter::Quadrocopter()
 
 void Quadrocopter::reset()
 {
+    angleZLPF.setPeriod(0.05);
+    flyingTime = 0;
+    flying = false;
+
+    angleOffsetPC = RVector3D();
     angle = RVector3D();
     torqueAutomaticCorrection = RVector3D();
     angleManualCorrection = RVector3D();
@@ -136,6 +147,11 @@ void Quadrocopter::processCorrection()
 
 void Quadrocopter::processMotors()
 {
+    if(MController->getForce() >= MINIMUM_FLYING_THROTTLE)
+        flyingTime += dt;
+    if(flyingTime >= MINIMUM_FLYING_TIME)
+        flying = 1;
+
     MController->setTorque(getTorques());
 }
 
@@ -159,10 +175,9 @@ void Quadrocopter::iteration()
 #endif
 
         { // Serial
-            processSerialRx();
+            processSerialGetCommand();
             myLed.setState(5);
-            processSerialTx();
-            processJoystickRx();
+            processSerialDoCommand();
         }
 
 #ifdef DEBUG_DAC
@@ -179,6 +194,12 @@ void Quadrocopter::iteration()
 #ifdef DEBUG_DAC
         myLed.setState(80);
 #endif
+
+
+        { // Joystick
+
+            processJoystickRx();
+        }
 
         tCount.setTime();
         { // Corrections, Motors

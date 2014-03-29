@@ -19,7 +19,7 @@
 //#define DEBUG_NO_MOTORS
 
 // Add DAC8512 support and use it as InfoLED
-#define DEBUG_DAC
+//#define DEBUG_DAC
 
 // Oscilloscope freq at pin
 #define DEBUG_FREQ_PIN 13
@@ -51,5 +51,20 @@
 // if defined: joystick's compass rotates copter; default control
 // ifndef    : joystick doesnt rotate copter    ; rotated control
 #define COMPASS_ROTATE_COPTER
+
+// Additional debug serial port
+//define to enable
+#define DEBUG_SERIAL_SECOND Serial1
+
+// Disables PID if throttle < _value_
+#define MINIMUM_PID_THROTTLE 0.18
+
+// Minimum throttle: weight < 0
+#define MINIMUM_FLYING_THROTTLE 0.55
+
+// Disables PID I (integral <-- 0) if time < _value_ (seconds)
+#define MINIMUM_FLYING_TIME 0
+
+#define angleMPIPINorm(x) {while(x < -M_PI) {x += 2 * M_PI;} while(x > M_PI) {x -= 2 * M_PI;}}
 
 #endif

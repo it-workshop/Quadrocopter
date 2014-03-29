@@ -19,7 +19,8 @@ private:
     vect angle, torque_corrected;
     vect gyroscope_readings, accelerometer_readings;
 
-    vect torque_manual_correction;
+    vect copter_angle0;
+    vect angle_offset;
 
     static const int MOTORS_N = 4;
     number_vect_t MOTORS[MOTORS_N];
@@ -127,6 +128,10 @@ public:
     number_vect_t get_joystick_heading();
 
     void set_force_override(bool _do, double _value);
+    void set_angle_offset(vect);
+    void set_angle_offset_x(double);
+    void set_angle_offset_y(double);
+    void set_angle_offset_z(double);
 
     virtual void on_rx();
 

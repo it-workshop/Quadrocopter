@@ -12,13 +12,17 @@ using std::endl;
 
 void quadrocopter::on_rx()
 {
-    qDebug() << "available: " << port->bytesAvailable();
+    debug_stderr = 1;
+    if(debug_stderr)
+        qDebug() << "available: " << port->bytesAvailable();
 
     while(port->bytesAvailable() >= readBytesN)
     {
-        qDebug() << "calling read_data()";
+        if(debug_stderr)
+            qDebug() << "calling read_data()";
         read_data();
-        qDebug() << "read_data() ok";
+        if(debug_stderr)
+            qDebug() << "read_data() ok";
     }
 }
 
@@ -43,7 +47,8 @@ void quadrocopter::initiate_transmission()
     readErrorReset();
     if(!isoperational() || busyBit) return;
     busyBit = true;
-    qDebug() << "=== TRANSMISSION BEGINS ===";
+    if(debug_stderr)
+        qDebug() << "=== TRANSMISSION BEGINS ===";
 
     mytime write_timer;
     write_timer.setTime();
@@ -51,7 +56,8 @@ void quadrocopter::initiate_transmission()
     flush();
     swriteClear();
 
-    qDebug() << "=== TRANSMISSION: WRITE ===";
+    if(debug_stderr)
+        qDebug() << "=== TRANSMISSION: WRITE ===";
     swrite('p');
     write_data();
 
@@ -60,12 +66,14 @@ void quadrocopter::initiate_transmission()
     write_time = write_timer.getTimeDifference() / 1.E3;
 
     readTimer.setTime();
-    qDebug() << "=== TRANSMISSION: READ_BEGIN ===";
+    if(debug_stderr)
+        qDebug() << "=== TRANSMISSION: READ_BEGIN ===";
 }
 
 void quadrocopter::read_data()
 {
-    qDebug() << "=== TRANSMISSION: READ_ACTUAL ===";
+    if(debug_stderr)
+        qDebug() << "=== TRANSMISSION: READ_ACTUAL ===";
 #ifndef DEBUG_NO_TX_ARDUINO
     vect t_torque_corrected, t_gyroscope_readings;
     number_vect_t t_angle_x, t_angle_y, t_motors[MOTORS_N];
@@ -105,11 +113,11 @@ void quadrocopter::read_data()
 #endif
 
 #ifdef USE_COMPASS
-    t_copter_heading = read_number_vect_t(0, 7, 2);
-    t_joystick_heading = read_number_vect_t(0, 7, 2);
+    t_copter_heading = read_number_vect_t(-4, 4, 2);
+    t_joystick_heading = read_number_vect_t(-4, 4, 2);
 #endif
 
-    t_power = read_number_vect_t(0, 100, 1) / 100;
+    t_power = read_number_vect_t(0, 105, 1) / 100.;
 
     t_angle0_x = read_number_vect_t(-2, 2, 2);
     t_angle0_y = read_number_vect_t(-2, 2, 2);
@@ -148,8 +156,8 @@ void quadrocopter::read_data()
         joystick_heading = t_joystick_heading;
 #endif
 
-        torque_manual_correction.x = t_angle0_x;
-        torque_manual_correction.y = t_angle0_y;
+        copter_angle0.x = t_angle0_x;
+        copter_angle0.y = t_angle0_y;
 
         power = t_power;
 
@@ -181,42 +189,48 @@ void quadrocopter::read_data()
     if(!(/*ef || */readError()))
         busyBit = false;
 
-    qDebug() << "=== END OF TRANSMISSION ===" << endl;
+    if(debug_stderr)
+        qDebug() << "=== END OF TRANSMISSION ===" << endl;
 }
 
 void quadrocopter::write_data()
 {
     swrite(force_override_value * 100); // +1
-
+    //write_number_vect_t
     swrite(force_override); // +1
-
 
     //send reaction type
     swrite('0' + reaction_type);
 
-    write_number_vect_t(-1.5, 1.5, PID_angle_Kp.x, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angle_Ki.x, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angle_Kd.x, 2);
+    // +6
+    write_number_vect_t(-M_PI, M_PI, angle_offset.x, 2);
+    write_number_vect_t(-M_PI, M_PI, angle_offset.y, 2);
+    write_number_vect_t(-M_PI, M_PI, angle_offset.z, 2);
 
-    write_number_vect_t(0, 5, PID_angle_MAXp.x, 2);
-    write_number_vect_t(0, 5, PID_angle_MAXi.x, 2);
-    write_number_vect_t(0, 5, PID_angle_MAXd.x, 2);
+    // PID
+    write_number_vect_t(0, 0.5, PID_angle_Kp.x, 1);
+    write_number_vect_t(0, 0.5, PID_angle_Ki.x, 1);
+    write_number_vect_t(0, 0.5, PID_angle_Kd.x, 1);
 
-    write_number_vect_t(-1.5, 1.5, PID_angle_Kp.y, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angle_Ki.y, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angle_Kd.y, 2);
+    write_number_vect_t(0, 0.5, PID_angle_MAXp.x, 1);
+    write_number_vect_t(0, 0.5, PID_angle_MAXi.x, 1);
+    write_number_vect_t(0, 0.5, PID_angle_MAXd.x, 1);
 
-    write_number_vect_t(0, 5, PID_angle_MAXp.y, 2);
-    write_number_vect_t(0, 5, PID_angle_MAXi.y, 2);
-    write_number_vect_t(0, 5, PID_angle_MAXd.y, 2);
+    write_number_vect_t(0, 0.5, PID_angle_Kp.y, 1);
+    write_number_vect_t(0, 0.5, PID_angle_Ki.y, 1);
+    write_number_vect_t(0, 0.5, PID_angle_Kd.y, 1);
+
+    write_number_vect_t(0, 0.5, PID_angle_MAXp.y, 1);
+    write_number_vect_t(0, 0.5, PID_angle_MAXi.y, 1);
+    write_number_vect_t(0, 0.5, PID_angle_MAXd.y, 1);
 
 #if defined(PID_USE_YAW) || defined(PID_USE_YAW_ANGLE)
-    write_number_vect_t(-1.5, 1.5, PID_angle_Kp.z, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angle_Ki.z, 2);
-    write_number_vect_t(-1.5, 1.5, PID_angle_Kd.z, 2);
+    write_number_vect_t(0, 0.5, PID_angle_Kp.z, 1);
+    write_number_vect_t(0, 0.5, PID_angle_Ki.z, 1);
+    write_number_vect_t(0, 0.5, PID_angle_Kd.z, 1);
 
-    write_number_vect_t(0, 10, PID_angle_MAXp.z, 2);
-    write_number_vect_t(0, 10, PID_angle_MAXi.z, 2);
-    write_number_vect_t(0, 10, PID_angle_MAXd.z, 2);
+    write_number_vect_t(0, 1, PID_angle_MAXp.z, 1);
+    write_number_vect_t(0, 1, PID_angle_MAXi.z, 1);
+    write_number_vect_t(0, 1, PID_angle_MAXd.z, 1);
 #endif
 }

@@ -35,6 +35,7 @@ private slots:
     void timer_auto_update();
     void timer_reconnect_update();
     void timer_log_update();
+    void timer_track_update();
 
     //quadro
     void on_actionQuadroConnect_triggered();
@@ -52,7 +53,8 @@ private:
     static const double timer_auto_interval = 50;
     double timer_log_interval;
     static const double timer_reconnect_interval = 1000;
-    QTimer timer_auto, timer_reconnect, timer_log;
+    double timer_track_interval;
+    QTimer timer_auto, timer_reconnect, timer_log, timer_track;
 
     quadrocopter quadro;
 
@@ -71,7 +73,7 @@ private:
     double plot_time[plot_size],
         plot_gyro_x[plot_size], plot_gyro_y[plot_size], plot_gyro_z[plot_size],
         plot_joy_x[plot_size], plot_joy_y[plot_size],
-        plot_angle_x[plot_size], plot_angle_y[plot_size],
+        plot_angle_x[plot_size], plot_angle_y[plot_size], plot_angle_z[plot_size],
         plot_angle_accx[plot_size], plot_angle_accy[plot_size],
         plot_torque_x[plot_size], plot_torque_y[plot_size], plot_torque_z[plot_size], plot_force[plot_size],
         plot_acceleration_correction_x[plot_size], plot_acceleration_correction_y[plot_size], plot_acceleration_correction_z[plot_size],
@@ -81,7 +83,7 @@ private:
         plot_PID_P_y[plot_size], plot_PID_I_y[plot_size], plot_PID_D_y[plot_size],
         plot_PID_P_z[plot_size], plot_PID_I_z[plot_size], plot_PID_D_z[plot_size];
 
-    static const long double PLOT_TORQUE_COEFF_XY = 20, PLOT_TORQUE_COEFF_Z = 2;
+    static const long double PLOT_TORQUE_COEFF_XY = 4, PLOT_TORQUE_COEFF_Z = 1;
 
     QwtPlotCurve *plot_curve_angular_velocity_correction_x, *plot_curve_angular_velocity_correction_y, *plot_curve_angular_velocity_correction_z;
     QwtPlotCurve *plot_curve_acceleration_correction_x, *plot_curve_acceleration_correction_y, *plot_curve_acceleration_correction_z;
@@ -91,6 +93,10 @@ private:
     // /plot
 
     mytime plot_mytime;
+
+    int track_line, track_line_max;
+    string track_filename;
+    ifstream track_file;
 
     string log_filename;
     ifstream log_file;
@@ -161,6 +167,15 @@ private slots:
     void on_log_pause_clicked();
     void on_log_time_valueChanged(int arg1);
     void on_log_scroll_valueChanged(int value);
+    void on_actionDebug_stderr_triggered(bool checked);
+    void on_logfileaction_clicked();
+    void on_angle_offset_x_valueChanged(double arg1);
+    void on_angle_offset_y_valueChanged(double arg1);
+    void on_angle_offset_z_valueChanged(double arg1);
+    void on_track_browse_clicked();
+    void on_track_start_clicked();
+    void on_track_pause_clicked();
+    void on_track_open_clicked();
 };
 
 #endif // QUADRO_H
