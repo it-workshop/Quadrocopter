@@ -35,6 +35,7 @@ private slots:
     void timer_auto_update();
     void timer_reconnect_update();
     void timer_log_update();
+    void timer_track_update();
 
     //quadro
     void on_actionQuadroConnect_triggered();
@@ -52,7 +53,8 @@ private:
     static const double timer_auto_interval = 50;
     double timer_log_interval;
     static const double timer_reconnect_interval = 1000;
-    QTimer timer_auto, timer_reconnect, timer_log;
+    double timer_track_interval;
+    QTimer timer_auto, timer_reconnect, timer_log, timer_track;
 
     quadrocopter quadro;
 
@@ -91,6 +93,10 @@ private:
     // /plot
 
     mytime plot_mytime;
+
+    int track_line, track_line_max;
+    string track_filename;
+    ifstream track_file;
 
     string log_filename;
     ifstream log_file;
@@ -166,6 +172,10 @@ private slots:
     void on_angle_offset_x_valueChanged(double arg1);
     void on_angle_offset_y_valueChanged(double arg1);
     void on_angle_offset_z_valueChanged(double arg1);
+    void on_track_browse_clicked();
+    void on_track_start_clicked();
+    void on_track_pause_clicked();
+    void on_track_open_clicked();
 };
 
 #endif // QUADRO_H
