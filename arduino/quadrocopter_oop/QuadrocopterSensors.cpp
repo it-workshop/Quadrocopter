@@ -1,5 +1,7 @@
 #include "Quadrocopter.h"
 
+#define angleNorm(x) {while(x < 0) {x += 2 * M_PI;} while(x > 2 * M_PI) {x -= 2 * M_PI;}}
+
 void Quadrocopter::processSensorsData()
 {
     //MPU->iteration();
@@ -23,15 +25,16 @@ void Quadrocopter::processSensorsData()
         xi1.y =        0             +        xi2.y     +         0;
         xi1.z =-sin(angle.y) * xi2.x +          0      + cos(angle.y) * xi2.z;
 
-        double tCopterHeading = atan2(xi1.y, xi1.x);
+        double tCopterHeading = -atan2(xi1.y, xi1.x);
 
-        if(tCopterHeading < 0)
-            tCopterHeading += 2 * M_PI;
+        angleZLPF.iterationAngle(tCopterHeading, dt);
 
-        tCopterHeading = 2 * M_PI - tCopterHeading;
+        tCopterHeading = angleZLPF.getValue();
 
-        if(tCopterHeading >= 0 && tCopterHeading <= 2 * M_PI)
+        if(tCopterHeading >= -M_PI && tCopterHeading <= M_PI)
+        {
             copterHeading = tCopterHeading;
+        }
     }
 #endif
 }

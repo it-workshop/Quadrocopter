@@ -27,6 +27,16 @@ template <typename T> T LowPassFilter<T>::getValue()
     return(value);
 }
 
+template <typename T> inline void LowPassFilter<T>::iterationAngle(T currentRawValue, double dt)
+{
+    // see https://github.com/Mrkol/RoboMobo/blob/master/src/com/RoboMobo/Map.java#L272
+    double delta = currentRawValue - value;
+    angleMPIPINorm(delta);
+    value += delta * getAlpha(dt);
+    angleMPIPINorm(value);
+    //value -= M_PI;
+}
+
 template <typename T> inline void LowPassFilter<T>::iteration(T currentRawValue, double dt)
 {
     value = (currentRawValue - value) * getAlpha(dt) + value;

@@ -113,8 +113,8 @@ void quadrocopter::read_data()
 #endif
 
 #ifdef USE_COMPASS
-    t_copter_heading = read_number_vect_t(0, 7, 2);
-    t_joystick_heading = read_number_vect_t(0, 7, 2);
+    t_copter_heading = read_number_vect_t(-4, 4, 2);
+    t_joystick_heading = read_number_vect_t(-4, 4, 2);
 #endif
 
     t_power = read_number_vect_t(0, 105, 1) / 100.;

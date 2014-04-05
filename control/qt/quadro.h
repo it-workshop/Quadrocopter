@@ -73,7 +73,7 @@ private:
     double plot_time[plot_size],
         plot_gyro_x[plot_size], plot_gyro_y[plot_size], plot_gyro_z[plot_size],
         plot_joy_x[plot_size], plot_joy_y[plot_size],
-        plot_angle_x[plot_size], plot_angle_y[plot_size],
+        plot_angle_x[plot_size], plot_angle_y[plot_size], plot_angle_z[plot_size],
         plot_angle_accx[plot_size], plot_angle_accy[plot_size],
         plot_torque_x[plot_size], plot_torque_y[plot_size], plot_torque_z[plot_size], plot_force[plot_size],
         plot_acceleration_correction_x[plot_size], plot_acceleration_correction_y[plot_size], plot_acceleration_correction_z[plot_size],

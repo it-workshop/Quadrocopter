@@ -164,8 +164,8 @@ void Quadrocopter::processSerialPCTx()
 #endif
 
 #ifdef USE_COMPASS
-    MSerial->writeDouble(0, 7, copterHeading, 2); // +2
-    MSerial->writeDouble(0, 7, joystickHeading, 2); // +2
+    MSerial->writeDouble(-4, 4, copterHeading, 2); // +2
+    MSerial->writeDouble(-4, 4, joystickHeading, 2); // +2
 #endif
 
     MSerial->writeDouble(0, 105, MController->getForce() * 100, 1); // +1
@@ -222,10 +222,9 @@ void Quadrocopter::processSerialTextTx()
 void Quadrocopter::processJoystickRx()
 {
     joystickHeading += Joystick->getAV() * dt;
-    while(joystickHeading > 2 * M_PI)
-        joystickHeading -= 2 * M_PI;
-    while(joystickHeading < 0)
-        joystickHeading += 2 * M_PI;
+
+    angleMPIPINorm(joystickHeading);
+
     angleManualCorrection.x = Joystick->getAngleX();
     angleManualCorrection.y = Joystick->getAngleY();
 
