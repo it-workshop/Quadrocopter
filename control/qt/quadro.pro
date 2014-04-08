@@ -14,7 +14,7 @@ LIBS += -L/usr/local/lib -lQtSvg
 CONFIG += extserialport qwt
 
 # magick?
-LIBS += -L/usr/lib/x86_64-linux-gnu/ -lqextserialport-1.2
+#LIBS += -L/usr/lib/x86_64-linux-gnu/ -lqextserialport-1.2
 
 TARGET = quadro
 TEMPLATE = app

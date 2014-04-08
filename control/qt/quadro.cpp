@@ -162,7 +162,7 @@ void Quadro::timer_auto_update()
             joy.readErrorReset();
         }
 
-        save_data();
+        //save_data();
 
         set_quadro_data();
 
@@ -174,12 +174,6 @@ void Quadro::timer_auto_update()
 
         interface_write();
 
-        if(quadro.getNewDataAvailable())
-        {
-            if(!plot_mytime.isSet()) plot_mytime.setTime();
-            else plot_update();
-            quadro.resetNewDataAvailable();
-        }
 
         allowed = true;
     }
