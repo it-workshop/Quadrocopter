@@ -67,4 +67,7 @@
 
 #define angleMPIPINorm(x) {while(x < -M_PI) {x += 2 * M_PI;} while(x > M_PI) {x -= 2 * M_PI;}}
 
+// Enables ESC Calibration
+//#define ESC_DO_CALIBRATE
+
 #endif

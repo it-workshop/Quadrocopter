@@ -1,3 +1,4 @@
+#include "Definitions.h"
 #include "MotorController.h"
 #include "Arduino.h"
 #include "TimerCount.h"
@@ -91,6 +92,7 @@ void MotorController::initialize()
 void MotorController::calibrate()
 {
     initialize();
+#ifdef ESC_DO_CALIBRATE
     setTorque(0);
     delay(500);
     setForce(100);
@@ -99,6 +101,9 @@ void MotorController::calibrate()
     setForce(0);
     setTorque(0);
     delay(500);
+#else
+    delay(2000);
+#endif
 }
 
 void MotorController::setForce(double a)
