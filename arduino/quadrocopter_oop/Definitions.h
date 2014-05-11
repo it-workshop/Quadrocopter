@@ -5,6 +5,8 @@
 
 #define doubleEps 1E-2
 
+// Выкинуть ифдефы
+
 // Architecture
 #ifdef __arm__
   #define _arch_arm_

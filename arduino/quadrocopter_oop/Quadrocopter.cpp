@@ -6,11 +6,15 @@
 #endif
 
 Quadrocopter::Quadrocopter()
+// Вынести величины в инициализацию
+    : forceOverride(0),
+      forceOverrideValue(1)
 {
     needPCTx = false;
 
     flying = false;
 
+// Выделить в отдельный класс
     serialReadN = 21; // 3 + 12 + 6
 
 #ifdef PID_USE_YAW_ANGLE
@@ -20,6 +24,7 @@ Quadrocopter::Quadrocopter()
     DefaultVSensorPin = A4;
     reactionType = ReactionNone;
 
+// Убрать в параметр конструктора
 #ifdef _arch_avr_
     #ifdef DEBUG_DAC
         DefaultMotorPins[0] = 3;
@@ -44,9 +49,17 @@ Quadrocopter::Quadrocopter()
     DEBUG_SERIAL_SECOND.begin(115200);
 #endif
 
+    // Выделить интерфейсы
+    // MotorController
+    //  ^    ^
+    //  |    |
+    //  |  MotorControllerArduinoStandardESC
+    // MotorControllerCustomBoardDigitalESC
+    // ...
     MSerial = new MySerial;
     MController = new MotorController(DefaultMotorPins);
     VSensor = new VoltageSensor(DefaultVSensorPin, DefaultVSensorMaxVoltage);
+    // My?
     MyMPU = new MPU6050DMP;
 
     pidAngleX = PID(PID::DIFFERENCE_ANGLE);
@@ -56,6 +69,9 @@ Quadrocopter::Quadrocopter()
     pidAngleZ = PID(PID::DIFFERENCE_ANGLE);
 #endif
 
+    // class DebugLEDs
+    // leds.freqLed(1);
+    // leds.mpuBytesLed(0);
 #ifdef DEBUG_FREQ_PIN
     freqLed = InfoLED(DEBUG_FREQ_PIN, InfoLED::DIGITAL);
 #endif
@@ -73,6 +89,8 @@ Quadrocopter::Quadrocopter()
 
     MyMPU->initialize();
 
+// принимать объект компаса параметром конструктора.
+// Выделить интерфейс компаса и реализацию для HMC...
 #ifdef USE_COMPASS
     MyCompass = new HMC5883L;
     MyCompass->initialize();
@@ -92,14 +110,15 @@ Quadrocopter::Quadrocopter()
 
 void Quadrocopter::reset()
 {
-    angleZLPF.setPeriod(0.05);
+    angleZLPF.setPeriod(0.05);  // static const kRCPeriodInSeconds = 0.05;
     flyingTime = 0;
-    flying = false;
+    taked_off = false;
 
-    angleOffsetPC = RVector3D();
+    angleOffsetPC = RVector3D(); // Вынести в класс для взаимодействия с компом
     angle = RVector3D();
     torqueAutomaticCorrection = RVector3D();
-    angleManualCorrection = RVector3D();
+
+    angleManualCorrection = RVector3D();  // WTF?
 
     MController->setForce(0);
     MController->setTorque(RVector3D());
@@ -131,6 +150,8 @@ void Quadrocopter::processCorrection()
 
     switch(reactionType)
     {
+    // убрать неиспользуемый код.
+    // Выносить общие для пк и коптера типы в общие хедеры
     //    case ReactionAngularVelocity:
     //        torqueAutomaticCorrection = getAngularVelocityCorrection(angularVelocity, DeltaT.getTimeDifferenceSeconds());
     //        break;

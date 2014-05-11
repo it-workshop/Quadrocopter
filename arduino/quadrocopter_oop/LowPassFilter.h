@@ -27,6 +27,6 @@ public:
     inline void reset();
 };
 
-#include "LowPassFilter.cpp"
+#include "LowPassFilterImpl.h"
 
 #endif // LOWPASSFILTER_H
