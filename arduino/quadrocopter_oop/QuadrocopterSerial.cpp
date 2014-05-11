@@ -133,6 +133,7 @@ void Quadrocopter::processSerialPCRx()
 
 void Quadrocopter::processSerialPCTx()
 {
+    //protobuf
     MSerial->writeDouble(-0.5, 0.5, getTorques().x, 1); // +1
     MSerial->writeDouble(-0.5, 0.5, getTorques().y, 1); // +1
     MSerial->writeDouble(-0.5, 0.5, getTorques().z, 1); // +1
@@ -180,7 +181,7 @@ void Quadrocopter::processSerialPCTx()
     MSerial->writeDouble(0, 20, voltage, 1); //+1
 }
 
-void Quadrocopter::processSerialTextTx()
+void Quadrocopter::processSerialDebugTextTx()
 {
     MSerial->bufferAdd("A=");
     MSerial->RVector3DWrite(angle * 180 / M_PI, MySerial::PRINT_TAB);

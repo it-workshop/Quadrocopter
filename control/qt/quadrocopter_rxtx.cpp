@@ -72,6 +72,7 @@ void quadrocopter::initiate_transmission()
 
 void quadrocopter::read_data()
 {
+    // protobuf
     if(debug_stderr)
         qDebug() << "=== TRANSMISSION: READ_ACTUAL ===";
 #ifndef DEBUG_NO_TX_ARDUINO
