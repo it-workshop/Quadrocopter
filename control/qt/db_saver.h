@@ -6,7 +6,7 @@
 
 #define DB_DRIVER "QPSQL"
 #define DB_HOST "127.0.0.1"
-#define DB_DBNAME "control_center"
+#define DB_DBNAME "control_center_development"
 #define DB_USER "control_center"
 #define DB_PASSWD "123456789"
 

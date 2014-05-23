@@ -130,6 +130,8 @@ void Quadro::timer_log_update()
         interface_write();
         plot_update();
 
+        db_write();
+
         log_line++;
         ui->log_scroll->setValue(log_line * 100/ log_lines.size());
 

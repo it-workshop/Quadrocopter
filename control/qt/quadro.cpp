@@ -125,7 +125,6 @@ void Quadro::timer_reconnect_update()
             quadro.readErrorReset();
             quadro_connect();
             interface_write();
-            db_write();
         }
         allowed = true;
     }
@@ -163,6 +162,7 @@ void Quadro::timer_auto_update()
                 quadro_fetch_data();
             }
             quadro.resetNewDataAvailable();
+            db_write();
         }
 
         allowed = true;

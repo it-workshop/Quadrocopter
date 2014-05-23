@@ -30,7 +30,7 @@ void db_saver::update_info(double throttle, double voltage, vect angle)
 {
     QSqlQuery q1(myDB);
     q1.prepare("update copters set (pitch, yaw, roll, throttle, voltage, updated_at) = "
-    "(:pitch, :yaw, :roll, :throttle, :voltage, :updated_at)");
+    "(:pitch, :yaw, :roll, :throttle, :voltage, current_timestamp)");
 
     myDB.transaction();
     q1.bindValue(":yaw", (double) angle.x);
@@ -43,5 +43,4 @@ void db_saver::update_info(double throttle, double voltage, vect angle)
     qDebug() << "Rows affected: " << q1.numRowsAffected() << " Error text: " << q1.lastError().text();
 
     myDB.commit();
-    myDB.transaction();
 }
