@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 
 INCLUDEPATH += /usr/include /usr/local/include /usr/include/qwt-qt4 /usr/include/qt4/QtExtSerialPort ../../arduino/quadrocopter_oop/
 
@@ -30,13 +30,15 @@ SOURCES += main.cpp\
     quadro_slots.cpp \
     quadro_interface.cpp \
     quadro_log.cpp \
-    quadrocopter_rxtx.cpp
+    quadrocopter_rxtx.cpp \
+    db_saver.cpp
 
 HEADERS  += quadro.h \
     serial.h \
     vect.h \
     quadrocopter.h \
     mytime.h \
-    ../../arduino/quadrocopter_oop/Definitions.h
+    ../../arduino/quadrocopter_oop/Definitions.h \
+    db_saver.h
 
 FORMS    += quadro.ui

@@ -46,6 +46,8 @@ Quadro::Quadro(QWidget *parent) :
     quadro_save_settings = true;
 
     plot_init();
+
+    my_db_saver = new db_saver;
 }
 
 Quadro::~Quadro()
@@ -105,6 +107,11 @@ void Quadro::quadro_connect()
     interface_write();
 }
 
+void Quadro::db_write()
+{
+    my_db_saver->update_info(power, voltage, angle);
+}
+
 void Quadro::timer_reconnect_update()
 {
     update_ports();
@@ -118,6 +125,7 @@ void Quadro::timer_reconnect_update()
             quadro.readErrorReset();
             quadro_connect();
             interface_write();
+            db_write();
         }
         allowed = true;
     }

@@ -10,6 +10,8 @@
 #include <quadrocopter.h>
 #include <vector>
 
+#include "db_saver.h"
+
 #include "qextserialenumerator.h"
 
 #include <qwt_plot_curve.h>
@@ -47,6 +49,8 @@ private slots:
 
 private:
     Ui::Quadro *ui;
+
+    db_saver* my_db_saver;
 
     QextSerialEnumerator QeSEnumerator;
 
@@ -133,6 +137,8 @@ private:
     void interface_read();
     void interface_write();
     void interface_init();
+
+    void db_write();
 
 private slots:
     void update_ports();
